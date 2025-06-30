@@ -1,0 +1,215 @@
+site_name: My Learning Journey
+site_description: A comprehensive collection of my learning in Machine Learning, GenAI, System Design, Algorithms, and more
+site_author: Venugopal Nakka
+site_url: https://nvgr.github.io/my-learning
+
+# Repository information
+repo_name: nvgr/my-learning
+repo_url: https://github.com/nvgr/my-learning
+edit_uri: edit/main/docs/
+
+# Theme configuration
+theme:
+  name: material
+  
+  # Color palette
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  
+  # Font configuration
+  font:
+    text: Roboto
+    code: Roboto Mono
+  
+  # Logo and favicon
+  icon:
+    logo: material/school
+    repo: fontawesome/brands/github
+  
+  # Language
+  language: en
+  
+  # Features
+  features:
+    # Navigation
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.prune
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    
+    # Table of contents
+    - toc.follow
+    - toc.integrate
+    
+    # Search
+    - search.suggest
+    - search.highlight
+    - search.share
+    
+    # Header
+    - header.autohide
+    
+    # Content
+    - content.action.edit
+    - content.action.view
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+    
+    # Announce
+    - announce.dismiss
+
+# Navigation structure
+nav:
+  - Home: index.md
+  - Machine Learning:
+    - ml/index.md
+    - Fundamentals: ml/fundamentals.md
+    - Algorithms: ml/algorithms.md
+    - Deep Learning: ml/deep-learning.md
+    - MLOps: ml/mlops.md
+  - GenAI:
+    - genai/index.md
+    - LLMs: genai/llms.md
+    - Prompt Engineering: genai/prompt-engineering.md
+    - RAG: genai/rag.md
+    - Fine-tuning: genai/fine-tuning.md
+  - System Design:
+    - system-design/index.md
+    - Fundamentals: system-design/fundamentals.md
+    - Scalability: system-design/scalability.md
+    - Databases: system-design/databases.md
+    - Microservices: system-design/microservices.md
+  - Algorithms:
+    - algorithms/index.md
+    - Data Structures: algorithms/data-structures.md
+    - Sorting: algorithms/sorting.md
+    - Graph Algorithms: algorithms/graphs.md
+    - Dynamic Programming: algorithms/dp.md
+  - Blog:
+    - blog/index.md
+
+# Extensions
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      title: On this page
+  
+  # Python Markdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - minify:
+      minify_html: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+      fallback_to_build_date: true
+  - git-committers:
+      repository: nvgr/my-learning
+      branch: main
+      enabled: !ENV [CI, false]
+
+# Extra CSS and JavaScript
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# Social links and extra configuration
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/nvgr
+      name: GitHub Profile
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/venugopal-nakka
+      name: LinkedIn Profile
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/nvgr
+      name: Twitter Profile
+    - icon: fontawesome/solid/envelope
+      link: mailto:your.email@example.com
+      name: Email
+  
+  # Analytics (optional - replace with your Google Analytics ID)
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+  
+  # Announcement bar (optional)
+  # announcement:
+  #   text: "🎉 Welcome to my learning documentation! This site is constantly updated with new content."
+  
+  # Version selector
+  version:
+    provider: mike
+
+# Copyright
+copyright: |
+  &copy; 2025 <a href="https://github.com/nvgr" target="_blank" rel="noopener">Venugopal Nakka</a> - 
+  <a href="#__consent">Change cookie settings</a>

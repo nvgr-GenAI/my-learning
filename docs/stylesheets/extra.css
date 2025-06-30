@@ -1,0 +1,146 @@
+/* Custom styles for My Learning Journey */
+
+/* Color scheme customizations */
+:root {
+  --md-primary-fg-color: #3f51b5;
+  --md-primary-fg-color--light: #6573c3;
+  --md-primary-fg-color--dark: #2c387e;
+  --md-accent-fg-color: #9c27b0;
+  --md-accent-fg-color--transparent: #9c27b01a;
+}
+
+/* Custom grid cards styling */
+.grid.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.grid.cards > * {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.grid.cards > *:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Dark mode adjustments */
+[data-md-color-scheme="slate"] .grid.cards > * {
+  border-color: var(--md-default-fg-color--lighter);
+}
+
+[data-md-color-scheme="slate"] .grid.cards > *:hover {
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* Custom admonition styles */
+.md-typeset .admonition.tip {
+  border-color: #00c853;
+}
+
+.md-typeset .admonition.info {
+  border-color: #2196f3;
+}
+
+/* Enhanced code block styling */
+.md-typeset .codehilite,
+.md-typeset .highlight {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* Custom button styling */
+.md-button {
+  border-radius: 2rem;
+  font-weight: 500;
+  text-transform: none;
+}
+
+/* Learning path cards */
+.learning-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.learning-card h3 {
+  margin-top: 0;
+  color: white;
+}
+
+/* Progress indicators */
+.progress-bar {
+  background: #e0e0e0;
+  border-radius: 1rem;
+  height: 0.5rem;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  height: 100%;
+  border-radius: 1rem;
+  transition: width 0.3s ease;
+}
+
+/* Social links styling */
+.md-footer__inner .md-social {
+  padding: 0.5rem 0;
+}
+
+.md-social__link {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.md-social__link:hover {
+  opacity: 1;
+}
+
+/* Custom table styling */
+.md-typeset table:not([class]) {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .grid.cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .learning-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Animation for cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grid.cards > * {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.grid.cards > *:nth-child(1) { animation-delay: 0.1s; }
+.grid.cards > *:nth-child(2) { animation-delay: 0.2s; }
+.grid.cards > *:nth-child(3) { animation-delay: 0.3s; }
+.grid.cards > *:nth-child(4) { animation-delay: 0.4s; }
