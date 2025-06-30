@@ -4,8 +4,8 @@ site_author: Venugopal Nakka
 site_url: https://nvgr.github.io/my-learning
 
 # Repository information
-repo_name: nvgr/my-learning
-repo_url: https://github.com/nvgr/my-learning
+repo_name: nvgr-GenAI/my-learning
+repo_url: https://github.com/nvgr-GenAI/my-learning
 edit_uri: edit/main/docs/
 
 # Theme configuration
@@ -187,13 +187,13 @@ extra:
       link: https://github.com/nvgr
       name: GitHub Profile
     - icon: fontawesome/brands/linkedin
-      link: https://linkedin.com/in/venugopal-nakka
+      link: https://www.linkedin.com/in/vnakka/
       name: LinkedIn Profile
     - icon: fontawesome/brands/twitter
-      link: https://twitter.com/nvgr
+      link: https://twitter.com/nvgrao
       name: Twitter Profile
     - icon: fontawesome/solid/envelope
-      link: mailto:your.email@example.com
+      link: mailto:venugopalcse130@gmail.com
       name: Email
   
   # Analytics (optional - replace with your Google Analytics ID)
