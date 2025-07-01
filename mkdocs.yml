@@ -54,9 +54,7 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.sections
-    - navigation.expand
     - navigation.path
-    - navigation.prune
     - navigation.indexes
     - navigation.top
     - navigation.footer
@@ -107,13 +105,44 @@ nav:
     - Microservices: system-design/microservices.md
   - Algorithms:
     - algorithms/index.md
-    - Data Structures: algorithms/data-structures.md
-    - Sorting: algorithms/sorting.md
-    - Graph Algorithms: algorithms/graphs.md
-    - Dynamic Programming: algorithms/dp.md
+    - Data Structures:
+      - algorithms/data-structures/data-structures.md
+      # - Arrays: algorithms/data-structures/arrays.md
+      - Linked Lists: algorithms/data-structures/linked-lists.md
+      - Stacks & Queues: algorithms/data-structures/stacks-queues.md
+      - Trees: algorithms/data-structures/trees.md
+      - Hash Tables: algorithms/data-structures/hash-tables.md
+      - Heaps: algorithms/data-structures/heaps.md
+    - Sorting Algorithms:
+      - algorithms/sorting/sorting.md
+      - Bubble Sort: algorithms/sorting/bubble-sort.md
+      - Selection Sort: algorithms/sorting/selection-sort.md
+      - Insertion Sort: algorithms/sorting/insertion-sort.md
+      - Quick Sort: algorithms/sorting/quick-sort.md
+      - Merge Sort: algorithms/sorting/merge-sort.md
+      - Heap Sort: algorithms/sorting/heap-sort.md
+    - Graph Algorithms:
+      - algorithms/graphs/graphs.md
+      - DFS: algorithms/graphs/dfs.md
+      - BFS: algorithms/graphs/bfs.md
+      - Dijkstra: algorithms/graphs/dijkstra.md
+      - Topological Sort: algorithms/graphs/topological-sort.md
+    - Dynamic Programming:
+      - algorithms/dp/dp.md
+      - Fibonacci: algorithms/dp/fibonacci.md
+      - Knapsack: algorithms/dp/knapsack.md
+      - LCS: algorithms/dp/lcs.md
+    - Mathematical Algorithms:
+      - algorithms/math/math.md
+      - Number Theory: algorithms/math/number-theory.md
+      - Geometry: algorithms/math/geometry.md
+    - Advanced Techniques:
+      - algorithms/advanced/advanced.md
+      - Divide & Conquer: algorithms/advanced/divide-conquer.md
+      - Greedy: algorithms/advanced/greedy.md
   - Blog:
     - blog/index.md
-
+use_index_title: true
 # Extensions
 markdown_extensions:
   # Python Markdown
