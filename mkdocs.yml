@@ -53,7 +53,6 @@ theme:
     - navigation.tracking
     - navigation.tabs
     - navigation.tabs.sticky
-    - navigation.sections
     - navigation.path
     - navigation.indexes
     - navigation.top
@@ -106,43 +105,91 @@ nav:
   - Algorithms:
     - algorithms/index.md
     - Data Structures:
-      - algorithms/data-structures/data-structures.md
-      # - Arrays: algorithms/data-structures/arrays.md
-      - Linked Lists: algorithms/data-structures/linked-lists.md
-      - Stacks & Queues: algorithms/data-structures/stacks-queues.md
-      - Trees: algorithms/data-structures/trees.md
-      - Hash Tables: algorithms/data-structures/hash-tables.md
-      - Heaps: algorithms/data-structures/heaps.md
-    - Sorting Algorithms:
-      - algorithms/sorting/sorting.md
-      - Bubble Sort: algorithms/sorting/bubble-sort.md
-      - Selection Sort: algorithms/sorting/selection-sort.md
-      - Insertion Sort: algorithms/sorting/insertion-sort.md
-      - Quick Sort: algorithms/sorting/quick-sort.md
-      - Merge Sort: algorithms/sorting/merge-sort.md
-      - Heap Sort: algorithms/sorting/heap-sort.md
-    - Graph Algorithms:
-      - algorithms/graphs/graphs.md
-      - DFS: algorithms/graphs/dfs.md
-      - BFS: algorithms/graphs/bfs.md
-      - Dijkstra: algorithms/graphs/dijkstra.md
-      - Topological Sort: algorithms/graphs/topological-sort.md
+      - algorithms/data-structures/index.md
+      - Arrays:
+        - algorithms/data-structures/arrays/index.md
+        - algorithms/data-structures/arrays/fundamentals.md
+        - algorithms/data-structures/arrays/easy-problems.md
+        - algorithms/data-structures/arrays/medium-problems.md
+        - algorithms/data-structures/arrays/hard-problems.md
+      - Linked Lists:
+        - algorithms/data-structures/linked-lists/index.md
+        - algorithms/data-structures/linked-lists/fundamentals.md
+        - algorithms/data-structures/linked-lists/easy-problems.md
+        - algorithms/data-structures/linked-lists/medium-problems.md
+        - algorithms/data-structures/linked-lists/hard-problems.md
+      - Stacks:
+        - algorithms/data-structures/stacks/index.md
+        - algorithms/data-structures/stacks/fundamentals.md
+        - algorithms/data-structures/stacks/easy-problems.md
+        - algorithms/data-structures/stacks/medium-problems.md
+        - algorithms/data-structures/stacks/hard-problems.md
+      - Queues:
+        - algorithms/data-structures/queues/index.md
+        - algorithms/data-structures/queues/fundamentals.md
+        - algorithms/data-structures/queues/easy-problems.md
+        - algorithms/data-structures/queues/medium-problems.md
+        - algorithms/data-structures/queues/hard-problems.md
+      - Hash Tables:
+        - algorithms/data-structures/hash-tables/index.md
+        - algorithms/data-structures/hash-tables/fundamentals.md
+        - algorithms/data-structures/hash-tables/easy-problems.md
+        - algorithms/data-structures/hash-tables/medium-problems.md
+        - algorithms/data-structures/hash-tables/hard-problems.md
+      - algorithms/data-structures/heaps.md
+    - Trees:
+      - algorithms/trees/index.md
+      - algorithms/trees/binary-trees.md
+      - algorithms/trees/bst.md
+      - algorithms/trees/avl-trees.md
+      - algorithms/trees/tree-traversal.md
+      - algorithms/trees/tree-problems.md
+    - Sorting:
+      - algorithms/sorting/index.md
+      - algorithms/sorting/bubble-sort.md
+      - algorithms/sorting/selection-sort.md
+      - algorithms/sorting/insertion-sort.md
+      - algorithms/sorting/quick-sort.md
+      - algorithms/sorting/merge-sort.md
+      - algorithms/sorting/heap-sort.md
+    - Graphs:
+      - algorithms/graphs/index.md
+      - algorithms/graphs/fundamentals.md
+      - algorithms/graphs/dfs.md
+      - algorithms/graphs/bfs.md
+      - algorithms/graphs/dijkstra.md
+      - algorithms/graphs/bellman-ford.md
+      - algorithms/graphs/floyd-warshall.md
+      - algorithms/graphs/topological-sort.md
+      - algorithms/graphs/union-find.md
+      - algorithms/graphs/mst.md
+      - algorithms/graphs/easy-problems.md
+      - algorithms/graphs/medium-problems.md
+      - algorithms/graphs/hard-problems.md
     - Dynamic Programming:
-      - algorithms/dp/dp.md
-      - Fibonacci: algorithms/dp/fibonacci.md
-      - Knapsack: algorithms/dp/knapsack.md
-      - LCS: algorithms/dp/lcs.md
-    - Mathematical Algorithms:
-      - algorithms/math/math.md
-      - Number Theory: algorithms/math/number-theory.md
-      - Geometry: algorithms/math/geometry.md
-    - Advanced Techniques:
-      - algorithms/advanced/advanced.md
-      - Divide & Conquer: algorithms/advanced/divide-conquer.md
-      - Greedy: algorithms/advanced/greedy.md
+      - algorithms/dp/index.md
+      - algorithms/dp/fundamentals.md
+      - algorithms/dp/patterns.md
+      - algorithms/dp/fibonacci.md
+      - algorithms/dp/knapsack.md
+      - algorithms/dp/lcs.md
+      - algorithms/dp/edit-distance.md
+      - algorithms/dp/easy-problems.md
+      - algorithms/dp/medium-problems.md
+      - algorithms/dp/hard-problems.md
+      - algorithms/dp/2d-dp.md
+      - algorithms/dp/interval-dp.md
+    - Math:
+      - algorithms/math/index.md
+      - algorithms/math/number-theory.md
+      - algorithms/math/geometry.md
+    - Advanced:
+      - algorithms/advanced/index.md
+      - algorithms/advanced/divide-conquer.md
+      - algorithms/advanced/greedy.md
   - Blog:
     - blog/index.md
-use_index_title: true
+
 # Extensions
 markdown_extensions:
   # Python Markdown
