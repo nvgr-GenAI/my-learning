@@ -52,7 +52,7 @@ Your comprehensive guide to mastering algorithms and data structures - from fund
     
     Greedy, divide & conquer, backtracking, bit manipulation
     
-    [Master techniques →](advanced.md)
+    [Master techniques →](backtracking/index.md)
 
 </div>
 
@@ -230,7 +230,7 @@ Ready to dive deeper? Choose your path:
     
     1. [Data Structures Basics](data-structures.md)
     2. [Simple Sorting Algorithms](sorting.md)
-    3. [Array and String Problems](advanced.md)
+    3. [Backtracking Problems](backtracking/index.md)
 
 === "Intermediate"
 
@@ -244,9 +244,9 @@ Ready to dive deeper? Choose your path:
 
     Master complex topics:
     
-    1. [Advanced Techniques](advanced.md)
+    1. [Greedy Algorithms](greedy/index.md)
     2. [Mathematical Algorithms](math.md)
-    3. [Competitive Programming Patterns](advanced.md)
+    3. [Divide & Conquer Patterns](divide-conquer/index.md)
 
 ---
 
@@ -509,8 +509,8 @@ def plot_complexity_growth():
 Choose your learning path based on your goals:
 
 - **Job Interview Prep**: Start with [Data Structures](data-structures.md) → [Sorting](sorting.md) → [Dynamic Programming](dp.md)
-- **Competitive Programming**: Begin with [Mathematical Algorithms](math.md) → [Advanced Techniques](advanced.md) → [Graph Algorithms](graphs.md)
-- **Academic Study**: Follow the structured path: [Data Structures](data-structures.md) → [Sorting](sorting.md) → [Graphs](graphs.md) → [DP](dp.md) → [Advanced](advanced.md)
+- **Competitive Programming**: Begin with [Mathematical Algorithms](math.md) → [Greedy Algorithms](greedy/index.md) → [Graph Algorithms](graphs.md)
+- **Academic Study**: Follow the structured path: [Data Structures](data-structures.md) → [Sorting](sorting.md) → [Graphs](graphs.md) → [DP](dp.md) → [Backtracking](backtracking/index.md)
 
 Remember: The key to mastering algorithms is consistent practice and understanding the underlying patterns. Start with the basics and gradually work your way up to more complex problems.
 

@@ -1,4 +1,4 @@
-# Queues: Fundamentals & Operations
+# Queues: Fundamentals & Theory
 
 ## 📚 What is a Queue?
 

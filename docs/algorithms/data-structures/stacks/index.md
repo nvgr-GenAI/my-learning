@@ -8,13 +8,19 @@ A **Stack** is a linear data structure that follows the **Last In, First Out (LI
 
 This section covers everything you need to master stacks:
 
-### 📖 [Fundamentals & Operations](fundamentals.md)
+### 📖 [Fundamentals & Theory](fundamentals.md)
 
 - Stack concept and LIFO principle
-- Implementation using arrays and linked lists  
 - Basic operations (push, pop, peek, isEmpty)
 - Time and space complexity analysis
-- Applications and use cases
+- Implementation comparison and use cases
+
+### 🏗️ Implementation Types
+
+Choose your implementation approach:
+
+- **[Array-Based Stack](array-stack.md)**: Using dynamic arrays for simple, cache-friendly implementation
+- **[Linked List Stack](linked-list-stack.md)**: Using nodes and pointers for dynamic sizing without resizing
 
 ### 🟢 [Easy Problems](easy-problems.md)
 
@@ -48,7 +54,7 @@ Advanced problems for stack mastery:
 
 ## 🚀 Quick Start
 
-If you're new to stacks, start with **[Fundamentals](fundamentals.md)** to understand the core LIFO concept, then progress through problems based on your comfort level.
+If you're new to stacks, start with **[Fundamentals & Theory](fundamentals.md)** to understand the core LIFO concept, then explore the **[Implementation Types](array-stack.md)** to see different approaches, and finally progress through problems based on your comfort level.
 
 ## 📊 At a Glance
 
@@ -66,19 +72,21 @@ If you're new to stacks, start with **[Fundamentals](fundamentals.md)** to under
 graph TD
     A[Start: Stacks] --> B[Learn LIFO Principle]
     B --> C[Understand Basic Operations]
-    C --> D[Practice Easy Problems]
-    D --> E[Tackle Medium Problems] 
-    E --> F[Master Hard Problems]
-    F --> G[Apply to Real Projects]
+    C --> D[Choose Implementation]
+    D --> E[Array-Based Stack]
+    D --> F[Linked List Stack]
+    E --> G[Practice Easy Problems]
+    F --> G
+    G --> H[Tackle Medium Problems] 
+    H --> I[Master Hard Problems]
+    I --> J[Apply to Real Projects]
     
-    B --> H[Array Implementation]
-    B --> I[Linked List Implementation]
-    C --> J[Push/Pop Mechanics]
-    C --> K[Edge Case Handling]
+    C --> K[Push/Pop Mechanics]
+    C --> L[Edge Case Handling]
     
-    D --> L[Parentheses Matching]
-    E --> M[Monotonic Stack Patterns]
-    F --> N[Complex Expression Parsing]
+    G --> M[Parentheses Matching]
+    H --> N[Monotonic Stack Patterns]
+    I --> O[Complex Expression Parsing]
 ```
 
 ## 🏆 Success Metrics
@@ -86,7 +94,8 @@ graph TD
 Track your progress:
 
 - [ ] Understand LIFO principle thoroughly
-- [ ] Implement stack using both arrays and linked lists
+- [ ] Choose appropriate implementation (array vs linked list)
+- [ ] Implement stack using both approaches
 - [ ] Solve 5+ easy problems independently
 - [ ] Master monotonic stack pattern
 - [ ] Solve 3+ medium problems with optimization
@@ -134,4 +143,4 @@ Track your progress:
 
 ---
 
-Ready to dive in? Start with **[Fundamentals & Operations](fundamentals.md)** to build your foundation!
+Ready to dive in? Start with **[Fundamentals & Theory](fundamentals.md)** to build your foundation!

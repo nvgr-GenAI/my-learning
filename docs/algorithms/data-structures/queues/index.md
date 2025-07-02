@@ -8,13 +8,48 @@ A **Queue** is a linear data structure that follows the **First In, First Out (F
 
 This section covers everything you need to master queues:
 
-### 📖 [Fundamentals & Operations](fundamentals.md)
+### 📖 [Fundamentals & Theory](fundamentals.md)
 
 - Queue concept and FIFO principle
-- Implementation using arrays, linked lists, and circular arrays
 - Basic operations (enqueue, dequeue, front, rear)
-- Types of queues (simple, circular, priority, deque)
+- Types of queues and their characteristics
 - Time and space complexity analysis
+
+### 🏗️ Implementation Types
+
+Master different queue implementations for various scenarios:
+
+#### [📘 Array-Based Queue](array-queue.md){ .md-button }
+
+**Fixed/Dynamic**: Simple array implementation
+
+- Contiguous memory layout
+- O(1) operations with proper indexing
+- Best for predictable sizes
+
+#### [📗 Linked List Queue](linked-list-queue.md){ .md-button }
+
+**Dynamic**: Node-based implementation
+
+- True dynamic sizing
+- O(1) enqueue and dequeue
+- Best for unpredictable sizes
+
+#### [📙 Circular Queue](circular-queue.md){ .md-button }
+
+**Space Efficient**: Ring buffer approach
+
+- Reuses array positions
+- Optimal for fixed buffers
+- Common in systems programming
+
+#### [📕 Priority Queue](priority-queue.md){ .md-button }
+
+**Priority-Based**: Order by importance
+
+- Elements served by priority
+- Essential for algorithms
+- Multiple implementation options
 
 ### 🟢 [Easy Problems](easy-problems.md)
 
@@ -48,7 +83,7 @@ Advanced problems for queue mastery:
 
 ## 🚀 Quick Start
 
-If you're new to queues, start with **[Fundamentals](fundamentals.md)** to understand the core FIFO concept, then progress through problems based on your comfort level.
+If you're new to queues, start with **[Fundamentals & Theory](fundamentals.md)** to understand the core FIFO concept, then explore the **[Implementation Types](array-queue.md)** to see different approaches, and finally progress through problems based on your comfort level.
 
 ## 📊 At a Glance
 
@@ -67,29 +102,34 @@ If you're new to queues, start with **[Fundamentals](fundamentals.md)** to under
 graph TD
     A[Start: Queues] --> B[Learn FIFO Principle]
     B --> C[Understand Basic Operations]
-    C --> D[Practice Easy Problems]
-    D --> E[Tackle Medium Problems] 
-    E --> F[Master Hard Problems]
-    F --> G[Apply to Real Projects]
+    C --> D[Choose Implementation Type]
+    D --> E[Array-Based Queue]
+    D --> F[Linked List Queue]
+    D --> G[Circular Queue]
+    D --> H[Priority Queue]
+    E --> I[Practice Easy Problems]
+    F --> I
+    G --> I
+    H --> I
+    I --> J[Tackle Medium Problems] 
+    J --> K[Master Hard Problems]
+    K --> L[Apply to Real Projects]
     
-    B --> H[Array Implementation]
-    B --> I[Linked List Implementation]
-    B --> J[Circular Queue]
-    C --> K[Enqueue/Dequeue Mechanics]
-    C --> L[Edge Case Handling]
+    C --> M[Enqueue/Dequeue Mechanics]
+    C --> N[Edge Case Handling]
     
-    D --> M[Queue with Stacks]
-    E --> N[Sliding Window Patterns]
-    F --> O[Advanced Data Structures]
+    I --> O[Queue with Stacks]
+    J --> P[Sliding Window Patterns]
+    K --> Q[Advanced Data Structures]
 ```
 
-## 🔄 Types of Queues
+## 🔄 Queue Types Overview
 
 ### 1. **Simple Queue (Linear Queue)**
 
 Basic FIFO implementation with front and rear pointers.
 
-### 2. **Circular Queue**
+### 2. **Circular Queue (Ring Buffer)**
 
 Efficient space utilization by wrapping around when reaching array end.
 
@@ -106,11 +146,13 @@ Allows insertion and deletion at both ends.
 Track your progress:
 
 - [ ] Understand FIFO principle thoroughly
-- [ ] Implement queue using arrays, linked lists, and circular arrays
+- [ ] Choose appropriate implementation for your use case
+- [ ] Implement basic queues using arrays and linked lists
+- [ ] Master circular queues for space efficiency
+- [ ] Understand priority queues and their applications
 - [ ] Solve 5+ easy problems independently
 - [ ] Master sliding window pattern with queues
 - [ ] Solve 3+ medium problems with optimization
-- [ ] Understand priority queues and deques
 
 ## 💡 Pro Tips
 
@@ -155,4 +197,4 @@ Track your progress:
 
 ---
 
-Ready to dive in? Start with **[Fundamentals & Operations](fundamentals.md)** to build your foundation!
+Ready to dive in? Start with **[Fundamentals & Theory](fundamentals.md)** to build your foundation!

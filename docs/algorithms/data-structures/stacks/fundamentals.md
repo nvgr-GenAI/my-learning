@@ -1,4 +1,4 @@
-# Stacks: Fundamentals & Operations
+# Stacks: Fundamentals & Theory
 
 ## 📚 What is a Stack?
 
@@ -90,120 +90,47 @@ def size(stack):
 # Time: O(1), Space: O(1)
 ```
 
-## 💻 Implementations
+## 💻 Implementation Approaches
 
-### 1. Array-Based Implementation
+Stacks can be implemented using different underlying data structures, each with its own trade-offs:
 
-```python
-class ArrayStack:
-    def __init__(self, capacity=10):
-        """Initialize stack with given capacity."""
-        self.items = []
-        self.capacity = capacity
-    
-    def push(self, item):
-        """Push item to top of stack."""
-        if len(self.items) >= self.capacity:
-            raise OverflowError("Stack overflow")
-        self.items.append(item)
-    
-    def pop(self):
-        """Pop item from top of stack."""
-        if self.is_empty():
-            raise IndexError("Pop from empty stack")
-        return self.items.pop()
-    
-    def peek(self):
-        """Peek at top item without removing."""
-        if self.is_empty():
-            raise IndexError("Peek from empty stack")
-        return self.items[-1]
-    
-    def is_empty(self):
-        """Check if stack is empty."""
-        return len(self.items) == 0
-    
-    def size(self):
-        """Get stack size."""
-        return len(self.items)
-    
-    def __str__(self):
-        """String representation."""
-        return f"Stack({self.items})"
+### 🔹 Array-Based Implementation
 
-# Usage
-stack = ArrayStack()
-stack.push(1)
-stack.push(2)
-stack.push(3)
-print(stack)        # Stack([1, 2, 3])
-print(stack.pop())  # 3
-print(stack.peek()) # 2
-```
+**Advantages:**
 
-### 2. Linked List Implementation
+- Simple and intuitive
+- Excellent cache performance
+- Lower memory overhead per element
+- Fast operations due to memory locality
 
-```python
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
+**Disadvantages:**
 
-class LinkedListStack:
-    def __init__(self):
-        """Initialize empty stack."""
-        self.head = None  # Top of stack
-        self._size = 0
-    
-    def push(self, item):
-        """Push item to top of stack."""
-        new_node = ListNode(item)
-        new_node.next = self.head
-        self.head = new_node
-        self._size += 1
-    
-    def pop(self):
-        """Pop item from top of stack."""
-        if self.is_empty():
-            raise IndexError("Pop from empty stack")
-        
-        item = self.head.val
-        self.head = self.head.next
-        self._size -= 1
-        return item
-    
-    def peek(self):
-        """Peek at top item without removing."""
-        if self.is_empty():
-            raise IndexError("Peek from empty stack")
-        return self.head.val
-    
-    def is_empty(self):
-        """Check if stack is empty."""
-        return self.head is None
-    
-    def size(self):
-        """Get stack size."""
-        return self._size
-    
-    def __str__(self):
-        """String representation."""
-        items = []
-        current = self.head
-        while current:
-            items.append(current.val)
-            current = current.next
-        return f"Stack(top -> {items})"
+- May need to resize when capacity is exceeded
+- Fixed maximum size (for static arrays)
+- Potential memory waste if over-allocated
 
-# Usage
-stack = LinkedListStack()
-stack.push(1)
-stack.push(2)
-stack.push(3)
-print(stack)        # Stack(top -> [3, 2, 1])
-print(stack.pop())  # 3
-print(stack.peek()) # 2
-```
+**Best for:** When you have predictable size requirements and want maximum performance
+
+👉 **[Learn Array-Based Stack Implementation](array-stack.md)**
+
+### 🔹 Linked List Implementation
+
+**Advantages:**
+
+- Truly dynamic size
+- No need for resizing operations
+- Efficient memory usage (allocate only what's needed)
+- No maximum size limit
+
+**Disadvantages:**
+
+- Higher memory overhead per element (pointers)
+- Potential cache misses due to scattered memory
+- Slightly more complex implementation
+
+**Best for:** When stack size is highly unpredictable or memory is constrained
+
+👉 **[Learn Linked List Stack Implementation](linked-list-stack.md)**
 
 ## 📊 Complexity Analysis
 
@@ -220,7 +147,7 @@ print(stack.peek()) # 2
 
 *Note: Push can be O(n) if array needs to be resized (amortized O(1))
 
-## ⚖️ Array vs Linked List Implementation
+## ⚖️ Implementation Comparison
 
 | **Feature** | **Array-based** | **Linked List** |
 |------------|-----------------|-----------------|
@@ -229,8 +156,9 @@ print(stack.peek()) # 2
 | **Memory Overhead** | Lower | Higher (pointers) |
 | **Dynamic Size** | Limited by capacity | Unlimited |
 | **Implementation** | Simpler | More complex |
+| **Resize Cost** | O(n) occasionally | Never needed |
 
-## 🎯 When to Use Each Implementation
+## 🎯 Choosing the Right Implementation
 
 ### ✅ Use Array-based Stack When
 
@@ -246,218 +174,72 @@ print(stack.peek()) # 2
 - **Flexibility**: Need true dynamic allocation
 - **No size limits**: Want unlimited growth
 
-## 🔧 Advanced Operations
+## 🚀 Core Applications
 
-### 1. Multi-Push/Pop
-
-```python
-def multi_push(stack, items):
-    """Push multiple items at once."""
-    for item in items:
-        stack.push(item)
-
-def multi_pop(stack, count):
-    """Pop multiple items at once."""
-    if count > stack.size():
-        raise IndexError("Not enough items to pop")
-    
-    items = []
-    for _ in range(count):
-        items.append(stack.pop())
-    return items
-```
-
-### 2. Stack with Minimum
-
-```python
-class MinStack:
-    def __init__(self):
-        """Stack that tracks minimum element."""
-        self.stack = []
-        self.min_stack = []
-    
-    def push(self, val):
-        """Push value and update minimum."""
-        self.stack.append(val)
-        
-        if not self.min_stack or val <= self.min_stack[-1]:
-            self.min_stack.append(val)
-    
-    def pop(self):
-        """Pop value and update minimum."""
-        if not self.stack:
-            raise IndexError("Pop from empty stack")
-        
-        val = self.stack.pop()
-        if val == self.min_stack[-1]:
-            self.min_stack.pop()
-        
-        return val
-    
-    def peek(self):
-        """Get top value."""
-        if not self.stack:
-            raise IndexError("Peek from empty stack")
-        return self.stack[-1]
-    
-    def get_min(self):
-        """Get minimum value in O(1)."""
-        if not self.min_stack:
-            raise IndexError("No minimum in empty stack")
-        return self.min_stack[-1]
-```
-
-## 🎨 Common Patterns
-
-### 1. Monotonic Stack
-
-A stack that maintains elements in monotonic (increasing or decreasing) order:
-
-```python
-def next_greater_elements(nums):
-    """Find next greater element for each number."""
-    result = [-1] * len(nums)
-    stack = []  # Stores indices
-    
-    for i, num in enumerate(nums):
-        # While stack not empty and current num is greater
-        while stack and nums[stack[-1]] < num:
-            index = stack.pop()
-            result[index] = num
-        
-        stack.append(i)
-    
-    return result
-
-# Example: [2, 1, 2, 4, 3, 1] → [4, 2, 4, -1, -1, -1]
-```
-
-### 2. Parentheses Matching
-
-```python
-def is_valid_parentheses(s):
-    """Check if parentheses are properly matched."""
-    stack = []
-    mapping = {')': '(', '}': '{', ']': '['}
-    
-    for char in s:
-        if char in mapping:
-            # Closing bracket
-            if not stack or stack.pop() != mapping[char]:
-                return False
-        else:
-            # Opening bracket
-            stack.append(char)
-    
-    return len(stack) == 0
-```
-
-### 3. Expression Evaluation
-
-```python
-def evaluate_postfix(expression):
-    """Evaluate postfix expression using stack."""
-    stack = []
-    operators = {'+', '-', '*', '/'}
-    
-    for token in expression.split():
-        if token in operators:
-            # Pop two operands
-            b = stack.pop()
-            a = stack.pop()
-            
-            # Perform operation
-            if token == '+':
-                result = a + b
-            elif token == '-':
-                result = a - b
-            elif token == '*':
-                result = a * b
-            elif token == '/':
-                result = a / b
-            
-            stack.append(result)
-        else:
-            # Operand
-            stack.append(float(token))
-    
-    return stack[0]
-
-# Example: "3 4 + 2 *" → ((3 + 4) * 2) = 14
-```
-
-## 🚀 Applications
+Stacks are fundamental in many areas of computer science:
 
 ### 1. Function Call Management
 
-```python
-def factorial(n):
-    """Factorial using recursion (uses call stack)."""
-    if n <= 1:
-        return 1
-    return n * factorial(n - 1)
+- **Call Stack**: Programming languages use stacks to manage function calls
+- **Recursion**: Each recursive call is pushed onto the call stack
+- **Stack Frames**: Store local variables and return addresses
+- **Stack Overflow**: When recursion depth exceeds stack capacity
 
-# Call stack for factorial(3):
-# factorial(3) calls factorial(2)
-# factorial(2) calls factorial(1)  
-# factorial(1) returns 1
-# factorial(2) returns 2 * 1 = 2
-# factorial(3) returns 3 * 2 = 6
-```
+### 2. Expression Processing
 
-### 2. Undo/Redo Operations
+- **Infix to Postfix**: Convert mathematical expressions
+- **Expression Evaluation**: Evaluate postfix/prefix expressions
+- **Operator Precedence**: Handle operator priorities
+- **Parentheses Matching**: Validate balanced brackets
 
-```python
-class TextEditor:
-    def __init__(self):
-        self.content = ""
-        self.undo_stack = []
-        self.redo_stack = []
-    
-    def type(self, text):
-        """Type text and save state for undo."""
-        self.undo_stack.append(self.content)
-        self.content += text
-        self.redo_stack.clear()  # Clear redo when new action
-    
-    def undo(self):
-        """Undo last operation."""
-        if self.undo_stack:
-            self.redo_stack.append(self.content)
-            self.content = self.undo_stack.pop()
-    
-    def redo(self):
-        """Redo last undone operation."""
-        if self.redo_stack:
-            self.undo_stack.append(self.content)
-            self.content = self.redo_stack.pop()
-```
+### 3. Undo/Redo Operations
 
-### 3. Browser History
+- **Text Editors**: Track state changes for undo functionality
+- **Image Editors**: Layer operations and transformations
+- **Database Transactions**: Rollback operations
+- **Game State**: Save/restore game states
 
-```python
-class BrowserHistory:
-    def __init__(self, homepage):
-        self.history = [homepage]
-        self.current = 0
-    
-    def visit(self, url):
-        """Visit new URL."""
-        # Remove forward history
-        self.history = self.history[:self.current + 1]
-        self.history.append(url)
-        self.current += 1
-    
-    def back(self, steps):
-        """Go back in history."""
-        self.current = max(0, self.current - steps)
-        return self.history[self.current]
-    
-    def forward(self, steps):
-        """Go forward in history."""
-        self.current = min(len(self.history) - 1, self.current + steps)
-        return self.history[self.current]
-```
+### 4. Parsing and Compilation
+
+- **Syntax Analysis**: Parse nested language constructs
+- **Symbol Tables**: Manage variable scopes
+- **Code Generation**: Generate assembly code
+- **Error Recovery**: Handle syntax errors gracefully
+
+### 5. Memory Management
+
+- **Stack Memory**: Automatic variable allocation
+- **Garbage Collection**: Mark and sweep algorithms
+- **Activation Records**: Function call overhead
+- **Stack-based Virtual Machines**: JVM, .NET CLR
+
+## 🎯 Problem-Solving Patterns
+
+Understanding these patterns will help you recognize when to use stacks:
+
+### 1. **LIFO Processing**
+
+- When you need to process elements in reverse order
+- Backtracking algorithms
+- Reversing sequences
+
+### 2. **Nested Structures**
+
+- Matching parentheses, brackets, braces
+- HTML/XML tag validation
+- Mathematical expression parsing
+
+### 3. **Monotonic Stack**
+
+- Next greater/smaller element problems
+- Histogram problems (largest rectangle)
+- Stock span problems
+
+### 4. **State Management**
+
+- Undo/redo functionality
+- Game state management
+- Browser history
 
 ## 💡 Pro Tips
 
@@ -477,7 +259,14 @@ class BrowserHistory:
 
 ## 🚀 Next Steps
 
-Now that you understand stack fundamentals, practice with:
+Now that you understand stack fundamentals, choose your learning path:
+
+### 1. **Learn Implementations**
+
+- **[Array-Based Stack](array-stack.md)** - Simple, cache-friendly implementation
+- **[Linked List Stack](linked-list-stack.md)** - Dynamic, flexible implementation
+
+### 2. **Practice Problems**
 
 - **[Easy Problems](easy-problems.md)** - Build confidence with basic stack operations
 - **[Medium Problems](medium-problems.md)** - Learn advanced patterns like monotonic stacks
@@ -485,4 +274,4 @@ Now that you understand stack fundamentals, practice with:
 
 ---
 
-*Ready to start practicing? Begin with the [Easy Problems](easy-problems.md) section!*
+*Ready to dive deeper? Start with **[Array-Based Stack](array-stack.md)** for a solid foundation!*

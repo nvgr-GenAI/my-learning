@@ -109,11 +109,17 @@ nav:
       - Arrays:
         - algorithms/data-structures/arrays/index.md
         - algorithms/data-structures/arrays/fundamentals.md
+        - algorithms/data-structures/arrays/static-arrays.md
+        - algorithms/data-structures/arrays/dynamic-arrays.md
+        - algorithms/data-structures/arrays/multidimensional-arrays.md
         - algorithms/data-structures/arrays/easy-problems.md
         - algorithms/data-structures/arrays/medium-problems.md
         - algorithms/data-structures/arrays/hard-problems.md
       - Linked Lists:
         - algorithms/data-structures/linked-lists/index.md
+        - Singly Linked List: algorithms/data-structures/linked-lists/singly-linked-list.md
+        - Doubly Linked List: algorithms/data-structures/linked-lists/doubly-linked-list.md
+        - Circular Linked List: algorithms/data-structures/linked-lists/circular-linked-list.md
         - algorithms/data-structures/linked-lists/fundamentals.md
         - algorithms/data-structures/linked-lists/easy-problems.md
         - algorithms/data-structures/linked-lists/medium-problems.md
@@ -136,7 +142,12 @@ nav:
         - algorithms/data-structures/hash-tables/easy-problems.md
         - algorithms/data-structures/hash-tables/medium-problems.md
         - algorithms/data-structures/hash-tables/hard-problems.md
-      - algorithms/data-structures/heaps.md
+      - Sets:
+        - algorithms/data-structures/sets/index.md
+        - algorithms/data-structures/sets/fundamentals.md
+        - algorithms/data-structures/sets/easy-problems.md
+        - algorithms/data-structures/sets/medium-problems.md
+        - algorithms/data-structures/sets/hard-problems.md
     - Trees:
       - algorithms/trees/index.md
       - algorithms/trees/binary-trees.md
@@ -144,6 +155,7 @@ nav:
       - algorithms/trees/avl-trees.md
       - algorithms/trees/tree-traversal.md
       - algorithms/trees/tree-problems.md
+      - algorithms/trees/heaps.md
     - Sorting:
       - algorithms/sorting/index.md
       - algorithms/sorting/bubble-sort.md
@@ -182,11 +194,42 @@ nav:
     - Math:
       - algorithms/math/index.md
       - algorithms/math/number-theory.md
+      - algorithms/math/combinatorics.md
       - algorithms/math/geometry.md
-    - Advanced:
-      - algorithms/advanced/index.md
-      - algorithms/advanced/divide-conquer.md
-      - algorithms/advanced/greedy.md
+      - algorithms/math/easy-problems.md
+      - algorithms/math/medium-problems.md
+      - algorithms/math/hard-problems.md
+    - Backtracking:
+      - algorithms/backtracking/index.md
+      - algorithms/backtracking/fundamentals.md
+      - algorithms/backtracking/easy-problems.md
+      - algorithms/backtracking/medium-problems.md
+      - algorithms/backtracking/hard-problems.md
+      - Problem Types:
+        - algorithms/backtracking/permutations.md
+        - algorithms/backtracking/subsets.md
+        - algorithms/backtracking/grid-problems.md
+        - algorithms/backtracking/string-problems.md
+    - Divide & Conquer:
+      - algorithms/divide-conquer/index.md
+      - algorithms/divide-conquer/fundamentals.md
+      - algorithms/divide-conquer/easy-problems.md
+      - algorithms/divide-conquer/medium-problems.md
+      - algorithms/divide-conquer/hard-problems.md
+    - Greedy Algorithms:
+      - algorithms/greedy/index.md
+      - algorithms/greedy/fundamentals.md
+      - algorithms/greedy/easy-problems.md
+      - algorithms/greedy/medium-problems.md
+      - algorithms/greedy/hard-problems.md
+    - Searching:
+      - algorithms/searching/index.md
+      - algorithms/searching/binary-search.md
+      - algorithms/searching/advanced-search.md
+      - algorithms/searching/search-problems.md
+    - Strings: algorithms/strings/index.md
+    - Two Pointers: algorithms/two-pointers.md
+    - Sliding Window: algorithms/sliding-window.md
   - Blog:
     - blog/index.md
 
