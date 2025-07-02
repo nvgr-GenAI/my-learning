@@ -302,6 +302,10 @@ plugins:
       repository: nvgr-GenAI/my-learning
       branch: main
       enabled: !ENV [CI, false]
+      token: !ENV GITHUB_TOKEN
+      cache_dir: .git-committers-cache
+      # Fallback gracefully if API fails
+      fallback_to_build_date: true
 
 # Extra CSS and JavaScript
 extra_css:
