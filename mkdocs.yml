@@ -93,10 +93,77 @@ nav:
     - MLOps: ml/mlops.md
   - GenAI:
     - genai/index.md
-    - LLMs: genai/llms.md
-    - Prompt Engineering: genai/prompt-engineering.md
-    - RAG: genai/rag.md
-    - Fine-tuning: genai/fine-tuning.md
+    - Fundamentals:
+      - genai/fundamentals/index.md
+      - Mathematics: genai/fundamentals/mathematics.md
+      - Neural Networks: genai/fundamentals/neural-networks.md
+      - Core Concepts: genai/fundamentals/core-concepts.md
+      - Evolution: genai/fundamentals/evolution.md
+    - Large Language Models:
+      - genai/llms/index.md
+      - Architecture: genai/llms/architecture.md
+      - Training: genai/llms/training.md
+      - APIs: genai/llms/apis.md
+      - Comparison: genai/llms/comparison.md
+    - Transformers:
+      - genai/transformers/index.md
+      - Architecture: genai/transformers/architecture.md
+      - Attention: genai/transformers/attention.md
+      - Implementation: genai/transformers/implementation.md
+      - Optimization: genai/transformers/optimization.md
+    - Prompt Engineering:
+      - genai/prompt-engineering/index.md
+      - Fundamentals: genai/prompt-engineering/fundamentals.md
+      - Advanced Techniques: genai/prompt-engineering/advanced-techniques.md
+      - Optimization: genai/prompt-engineering/optimization.md
+      - Patterns: genai/prompt-engineering/patterns.md
+    - RAG Systems:
+      - genai/rag/index.md
+      - Fundamentals: genai/rag/fundamentals.md
+      - Vector Databases: genai/rag/vector-databases.md
+      - Patterns: genai/rag/patterns.md
+      - Implementation: genai/rag/implementation.md
+    - AI Agents:
+      - genai/agents/index.md
+      - Fundamentals: genai/agents/fundamentals.md
+      - Frameworks: genai/agents/frameworks.md
+      - Tools: genai/agents/tools.md
+      - Multi-Agent: genai/agents/multi-agent.md
+    - Fine-tuning:
+      - genai/fine-tuning/index.md
+      - Fundamentals: genai/fine-tuning/fundamentals.md
+      - LoRA: genai/fine-tuning/lora.md
+      - RLHF: genai/fine-tuning/rlhf.md
+      - Custom Training: genai/fine-tuning/custom-training.md
+    - Multimodal AI:
+      - genai/multimodal/index.md
+      - Vision: genai/multimodal/vision.md
+      - Audio: genai/multimodal/audio.md
+      - Cross-Modal: genai/multimodal/cross-modal.md
+    - Providers:
+      - genai/providers/index.md
+      - OpenAI: genai/providers/openai.md
+      - Anthropic: genai/providers/anthropic.md
+      - Hugging Face: genai/providers/huggingface.md
+      - Cloud Platforms: genai/providers/cloud.md
+    - MLOps & AIOps:
+      - genai/mlops-aiops/index.md
+      - Deployment: genai/mlops-aiops/deployment.md
+      - Monitoring: genai/mlops-aiops/monitoring.md
+      - Scaling: genai/mlops-aiops/scaling.md
+      - Best Practices: genai/mlops-aiops/best-practices.md
+    - Advanced Topics:
+      - genai/advanced/index.md
+      - GANs: genai/advanced/gans.md
+      - VAEs: genai/advanced/vaes.md
+      - Diffusion Models: genai/advanced/diffusion.md
+      - Research: genai/advanced/research.md
+    - Projects:
+      - genai/projects/index.md
+      - Chatbot: genai/projects/chatbot.md
+      - RAG Application: genai/projects/rag-app.md
+      - Agent System: genai/projects/agent-system.md
+      - Creative AI: genai/projects/creative-ai.md
   - System Design:
     - system-design/index.md
     - Learning Path: system-design/learning-path.md
@@ -108,6 +175,9 @@ nav:
         - Horizontal Scaling: system-design/scalability/horizontal-scaling.md
       - Databases:
         - system-design/databases/index.md
+        - Database Types: system-design/databases/types.md
+        - Sharding: system-design/databases/sharding.md
+        - Replication: system-design/databases/replication.md
       - Caching:
         - system-design/caching/index.md
       - Load Balancing:

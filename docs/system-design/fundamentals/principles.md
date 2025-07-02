@@ -63,6 +63,39 @@ Every well-designed system is built on these foundational principles. Understand
     
     **🔍 Deep Dive**: [Data Storage & Consistency →](../data-storage/index.md)
 
+=== "📊 CAP Theorem"
+
+    **Understanding the fundamental trade-offs in distributed systems**
+    
+    **The Three Properties:**
+    
+    **Consistency (C):**
+    - **Strong Consistency**: All nodes see the same data simultaneously
+    - **Eventual Consistency**: Nodes will eventually converge to same state
+    - **Weak Consistency**: No guarantees about when data will be consistent
+    
+    **Availability (A):**
+    - **High Availability**: System remains operational even during failures
+    - **Graceful Degradation**: Reduced functionality rather than complete failure
+    - **Uptime Guarantees**: 99.9%, 99.99%, 99.999% availability targets
+    
+    **Partition Tolerance (P):**
+    - **Network Partitions**: System continues operating despite network failures
+    - **Split-Brain Scenarios**: Different parts of system may see different data
+    - **Required for Distribution**: Any distributed system must handle partitions
+    
+    **CAP Trade-offs in Practice:**
+    
+    | System Type | Choice | Example Systems | Use Cases |
+    |-------------|--------|----------------|-----------|
+    | **CP Systems** | Consistency + Partition Tolerance | MongoDB, Redis Cluster, HBase | Financial systems, inventory |
+    | **AP Systems** | Availability + Partition Tolerance | Cassandra, DynamoDB, Riak | Social media, content delivery |
+    | **CA Systems** | Consistency + Availability | Traditional RDBMS (single node) | Legacy applications |
+    
+    **💡 Key Insight**: In reality, you can't avoid network partitions in distributed systems, so you're choosing between Consistency and Availability during partition events.
+    
+    **🔍 Deep Dive**: [Database Systems →](../databases/index.md) | [Distributed Systems →](../distributed-systems/index.md)
+
 === "🟢 Availability"
 
     **The system remains operational over time**
@@ -99,7 +132,6 @@ Every well-designed system is built on these foundational principles. Understand
     - **Load Balancing** ⚖️ Distribute requests efficiently
     
     **🔍 Deep Dive**: [Performance Optimization →](../performance/index.md)
-```
 
 ## ⚖️ Fundamental Trade-offs
 
