@@ -1,7 +1,8 @@
 site_name: My Learning Journey
 site_description: A comprehensive collection of my learning in Machine Learning, GenAI, System Design, Algorithms, and more
 site_author: Venugopal Nakka
-site_url: https://nvgr-genai.github.io/my-learning
+site_url: https://nvgr-genai.github.io/my-learning/
+use_directory_urls: true
 
 # Repository information
 repo_name: nvgr-GenAI/my-learning
@@ -298,7 +299,7 @@ plugins:
       enable_creation_date: true
       fallback_to_build_date: true
   - git-committers:
-      repository: nvgr/my-learning
+      repository: nvgr-GenAI/my-learning
       branch: main
       enabled: !ENV [CI, false]
 
