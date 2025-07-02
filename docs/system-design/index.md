@@ -1,235 +1,218 @@
-# System Design
+# System Design & Architecture 🏗️
 
-Master the art of designing scalable, reliable, and maintainable distributed systems.
+Your comprehensive guide to designing scalable, reliable, and maintainable distributed systems. From basic principles to complex distributed architectures - master both interviews and real-world system building.
 
-## Overview
-
-System design is crucial for building applications that can handle growth, remain available, and perform well under various conditions.
+## 🎯 Learning Path
 
 <div class="grid cards" markdown>
 
--   :material-foundation: **Fundamentals**
-    
-    ---
-    
-    Core principles, scalability, and reliability concepts
-    
-    [Learn basics →](fundamentals.md)
+- :material-foundation: **Design Fundamentals**
 
--   :material-chart-line-stacked: **Scalability**
-    
     ---
-    
-    Horizontal vs vertical scaling, load balancing
-    
-    [Scale up →](scalability.md)
 
--   :material-database: **Databases**
-    
-    ---
-    
-    SQL vs NoSQL, sharding, replication, consistency
-    
-    [Data storage →](databases.md)
+    Core principles, scalability concepts, and system thinking
 
--   :material-hexagon-multiple: **Microservices**
-    
+    [Start with basics →](fundamentals/index.md)
+
+- :material-database: **Data & Storage**
+
     ---
-    
-    Service-oriented architecture and distributed systems
-    
-    [Go distributed →](microservices.md)
+
+    Databases, caching, data modeling, and storage patterns
+
+    [Handle data →](data-storage/index.md)
+
+- :material-network: **Networking & Communication**
+
+    ---
+
+    APIs, messaging, load balancing, and protocols
+
+    [Connect systems →](networking/index.md)
+
+- :material-chart-line: **Scalability & Performance**
+
+    ---
+
+    Horizontal scaling, optimization, and performance patterns
+
+    [Scale efficiently →](scalability/index.md)
+
+- :material-shield-check: **Reliability & Security**
+
+    ---
+
+    Fault tolerance, monitoring, security, and disaster recovery
+
+    [Build robust systems →](reliability-security/index.md)
+
+- :material-sitemap: **Distributed Systems**
+
+    ---
+
+    Microservices, consensus, consistency, and distributed patterns
+
+    [Design distributed →](distributed-systems/index.md)
+
+- :material-account-tie: **Interview Preparation**
+
+    ---
+
+    System design interviews, case studies, and practice problems
+
+    [Ace interviews →](interviews/index.md)
+
+- :material-book-open: **Case Studies**
+
+    ---
+
+    Real-world examples: Twitter, Netflix, Uber, and more
+
+    [Learn from examples →](case-studies/index.md)
 
 </div>
 
-## Key Concepts
+## 📊 System Design Overview
 
-### System Design Principles
+### By Complexity Level
 
-!!! info "Core Principles"
-    
-    - **Scalability**: Handle increased load gracefully
-    - **Reliability**: Continue working despite failures
-    - **Availability**: Remain operational and accessible
-    - **Consistency**: Data remains accurate across the system
-    - **Partition Tolerance**: Function despite network failures
+| Level | Topics | Key Concepts | Focus |
+|-------|--------|-------------|-------|
+| **Beginner** | Load Balancers, Caching, Databases | Scalability, Availability | 🟢 Single Systems |
+| **Intermediate** | Microservices, Message Queues, CDNs | Consistency, Partitioning | 🟡 Distributed Systems |
+| **Advanced** | Consensus, Sharding, Global Scale | CAP Theorem, Consistency Models | 🔴 Complex Architectures |
 
-### CAP Theorem
+### By System Type
 
-```mermaid
-graph TB
-    A[CAP Theorem] --> B[Consistency]
-    A --> C[Availability]  
-    A --> D[Partition Tolerance]
-    
-    B --> E["Strong Consistency<br/>All nodes see same data"]
-    C --> F["High Availability<br/>System remains operational"]
-    D --> G["Fault Tolerance<br/>Works despite network issues"]
-    
-    H["Pick any 2"] --> I[CA - RDBMS]
-    H --> J[CP - MongoDB]
-    H --> K[AP - Cassandra]
-```
+=== "Web Applications"
 
-## Architecture Patterns
+    | Component | Options | Trade-offs |
+    |-----------|---------|------------|
+    | **Frontend** | React, Vue, Angular | Bundle size vs features |
+    | **Backend** | REST APIs, GraphQL | Flexibility vs simplicity |
+    | **Database** | SQL, NoSQL, NewSQL | Consistency vs scalability |
+    | **Caching** | Redis, Memcached, CDN | Speed vs complexity |
 
-### Microservices Architecture
+=== "Data Systems"
 
-```python
-# Example: API Gateway pattern with Flask
-from flask import Flask, jsonify, request
-import requests
+    | Type | Use Cases | Examples |
+    |------|-----------|----------|
+    | **Analytics** | Business Intelligence, Reporting | Warehouse, OLAP |
+    | **Real-time** | Monitoring, Fraud Detection | Stream Processing |
+    | **Machine Learning** | Recommendations, Predictions | Feature Stores, ML Pipelines |
+    | **Search** | Full-text, Faceted Search | Elasticsearch, Solr |
 
-app = Flask(__name__)
+=== "Infrastructure"
 
-# Service discovery
-SERVICES = {
-    'user': 'http://user-service:5000',
-    'order': 'http://order-service:5001',
-    'payment': 'http://payment-service:5002'
-}
+    | Layer | Components | Considerations |
+    |-------|------------|----------------|
+    | **Compute** | Containers, Serverless, VMs | Cost vs control |
+    | **Storage** | Object, Block, File Systems | Durability vs performance |
+    | **Networking** | VPC, CDN, DNS | Latency vs security |
+    | **Monitoring** | Logs, Metrics, Traces | Observability vs overhead |
 
-@app.route('/api/<service>/<path:endpoint>')
-def gateway(service, endpoint):
-    if service not in SERVICES:
-        return jsonify({'error': 'Service not found'}), 404
-    
-    service_url = f"{SERVICES[service]}/{endpoint}"
-    
-    # Forward request to appropriate service
-    if request.method == 'GET':
-        response = requests.get(service_url, params=request.args)
-    elif request.method == 'POST':
-        response = requests.post(service_url, json=request.json)
-    
-    return jsonify(response.json()), response.status_code
+## 🚀 Getting Started
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
-```
+### The System Design Journey
 
-### Load Balancing Strategies
+Building scalable systems is like constructing a city - you start with solid foundations, plan for growth, and design for resilience. Here's your roadmap:
 
-| Strategy | Description | Use Case |
-|----------|-------------|----------|
-| Round Robin | Requests distributed evenly | Uniform server capacity |
-| Weighted Round Robin | Based on server capacity | Heterogeneous servers |
-| Least Connections | Route to server with fewest active connections | Varying request duration |
-| IP Hash | Based on client IP | Session affinity needed |
+1. **🏗️ Master the Fundamentals**
+   - Learn core principles that govern all systems
+   - Understand scalability, reliability, and performance trade-offs
+   - Build your system design vocabulary
 
-## System Design Process
+2. **💾 Handle Data Effectively**
+   - Choose the right database for your use case
+   - Implement effective caching strategies
+   - Design data models that scale
 
-### 1. Requirements Gathering
+3. **🌐 Connect Systems Reliably**
+   - Design robust APIs and communication patterns
+   - Implement proper load balancing and networking
+   - Handle failures gracefully
 
-!!! question "Questions to Ask"
-    
-    - What is the scale? (users, requests, data)
-    - What are the performance requirements?
-    - What are the availability requirements?
-    - What are the consistency requirements?
-    - What is the budget/timeline?
+4. **📈 Scale with Confidence**
+   - Apply horizontal and vertical scaling patterns
+   - Optimize for performance at every layer
+   - Monitor and measure what matters
 
-### 2. Capacity Estimation
+5. **🛡️ Build for Production**
+   - Implement security best practices
+   - Design for fault tolerance and recovery
+   - Create observable and maintainable systems
 
-```python
-# Example: Twitter-like system capacity estimation
+### Why System Design Matters
 
-# Assumptions
-daily_active_users = 150_000_000
-tweets_per_user_per_day = 2
-read_write_ratio = 100  # 100 reads per write
+Modern applications serve millions of users across the globe. Whether you're building the next social media platform, designing a payment system, or creating a real-time chat application, you need to understand:
 
-# Write operations
-writes_per_day = daily_active_users * tweets_per_user_per_day
-writes_per_second = writes_per_day / (24 * 60 * 60)
+- **How to scale** from 100 to 100 million users
+- **How to ensure reliability** when hardware fails
+- **How to optimize performance** across different geographies
+- **How to secure data** and protect user privacy
+- **How to design for change** and future requirements
 
-# Read operations  
-reads_per_second = writes_per_second * read_write_ratio
+## 🗺️ Study Roadmap
 
-# Storage estimation
-avg_tweet_size = 280  # characters
-storage_per_day = writes_per_day * avg_tweet_size
-storage_per_year = storage_per_day * 365
+### Beginner Path (1-2 months)
 
-print(f"Writes per second: {writes_per_second:,.0f}")
-print(f"Reads per second: {reads_per_second:,.0f}")
-print(f"Storage per year: {storage_per_year / (1024**3):,.1f} GB")
-```
+1. **Week 1-2**: [Design Fundamentals](fundamentals/index.md)
+   - Scalability concepts and trade-offs
+   - Basic system design principles
+   - Introduction to distributed systems
 
-### 3. High-Level Design
+2. **Week 3-4**: [Data & Storage](data-storage/index.md)
+   - Database types and when to use them
+   - Basic caching patterns
+   - Data modeling fundamentals
 
-Basic components and their interactions:
+### Intermediate Path (2-3 months)
 
-- **Load Balancer**: Distribute incoming requests
-- **Application Servers**: Business logic processing
-- **Database**: Data persistence and retrieval
-- **Cache**: Fast data access
-- **CDN**: Static content delivery
-- **Message Queue**: Asynchronous processing
+3. **Week 5-6**: [Networking & APIs](networking/index.md)
+   - REST API design
+   - Load balancing strategies
+   - Communication patterns
 
-### 4. Detailed Design
+4. **Week 7-8**: [Scalability Patterns](scalability/index.md)
+   - Horizontal vs vertical scaling
+   - Performance optimization
+   - Capacity planning
 
-Deep dive into specific components:
+### Advanced Path (3-4 months)
 
-- Database schema design
-- API design
-- Caching strategy
-- Security considerations
-- Monitoring and logging
+5. **Week 9-10**: [Distributed Systems](distributed-systems/index.md)
+   - Microservices architecture
+   - Consensus algorithms
+   - Distributed data patterns
 
-## Common Patterns
+6. **Week 11-12**: [Production Systems](reliability-security/index.md)
+   - Fault tolerance and recovery
+   - Security best practices
+   - Monitoring and observability
 
-### Database Patterns
-
-- **Master-Slave Replication**: Read scaling
-- **Master-Master Replication**: Write scaling  
-- **Sharding**: Horizontal partitioning
-- **Federation**: Split databases by function
-- **Denormalization**: Optimize for reads
-
-### Caching Patterns
-
-- **Cache-Aside**: Application manages cache
-- **Write-Through**: Write to cache and database
-- **Write-Behind**: Write to cache, async to database
-- **Refresh-Ahead**: Proactively refresh cache
-
-## Tools and Technologies
-
-### Infrastructure
-- **Cloud Providers**: AWS, GCP, Azure
-- **Containers**: Docker, Kubernetes
-- **Service Mesh**: Istio, Linkerd
-- **Monitoring**: Prometheus, Grafana, ELK Stack
-
-### Databases
-- **SQL**: PostgreSQL, MySQL
-- **NoSQL**: MongoDB, Cassandra, DynamoDB
-- **Cache**: Redis, Memcached
-- **Search**: Elasticsearch, Solr
-
-### Message Queues
-- **Apache Kafka**: High-throughput streaming
-- **RabbitMQ**: Traditional message broker
-- **Amazon SQS**: Managed queue service
-- **Apache Pulsar**: Next-gen messaging
-
-## Case Studies
-
-### Design a URL Shortener (like bit.ly)
-
-**Requirements**: 
-- Shorten long URLs
-- Redirect to original URL
-- Handle 100M URLs/day
-- 100:1 read/write ratio
-
-**Solution**:
-- Base62 encoding for short URLs
-- NoSQL database for storage
-- Redis cache for popular URLs  
-- CDN for global distribution
+7. **Final Phase**: [Interview Practice](interviews/index.md) & [Case Studies](case-studies/index.md)
+   - System design interview framework
+   - Practice with real-world examples
+   - Mock interviews and feedback
 
 ---
 
-*Design for scale, plan for failure! 🏗️*
+## 💡 Core Design Principles
+
+!!! abstract "The Foundation of Good System Design"
+    
+    Every scalable system is built on these fundamental principles:
+    
+    **🎯 Reliability** - Systems should continue to work correctly even when things go wrong
+    
+    **📈 Scalability** - Ability to handle increased load gracefully
+    
+    **🔒 Security** - Protect data and prevent unauthorized access
+    
+    **🚀 Performance** - Response times, throughput, and resource efficiency
+    
+    **💰 Cost-effectiveness** - Balance features, performance, and operational costs
+
+---
+
+*Ready to dive deeper? Start with [Design Fundamentals](fundamentals/index.md) to build your foundation, or jump to [Interview Preparation](interviews/index.md) if you're preparing for technical interviews.*

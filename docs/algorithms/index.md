@@ -6,53 +6,77 @@ Your comprehensive guide to mastering algorithms and data structures - from fund
 
 <div class="grid cards" markdown>
 
--   :material-code-array: **Data Structures**
-    
-    ---
-    
-    Arrays, linked lists, stacks, queues, trees, graphs, heaps
-    
-    [Explore structures →](data-structures.md)
+- :material-code-array: **Data Structures**
 
--   :material-sort: **Sorting Algorithms**
-    
     ---
-    
+
+    Arrays, linked lists, stacks, queues, trees, graphs, sets, hash tables
+
+    [Explore structures →](data-structures/index.md)
+
+- :material-sort: **Sorting Algorithms**
+
+    ---
+
     Quick sort, merge sort, heap sort, and comparison-based sorting
-    
-    [Sort it out →](sorting.md)
 
--   :material-graph: **Graph Algorithms**
-    
+    [Sort it out →](sorting/index.md)
+
+- :material-graph: **Graph Algorithms**
+
     ---
-    
+
     BFS, DFS, shortest path, MST, topological sort
-    
-    [Navigate graphs →](graphs.md)
 
--   :material-chart-gantt: **Dynamic Programming**
-    
+    [Navigate graphs →](graphs/index.md)
+
+- :material-chart-gantt: **Dynamic Programming**
+
     ---
-    
+
     Optimization problems, memoization, tabulation
-    
-    [Optimize solutions →](dp.md)
 
--   :material-math-integral: **Mathematical Algorithms**
-    
+    [Optimize solutions →](dp/index.md)
+
+- :material-search: **Searching Algorithms**
+
     ---
-    
+
+    Binary search, linear search, advanced search techniques
+
+    [Find efficiently →](searching/index.md)
+
+- :material-math-integral: **Mathematical Algorithms**
+
+    ---
+
     Number theory, combinatorics, geometry
-    
-    [Crunch numbers →](math.md)
 
--   :material-algorithm: **Advanced Techniques**
-    
+    [Crunch numbers →](math/index.md)
+
+- :material-algorithm: **Advanced Techniques**
+
     ---
-    
+
     Greedy, divide & conquer, backtracking, bit manipulation
-    
+
     [Master techniques →](backtracking/index.md)
+
+- :material-puzzle: **Problem-Solving Patterns**
+
+    ---
+
+    Two pointers, sliding window, fast & slow pointers
+
+    [Learn patterns →](problem-solving-patterns.md)
+
+- :material-account-tie: **Interview Preparation**
+
+    ---
+
+    Study plans, strategies, company-specific tips
+
+    [Ace interviews →](interview-preparation.md)
 
 </div>
 
@@ -74,7 +98,7 @@ Your comprehensive guide to mastering algorithms and data structures - from fund
 ### By Data Structure
 
 === "Linear Structures"
-    
+
     - **Arrays**: Random access, cache-friendly
     - **Linked Lists**: Dynamic size, insertion/deletion
     - **Stacks**: LIFO operations, recursion simulation
@@ -82,7 +106,7 @@ Your comprehensive guide to mastering algorithms and data structures - from fund
     - **Deques**: Double-ended operations
 
 === "Hierarchical Structures"
-    
+
     - **Binary Trees**: Hierarchical relationships
     - **Binary Search Trees**: Ordered data, O(log n) operations
     - **Heaps**: Priority operations, min/max finding
@@ -90,13 +114,74 @@ Your comprehensive guide to mastering algorithms and data structures - from fund
     - **Segment Trees**: Range queries and updates
 
 === "Graph Structures"
-    
+
     - **Adjacency Matrix**: Dense graphs, O(1) edge lookup
     - **Adjacency List**: Sparse graphs, memory efficient
     - **Weighted Graphs**: Shortest path algorithms
     - **Directed/Undirected**: Different traversal patterns
 
 ## ⏱️ Time & Space Complexity Cheat Sheet
+
+| Complexity | Name | Example Algorithms | Performance |
+|------------|------|-------------------|-------------|
+| **O(1)** | Constant | Array access, Hash table lookup | 🟢 Excellent |
+| **O(log n)** | Logarithmic | Binary search, Balanced BST operations | 🟢 Excellent |
+| **O(n)** | Linear | Linear search, Array traversal | 🟡 Good |
+| **O(n log n)** | Linearithmic | Merge sort, Heap sort | 🟡 Good |
+| **O(n²)** | Quadratic | Bubble sort, Selection sort | 🔴 Poor |
+| **O(2ⁿ)** | Exponential | Recursive Fibonacci, Subset generation | 🔴 Terrible |
+
+## 🎯 Quick Start Guide
+
+### For Beginners
+
+1. **Start with [Data Structures](data-structures/index.md)** - Arrays, Linked Lists, Stacks, Queues
+2. **Learn [Problem-Solving Patterns](problem-solving-patterns.md)** - Two Pointers, Sliding Window
+3. **Practice [Sorting](sorting/index.md)** - Understand comparison-based algorithms
+4. **Master [Trees](trees/index.md)** - Binary trees and traversals
+
+### For Interview Preparation
+
+1. **Follow [Interview Strategy](interview-preparation.md)** - Structured study plans
+2. **Master [Problem Patterns](problem-solving-patterns.md)** - 80% of interview problems
+3. **Practice [Dynamic Programming](dp/index.md)** - Essential for FAANG interviews
+4. **Study [System Design](../system-design/index.md)** - For senior roles
+
+### For Competitive Programming
+
+1. **Master [Mathematical Algorithms](math/index.md)** - Number theory, combinatorics
+2. **Advanced [Graph Algorithms](graphs/index.md)** - Complex shortest path, flow
+3. **Optimize with [Greedy](greedy/index.md)** - Fast decision making
+4. **Complex [DP Patterns](dp/index.md)** - Multi-dimensional optimization
+
+## 📚 Essential Learning Resources
+
+### Online Platforms
+
+- **[LeetCode](https://leetcode.com/)** - Interview preparation and practice
+- **[HackerRank](https://www.hackerrank.com/)** - Skill assessment and challenges
+- **[CodeForces](https://codeforces.com/)** - Competitive programming contests
+- **[GeeksforGeeks](https://www.geeksforgeeks.org/)** - Concepts and tutorials
+
+### Recommended Books
+
+- **Introduction to Algorithms (CLRS)** - Comprehensive theoretical foundation
+- **Cracking the Coding Interview** - Essential for tech interviews
+- **Algorithm Design Manual (Skiena)** - Practical problem-solving approach
+- **Elements of Programming Interviews** - Language-specific interview prep
+
+## 🚀 Next Steps
+
+Ready to start your algorithms journey? Choose your path:
+
+- **New to algorithms?** Begin with [Data Structures Basics](data-structures/index.md)
+- **Preparing for interviews?** Check out [Interview Strategy](interview-preparation.md)
+- **Want to see patterns?** Explore [Problem-Solving Patterns](problem-solving-patterns.md)
+- **Need specific algorithms?** Browse by category in the sections above
+
+---
+
+**Remember**: Mastering algorithms is a journey, not a destination. Stay consistent, practice regularly, and focus on understanding over memorization. You've got this! 🎯💪
 
 | Complexity | Name | Example Algorithms | Performance |
 |------------|------|-------------------|-------------|
@@ -120,7 +205,9 @@ Your comprehensive guide to mastering algorithms and data structures - from fund
 ## 🎯 Essential Problem-Solving Patterns
 
 ### Two Pointers
+
 Perfect for array problems, palindromes, and sum problems.
+
 ```python
 def two_sum_sorted(arr, target):
     left, right = 0, len(arr) - 1
@@ -136,7 +223,9 @@ def two_sum_sorted(arr, target):
 ```
 
 ### Sliding Window
+
 Ideal for subarray/substring problems with constraints.
+
 ```python
 def max_sum_subarray(arr, k):
     window_sum = sum(arr[:k])
@@ -150,7 +239,9 @@ def max_sum_subarray(arr, k):
 ```
 
 ### Fast & Slow Pointers
+
 Great for cycle detection and finding middle elements.
+
 ```python
 def has_cycle(head):
     slow = fast = head
@@ -194,6 +285,7 @@ def has_cycle(head):
 ## 🎯 Interview Preparation Strategy
 
 ### Problem Frequency by Category
+
 1. **Arrays & Strings** (35% of interviews)
 2. **Trees & Graphs** (25% of interviews)
 3. **Dynamic Programming** (20% of interviews)
@@ -203,7 +295,7 @@ def has_cycle(head):
 ### Daily Practice Routine
 
 !!! tip "Recommended Schedule"
-    
+
     - **Warm-up**: 1 easy problem (10-15 min)
     - **Main**: 1-2 medium problems (30-45 min each)
     - **Challenge**: 1 hard problem (weekly)
@@ -212,7 +304,7 @@ def has_cycle(head):
 ### Problem-Solving Framework
 
 !!! note "Step-by-Step Approach"
-    
+
     1. **Understand**: Read carefully, identify constraints
     2. **Plan**: Think of approach, consider edge cases
     3. **Code**: Implement solution step by step
@@ -305,12 +397,14 @@ def plot_complexity_growth():
 ## 🏆 Problem-Solving Strategies
 
 ### 1. Understand the Problem
+
 - Read the problem statement carefully
 - Identify inputs, outputs, and constraints
 - Work through examples manually
 - Ask clarifying questions
 
 ### 2. Choose the Right Approach
+
 - **Brute Force**: Start simple, then optimize
 - **Divide & Conquer**: Break into smaller subproblems
 - **Greedy**: Make locally optimal choices
@@ -318,6 +412,7 @@ def plot_complexity_growth():
 - **Backtracking**: Explore all possibilities systematically
 
 ### 3. Implement and Test
+
 - Write clean, readable code
 - Handle edge cases
 - Test with various inputs
@@ -336,6 +431,7 @@ def plot_complexity_growth():
 ## 📚 Essential Topics by Category
 
 ### 🔢 **Arrays & Strings**
+
 - Two pointers technique
 - Sliding window
 - Prefix sums
@@ -343,18 +439,21 @@ def plot_complexity_growth():
 - String matching algorithms
 
 ### 🔗 **Linked Lists**
+
 - Singly/doubly linked lists
 - Fast and slow pointers
 - Cycle detection
 - Merging and sorting
 
 ### 🌳 **Trees & Binary Trees**
+
 - Tree traversals (preorder, inorder, postorder)
 - Binary search trees
 - Balanced trees (AVL, Red-Black)
 - Segment trees, Fenwick trees
 
 ### 📊 **Graphs**
+
 - Graph representations
 - BFS and DFS traversals
 - Shortest path algorithms
@@ -362,6 +461,7 @@ def plot_complexity_growth():
 - Topological sorting
 
 ### 🎯 **Dynamic Programming**
+
 - 1D and 2D DP problems
 - Knapsack variations
 - Longest common subsequence
@@ -369,6 +469,7 @@ def plot_complexity_growth():
 - Matrix chain multiplication
 
 ### ⚡ **Advanced Topics**
+
 - Union-Find (Disjoint Set)
 - Trie data structure
 - Heap and priority queues
@@ -378,24 +479,28 @@ def plot_complexity_growth():
 ## 🎯 Interview Preparation Roadmap
 
 ### Phase 1: Foundations (2-3 weeks)
+
 1. **Arrays & Strings**: Two pointers, sliding window
 2. **Linked Lists**: Basic operations, cycle detection
 3. **Stacks & Queues**: Implementation and applications
 4. **Recursion**: Base cases, recursive thinking
 
 ### Phase 2: Core Structures (3-4 weeks)
+
 1. **Binary Trees**: Traversals, basic operations
 2. **Binary Search**: Template and variations
 3. **Hash Tables**: Design and applications
 4. **Sorting**: Understanding different algorithms
 
 ### Phase 3: Advanced Topics (4-5 weeks)
+
 1. **Graphs**: BFS, DFS, shortest paths
 2. **Dynamic Programming**: Classic problems
 3. **Backtracking**: Systematic exploration
 4. **Greedy Algorithms**: Optimization problems
 
 ### Phase 4: Mastery (2-3 weeks)
+
 1. **System Design**: Scalability concepts
 2. **Mock Interviews**: Practice under pressure
 3. **Company-specific**: Research target companies
@@ -404,18 +509,21 @@ def plot_complexity_growth():
 ## 🔧 Practice Resources
 
 ### Online Platforms
+
 - **[LeetCode](https://leetcode.com/)**: Comprehensive problem set
 - **[HackerRank](https://www.hackerrank.com/)**: Skill-based challenges
 - **[CodeForces](https://codeforces.com/)**: Competitive programming
 - **[GeeksforGeeks](https://www.geeksforgeeks.org/)**: Tutorials and problems
 
 ### Books
+
 - **"Cracking the Coding Interview"** by Gayle McDowell
 - **"Elements of Programming Interviews"** by Aziz, Lee, Prakash
 - **"Algorithm Design Manual"** by Steven Skiena
 - **"Introduction to Algorithms"** by CLRS
 
 ### YouTube Channels
+
 - **Abdul Bari**: Algorithm explanations
 - **Back To Back SWE**: Interview-focused content
 - **Tushar Roy**: Dynamic programming
@@ -462,6 +570,7 @@ def plot_complexity_growth():
     - [ ] Palindrome Partitioning II
 
 ### Weekly Goals Template
+
 ```markdown
 ## Week X Goals
 - **Topic Focus**: [e.g., Dynamic Programming]
@@ -482,6 +591,7 @@ def plot_complexity_growth():
 ## 🎓 Success Tips
 
 ### For Technical Interviews
+
 1. **Think Out Loud**: Communicate your thought process
 2. **Start Simple**: Begin with brute force, then optimize
 3. **Test Your Code**: Walk through examples
@@ -489,6 +599,7 @@ def plot_complexity_growth():
 5. **Ask Questions**: Clarify requirements and constraints
 
 ### For Competitive Programming
+
 1. **Speed Matters**: Practice typing and common patterns
 2. **Template Ready**: Have pre-written code snippets
 3. **Read Problems Carefully**: Understand constraints
@@ -496,6 +607,7 @@ def plot_complexity_growth():
 5. **Learn from Others**: Study editorial solutions
 
 ### For Long-term Growth
+
 1. **Consistent Practice**: Better than intensive bursts
 2. **Understand, Don't Memorize**: Focus on patterns
 3. **Teach Others**: Explaining helps solidify understanding
@@ -1558,22 +1670,26 @@ print(f"MST weight: {weight}, edges: {mst}")
 ### Must-Read Books
 
 **Fundamental Algorithms:**
+
 - **Introduction to Algorithms (CLRS)** - Comprehensive theoretical foundation
 - **Algorithm Design Manual (Skiena)** - Practical problem-solving approach
 - **Algorithms (Sedgewick & Wayne)** - Clear explanations with Java examples
 
 **Interview Preparation:**
+
 - **Cracking the Coding Interview (McDowell)** - Essential for tech interviews
 - **Elements of Programming Interviews** - Language-specific versions available
 - **Programming Pearls (Bentley)** - Problem-solving methodology
 
 **Advanced Topics:**
+
 - **Competitive Programming (Halim)** - Contest-level algorithms
 - **The Art of Computer Programming (Knuth)** - Mathematical depth
 
 ### Problem Categories by Frequency
 
 **High Frequency (Practice First):**
+
 1. **Array & String Manipulation** (35% of interviews)
    - Two pointers, sliding window, hash tables
    - Examples: Two Sum, Longest Substring, Valid Parentheses
@@ -1588,8 +1704,9 @@ print(f"MST weight: {weight}, edges: {mst}")
 
 **Medium Frequency:**
 4. **Graph Algorithms** (10% of interviews)
-   - BFS/DFS applications, shortest path
-   - Examples: Number of Islands, Course Schedule
+
+- BFS/DFS applications, shortest path
+- Examples: Number of Islands, Course Schedule
 
 5. **Dynamic Programming** (8% of interviews)
    - Classic problems, optimization
@@ -1597,8 +1714,9 @@ print(f"MST weight: {weight}, edges: {mst}")
 
 **Lower Frequency but Important:**
 6. **Sorting & Searching** (2% of interviews)
-   - Binary search variations, custom sorting
-   - Examples: Search in Rotated Array, Merge Intervals
+
+- Binary search variations, custom sorting
+- Examples: Search in Rotated Array, Merge Intervals
 
 ### 12-Week Study Plan
 
@@ -1615,14 +1733,14 @@ print(f"MST weight: {weight}, edges: {mst}")
 ### Practice Strategy
 
 !!! tip "Daily Practice Routine"
-    
+
     - **Warm-up**: 1 easy problem (10-15 min)
     - **Main**: 1-2 medium problems (30-45 min each)
     - **Challenge**: 1 hard problem (weekly)
     - **Review**: Revisit problems from 1 week ago
 
 !!! note "Problem-Solving Framework"
-    
+
     1. **Understand**: Read problem carefully, identify constraints
     2. **Plan**: Think of approach, consider edge cases
     3. **Code**: Implement solution step by step
