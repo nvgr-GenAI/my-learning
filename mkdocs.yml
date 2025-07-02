@@ -1,7 +1,7 @@
 site_name: My Learning Journey
 site_description: A comprehensive collection of my learning in Machine Learning, GenAI, System Design, Algorithms, and more
 site_author: Venugopal Nakka
-site_url: https://nvgr.github.io/my-learning
+site_url: https://nvgr-genai.github.io/my-learning
 
 # Repository information
 repo_name: nvgr-GenAI/my-learning
@@ -127,24 +127,36 @@ nav:
       - Stacks:
         - algorithms/data-structures/stacks/index.md
         - algorithms/data-structures/stacks/fundamentals.md
+        - Array Stack: algorithms/data-structures/stacks/array-stack.md
+        - Linked List Stack: algorithms/data-structures/stacks/linked-list-stack.md
         - algorithms/data-structures/stacks/easy-problems.md
         - algorithms/data-structures/stacks/medium-problems.md
         - algorithms/data-structures/stacks/hard-problems.md
       - Queues:
         - algorithms/data-structures/queues/index.md
         - algorithms/data-structures/queues/fundamentals.md
+        - Array Queue: algorithms/data-structures/queues/array-queue.md
+        - Linked List Queue: algorithms/data-structures/queues/linked-list-queue.md
+        - Circular Queue: algorithms/data-structures/queues/circular-queue.md
+        - Priority Queue: algorithms/data-structures/queues/priority-queue.md
         - algorithms/data-structures/queues/easy-problems.md
         - algorithms/data-structures/queues/medium-problems.md
         - algorithms/data-structures/queues/hard-problems.md
       - Hash Tables:
         - algorithms/data-structures/hash-tables/index.md
         - algorithms/data-structures/hash-tables/fundamentals.md
+        - Hash Functions: algorithms/data-structures/hash-tables/hash-functions.md
+        - Separate Chaining: algorithms/data-structures/hash-tables/chaining.md
+        - Open Addressing: algorithms/data-structures/hash-tables/open-addressing.md
         - algorithms/data-structures/hash-tables/easy-problems.md
         - algorithms/data-structures/hash-tables/medium-problems.md
         - algorithms/data-structures/hash-tables/hard-problems.md
       - Sets:
         - algorithms/data-structures/sets/index.md
         - algorithms/data-structures/sets/fundamentals.md
+        - Hash Set: algorithms/data-structures/sets/hash-set.md
+        - Tree Set: algorithms/data-structures/sets/tree-set.md
+        - Bit Set: algorithms/data-structures/sets/bit-set.md
         - algorithms/data-structures/sets/easy-problems.md
         - algorithms/data-structures/sets/medium-problems.md
         - algorithms/data-structures/sets/hard-problems.md
