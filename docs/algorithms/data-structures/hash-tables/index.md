@@ -13,23 +13,56 @@ Hash tables (also known as hash maps) are one of the most important and widely u
 
 ## 📚 Section Contents
 
-### 🎯 Fundamentals
-- **[Hash Tables Fundamentals](fundamentals.md)** - Core concepts, hash functions, collision resolution
-- **[Implementation Details](implementation.md)** - Building hash tables from scratch
+### 🎯 Fundamentals & Theory
+
+Start with core concepts and theoretical foundations.
+
+- **[Hash Tables Fundamentals](fundamentals.md)** - Core concepts, time complexity, when to use hash tables
+
+### 🏗️ Implementation Types
+
+Master different implementation approaches:
+
+#### [📘 Hash Functions](hash-functions.md){ .md-button }
+
+**Foundation**: Learn about hash function design
+
+- Division, multiplication, and universal hashing
+- DJB2, FNV, and MurmurHash algorithms
+- Distribution analysis and collision testing
+
+#### [📗 Separate Chaining](chaining.md){ .md-button }
+
+**Collision Resolution**: Using linked structures
+
+- Linked list chains for collision handling
+- Dynamic sizing and load factor management
+- Simple implementation with good average performance
+
+#### [📙 Open Addressing](open-addressing.md){ .md-button }
+
+**Memory Efficient**: Direct array storage
+
+- Linear, quadratic, and double hashing
+- Tombstone deletion and Robin Hood hashing
+- Cache-friendly implementation
 
 ### 💪 Practice Problems
 
 #### 🟢 Easy Problems
+
 - **[Easy Hash Table Problems](easy-problems.md)**
   - Two Sum, Valid Anagram, First Unique Character
   - Hash Set operations, Simple frequency counting
 
-#### 🟡 Medium Problems  
+#### 🟡 Medium Problems
+
 - **[Medium Hash Table Problems](medium-problems.md)**
   - Group Anagrams, Top K Frequent Elements
   - Subarray problems, Hash map design
 
 #### 🔴 Hard Problems
+
 - **[Hard Hash Table Problems](hard-problems.md)**
   - LRU Cache, Design Twitter, Alien Dictionary
   - Advanced hash table applications
@@ -37,6 +70,7 @@ Hash tables (also known as hash maps) are one of the most important and widely u
 ## 🎨 Key Patterns
 
 ### 1. **Frequency Counting**
+
 ```python
 # Count occurrences of elements
 freq = {}
@@ -45,6 +79,7 @@ for item in array:
 ```
 
 ### 2. **Two Sum Pattern**
+
 ```python
 # Find pairs that sum to target
 seen = {}
@@ -56,6 +91,7 @@ for i, num in enumerate(nums):
 ```
 
 ### 3. **Sliding Window with Hash Map**
+
 ```python
 # Track elements in current window
 window = {}
