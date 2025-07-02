@@ -1,23 +1,46 @@
 # Reliability & Security 🛡️
 
-Build resilient, fault-tolerant, and secure distributed systems that can handle failures gracefully and protect against threats.
+Build systems that remain operational and secure under adverse conditions. This section covers fault tolerance, monitoring, security patterns, and disaster recovery strategies.
 
-## 🎯 Learning Objectives
+## 🎯 What You'll Learn
 
-- **Reliability**: Design systems that continue working despite failures
-- **Fault Tolerance**: Handle and recover from various failure modes
-- **Security**: Protect systems from threats and vulnerabilities
-- **Monitoring**: Observe system health and performance
-- **Disaster Recovery**: Plan for and recover from catastrophic failures
+Reliable and secure systems are essential for production environments. Learn how to design for failure, implement comprehensive security, and ensure your systems can recover from disasters.
 
-## 📚 Topics Overview
+<div class="grid cards" markdown>
 
-### 🔧 Reliability Patterns
+- :material-shield-check: **Fault Tolerance**
 
-| Pattern | Purpose | Use Cases |
-|---------|---------|-----------|
-| **Circuit Breaker** | Prevent cascade failures | Service dependencies |
-| **Bulkhead** | Isolate critical resources | Resource protection |
+    ---
+
+    Graceful degradation, redundancy, and failure isolation patterns
+
+    [Build resilient systems →](fault-tolerance.md)
+
+- :material-monitor-dashboard: **Monitoring & Observability**
+
+    ---
+
+    Metrics, logging, tracing, and alerting strategies
+
+    [Observe your systems →](monitoring.md)
+
+- :material-security: **Security Patterns**
+
+    ---
+
+    Authentication, authorization, encryption, and security best practices
+
+    [Secure your systems →](security.md)
+
+- :material-backup-restore: **Disaster Recovery**
+
+    ---
+
+    Backup strategies, failover mechanisms, and business continuity
+
+    [Plan for disasters →](disaster-recovery.md)
+
+</div>
 | **Timeout & Retry** | Handle transient failures | Network calls |
 | **Graceful Degradation** | Maintain core functionality | Service unavailability |
 

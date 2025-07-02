@@ -1,22 +1,28 @@
-# Distributed Systems Architecture 🌐
+# Distributed Systems 🔗
 
-Master the design and implementation of distributed systems, microservices, and service-oriented architectures.
+Learn the principles and patterns for building systems that span multiple machines and networks. This section covers microservices, consistency models, consensus algorithms, and distributed system challenges.
 
-## 🎯 Learning Objectives
+## 🎯 What You'll Learn
 
-- Understand distributed systems fundamentals
-- Design microservices architectures
-- Implement service communication patterns
-- Handle distributed system challenges
-- Build resilient and scalable systems
-
-## 📚 Topics Overview
+Distributed systems introduce unique challenges and opportunities. Master the concepts and patterns needed to build reliable, scalable systems that work across multiple machines, data centers, and even geographic regions.
 
 <div class="grid cards" markdown>
 
--   :material-hexagon-multiple: **Microservices Architecture**
-    
+- :material-hexagon-multiple: **Microservices**
+
     ---
+
+    Service decomposition, communication patterns, and orchestration
+
+    [Design microservices →](microservices.md)
+
+- :material-sync: **Consistency Models**
+
+    ---
+
+    ACID, BASE, eventual consistency, and consensus algorithms
+
+    [Ensure consistency →](consistency.md)
     
     Service decomposition, boundaries, communication patterns
     

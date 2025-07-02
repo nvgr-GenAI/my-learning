@@ -99,36 +99,37 @@ nav:
     - Fine-tuning: genai/fine-tuning.md
   - System Design:
     - system-design/index.md
+    - Learning Path: system-design/learning-path.md
     - Fundamentals:
       - system-design/fundamentals/index.md
       - Principles: system-design/fundamentals/principles.md
-    - Scalability:
-      - system-design/scalability/index.md
-      - Horizontal Scaling: system-design/scalability/horizontal-scaling.md
-    - Databases:
-      - system-design/databases/index.md
-    - Caching:
-      - system-design/caching/index.md
-    - Load Balancing:
-      - system-design/load-balancing/index.md
-    - Networking:
-      - system-design/networking/index.md
-      - CDN: system-design/networking/cdn.md
-    - Messaging:
-      - system-design/messaging/index.md
-    - Sessions:
-      - system-design/sessions/index.md
-    - Consistent Hashing:
-      - system-design/consistent-hashing/index.md
-    - Data Storage:
-      - system-design/data-storage/index.md
-    - Distributed Systems:
-      - system-design/distributed-systems/index.md
-    - Reliability & Security:
-      - system-design/reliability-security/index.md
-      - Fault Tolerance: system-design/reliability-security/fault-tolerance.md
-    - Performance:
-      - system-design/performance/index.md
+      - Scalability:
+        - system-design/scalability/index.md
+        - Horizontal Scaling: system-design/scalability/horizontal-scaling.md
+      - Databases:
+        - system-design/databases/index.md
+      - Caching:
+        - system-design/caching/index.md
+      - Load Balancing:
+        - system-design/load-balancing/index.md
+      - Networking:
+        - system-design/networking/index.md
+        - CDN: system-design/networking/cdn.md
+      - Messaging:
+        - system-design/messaging/index.md
+      - Sessions:
+        - system-design/sessions/index.md
+      - Consistent Hashing:
+        - system-design/consistent-hashing/index.md
+      - Data Storage:
+        - system-design/data-storage/index.md
+      - Distributed Systems:
+        - system-design/distributed-systems/index.md
+      - Reliability & Security:
+        - system-design/reliability-security/index.md
+        - Fault Tolerance: system-design/reliability-security/fault-tolerance.md
+      - Performance:
+        - system-design/performance/index.md
     - Interview Prep:
       - system-design/interviews/index.md
     - Case Studies:
@@ -345,6 +346,7 @@ extra_javascript:
   - javascripts/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
 
 # Social links and extra configuration
 extra:

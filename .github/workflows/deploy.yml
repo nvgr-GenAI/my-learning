@@ -42,7 +42,7 @@ jobs:
           MKDOCS_BUILD_ENV: production
           GITHUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
         run: |
-          mkdocs build --clean --verbose
+          mkdocs build --clean
       
       - name: Verify build output
         run: |
