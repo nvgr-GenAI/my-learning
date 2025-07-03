@@ -2,12 +2,60 @@
 
 ## 🎯 Learning Objectives
 
-Master basic DP patterns and build intuition:
+Master basic DP patterns and build intuition for more complex problems. These 15 problems cover the most important DP patterns asked in technical interviews.
 
-- Linear DP with simple recurrence relations
-- Basic memoization and tabulation techniques
-- Space optimization for 1D problems
-- Pattern recognition for common DP scenarios
+=== "📋 Problem List"
+
+    | # | Problem | Pattern | Difficulty | Time | Space |
+    |---|---------|---------|------------|------|-------|
+    | 1 | Climbing Stairs | Linear DP (Fibonacci) | Easy | O(n) | O(1) |
+    | 2 | House Robber | Linear DP | Easy | O(n) | O(1) |
+    | 3 | Min Cost Climbing Stairs | Linear DP | Easy | O(n) | O(1) |
+    | 4 | N-th Tribonacci Number | Linear DP | Easy | O(n) | O(1) |
+    | 5 | Fibonacci Number | Linear DP | Easy | O(n) | O(1) |
+    | 6 | Pascal's Triangle | 2D DP | Easy | O(n²) | O(n²) |
+    | 7 | Pascal's Triangle II | 1D Space Optimized | Easy | O(n²) | O(n) |
+    | 8 | Is Subsequence | Two Pointers/DP | Easy | O(n) | O(1) |
+    | 9 | Range Sum Query - Immutable | Prefix Sum DP | Easy | O(1) | O(n) |
+    | 10 | Counting Bits | Bit DP | Easy | O(n) | O(n) |
+    | 11 | Min Steps to One | Linear DP | Easy | O(n) | O(n) |
+    | 12 | Decode Ways (Simple) | Linear DP | Easy | O(n) | O(1) |
+    | 13 | Perfect Squares | DP + BFS | Easy | O(n√n) | O(n) |
+    | 14 | Coin Change (Min Coins) | 1D DP | Easy | O(amount×coins) | O(amount) |
+    | 15 | Maximum Product of Three | Array DP | Easy | O(n) | O(1) |
+
+=== "🎯 Core DP Patterns"
+
+    **🔢 Linear DP:**
+    - State depends only on previous few states
+    - Examples: Fibonacci, climbing stairs, house robber
+    
+    **📊 Grid DP:**
+    - 2D state space (often matrix traversal)
+    - Examples: Pascal's triangle, path counting
+    
+    **🎒 Knapsack-style:**
+    - Choose/don't choose decisions
+    - Examples: Coin change, perfect squares
+    
+    **📈 Optimization DP:**
+    - Find minimum/maximum value
+    - Examples: Min cost climbing, min steps to one
+
+=== "⚡ Interview Strategy"
+
+    **💡 Problem Recognition:**
+    
+    - **Optimal substructure**: Solution can be built from subproblems
+    - **Overlapping subproblems**: Same subproblems appear multiple times
+    - **Decision making**: Choose between multiple options at each step
+    
+    **🎪 Solution Approach:**
+    
+    1. **Identify state**: What parameters uniquely define a subproblem?
+    2. **Find recurrence**: How does current state relate to previous states?
+    3. **Handle base cases**: What are the simplest cases?
+    4. **Optimize space**: Can we reduce space complexity?
 
 ---
 
@@ -17,87 +65,345 @@ Master basic DP patterns and build intuition:
 **Pattern**: Linear DP (Fibonacci-like)  
 **Time**: O(n), **Space**: O(1) optimized
 
-### Problem Description
+=== "Problem Statement"
 
-You're climbing a staircase with `n` steps. Each time you can climb either 1 or 2 steps. In how many distinct ways can you climb to the top?
+    You're climbing a staircase with `n` steps. Each time you can climb either 1 or 2 steps. In how many distinct ways can you climb to the top?
 
-```python
-Input: n = 3
-Output: 3
-Explanation: 
-1. 1 step + 1 step + 1 step
-2. 1 step + 2 steps  
-3. 2 steps + 1 step
-```
+    **Example:**
+    ```text
+    Input: n = 3
+    Output: 3
+    Explanation: 
+    1. 1 step + 1 step + 1 step
+    2. 1 step + 2 steps  
+    3. 2 steps + 1 step
+    ```
 
-### Solution Approaches
+=== "Optimal Solution"
 
-```python
-def climb_stairs_recursive(n):
-    """
-    Naive recursive approach - exponential time
-    """
-    if n <= 2:
-        return n
-    return climb_stairs_recursive(n-1) + climb_stairs_recursive(n-2)
+    ```python
+    def climb_stairs_optimized(n):
+        """
+        Space-optimized approach - O(1) space, O(n) time.
+        Only keep track of previous two values.
+        """
+        if n <= 2:
+            return n
+        
+        prev2 = 1  # ways to reach step 1
+        prev1 = 2  # ways to reach step 2
+        
+        for i in range(3, n + 1):
+            current = prev1 + prev2
+            prev2 = prev1
+            prev1 = current
+        
+        return prev1
 
-def climb_stairs_memo(n, memo=None):
-    """
-    Memoization approach - top-down DP
-    """
-    if memo is None:
-        memo = {}
-    
-    if n in memo:
+    # Test
+    for n in range(1, 6):
+        result = climb_stairs_optimized(n)
+        print(f"n={n}: {result} ways")
+    ```
+
+=== "Tabulation (Bottom-up)"
+
+    ```python
+    def climb_stairs_tabulation(n):
+        """
+        Bottom-up DP approach - O(n) space, O(n) time.
+        Build solution from smaller subproblems.
+        """
+        if n <= 2:
+            return n
+        
+        dp = [0] * (n + 1)
+        dp[1] = 1
+        dp[2] = 2
+        
+        for i in range(3, n + 1):
+            dp[i] = dp[i-1] + dp[i-2]
+        
+        return dp[n]
+
+    # Test with visualization
+    n = 5
+    result = climb_stairs_tabulation(n)
+    print(f"Ways to climb {n} stairs: {result}")
+    ```
+
+=== "Memoization (Top-down)"
+
+    ```python
+    def climb_stairs_memo(n, memo=None):
+        """
+        Top-down DP with memoization - O(n) space, O(n) time.
+        Solve subproblems and cache results.
+        """
+        if memo is None:
+            memo = {}
+        
+        if n in memo:
+            return memo[n]
+        
+        if n <= 2:
+            return n
+        
+        memo[n] = climb_stairs_memo(n-1, memo) + climb_stairs_memo(n-2, memo)
         return memo[n]
-    
-    if n <= 2:
-        return n
-    
-    memo[n] = climb_stairs_memo(n-1, memo) + climb_stairs_memo(n-2, memo)
-    return memo[n]
 
-def climb_stairs_tabulation(n):
-    """
-    Tabulation approach - bottom-up DP
-    """
-    if n <= 2:
-        return n
-    
-    dp = [0] * (n + 1)
-    dp[1] = 1
-    dp[2] = 2
-    
-    for i in range(3, n + 1):
-        dp[i] = dp[i-1] + dp[i-2]
-    
-    return dp[n]
+    # Test
+    n = 10
+    result = climb_stairs_memo(n)
+    print(f"Memoized result for n={n}: {result}")
+    ```
 
-def climb_stairs_optimized(n):
-    """
-    Space-optimized approach - O(1) space
-    """
-    if n <= 2:
-        return n
-    
-    prev2 = 1  # ways to reach step 1
-    prev1 = 2  # ways to reach step 2
-    
-    for i in range(3, n + 1):
-        current = prev1 + prev2
-        prev2 = prev1
-        prev1 = current
-    
-    return prev1
+=== "Naive Recursive"
 
-# Test
-n = 5
-print(f"Ways to climb {n} stairs: {climb_stairs_optimized(n)}")  # 8
-```
+    ```python
+    def climb_stairs_recursive(n):
+        """
+        Naive recursive approach - O(2^n) time, O(n) space.
+        Included for learning - too slow for large n.
+        """
+        if n <= 2:
+            return n
+        return climb_stairs_recursive(n-1) + climb_stairs_recursive(n-2)
 
-### Key Insights
+    # Test (only for small n)
+    for n in range(1, 8):
+        result = climb_stairs_recursive(n)
+        print(f"Recursive n={n}: {result}")
+    ```
 
-- **Recurrence**: `dp[i] = dp[i-1] + dp[i-2]` (Fibonacci pattern)
+=== "💡 Tips & Insights"
+
+    **🎯 Key Insights:**
+    
+    - Recurrence relation: `f(n) = f(n-1) + f(n-2)` (Fibonacci pattern)
+    - Each step can be reached from step n-1 (take 1 step) or n-2 (take 2 steps)
+    - Space optimization reduces O(n) to O(1) by keeping only last two values
+    
+    **⚡ Interview Tips:**
+    
+    - Start with recursive solution to establish recurrence
+    - Always mention space optimization opportunity
+    - Explain why it's similar to Fibonacci sequence
+    
+    **🔍 Extensions:**
+    
+    - Climbing stairs with 1, 2, or 3 steps allowed
+    - Climbing stairs with some steps broken (obstacles)
+    - Minimum cost climbing stairs (next problem)
+
+---
+
+## Problem 2: House Robber
+
+**Difficulty**: 🟢 Easy  
+**Pattern**: Linear DP with Skip Decision  
+**Time**: O(n), **Space**: O(1) optimized
+
+=== "Problem Statement"
+
+    You are a robber planning to rob houses along a street. Each house has a certain amount of money. You cannot rob two adjacent houses. Find the maximum amount you can rob.
+
+    **Example:**
+    ```text
+    Input: nums = [2,7,9,3,1]
+    Output: 12
+    Explanation: Rob houses 0, 2, and 4 (2 + 9 + 1 = 12)
+    ```
+
+=== "Optimal Solution"
+
+    ```python
+    def rob_optimized(nums):
+        """
+        Space-optimized DP - O(1) space, O(n) time.
+        Track max money with and without robbing current house.
+        """
+        if not nums:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        
+        prev2 = nums[0]  # Max money up to house i-2
+        prev1 = max(nums[0], nums[1])  # Max money up to house i-1
+        
+        for i in range(2, len(nums)):
+            current = max(prev1, prev2 + nums[i])
+            prev2 = prev1
+            prev1 = current
+        
+        return prev1
+
+    # Test
+    test_cases = [
+        [2,7,9,3,1],  # Expected: 12
+        [2,1,1,2],    # Expected: 4
+        [5],          # Expected: 5
+        [1,2]         # Expected: 2
+    ]
+    
+    for nums in test_cases:
+        result = rob_optimized(nums)
+        print(f"Houses {nums}: Max money = {result}")
+    ```
+
+=== "Tabulation Approach"
+
+    ```python
+    def rob_tabulation(nums):
+        """
+        Bottom-up DP with array - O(n) space, O(n) time.
+        """
+        if not nums:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        
+        n = len(nums)
+        dp = [0] * n
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        
+        for i in range(2, n):
+            # Either rob current house + max from i-2, or skip current house
+            dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+        
+        return dp[n-1]
+
+    # Test with trace
+    nums = [2,7,9,3,1]
+    result = rob_tabulation(nums)
+    print(f"Tabulation result: {result}")
+    ```
+
+=== "💡 Tips & Insights"
+
+    **🎯 Key Insights:**
+    
+    - Decision at each house: rob it (can't rob previous) or skip it
+    - Recurrence: `dp[i] = max(dp[i-1], dp[i-2] + nums[i])`
+    - Space optimization: only need previous two values
+    
+    **⚡ Interview Tips:**
+    
+    - Explain the constraint clearly (no adjacent houses)
+    - Show how it reduces to a choice at each step
+    - Mention circular house robber as follow-up
+    
+    **🔍 Variations:**
+    
+    - House Robber II (circular street)
+    - House Robber III (binary tree)
+    - Delete and earn (similar constraint pattern)
+
+---
+
+## Problem 3: Min Cost Climbing Stairs
+
+**Difficulty**: 🟢 Easy  
+**Pattern**: Linear DP with Cost Minimization  
+**Time**: O(n), **Space**: O(1)
+
+=== "Problem Statement"
+
+    You can climb 1 or 2 steps at a time. Each step has a cost. Find the minimum cost to reach the top (beyond the last step).
+
+    **Example:**
+    ```text
+    Input: cost = [10,15,20]
+    Output: 15
+    Explanation: Start at index 1, pay 15, climb 2 steps to reach top
+    ```
+
+=== "Optimal Solution"
+
+    ```python
+    def min_cost_climbing_stairs(cost):
+        """
+        Space-optimized DP - O(1) space, O(n) time.
+        Can start from step 0 or step 1 for free.
+        """
+        n = len(cost)
+        
+        # Base cases: cost to reach step 0 and step 1
+        prev2 = 0  # Cost to reach step 0 (can start here for free)
+        prev1 = 0  # Cost to reach step 1 (can start here for free)
+        
+        # Calculate min cost to reach each step
+        for i in range(2, n + 1):
+            # To reach step i, either come from i-1 or i-2
+            current = min(prev1 + cost[i-1], prev2 + cost[i-2])
+            prev2 = prev1
+            prev1 = current
+        
+        return prev1
+
+    # Test cases
+    test_cases = [
+        [10, 15, 20],           # Expected: 15
+        [1, 100, 1, 1, 1, 100, 1, 1, 100, 1],  # Expected: 6
+        [0, 0, 0, 1],          # Expected: 0
+    ]
+    
+    for cost in test_cases:
+        result = min_cost_climbing_stairs(cost)
+        print(f"Cost array {cost}: Min cost = {result}")
+    ```
+
+=== "Tabulation with Trace"
+
+    ```python
+    def min_cost_climbing_stairs_trace(cost):
+        """
+        DP with detailed trace for understanding.
+        """
+        n = len(cost)
+        dp = [0] * (n + 1)  # dp[i] = min cost to reach step i
+        
+        # Base cases
+        dp[0] = 0  # Can start at step 0 for free
+        dp[1] = 0  # Can start at step 1 for free
+        
+        print(f"Cost array: {cost}")
+        print(f"DP array initialization: {dp}")
+        
+        for i in range(2, n + 1):
+            dp[i] = min(dp[i-1] + cost[i-1], dp[i-2] + cost[i-2])
+            print(f"Step {i}: min({dp[i-1]} + {cost[i-1]}, {dp[i-2]} + {cost[i-2]}) = {dp[i]}")
+        
+        return dp[n]
+
+    # Test with visualization
+    cost = [10, 15, 20]
+    result = min_cost_climbing_stairs_trace(cost)
+    print(f"Final result: {result}")
+    ```
+
+=== "💡 Tips & Insights"
+
+    **🎯 Key Insights:**
+    
+    - Can start at step 0 or step 1 for free (important detail)
+    - Goal is to reach beyond the last step, not the last step itself
+    - Pay cost when leaving a step, not when arriving
+    
+    **⚡ Interview Tips:**
+    
+    - Clarify: "When do we pay the cost?" (When leaving the step)
+    - Ask: "Can we start at step 0 or 1?" (Usually both)
+    - Distinguish from regular climbing stairs (has cost component)
+    
+    **🔍 Pattern Recognition:**
+    
+    - Similar to climbing stairs but with optimization objective
+    - Foundation for more complex cost optimization problems
+    - Related to minimum path sum in grids
+
+---
 - **Base cases**: `dp[1] = 1, dp[2] = 2`
 - **Space optimization**: Only need last two values
 

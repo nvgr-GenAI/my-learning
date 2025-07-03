@@ -85,12 +85,14 @@ theme:
 # Navigation structure
 nav:
   - Home: index.md
+  - Mathematics:
+    - math/index.md
   - Machine Learning:
     - ml/index.md
-    - Fundamentals: ml/fundamentals.md
-    - Algorithms: ml/algorithms.md
-    - Deep Learning: ml/deep-learning.md
-    - MLOps: ml/mlops.md
+    - Fundamentals: ml/fundamentals/index.md
+    - Algorithms: ml/algorithms/index.md
+    - Deep Learning: ml/deep-learning/index.md
+    - MLOps: ml/mlops/index.md
   - GenAI:
     - genai/index.md
     - Fundamentals:
@@ -219,6 +221,7 @@ nav:
       - system-design/interviews/index.md
     - Case Studies:
       - system-design/case-studies/index.md
+      - Video Streaming Platform: system-design/case-studies/video-streaming-platform/index.md
   - Algorithms:
     - algorithms/index.md
     - Data Structures:
@@ -411,17 +414,17 @@ plugins:
       separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - minify:
       minify_html: true
-  - git-revision-date-localized:
-      enable_creation_date: true
-      fallback_to_build_date: true
-  - git-committers:
-      repository: nvgr-GenAI/my-learning
-      branch: main
-      enabled: !ENV [CI, false]
-      token: !ENV GITHUB_TOKEN
-      cache_dir: .git-committers-cache
-      # Fallback gracefully if API fails
-      fallback_to_build_date: true
+  # Temporarily disable git plugins to improve build performance and reduce stdio warnings
+  # - git-revision-date-localized:
+  #     enable_creation_date: true
+  #     fallback_to_build_date: true
+  #     enabled: !ENV [CI, false]
+  # - git-committers:
+  #     repository: nvgr-GenAI/my-learning
+  #     branch: main
+  #     enabled: !ENV [CI, false]
+  #     token: !ENV GITHUB_TOKEN
+  #     cache_dir: .git-committers-cache
 
 # Extra CSS and JavaScript
 extra_css:

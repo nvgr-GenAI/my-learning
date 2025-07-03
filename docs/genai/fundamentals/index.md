@@ -1,7 +1,7 @@
 # GenAI Fundamentals
 
-!!! abstract "Building Strong Foundations"
-    Master the core concepts, mathematical foundations, and key principles that underpin all generative AI systems.
+!!! abstract "Theoretical Foundations of Generative AI"
+    Deep dive into the mathematical, statistical, and computational principles that make generative AI possible. This section focuses on understanding WHY these systems work, not just HOW to implement them.
 
 ## 📚 Chapter Overview
 
@@ -11,15 +11,15 @@
     
     ---
     
-    Linear algebra, calculus, probability, and statistics
+    Linear algebra, calculus, probability theory, and information theory
     
     [Learn math →](mathematics.md)
 
--   :material-brain: **Neural Networks Basics**
+-   :material-brain: **Neural Networks Theory**
     
     ---
     
-    Perceptrons, backpropagation, and deep networks
+    Universal approximation, backpropagation theory, and optimization landscapes
     
     [Understand networks →](neural-networks.md)
 
@@ -27,7 +27,7 @@
     
     ---
     
-    Tokens, embeddings, and representation learning
+    Representation learning, manifold hypothesis, and emergent behaviors
     
     [Grasp concepts →](core-concepts.md)
 
@@ -35,7 +35,7 @@
     
     ---
     
-    From rule-based systems to modern GenAI
+    Historical context and paradigm shifts leading to modern GenAI
     
     [Trace evolution →](evolution.md)
 
@@ -43,425 +43,305 @@
 
 ## 🎯 Learning Objectives
 
-By the end of this module, you will:
+By the end of this module, you will understand:
 
-- ✅ Understand the mathematical foundations of neural networks
-- ✅ Grasp key concepts like tokens, embeddings, and attention
-- ✅ Know the evolution from traditional AI to generative models
-- ✅ Implement basic neural networks from scratch
-- ✅ Understand probability distributions and information theory
+- ✅ The mathematical foundations underlying neural networks and generative models
+- ✅ Why certain architectures work better for generative tasks
+- ✅ The theoretical basis for representation learning and embeddings
+- ✅ Information-theoretic principles governing generation quality
+- ✅ The computational complexity and scaling laws of large models
 
-## 🔍 What is Generative AI?
+## 🔬 Theoretical Foundations of Generation
 
-Generative AI refers to artificial intelligence systems that can create new content—text, images, code, audio, or video—that is similar to human-created content.
+### What Makes AI "Generative"?
 
-```mermaid
-graph TD
-    A[Input Data] --> B[Neural Network]
-    B --> C[Learned Representations]
-    C --> D[Generation Process]
-    D --> E[New Content]
-    
-    F[Training Data] --> G[Pattern Learning]
-    G --> H[Model Parameters]
-    H --> I[Content Generation]
-```
-
-### Key Characteristics
-
-| Characteristic | Description | Example |
-|----------------|-------------|---------|
-| **Creativity** | Generates novel content | Writing poetry, creating art |
-| **Context Awareness** | Understands context and meaning | Contextual responses |
-| **Adaptability** | Learns from examples | Few-shot learning |
-| **Multimodality** | Works across different data types | Text-to-image generation |
-
-## 🧠 Core Principles
-
-### 1. Probabilistic Generation
-
-Generative models learn probability distributions over data:
-
-```python
-# Conceptual example of probabilistic text generation
-import numpy as np
-
-class SimpleLanguageModel:
-    def __init__(self):
-        self.word_probs = {}
-    
-    def train(self, text_data):
-        """Learn word probabilities from training data"""
-        words = text_data.split()
-        for i in range(len(words) - 1):
-            current_word = words[i]
-            next_word = words[i + 1]
-            
-            if current_word not in self.word_probs:
-                self.word_probs[current_word] = {}
-            
-            if next_word not in self.word_probs[current_word]:
-                self.word_probs[current_word][next_word] = 0
-            
-            self.word_probs[current_word][next_word] += 1
-    
-    def generate_text(self, start_word, length=10):
-        """Generate text based on learned probabilities"""
-        result = [start_word]
-        current_word = start_word
-        
-        for _ in range(length - 1):
-            if current_word in self.word_probs:
-                next_words = list(self.word_probs[current_word].keys())
-                probabilities = list(self.word_probs[current_word].values())
-                
-                # Normalize probabilities
-                total = sum(probabilities)
-                probabilities = [p/total for p in probabilities]
-                
-                # Sample next word
-                next_word = np.random.choice(next_words, p=probabilities)
-                result.append(next_word)
-                current_word = next_word
-            else:
-                break
-        
-        return ' '.join(result)
-
-# Example usage
-model = SimpleLanguageModel()
-training_text = "the cat sat on the mat the dog ran in the park"
-model.train(training_text)
-generated = model.generate_text("the", 5)
-print(f"Generated: {generated}")
-```
-
-### 2. Representation Learning
-
-Models learn to represent data in high-dimensional vector spaces:
-
-```python
-# Simple word embedding example
-import numpy as np
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
-
-class SimpleWordEmbedding:
-    def __init__(self, embedding_dim=100):
-        self.embedding_dim = embedding_dim
-        self.word_to_idx = {}
-        self.embeddings = None
-    
-    def build_vocabulary(self, text_data):
-        """Build vocabulary from text data"""
-        words = set(text_data.lower().split())
-        self.word_to_idx = {word: idx for idx, word in enumerate(words)}
-        self.vocab_size = len(words)
-        
-        # Initialize random embeddings
-        self.embeddings = np.random.randn(self.vocab_size, self.embedding_dim)
-    
-    def get_embedding(self, word):
-        """Get embedding for a word"""
-        if word.lower() in self.word_to_idx:
-            idx = self.word_to_idx[word.lower()]
-            return self.embeddings[idx]
-        return None
-    
-    def similarity(self, word1, word2):
-        """Compute cosine similarity between two words"""
-        emb1 = self.get_embedding(word1)
-        emb2 = self.get_embedding(word2)
-        
-        if emb1 is not None and emb2 is not None:
-            # Cosine similarity
-            dot_product = np.dot(emb1, emb2)
-            norm1 = np.linalg.norm(emb1)
-            norm2 = np.linalg.norm(emb2)
-            return dot_product / (norm1 * norm2)
-        return 0
-
-# Example usage
-embedding_model = SimpleWordEmbedding()
-text = "cat dog animal pet bird fish water swimming running playing"
-embedding_model.build_vocabulary(text)
-
-print(f"Similarity between 'cat' and 'dog': {embedding_model.similarity('cat', 'dog'):.3f}")
-print(f"Similarity between 'cat' and 'water': {embedding_model.similarity('cat', 'water'):.3f}")
-```
-
-### 3. Attention Mechanisms
-
-Attention allows models to focus on relevant parts of input:
-
-```python
-# Simplified attention mechanism
-import numpy as np
-
-def simple_attention(query, keys, values):
-    """
-    Simple attention mechanism
-    
-    Args:
-        query: Query vector (1, d_model)
-        keys: Key vectors (seq_len, d_model)
-        values: Value vectors (seq_len, d_model)
-    
-    Returns:
-        Attended output vector
-    """
-    # Compute attention scores
-    scores = np.dot(keys, query.T).flatten()
-    
-    # Apply softmax to get attention weights
-    exp_scores = np.exp(scores - np.max(scores))  # Numerical stability
-    attention_weights = exp_scores / np.sum(exp_scores)
-    
-    # Compute weighted sum of values
-    attended_output = np.sum(values * attention_weights.reshape(-1, 1), axis=0)
-    
-    return attended_output, attention_weights
-
-# Example usage
-d_model = 4
-seq_len = 3
-
-# Example vectors
-query = np.array([[1, 0, 1, 0]])  # What we're looking for
-keys = np.array([
-    [1, 1, 0, 0],    # First position
-    [0, 1, 1, 0],    # Second position  
-    [1, 0, 1, 1]     # Third position
-])
-values = np.array([
-    [0.1, 0.2, 0.3, 0.4],  # Value at first position
-    [0.5, 0.6, 0.7, 0.8],  # Value at second position
-    [0.9, 1.0, 1.1, 1.2]   # Value at third position
-])
-
-output, weights = simple_attention(query, keys, values)
-print(f"Attention weights: {weights}")
-print(f"Attended output: {output}")
-```
-
-## 🏗️ Architecture Evolution
+Generative AI is fundamentally about **learning and sampling from probability distributions**. Unlike discriminative models that learn P(y|x), generative models learn P(x) or P(x,y).
 
 ```mermaid
-timeline
-    title Evolution of AI Architectures
+graph TB
+    A[Data Distribution P(x)] --> B[Model Distribution Q(x)]
+    B --> C[Generative Process]
+    C --> D[Novel Samples]
     
-    1950s-1980s : Rule-based Systems
-                : Expert Systems
-                : Logic Programming
+    E[Training Data] --> F[Learn Parameters θ]
+    F --> G[Minimize Distance D(P||Q)]
+    G --> H[High-Quality Generation]
     
-    1980s-2000s : Neural Networks
-                : Backpropagation
-                : Multi-layer Perceptrons
-    
-    2000s-2010s : Deep Learning
-                : CNNs for Vision
-                : RNNs for Sequences
-    
-    2010s-2020s : Attention Era
-                : Transformer Architecture
-                : Pre-trained Models
-    
-    2020s-Now   : Large Language Models
-                : Generative AI
-                : Multimodal Models
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style D fill:#e8f5e8
 ```
 
-## 🧪 Hands-on Exercises
+### Core Mathematical Principles
 
-### Exercise 1: Build a Character-Level Language Model
+#### 1. Probability Distribution Learning
 
-```python
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import numpy as np
+**Objective**: Learn to approximate the true data distribution P(x) with a model distribution Q(x|θ)
 
-class CharRNN(nn.Module):
-    def __init__(self, vocab_size, hidden_size=128, num_layers=2):
-        super(CharRNN, self).__init__()
-        self.hidden_size = hidden_size
-        self.num_layers = num_layers
-        
-        self.embedding = nn.Embedding(vocab_size, hidden_size)
-        self.rnn = nn.LSTM(hidden_size, hidden_size, num_layers, batch_first=True)
-        self.linear = nn.Linear(hidden_size, vocab_size)
-    
-    def forward(self, x, hidden=None):
-        embedded = self.embedding(x)
-        output, hidden = self.rnn(embedded, hidden)
-        output = self.linear(output)
-        return output, hidden
-    
-    def generate(self, start_char_idx, max_length=100, temperature=1.0):
-        """Generate text starting from a character"""
-        self.eval()
-        generated = [start_char_idx]
-        hidden = None
-        
-        with torch.no_grad():
-            for _ in range(max_length):
-                x = torch.tensor([[generated[-1]]])
-                output, hidden = self.forward(x, hidden)
-                
-                # Apply temperature sampling
-                output = output[0, -1, :] / temperature
-                probs = torch.softmax(output, dim=0)
-                next_char_idx = torch.multinomial(probs, 1).item()
-                generated.append(next_char_idx)
-        
-        return generated
+**Key Insight**: If we can accurately model P(x), we can sample new x that are statistically similar to training data.
 
-# Example training setup
-def train_char_rnn(text_data, epochs=100):
-    # Create character vocabulary
-    chars = sorted(list(set(text_data)))
-    char_to_idx = {ch: i for i, ch in enumerate(chars)}
-    idx_to_char = {i: ch for i, ch in enumerate(chars)}
-    vocab_size = len(chars)
-    
-    # Prepare training data
-    sequence_length = 50
-    sequences = []
-    targets = []
-    
-    for i in range(len(text_data) - sequence_length):
-        seq = text_data[i:i + sequence_length]
-        target = text_data[i + 1:i + sequence_length + 1]
-        sequences.append([char_to_idx[ch] for ch in seq])
-        targets.append([char_to_idx[ch] for ch in target])
-    
-    # Convert to tensors
-    X = torch.tensor(sequences)
-    y = torch.tensor(targets)
-    
-    # Initialize model
-    model = CharRNN(vocab_size)
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
-    
-    # Training loop
-    model.train()
-    for epoch in range(epochs):
-        optimizer.zero_grad()
-        output, _ = model(X)
-        loss = criterion(output.reshape(-1, vocab_size), y.reshape(-1))
-        loss.backward()
-        optimizer.step()
-        
-        if epoch % 20 == 0:
-            print(f'Epoch {epoch}, Loss: {loss.item():.4f}')
-    
-    return model, char_to_idx, idx_to_char
+**Mathematical Framework**:
+- **Maximum Likelihood Estimation**: θ* = argmax Σ log Q(x|θ)
+- **KL Divergence Minimization**: D_KL(P||Q) = ∫ P(x) log(P(x)/Q(x|θ)) dx
+- **Evidence Lower Bound (ELBO)**: log P(x) ≥ E_q[log P(x|z)] - D_KL(q(z|x)||P(z))
 
-# Example usage
-sample_text = "hello world this is a simple example of text generation"
-# model, char_to_idx, idx_to_char = train_char_rnn(sample_text)
+#### 2. The Manifold Hypothesis
+
+**Principle**: High-dimensional data (images, text) lies on lower-dimensional manifolds
+
+**Implications**:
+- Real data occupies a tiny fraction of the full space
+- Generative models must learn these manifold structures
+- Interpolation in latent space produces meaningful variations
+
+**Mathematical Basis**:
+- Data manifold M ⊂ ℝ^d where dim(M) << d
+- Generator function G: ℝ^k → M where k << d
+- Encoder function E: M → ℝ^k (inverse mapping)
+
+#### 3. Information Theory Foundations
+
+**Entropy and Information Content**:
+- **Shannon Entropy**: H(X) = -Σ P(x) log P(x)
+- **Cross-Entropy**: H(P,Q) = -Σ P(x) log Q(x)
+- **Mutual Information**: I(X;Y) = H(X) - H(X|Y)
+
+**Generation Quality Metrics**:
+- **Perplexity**: exp(H(P,Q)) - lower is better
+- **Bits per Character/Token**: Compression efficiency measure
+- **Inception Score**: exp(E[D_KL(P(y|x)||P(y))]) - higher is better
+
+## 🧠 Cognitive and Computational Principles
+
+### Emergence and Scaling Laws
+
+#### Phase Transitions in Model Behavior
+
+**Scaling Laws**: Performance scales predictably with:
+- Model size (parameters N)
+- Dataset size (tokens D)  
+- Compute budget (FLOPs C)
+
+**Mathematical Relationship**:
+```
+Loss(N,D,C) ∝ N^(-α) + D^(-β) + C^(-γ)
 ```
 
-### Exercise 2: Implement Simple Tokenization
+**Emergent Abilities**: Capabilities that appear suddenly at certain scales:
+- Few-shot learning (≥ 1B parameters)
+- Chain-of-thought reasoning (≥ 10B parameters)
+- In-context learning (≥ 100B parameters)
 
-```python
-import re
-from collections import Counter
+#### Grokking Phenomenon
 
-class SimpleTokenizer:
-    def __init__(self):
-        self.vocab = {}
-        self.reverse_vocab = {}
-        self.unk_token = "<UNK>"
-        self.pad_token = "<PAD>"
-        self.start_token = "<START>"
-        self.end_token = "<END>"
-    
-    def build_vocab(self, texts, min_freq=1):
-        """Build vocabulary from a list of texts"""
-        # Tokenize and count words
-        word_counts = Counter()
-        for text in texts:
-            tokens = self.tokenize(text)
-            word_counts.update(tokens)
-        
-        # Create vocabulary
-        special_tokens = [self.pad_token, self.unk_token, self.start_token, self.end_token]
-        vocab_words = special_tokens + [word for word, count in word_counts.items() if count >= min_freq]
-        
-        self.vocab = {word: idx for idx, word in enumerate(vocab_words)}
-        self.reverse_vocab = {idx: word for word, idx in self.vocab.items()}
-    
-    def tokenize(self, text):
-        """Simple tokenization by splitting on whitespace and punctuation"""
-        # Convert to lowercase and split
-        tokens = re.findall(r'\b\w+\b', text.lower())
-        return tokens
-    
-    def encode(self, text):
-        """Convert text to token IDs"""
-        tokens = self.tokenize(text)
-        return [self.vocab.get(token, self.vocab[self.unk_token]) for token in tokens]
-    
-    def decode(self, token_ids):
-        """Convert token IDs back to text"""
-        tokens = [self.reverse_vocab.get(idx, self.unk_token) for idx in token_ids]
-        return ' '.join(tokens)
-    
-    def vocab_size(self):
-        return len(self.vocab)
+**Definition**: Sudden transition from memorization to generalization
 
-# Example usage
-tokenizer = SimpleTokenizer()
-sample_texts = [
-    "Hello world, this is a sample text.",
-    "This is another example for tokenization.",
-    "We are building a simple tokenizer."
-]
+**Characteristics**:
+- Training accuracy reaches 100% quickly
+- Validation accuracy improves slowly, then suddenly jumps
+- Occurs after extended training beyond apparent convergence
 
-tokenizer.build_vocab(sample_texts)
-print(f"Vocabulary size: {tokenizer.vocab_size()}")
-print(f"Vocabulary: {list(tokenizer.vocab.keys())[:10]}")
+### Representation Learning Theory
 
-# Encode and decode example
-text = "Hello world"
-encoded = tokenizer.encode(text)
-decoded = tokenizer.decode(encoded)
-print(f"Original: {text}")
-print(f"Encoded: {encoded}")
-print(f"Decoded: {decoded}")
+#### Distributed Representations
+
+**Principle**: Concepts are represented as patterns across many neurons
+
+**Advantages**:
+- **Compositionality**: Complex concepts from simple components
+- **Generalization**: Similar representations for similar concepts
+- **Efficiency**: Exponential capacity with linear resources
+
+**Mathematical Foundation**:
+- Vector space semantics: meaning as geometric relationships
+- Cosine similarity: semantic similarity measure
+- Linear algebraic operations: analogy completion (king - man + woman ≈ queen)
+
+#### The Universal Approximation Theorem
+
+**Statement**: Neural networks with sufficient width can approximate any continuous function
+
+**Implications for GenAI**:
+- Theoretical justification for deep learning's power
+- Explains why large models can capture complex distributions
+- Depth vs. width trade-offs in approximation efficiency
+
+## 🔄 Generation Mechanisms
+
+### Autoregressive Generation
+
+**Principle**: P(x₁, x₂, ..., xₙ) = ∏ P(xᵢ|x₁, ..., xᵢ₋₁)
+
+**Mathematical Properties**:
+- **Exact likelihood computation**: Tractable training objective
+- **Sequential dependency**: Each token depends on all previous tokens
+- **Causal masking**: Information flow constraint
+
+**Theoretical Challenges**:
+- **Exposure bias**: Training vs. inference distribution mismatch
+- **Length bias**: Shorter sequences have higher probability
+- **Error accumulation**: Early mistakes compound
+
+### Diffusion Processes
+
+**Principle**: Learn to reverse a gradual noising process
+
+**Mathematical Framework**:
+- **Forward process**: q(xₜ|xₜ₋₁) = N(√(1-βₜ)xₜ₋₁, βₜI)
+- **Reverse process**: pθ(xₜ₋₁|xₜ) = N(μθ(xₜ,t), Σθ(xₜ,t))
+- **Training objective**: Lₜ = E[||ε - εθ(√ᾱₜx₀ + √(1-ᾱₜ)ε, t)||²]
+
+**Theoretical Advantages**:
+- **Stable training**: No adversarial dynamics
+- **High sample quality**: Gradual refinement process
+- **Exact likelihood**: (with some variants)
+
+### Latent Variable Models
+
+**Principle**: Model complex distributions through latent variables
+
+**Variational Autoencoders (VAEs)**:
+- **Encoder**: qφ(z|x) ≈ P(z|x)
+- **Decoder**: pθ(x|z) models the generation process
+- **ELBO**: log P(x) ≥ E[log pθ(x|z)] - D_KL(qφ(z|x)||P(z))
+
+**Generative Adversarial Networks (GANs)**:
+- **Minimax game**: min_G max_D E[log D(x)] + E[log(1-D(G(z)))]
+- **Nash equilibrium**: Optimal when P_G = P_data
+- **Mode collapse**: Theoretical limitation in practice
+
+## 🌊 Attention and Transformer Theory
+
+### Self-Attention Mechanism
+
+**Mathematical Formulation**:
+```
+Attention(Q,K,V) = softmax(QK^T/√d_k)V
 ```
 
-## 📖 Key Terminology
+**Theoretical Properties**:
+- **Content-based addressing**: Queries find relevant keys
+- **Permutation equivariance**: Order-independent processing
+- **Universal approximation**: Can represent any permutation-equivariant function
 
-| Term | Definition | Example |
-|------|------------|---------|
-| **Token** | Basic unit of text processing | Word, subword, or character |
-| **Embedding** | Dense vector representation | 300-dimensional word vector |
-| **Attention** | Mechanism to focus on relevant parts | Highlighting important words |
-| **Transformer** | Architecture based on attention | GPT, BERT, T5 models |
-| **Pre-training** | Initial training on large datasets | Training on web text |
-| **Fine-tuning** | Adapting to specific tasks | Training for sentiment analysis |
+### Positional Encoding Theory
+
+**Problem**: Transformers are permutation-equivariant but language has order
+
+**Solutions**:
+- **Sinusoidal encoding**: PE(pos,2i) = sin(pos/10000^(2i/d))
+- **Learned embeddings**: Trainable position vectors
+- **Relative positioning**: Distance-based attention biases
+
+**Theoretical Considerations**:
+- **Length generalization**: Can models handle longer sequences than trained on?
+- **Compositional structure**: How do positions interact with content?
+
+## 📊 Evaluation Theory
+
+### Intrinsic vs. Extrinsic Evaluation
+
+**Intrinsic Metrics** (Model-based):
+- **Perplexity**: Model confidence in predictions
+- **BLEU/ROUGE**: N-gram overlap with references
+- **FID/IS**: Distribution-based image quality
+
+**Extrinsic Metrics** (Task-based):
+- **Downstream task performance**: Real-world utility
+- **Human evaluation**: Subjective quality assessment
+- **Robustness measures**: Performance under distribution shift
+
+### Theoretical Challenges in Evaluation
+
+**The Alignment Problem**:
+- Optimizing metrics ≠ optimizing true quality
+- Goodhart's Law: "When a measure becomes a target, it ceases to be a good measure"
+
+**Sample Efficiency vs. Quality**:
+- Better models often require more samples for accurate evaluation
+- Statistical significance in human evaluation studies
+
+## 🎓 Key Theoretical Insights
+
+### Why Large Models Work
+
+1. **Lottery Ticket Hypothesis**: Large models contain smaller, trainable subnetworks
+2. **Overparameterization Benefits**: More parameters → better optimization landscape
+3. **Implicit Regularization**: SGD favors simpler solutions
+4. **Feature Learning**: Deep networks learn hierarchical representations
+
+### Fundamental Limitations
+
+1. **Hallucination Problem**: Models generate plausible but false information
+2. **Context Length Limits**: Quadratic attention scaling
+3. **Training Data Dependence**: Cannot generate beyond training distribution
+4. **Interpretability Challenge**: Complex learned representations
+
+### Open Theoretical Questions
+
+1. **Mechanistic Interpretability**: How do models perform specific tasks?
+2. **Emergence Prediction**: Can we predict when capabilities will emerge?
+3. **Alignment Theory**: How to ensure AI systems pursue intended goals?
+4. **Generalization Bounds**: Theoretical guarantees on out-of-distribution performance
+
+## 📚 Essential Mathematical Background
+
+### Required Mathematics
+
+| Area | Key Concepts | Relevance to GenAI |
+|------|--------------|-------------------|
+| **Linear Algebra** | Matrix operations, eigenvalues, SVD | Neural network computations, attention |
+| **Calculus** | Gradients, chain rule, optimization | Backpropagation, loss minimization |
+| **Probability** | Distributions, Bayes' theorem, sampling | Generative modeling, uncertainty |
+| **Information Theory** | Entropy, mutual information, compression | Evaluation metrics, data efficiency |
+| **Optimization** | Convexity, gradient descent, momentum | Training algorithms, convergence |
+| **Statistics** | Hypothesis testing, confidence intervals | Model evaluation, significance testing |
+
+### Mathematical Intuition
+
+**Why do these math concepts matter?**
+
+- **Linear Algebra**: Neural networks are composition of linear transformations
+- **Probability**: Generation is fundamentally about sampling from learned distributions  
+- **Calculus**: We optimize by following gradients in parameter space
+- **Information Theory**: Helps quantify and compare generation quality
+- **Statistics**: Essential for properly evaluating model performance
+
+## 📖 Fundamental Terminology
+
+| Term | Mathematical Definition | Intuitive Meaning |
+|------|------------------------|------------------|
+| **Likelihood** | P(data\|model) | How well model explains observed data |
+| **Prior** | P(parameters) | Initial beliefs about model parameters |
+| **Posterior** | P(parameters\|data) | Updated beliefs after seeing data |
+| **Entropy** | -Σ p(x) log p(x) | Uncertainty/information content |
+| **KL Divergence** | Σ p(x) log(p(x)/q(x)) | Distance between distributions |
+| **Gradient** | ∇f(x) | Direction of steepest increase |
 
 ## 🎓 Assessment Questions
 
-!!! question "Self-Check Questions"
-    1. What is the difference between discriminative and generative models?
-    2. How do attention mechanisms help in sequence modeling?
-    3. What are the advantages of token-based representations?
-    4. Why is probability important in generative models?
-    5. What role do embeddings play in neural language models?
+!!! question "Theoretical Understanding Check"
+    1. Why is the manifold hypothesis crucial for generative modeling?
+    2. How does the universal approximation theorem justify deep learning approaches?
+    3. What is the theoretical relationship between model size and emergent capabilities?
+    4. Why do autoregressive models suffer from exposure bias?
+    5. How does information theory help us evaluate generation quality?
+    6. What are the theoretical advantages of attention mechanisms over RNNs?
 
 ## 📚 Next Steps
 
-After mastering these fundamentals, you're ready to dive deeper into:
+With these theoretical foundations, you're ready to understand:
 
-1. **[Large Language Models](../llms/index.md)** - Understanding modern LLM architectures
-2. **[Transformers](../transformers/index.md)** - Deep dive into transformer architecture
-3. **[Neural Networks](neural-networks.md)** - Advanced neural network concepts
+1. **[Mathematics Deep Dive](mathematics.md)** - Detailed mathematical foundations
+2. **[Neural Networks Theory](neural-networks.md)** - Advanced theoretical concepts
+3. **[Core Concepts](core-concepts.md)** - Representation learning and emergence
+4. **[Large Language Models](../llms/index.md)** - Applying theory to modern systems
 
 ---
 
-!!! tip "Remember"
-    Strong fundamentals are the key to mastering advanced GenAI concepts. Take time to understand these core principles before moving to more complex topics.
+!!! tip "Theoretical vs. Practical"
+    Understanding these theoretical foundations will help you:
+    - Make informed architectural choices
+    - Debug training issues more effectively  
+    - Predict model behavior and limitations
+    - Stay current with research developments
