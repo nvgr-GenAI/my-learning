@@ -146,12 +146,27 @@ nav:
       - Anthropic: genai/providers/anthropic.md
       - Hugging Face: genai/providers/huggingface.md
       - Cloud Platforms: genai/providers/cloud.md
+    - AI Protocols & Standards:
+      - genai/protocols/index.md
+      - MCP Protocol: genai/protocols/mcp.md
+      - AGUI Protocol: genai/protocols/agui.md
+      - A2A Protocol: genai/protocols/a2a.md
+      - IBM Protocols: genai/protocols/ibm-protocols.md
+      - Cisco Protocols: genai/protocols/cisco-protocols.md
+      - Microsoft Protocols: genai/protocols/microsoft-protocols.md
+      - Industry Standards: genai/protocols/industry-standards.md
     - MLOps & AIOps:
       - genai/mlops-aiops/index.md
       - Deployment: genai/mlops-aiops/deployment.md
       - Monitoring: genai/mlops-aiops/monitoring.md
       - Scaling: genai/mlops-aiops/scaling.md
       - Best Practices: genai/mlops-aiops/best-practices.md
+    - Ethical AI:
+      - genai/ethical-ai/index.md
+      - Bias & Fairness: genai/ethical-ai/bias-fairness.md
+      - Privacy: genai/ethical-ai/privacy.md
+      - Governance: genai/ethical-ai/governance.md
+      - Safety: genai/ethical-ai/safety.md
     - Advanced Topics:
       - genai/advanced/index.md
       - GANs: genai/advanced/gans.md
