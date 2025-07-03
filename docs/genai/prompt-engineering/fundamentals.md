@@ -61,12 +61,14 @@ and potential ROI considerations for a mid-size e-commerce company.
 ### 2. Context Setting
 
 **❌ No Context:**
-```
+
+```text
 Calculate the marketing budget.
 ```
 
 **✅ Rich Context:**
-```
+
+```text
 You are a marketing director at a B2B SaaS company with $10M ARR. 
 Calculate an optimal marketing budget allocation for Q1 2024, considering:
 - 40% growth target
@@ -78,12 +80,14 @@ Calculate an optimal marketing budget allocation for Q1 2024, considering:
 ### 3. Format Specification
 
 **❌ Unstructured:**
-```
+
+```text
 Analyze this dataset and tell me what you find.
 ```
 
 **✅ Structured:**
-```
+
+```text
 Analyze the attached sales dataset and provide:
 
 ## Executive Summary
@@ -103,26 +107,29 @@ Analyze the attached sales dataset and provide:
 ## Prompt Types and Use Cases
 
 ### 1. Instruction Prompts
+
 Direct commands for specific tasks.
 
-```
+```text
 Summarize the following research paper in 200 words, focusing on 
 methodology and key findings: [paper content]
 ```
 
 ### 2. Conversational Prompts
+
 Multi-turn interactions for complex problem-solving.
 
-```
+```text
 I'm planning a machine learning project to predict customer churn. 
 Let's discuss the approach step by step. First, what data would you 
 recommend collecting?
 ```
 
 ### 3. Few-Shot Prompts
+
 Learning from examples.
 
-```
+```text
 Classify these customer reviews as positive, negative, or neutral:
 
 Review: "Great product, fast shipping!"
@@ -139,9 +146,10 @@ Sentiment: [to be classified]
 ```
 
 ### 4. Zero-Shot Prompts
+
 Tasks without examples.
 
-```
+```text
 Extract the main topics discussed in this meeting transcript and 
 rank them by importance: [transcript]
 ```
@@ -153,6 +161,7 @@ rank them by importance: [transcript]
 **Problem:** The AI doesn't understand what you want.
 
 **Solution:** Be explicit about:
+
 - Output format
 - Level of detail
 - Perspective/audience
@@ -162,7 +171,8 @@ rank them by importance: [transcript]
 
 **Problem:** Too much context confuses the model.
 
-**Solution:** 
+**Solution:**
+
 - Prioritize essential information
 - Use clear section headers
 - Break complex requests into steps
@@ -172,6 +182,7 @@ rank them by importance: [transcript]
 **Problem:** Not providing enough background.
 
 **Solution:**
+
 - Include relevant domain knowledge
 - Define specialized terms
 - Set appropriate scope
@@ -181,6 +192,7 @@ rank them by importance: [transcript]
 **Problem:** Results vary widely in structure.
 
 **Solution:**
+
 - Use templates
 - Provide explicit formatting rules
 - Include structural examples
@@ -188,9 +200,10 @@ rank them by importance: [transcript]
 ## Prompt Testing and Iteration
 
 ### 1. Start Simple
+
 Begin with a basic prompt and gradually add complexity.
 
-```
+```text
 Version 1: "Explain machine learning"
 Version 2: "Explain machine learning for business executives"
 Version 3: "Explain machine learning for business executives in 300 words, 
@@ -198,16 +211,19 @@ Version 3: "Explain machine learning for business executives in 300 words,
 ```
 
 ### 2. Test Variations
+
 Try different phrasings for the same request.
 
-```
+```text
 Variation A: "List the benefits of cloud computing"
 Variation B: "What are the advantages of cloud computing?"
 Variation C: "Enumerate the key benefits organizations gain from cloud computing"
 ```
 
 ### 3. Validate Outputs
+
 Check results against your criteria:
+
 - ✅ Accuracy
 - ✅ Completeness
 - ✅ Format compliance
@@ -227,16 +243,19 @@ Check results against your criteria:
 ## Tools and Resources
 
 ### Prompt Libraries
+
 - **PromptBase**: Marketplace for proven prompts
 - **Anthropic Prompt Library**: Curated examples
 - **OpenAI Examples**: Official use cases
 
 ### Testing Frameworks
+
 - **PromptFoo**: Automated prompt testing
 - **LangSmith**: Prompt evaluation and monitoring
 - **Weights & Biases Prompts**: Experiment tracking
 
 ### Documentation
+
 - **OpenAI Best Practices**: Official guidelines
 - **Anthropic Claude Documentation**: Model-specific tips
 - **Google Bard Guidelines**: Platform recommendations
