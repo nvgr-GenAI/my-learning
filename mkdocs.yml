@@ -282,20 +282,27 @@ nav:
         - algorithms/data-structures/sets/hard-problems.md
     - Trees:
       - algorithms/trees/index.md
+      - algorithms/trees/fundamentals.md
       - algorithms/trees/binary-trees.md
       - algorithms/trees/bst.md
       - algorithms/trees/avl-trees.md
       - algorithms/trees/tree-traversal.md
-      - algorithms/trees/tree-problems.md
       - algorithms/trees/heaps.md
+      - algorithms/trees/easy-problems.md
+      - algorithms/trees/medium-problems.md
+      - algorithms/trees/hard-problems.md
     - Sorting:
       - algorithms/sorting/index.md
+      - algorithms/sorting/fundamentals.md
       - algorithms/sorting/bubble-sort.md
       - algorithms/sorting/selection-sort.md
       - algorithms/sorting/insertion-sort.md
       - algorithms/sorting/quick-sort.md
       - algorithms/sorting/merge-sort.md
       - algorithms/sorting/heap-sort.md
+      - algorithms/sorting/easy-problems.md
+      - algorithms/sorting/medium-problems.md
+      - algorithms/sorting/hard-problems.md
     - Graphs:
       - algorithms/graphs/index.md
       - algorithms/graphs/fundamentals.md
@@ -356,10 +363,17 @@ nav:
       - algorithms/greedy/hard-problems.md
     - Searching:
       - algorithms/searching/index.md
+      - algorithms/searching/fundamentals.md
       - algorithms/searching/binary-search.md
       - algorithms/searching/advanced-search.md
-      - algorithms/searching/search-problems.md
-    - Strings: algorithms/strings/index.md
+      - algorithms/searching/easy-problems.md
+      - algorithms/searching/medium-problems.md
+      - algorithms/searching/hard-problems.md
+    - Strings: 
+      - algorithms/strings/index.md
+      - algorithms/strings/easy-problems.md
+      - algorithms/strings/medium-problems.md
+      - algorithms/strings/hard-problems.md
     - Two Pointers: algorithms/two-pointers.md
     - Sliding Window: algorithms/sliding-window.md
   - Blog:

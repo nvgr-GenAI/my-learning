@@ -1,687 +1,543 @@
-# Linked Lists: Medium Problems
-
-These intermediate problems will challenge you to combine basic operations with more advanced techniques. You'll learn to handle complex scenarios and optimize your solutions.
+# Linked Lists - Medium Problems
 
 ## 🎯 Learning Objectives
 
-By completing these problems, you'll master:
+Master intermediate linked list techniques and patterns:
 
-- Advanced pointer manipulation techniques
-- Multi-pass algorithms
-- Handling complex edge cases
-- Optimizing time and space complexity
-- Problem-solving patterns for real-world scenarios
+- Advanced pointer manipulation and traversal
+- Multi-pass algorithms and optimization techniques
+- Complex node operations and reconstructions
+- Pattern recognition for linked list problems
+- Time/space complexity optimization strategies
 
----
+=== "📋 Problem List"
 
-## Problem 1: Add Two Numbers
+    | # | Problem | Pattern | Difficulty | Time | Space |
+    |---|---------|---------|------------|------|-------|
+    | 1 | Add Two Numbers | Digit Addition | Medium | O(max(m,n)) | O(max(m,n)) |
+    | 2 | Remove Nth Node From End | Two Pointers | Medium | O(n) | O(1) |
+    | 3 | Swap Nodes in Pairs | Pointer Manipulation | Medium | O(n) | O(1) |
+    | 4 | Rotate List | Two Pointers + Cycle | Medium | O(n) | O(1) |
+    | 5 | Reverse Nodes in k-Group | Recursive Reversal | Medium | O(n) | O(k) |
+    | 6 | Partition List | Two Pointers | Medium | O(n) | O(1) |
+    | 7 | Remove Duplicates from Sorted List II | Two Pointers | Medium | O(n) | O(1) |
+    | 8 | Reorder List | Find Middle + Reverse | Medium | O(n) | O(1) |
+    | 9 | Linked List Cycle II | Floyd's Algorithm | Medium | O(n) | O(1) |
+    | 10 | Copy List with Random Pointer | Hash Map/Weaving | Medium | O(n) | O(n) |
+    | 11 | Sort List | Merge Sort | Medium | O(n log n) | O(log n) |
+    | 12 | Insertion Sort List | Insertion Sort | Medium | O(n²) | O(1) |
+    | 13 | Split Linked List in Parts | Array Division | Medium | O(n+k) | O(k) |
+    | 14 | Odd Even Linked List | Two Pointers | Medium | O(n) | O(1) |
+    | 15 | Add Two Numbers II | Stack/Reverse | Medium | O(max(m,n)) | O(max(m,n)) |
 
-**LeetCode 2** | **Difficulty: Medium**
+=== "🎯 Core Patterns"
 
-### Problem Description
-
-You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
-
-**Example:**
-
-```text
-Input: l1 = 2->4->3, l2 = 5->6->4
-Output: 7->0->8
-Explanation: 342 + 465 = 807
-```
-
-### Solution
-
-```python
-def addTwoNumbers(l1, l2):
-    """
-    Add two numbers represented as linked lists.
+    **🔗 Advanced Pointer Techniques:**
+    - Two-pointer traversal with different speeds
+    - Multi-pass algorithms for optimization
+    - Dummy node usage for edge case handling
     
-    Time: O(max(n, m)) where n, m are lengths of lists
-    Space: O(max(n, m)) for the result list
-    """
-    dummy = ListNode(0)
-    current = dummy
-    carry = 0
+    **🔄 List Transformation:**
+    - In-place reversal of sublists
+    - Partitioning and rearrangement
+    - Merging and splitting operations
     
-    while l1 or l2 or carry:
-        # Get values (0 if node is None)
-        val1 = l1.val if l1 else 0
-        val2 = l2.val if l2 else 0
+    **⚡ Optimization Strategies:**
+    - Single-pass solutions where possible
+    - Space-efficient algorithms
+    - Recursive vs iterative approaches
+    
+    **🎯 Problem Recognition:**
+    - Cycle detection and handling
+    - Arithmetic operations on lists
+    - Structural modifications and reconstructions
+
+=== "💡 Solutions"
+
+    === "Add Two Numbers"
+        ```python
+        def addTwoNumbers(l1, l2):
+            """Add two numbers represented as linked lists."""
+            dummy = ListNode(0)
+            current = dummy
+            carry = 0
+            
+            while l1 or l2 or carry:
+                val1 = l1.val if l1 else 0
+                val2 = l2.val if l2 else 0
+                
+                total = val1 + val2 + carry
+                carry = total // 10
+                current.next = ListNode(total % 10)
+                current = current.next
+                
+                if l1: l1 = l1.next
+                if l2: l2 = l2.next
+            
+            return dummy.next
+        ```
+    
+    === "Remove Nth Node From End"
+        ```python
+        def removeNthFromEnd(head, n):
+            """Remove nth node from end using two pointers."""
+            dummy = ListNode(0)
+            dummy.next = head
+            first = second = dummy
+            
+            # Move first pointer n+1 steps ahead
+            for _ in range(n + 1):
+                first = first.next
+            
+            # Move both pointers until first reaches end
+            while first:
+                first = first.next
+                second = second.next
+            
+            # Remove the nth node
+            second.next = second.next.next
+            return dummy.next
+        ```
+    
+    === "Swap Nodes in Pairs"
+        ```python
+        def swapPairs(head):
+            """Swap every two adjacent nodes."""
+            dummy = ListNode(0)
+            dummy.next = head
+            prev = dummy
+            
+            while prev.next and prev.next.next:
+                # Nodes to be swapped
+                first = prev.next
+                second = prev.next.next
+                
+                # Swapping
+                prev.next = second
+                first.next = second.next
+                second.next = first
+                
+                # Move to next pair
+                prev = first
+            
+            return dummy.next
+        ```
+    
+    === "Rotate List"
+        ```python
+        def rotateRight(head, k):
+            """Rotate list to the right by k places."""
+            if not head or not head.next or k == 0:
+                return head
+            
+            # Find length and make it circular
+            length = 1
+            current = head
+            while current.next:
+                current = current.next
+                length += 1
+            
+            current.next = head  # Make circular
+            
+            # Find new tail (length - k % length - 1)
+            k = k % length
+            steps = length - k
+            
+            new_tail = head
+            for _ in range(steps - 1):
+                new_tail = new_tail.next
+            
+            new_head = new_tail.next
+            new_tail.next = None
+            
+            return new_head
+        ```
+    
+    === "Reverse Nodes in k-Group"
+        ```python
+        def reverseKGroup(head, k):
+            """Reverse every k nodes in the list."""
+            # Check if we have k nodes
+            current = head
+            for _ in range(k):
+                if not current:
+                    return head
+                current = current.next
+            
+            # Reverse k nodes
+            prev = None
+            current = head
+            for _ in range(k):
+                next_node = current.next
+                current.next = prev
+                prev = current
+                current = next_node
+            
+            # Connect with the rest
+            head.next = self.reverseKGroup(current, k)
+            return prev
+        ```
+    
+    === "Partition List"
+        ```python
+        def partition(head, x):
+            """Partition list around value x."""
+            less_head = ListNode(0)
+            greater_head = ListNode(0)
+            less = less_head
+            greater = greater_head
+            
+            current = head
+            while current:
+                if current.val < x:
+                    less.next = current
+                    less = less.next
+                else:
+                    greater.next = current
+                    greater = greater.next
+                current = current.next
+            
+            # Connect the two parts
+            greater.next = None
+            less.next = greater_head.next
+            
+            return less_head.next
+        ```
+    
+    === "Remove Duplicates from Sorted List II"
+        ```python
+        def deleteDuplicates(head):
+            """Remove all nodes that have duplicates."""
+            dummy = ListNode(0)
+            dummy.next = head
+            prev = dummy
+            
+            while head:
+                if head.next and head.val == head.next.val:
+                    # Skip all duplicates
+                    while head.next and head.val == head.next.val:
+                        head = head.next
+                    prev.next = head.next
+                else:
+                    prev = prev.next
+                head = head.next
+            
+            return dummy.next
+        ```
+    
+    === "Reorder List"
+        ```python
+        def reorderList(head):
+            """Reorder list: L0→L1→…→Ln-1→Ln to L0→Ln→L1→Ln-1→…"""
+            if not head or not head.next:
+                return
+            
+            # Find middle
+            slow = fast = head
+            while fast.next and fast.next.next:
+                slow = slow.next
+                fast = fast.next.next
+            
+            # Reverse second half
+            second = slow.next
+            slow.next = None
+            
+            prev = None
+            while second:
+                next_node = second.next
+                second.next = prev
+                prev = second
+                second = next_node
+            
+            # Merge two halves
+            first = head
+            second = prev
+            while second:
+                first_next = first.next
+                second_next = second.next
+                
+                first.next = second
+                second.next = first_next
+                
+                first = first_next
+                second = second_next
+        ```
+    
+    === "Linked List Cycle II"
+        ```python
+        def detectCycle(head):
+            """Find the start of the cycle."""
+            if not head or not head.next:
+                return None
+            
+            # Phase 1: Detect cycle
+            slow = fast = head
+            while fast and fast.next:
+                slow = slow.next
+                fast = fast.next.next
+                if slow == fast:
+                    break
+            else:
+                return None
+            
+            # Phase 2: Find cycle start
+            slow = head
+            while slow != fast:
+                slow = slow.next
+                fast = fast.next
+            
+            return slow
+        ```
+    
+    === "Copy List with Random Pointer"
+        ```python
+        def copyRandomList(head):
+            """Deep copy list with random pointers."""
+            if not head:
+                return None
+            
+            # Create copy nodes
+            current = head
+            while current:
+                copy = Node(current.val)
+                copy.next = current.next
+                current.next = copy
+                current = copy.next
+            
+            # Set random pointers
+            current = head
+            while current:
+                if current.random:
+                    current.next.random = current.random.next
+                current = current.next.next
+            
+            # Separate lists
+            dummy = Node(0)
+            copy_current = dummy
+            current = head
+            
+            while current:
+                copy_current.next = current.next
+                current.next = current.next.next
+                copy_current = copy_current.next
+                current = current.next
+            
+            return dummy.next
+        ```
+    
+    === "Sort List"
+        ```python
+        def sortList(head):
+            """Sort linked list using merge sort."""
+            if not head or not head.next:
+                return head
+            
+            # Split list in half
+            mid = self.getMid(head)
+            left = head
+            right = mid.next
+            mid.next = None
+            
+            # Recursively sort both halves
+            left = self.sortList(left)
+            right = self.sortList(right)
+            
+            # Merge sorted halves
+            return self.merge(left, right)
         
-        # Calculate sum and carry
-        total = val1 + val2 + carry
-        carry = total // 10
-        digit = total % 10
+        def getMid(self, head):
+            slow = fast = head
+            while fast.next and fast.next.next:
+                slow = slow.next
+                fast = fast.next.next
+            return slow
         
-        # Create new node
-        current.next = ListNode(digit)
-        current = current.next
-        
-        # Move to next nodes
-        l1 = l1.next if l1 else None
-        l2 = l2.next if l2 else None
+        def merge(self, left, right):
+            dummy = ListNode(0)
+            current = dummy
+            
+            while left and right:
+                if left.val <= right.val:
+                    current.next = left
+                    left = left.next
+                else:
+                    current.next = right
+                    right = right.next
+                current = current.next
+            
+            current.next = left or right
+            return dummy.next
+        ```
     
-    return dummy.next
-
-# Test
-l1 = ListNode(2)
-l1.next = ListNode(4)
-l1.next.next = ListNode(3)
-
-l2 = ListNode(5)
-l2.next = ListNode(6)
-l2.next.next = ListNode(4)
-
-result = addTwoNumbers(l1, l2)
-# Result: 7->0->8
-```
-
-### 🔍 Key Insights
-
-1. **Reverse order**: Digits are stored in reverse, making addition easier (start from least significant digit)
-2. **Carry handling**: Don't forget to handle carry for the final digit
-3. **Unequal lengths**: Handle cases where one list is longer than the other
-
----
-
-## Problem 2: Remove Nth Node From End of List
-
-**LeetCode 19** | **Difficulty: Medium**
-
-### Problem Description
-
-Given the head of a linked list, remove the nth node from the end of the list and return its head.
-
-**Example:**
-
-```text
-Input: head = 1->2->3->4->5, n = 2
-Output: 1->2->3->5
-```
-
-### Solution 1: Two-Pass Approach
-
-```python
-def removeNthFromEnd(head, n):
-    """
-    Remove nth node from end using two passes.
+    === "Insertion Sort List"
+        ```python
+        def insertionSortList(head):
+            """Sort list using insertion sort."""
+            if not head or not head.next:
+                return head
+            
+            dummy = ListNode(0)
+            current = head
+            
+            while current:
+                next_node = current.next
+                
+                # Find position to insert
+                prev = dummy
+                while prev.next and prev.next.val < current.val:
+                    prev = prev.next
+                
+                # Insert current
+                current.next = prev.next
+                prev.next = current
+                
+                current = next_node
+            
+            return dummy.next
+        ```
     
-    Time: O(L) where L is length of list
-    Space: O(1)
-    """
-    # First pass: count total nodes
-    length = 0
-    current = head
-    while current:
-        length += 1
-        current = current.next
+    === "Split Linked List in Parts"
+        ```python
+        def splitListToParts(head, k):
+            """Split list into k parts."""
+            # Find length
+            length = 0
+            current = head
+            while current:
+                length += 1
+                current = current.next
+            
+            # Calculate part sizes
+            part_size = length // k
+            extra = length % k
+            
+            result = []
+            current = head
+            
+            for i in range(k):
+                part_head = current
+                current_size = part_size + (1 if i < extra else 0)
+                
+                # Move to end of current part
+                for j in range(current_size - 1):
+                    if current:
+                        current = current.next
+                
+                # Break connection
+                if current:
+                    next_part = current.next
+                    current.next = None
+                    current = next_part
+                
+                result.append(part_head)
+            
+            return result
+        ```
     
-    # Special case: remove head
-    if n == length:
-        return head.next
+    === "Odd Even Linked List"
+        ```python
+        def oddEvenList(head):
+            """Group odd and even positioned nodes."""
+            if not head or not head.next:
+                return head
+            
+            odd = head
+            even = head.next
+            even_head = even
+            
+            while even and even.next:
+                odd.next = even.next
+                odd = odd.next
+                even.next = odd.next
+                even = even.next
+            
+            odd.next = even_head
+            return head
+        ```
     
-    # Second pass: find (length - n)th node
-    current = head
-    for _ in range(length - n - 1):
-        current = current.next
+    === "Add Two Numbers II"
+        ```python
+        def addTwoNumbers(l1, l2):
+            """Add two numbers with most significant digit first."""
+            stack1, stack2 = [], []
+            
+            # Push all numbers to stacks
+            while l1:
+                stack1.append(l1.val)
+                l1 = l1.next
+            
+            while l2:
+                stack2.append(l2.val)
+                l2 = l2.next
+            
+            # Add numbers
+            carry = 0
+            result = None
+            
+            while stack1 or stack2 or carry:
+                val1 = stack1.pop() if stack1 else 0
+                val2 = stack2.pop() if stack2 else 0
+                
+                total = val1 + val2 + carry
+                carry = total // 10
+                
+                # Create new node at front
+                node = ListNode(total % 10)
+                node.next = result
+                result = node
+            
+            return result
+        ```
+
+=== "📊 Complexity Analysis"
+
+    **⚡ Time Complexity Patterns:**
+    - **Single Pass**: O(n) for most traversal problems
+    - **Two Pass**: O(n) for problems requiring length calculation
+    - **Sorting**: O(n log n) for merge sort, O(n²) for insertion sort
+    - **Nested Operations**: O(n²) for problems with inner loops
     
-    # Remove the node
-    current.next = current.next.next
-    return head
-```
-
-### Solution 2: One-Pass with Two Pointers
-
-```python
-def removeNthFromEndOnePass(head, n):
-    """
-    Remove nth node from end using one pass with two pointers.
+    **🔧 Space Complexity Patterns:**
+    - **In-place**: O(1) for pointer manipulation
+    - **Auxiliary**: O(n) for hash maps or stacks
+    - **Recursive**: O(depth) for recursive solutions
+    - **Output**: O(k) where k is the number of parts/groups
     
-    Time: O(L)
-    Space: O(1)
-    """
-    dummy = ListNode(0)
-    dummy.next = head
+    **🎯 Optimization Strategies:**
+    - Use dummy nodes to handle edge cases
+    - Prefer iterative over recursive when possible
+    - Combine operations in single pass when feasible
+    - Use two-pointer technique for efficiency
+
+=== "🚀 Advanced Tips"
+
+    **💡 Problem-Solving Approach:**
+    1. **Identify Pattern**: Recognize the core operation needed
+    2. **Choose Technique**: Select appropriate pointer strategy
+    3. **Handle Edge Cases**: Consider empty lists, single nodes
+    4. **Optimize**: Look for single-pass solutions
+    5. **Test**: Verify with various input sizes and patterns
     
-    # Create two pointers n+1 nodes apart
-    fast = slow = dummy
+    **🔍 Common Pitfalls:**
+    - Forgetting to handle null pointers
+    - Off-by-one errors in counting
+    - Memory leaks in languages without garbage collection
+    - Incorrect cycle detection logic
     
-    # Move fast pointer n+1 steps ahead
-    for _ in range(n + 1):
-        fast = fast.next
-    
-    # Move both pointers until fast reaches end
-    while fast:
-        fast = fast.next
-        slow = slow.next
-    
-    # slow is now at the node before the one to remove
-    slow.next = slow.next.next
-    
-    return dummy.next
-```
-
-### 🔍 Two Pointers Technique
-
-The key insight is maintaining a gap of `n+1` nodes between pointers:
-
-```text
-Initial: dummy->1->2->3->4->5->null, n=2
-After setup: 
-         slow  fast
-         dummy->1->2->3->4->5->null
-                   ^     ^
-                   |     |
-                   gap = n+1 = 3
-
-After moving:
-               slow     fast
-         dummy->1->2->3->4->5->null
-                     ^        ^
-                     |        |
-                     gap = 3
-```
-
----
-
-## Problem 3: Intersection of Two Linked Lists
-
-**LeetCode 160** | **Difficulty: Medium**
-
-### Problem Description
-
-Given the heads of two singly linked-lists headA and headB, return the node at which the two lists intersect. If they do not intersect, return null.
-
-**Example:**
-
-```text
-Input: intersectVal = 8, listA = [4,1,8,4,5], listB = [5,6,1,8,4,5]
-Output: Reference to node with value = 8
-```
-
-### Solution 1: Hash Set
-
-```python
-def getIntersectionNode(headA, headB):
-    """
-    Find intersection using hash set.
-    
-    Time: O(m + n) where m, n are lengths of lists
-    Space: O(m) to store nodes from first list
-    """
-    if not headA or not headB:
-        return None
-    
-    # Store all nodes from list A
-    visited = set()
-    current = headA
-    while current:
-        visited.add(current)
-        current = current.next
-    
-    # Check if any node from list B is in visited set
-    current = headB
-    while current:
-        if current in visited:
-            return current
-        current = current.next
-    
-    return None
-```
-
-### Solution 2: Two Pointers (Optimal)
-
-```python
-def getIntersectionNodeTwoPointers(headA, headB):
-    """
-    Find intersection using two pointers.
-    
-    Time: O(m + n)
-    Space: O(1)
-    """
-    if not headA or not headB:
-        return None
-    
-    pointerA = headA
-    pointerB = headB
-    
-    # Traverse both lists
-    while pointerA != pointerB:
-        # If reached end, switch to other list
-        pointerA = pointerA.next if pointerA else headB
-        pointerB = pointerB.next if pointerB else headA
-    
-    return pointerA  # Either intersection point or None
-```
-
-### 🔍 Two Pointers Logic
-
-The elegant insight: if lists intersect, pointers will meet at intersection after traversing both lists.
-
-```text
-List A: 4->1->8->4->5
-List B: 5->6->1->8->4->5
-                 ^
-                 intersection
-
-Pointer A path: 4->1->8->4->5->5->6->1->8 (meets here)
-Pointer B path: 5->6->1->8->4->5->4->1->8 (meets here)
-```
-
----
-
-## Problem 4: Palindrome Linked List
-
-**LeetCode 234** | **Difficulty: Medium**
-
-### Problem Description
-
-Given the head of a singly linked list, return true if it is a palindrome.
-
-**Example:**
-
-```text
-Input: head = 1->2->2->1
-Output: true
-
-Input: head = 1->2
-Output: false
-```
-
-### Solution 1: Array Conversion
-
-```python
-def isPalindrome(head):
-    """
-    Check palindrome by converting to array.
-    
-    Time: O(n)
-    Space: O(n) for array storage
-    """
-    values = []
-    current = head
-    
-    # Store all values in array
-    while current:
-        values.append(current.val)
-        current = current.next
-    
-    # Check if array is palindrome
-    return values == values[::-1]
-```
-
-### Solution 2: Reverse Second Half
-
-```python
-def isPalindromeOptimal(head):
-    """
-    Check palindrome by reversing second half.
-    
-    Time: O(n)
-    Space: O(1)
-    """
-    if not head or not head.next:
-        return True
-    
-    # Find middle using two pointers
-    slow = fast = head
-    while fast.next and fast.next.next:
-        slow = slow.next
-        fast = fast.next.next
-    
-    # Reverse second half
-    second_half = reverseList(slow.next)
-    
-    # Compare first and second halves
-    first_half = head
-    while second_half:
-        if first_half.val != second_half.val:
-            return False
-        first_half = first_half.next
-        second_half = second_half.next
-    
-    return True
-
-def reverseList(head):
-    """Helper function to reverse a linked list."""
-    prev = None
-    current = head
-    while current:
-        next_temp = current.next
-        current.next = prev
-        prev = current
-        current = next_temp
-    return prev
-```
-
-### 🔍 Optimal Approach Breakdown
-
-1. **Find middle**: Use fast/slow pointers
-2. **Reverse second half**: Reverse from middle to end
-3. **Compare**: Walk through both halves simultaneously
-4. **Space optimization**: Only uses O(1) extra space
-
----
-
-## Problem 5: Odd Even Linked List
-
-**LeetCode 328** | **Difficulty: Medium**
-
-### Problem Description
-
-Given the head of a singly linked list, group all the nodes with odd indices together followed by the nodes with even indices, and return the reordered list.
-
-**Example:**
-
-```text
-Input: head = 1->2->3->4->5
-Output: 1->3->5->2->4
-```
-
-### Solution
-
-```python
-def oddEvenList(head):
-    """
-    Group odd and even positioned nodes.
-    
-    Time: O(n)
-    Space: O(1)
-    """
-    if not head or not head.next:
-        return head
-    
-    # Initialize pointers
-    odd = head
-    even = head.next
-    even_head = even  # Keep reference to even list start
-    
-    # Rearrange nodes
-    while even and even.next:
-        odd.next = even.next
-        odd = odd.next
-        even.next = odd.next
-        even = even.next
-    
-    # Connect odd list to even list
-    odd.next = even_head
-    
-    return head
-
-# Test
-head = ListNode(1)
-head.next = ListNode(2)
-head.next.next = ListNode(3)
-head.next.next.next = ListNode(4)
-head.next.next.next.next = ListNode(5)
-
-result = oddEvenList(head)
-# Result: 1->3->5->2->4
-```
-
-### 🔍 Pattern Recognition
-
-This problem demonstrates the **two-list manipulation** pattern:
-
-1. **Separate**: Create two separate chains (odd and even)
-2. **Maintain**: Keep track of both chains simultaneously
-3. **Connect**: Join the chains at the end
-
----
-
-## Problem 6: Rotate List
-
-**LeetCode 61** | **Difficulty: Medium**
-
-### Problem Description
-
-Given the head of a linked list, rotate the list to the right by k places.
-
-**Example:**
-
-```text
-Input: head = 1->2->3->4->5, k = 2
-Output: 4->5->1->2->3
-```
-
-### Solution
-
-```python
-def rotateRight(head, k):
-    """
-    Rotate linked list to the right by k places.
-    
-    Time: O(n)
-    Space: O(1)
-    """
-    if not head or not head.next or k == 0:
-        return head
-    
-    # Find length and make it circular
-    length = 1
-    current = head
-    while current.next:
-        current = current.next
-        length += 1
-    
-    # Connect tail to head (make circular)
-    current.next = head
-    
-    # Find new tail (length - k % length - 1 steps from head)
-    k = k % length
-    steps_to_new_tail = length - k
-    new_tail = head
-    
-    for _ in range(steps_to_new_tail - 1):
-        new_tail = new_tail.next
-    
-    # New head is next to new tail
-    new_head = new_tail.next
-    
-    # Break the circle
-    new_tail.next = None
-    
-    return new_head
-```
-
-### 🔍 Key Insights
-
-1. **Circular approach**: Temporarily make list circular for easier rotation
-2. **Modulo operation**: Handle cases where k > length
-3. **New head/tail**: Calculate where to break the circle
-
----
-
-## Problem 7: Swap Nodes in Pairs
-
-**LeetCode 24** | **Difficulty: Medium**
-
-### Problem Description
-
-Given a linked list, swap every two adjacent nodes and return its head.
-
-**Example:**
-
-```text
-Input: head = 1->2->3->4
-Output: 2->1->4->3
-```
-
-### Solution 1: Iterative
-
-```python
-def swapPairs(head):
-    """
-    Swap every two adjacent nodes iteratively.
-    
-    Time: O(n)
-    Space: O(1)
-    """
-    dummy = ListNode(0)
-    dummy.next = head
-    prev = dummy
-    
-    while prev.next and prev.next.next:
-        # Nodes to be swapped
-        first = prev.next
-        second = prev.next.next
-        
-        # Swapping
-        prev.next = second
-        first.next = second.next
-        second.next = first
-        
-        # Move prev to end of swapped pair
-        prev = first
-    
-    return dummy.next
-```
-
-### Solution 2: Recursive
-
-```python
-def swapPairsRecursive(head):
-    """
-    Swap every two adjacent nodes recursively.
-    
-    Time: O(n)
-    Space: O(n) for recursion stack
-    """
-    # Base case
-    if not head or not head.next:
-        return head
-    
-    # Save second node
-    second = head.next
-    
-    # Recursively swap the rest
-    head.next = swapPairsRecursive(second.next)
-    
-    # Swap current pair
-    second.next = head
-    
-    return second
-```
-
----
-
-## 🎯 Key Patterns in Medium Problems
-
-### 1. Two Pointers Technique
-
-**Applications:**
-- Finding nth node from end
-- Detecting cycles
-- Finding intersection
-- Finding middle
-
-**Pattern:**
-```python
-slow = fast = head
-while fast and fast.next:
-    slow = slow.next
-    fast = fast.next.next
-```
-
-### 2. Dummy Node Pattern
-
-**Applications:**
-- Simplifying edge cases
-- Node removal operations
-- List manipulation
-
-**Pattern:**
-```python
-dummy = ListNode(0)
-dummy.next = head
-# Work with dummy.next
-return dummy.next
-```
-
-### 3. List Reversal
-
-**Applications:**
-- Palindrome checking
-- K-group reversal
-- General list manipulation
-
-**Pattern:**
-```python
-prev = None
-current = head
-while current:
-    next_temp = current.next
-    current.next = prev
-    prev = current
-    current = next_temp
-```
-
-### 4. Multiple Pass Approach
-
-**Applications:**
-- When you need list length
-- Complex operations requiring preprocessing
-
-**Pattern:**
-```python
-# First pass: gather information
-length = get_length(head)
-# Second pass: actual operation
-```
-
-## 📚 Practice Tips
-
-### 1. Visualize the Problem
-
-Always draw the linked list and trace through your algorithm:
-
-```text
-Before: 1 -> 2 -> 3 -> 4 -> 5
-After:  1 -> 3 -> 5 -> 2 -> 4
-```
-
-### 2. Handle Edge Cases
-
-Common edge cases to consider:
-- Empty list (`head = None`)
-- Single node list
-- Two node list
-- Operations at boundaries
-
-### 3. Think About Space Complexity
-
-- Can you solve it in O(1) space?
-- Is the recursive solution worth the O(n) space?
-- When is extra space justified?
-
-### 4. Practice Pattern Recognition
-
-Identify which pattern applies:
-- Need to find middle? → Two pointers
-- Need to remove nodes? → Dummy node
-- Need to reverse? → Three pointers
-- Need list info first? → Two passes
-
-## 🏆 Progress Checklist
-
-- [ ] **Add Two Numbers** - Master carry handling and unequal lengths
-- [ ] **Remove Nth from End** - Learn two-pointer gap technique
-- [ ] **Intersection of Lists** - Understand path switching approach
-- [ ] **Palindrome List** - Practice list reversal in context
-- [ ] **Odd Even List** - Master two-list manipulation
-- [ ] **Rotate List** - Handle circular operations
-- [ ] **Swap Pairs** - Practice node swapping patterns
-
-## 🚀 Next Steps
-
-Ready for the ultimate challenge? Advance to **[Hard Problems](hard-problems.md)** where you'll tackle:
-
-- Complex multi-pointer algorithms
-- Advanced data structure combinations
-- Optimization challenges
-- Real-world system design patterns
-
----
-
-*Congratulations on mastering medium-level linked list problems! You're well-prepared for advanced challenges.*
+    **🏆 Best Practices:**
+    - Use dummy nodes for simpler code
+    - Draw diagrams for complex pointer operations
+    - Test with edge cases (empty, single node, cycles)
+    - Consider both iterative and recursive approaches
+
+## 📝 Summary
+
+Medium linked list problems focus on:
+
+- **Advanced Pointer Manipulation** for complex operations
+- **Two-Pointer Techniques** for efficient traversal
+- **List Transformation** through reversal and rearrangement
+- **Cycle Detection** and handling
+- **Optimization Strategies** for time and space efficiency
+
+These problems prepare you for senior-level interviews and complex system implementations requiring sophisticated linked list operations.

@@ -9,10 +9,15 @@ Trees are fundamental hierarchical data structures that form the backbone of man
 This section provides complete coverage of tree data structures:
 
 ### 🌱 **Basic Trees**
+- [Tree Fundamentals](fundamentals.md) - Core concepts and algorithms
 - [Binary Trees](binary-trees.md) - Foundation of tree structures
 - [Binary Search Trees](bst.md) - Ordered trees for efficient operations
 - [Tree Traversal](tree-traversal.md) - DFS, BFS, and specialized traversals
-- [Tree Problems](tree-problems.md) - Common interview problems and patterns
+
+### 🎯 **Problem Sets**
+- [Easy Problems](easy-problems.md) - Foundation tree problems
+- [Medium Problems](medium-problems.md) - Intermediate tree algorithms
+- [Hard Problems](hard-problems.md) - Advanced tree challenges
 
 ### 🚀 **Advanced Trees**
 - [AVL Trees](avl-trees.md) - Self-balancing BSTs
@@ -63,15 +68,19 @@ Trees are essential because they:
 ## 🛣️ Learning Paths
 
 ### **For Beginners**
-1. [Binary Trees](binary-trees.md) → [Tree Traversal](tree-traversal.md) → [BST](bst.md) → [Tree Problems](tree-problems.md)
+
+1. [Tree Fundamentals](fundamentals.md) → [Binary Trees](binary-trees.md) → [Tree Traversal](tree-traversal.md) → [BST](bst.md) → [Easy Problems](easy-problems.md)
 
 ### **For Interviews**
-1. [Binary Trees](binary-trees.md) → [BST](bst.md) → [Tree Problems](tree-problems.md) → [Tries](tries.md) → [Heaps](heaps.md)
+
+1. [Tree Fundamentals](fundamentals.md) → [Binary Trees](binary-trees.md) → [BST](bst.md) → [Easy Problems](easy-problems.md) → [Medium Problems](medium-problems.md) → [Hard Problems](hard-problems.md)
 
 ### **For Competitive Programming**
+
 1. [Segment Trees](segment-trees.md) → [Fenwick Trees](fenwick-trees.md) → [Heavy-Light Decomposition](heavy-light.md)
 
 ### **For System Design**
+
 1. [B-Trees](b-trees.md) → [Tries](tries.md) → [Advanced concepts for databases and distributed systems]
 
 ## 📚 Tree Concepts Reference
