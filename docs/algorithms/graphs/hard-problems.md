@@ -52,354 +52,347 @@ Master advanced graph algorithms and complex optimization techniques:
     - Multi-level graph representations
     - Abstract graph constructions
 
-=== "💡 Solutions"
+=== "� Study Plan"
 
-    === "Alien Dictionary"
-        ```python
-        from collections import defaultdict, deque
-
-        def alienOrder(words):
-            """
-            Derive alien language character order from dictionary
-            Use topological sort on character dependency graph
-            """
-            # Initialize in-degree for all characters
-            in_degree = {c: 0 for word in words for c in word}
-            graph = defaultdict(list)
-            
-            # Build graph from adjacent word pairs
-            for i in range(len(words) - 1):
-                word1, word2 = words[i], words[i + 1]
-                min_len = min(len(word1), len(word2))
-                
-                # Invalid case: longer word is prefix of shorter
-                if len(word1) > len(word2) and word1[:min_len] == word2[:min_len]:
-                    return ""
-                
-                # Find first differing character
-                for j in range(min_len):
-                    if word1[j] != word2[j]:
-                        if word2[j] not in graph[word1[j]]:
-                            graph[word1[j]].append(word2[j])
-                            in_degree[word2[j]] += 1
-                        break
-            
-            # Topological sort using Kahn's algorithm
-            queue = deque([c for c in in_degree if in_degree[c] == 0])
-            result = []
-            
-            while queue:
-                char = queue.popleft()
-                result.append(char)
-                
-                for neighbor in graph[char]:
-                    in_degree[neighbor] -= 1
-                    if in_degree[neighbor] == 0:
-                        queue.append(neighbor)
-            
-            # Check for cycle
-            return "".join(result) if len(result) == len(in_degree) else ""
-        ```
+    **Week 1: Advanced Graph Theory (Problems 1-5)**
+    - Master topological sort and Tarjan's algorithms
+    - Practice complex graph construction
     
-    === "Critical Connections"
-        ```python
-        def criticalConnections(n, connections):
-            """
-            Find bridges using Tarjan's algorithm
-            Bridge: edge whose removal increases connected components
-            """
-            # Build adjacency list
-            graph = [[] for _ in range(n)]
-            for u, v in connections:
-                graph[u].append(v)
-                graph[v].append(u)
-            
-            discovery = [-1] * n  # Discovery time
-            low = [-1] * n        # Low-link value
-            parent = [-1] * n     # Parent in DFS tree
-            bridges = []
-            time = [0]
-            
-            def tarjan_dfs(u):
-                discovery[u] = low[u] = time[0]
-                time[0] += 1
-                
-                for v in graph[u]:
-                    if discovery[v] == -1:  # Tree edge
-                        parent[v] = u
-                        tarjan_dfs(v)
-                        low[u] = min(low[u], low[v])
-                        
-                        # Bridge condition
-                        if low[v] > discovery[u]:
-                            bridges.append([u, v])
-                    elif v != parent[u]:  # Back edge
-                        low[u] = min(low[u], discovery[v])
-            
-            for i in range(n):
-                if discovery[i] == -1:
-                    tarjan_dfs(i)
-            
-            return bridges
-        ```
+    **Week 2: Network Flow & Optimization (Problems 6-10)**
+    - Learn flow algorithms and path optimization
+    - Focus on multi-constraint problems
     
-    === "Reconstruct Itinerary"
-        ```python
-        from collections import defaultdict
-        import heapq
+    **Week 3: Expert Level (Problems 11-15)**
+    - Advanced algorithms and complex modeling
+    - Competitive programming techniques
 
-        def findItinerary(tickets):
-            """
-            Find Eulerian path using Hierholzer's algorithm
-            Use heap for lexicographical ordering
-            """
-            # Build graph with min-heap for each departure
-            graph = defaultdict(list)
-            for src, dst in tickets:
-                heapq.heappush(graph[src], dst)
-            
-            def dfs(airport):
-                while graph[airport]:
-                    next_airport = heapq.heappop(graph[airport])
-                    dfs(next_airport)
-                path.append(airport)
-            
-            path = []
-            dfs("JFK")
-            return path[::-1]
-        ```
-    
-    === "Min Cost Valid Path"
-        ```python
-        from collections import deque
+=== "Alien Dictionary"
 
-        def minCost(grid):
-            """
-            0-1 BFS for minimum cost path
-            Cost 0: follow existing direction, Cost 1: change direction
-            """
-            m, n = len(grid), len(grid[0])
-            directions = {1: (0, 1), 2: (0, -1), 3: (1, 0), 4: (-1, 0)}
-            all_dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    **Problem Statement:**
+    There is a new alien language that uses the English alphabet. However, the order among the letters is unknown to you. You are given a list of strings words from the alien language's dictionary, where the strings in words are sorted lexicographically by the rules of this new language.
+
+    **Example:**
+    ```text
+    Input: words = ["wrt","wrf","er","ett","rftt"]
+    Output: "wertf"
+    ```
+
+    **Solution:**
+    ```python
+    from collections import defaultdict, deque
+
+    def alienOrder(words):
+        """
+        Derive alien language character order from dictionary
+        Use topological sort on character dependency graph
+        
+        Time: O(C) where C is total content of words
+        Space: O(1) as max 26 characters
+        """
+        # Initialize in-degree for all characters
+        in_degree = {c: 0 for word in words for c in word}
+        graph = defaultdict(list)
+        
+        # Build graph from adjacent word pairs
+        for i in range(len(words) - 1):
+            word1, word2 = words[i], words[i + 1]
+            min_len = min(len(word1), len(word2))
             
-            dq = deque([(0, 0, 0)])  # (row, col, cost)
-            visited = set()
+            # Invalid case: longer word is prefix of shorter
+            if len(word1) > len(word2) and word1[:min_len] == word2[:min_len]:
+                return ""
             
-            while dq:
-                r, c, cost = dq.popleft()
-                
-                if (r, c) in visited:
-                    continue
-                visited.add((r, c))
-                
-                if r == m - 1 and c == n - 1:
-                    return cost
-                
-                for dr, dc in all_dirs:
-                    nr, nc = r + dr, c + dc
+            # Find first differing character
+            for j in range(min_len):
+                if word1[j] != word2[j]:
+                    if word2[j] not in graph[word1[j]]:
+                        graph[word1[j]].append(word2[j])
+                        in_degree[word2[j]] += 1
+                    break
+        
+        # Topological sort using Kahn's algorithm
+        queue = deque([c for c in in_degree if in_degree[c] == 0])
+        result = []
+        
+        while queue:
+            char = queue.popleft()
+            result.append(char)
+            
+            for neighbor in graph[char]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+        
+        # Check for cycle
+        return "".join(result) if len(result) == len(in_degree) else ""
+    ```
+
+    **Key Insights:**
+    - Build graph from character ordering constraints
+    - Use topological sort to find valid ordering
+    - Handle invalid cases like cycles or impossible orderings
+    - Kahn's algorithm efficiently detects cycles
+
+=== "Critical Connections"
+
+    **Problem Statement:**
+    There are n servers numbered from 0 to n - 1 connected by undirected server-to-server connections forming a network where connections[i] = [ai, bi] represents a connection between servers ai and bi. Any server can reach other servers directly or indirectly through the network. A critical connection is a connection that, if removed, will make some servers unable to reach some other servers.
+
+    **Example:**
+    ```text
+    Input: n = 4, connections = [[0,1],[1,2],[2,0],[1,3]]
+    Output: [[1,3]]
+    ```
+
+    **Solution:**
+    ```python
+    def criticalConnections(n, connections):
+        """
+        Find bridges using Tarjan's algorithm
+        Bridge: edge whose removal increases connected components
+        
+        Time: O(V+E) - single DFS traversal
+        Space: O(V+E) - graph and arrays
+        """
+        # Build adjacency list
+        graph = [[] for _ in range(n)]
+        for u, v in connections:
+            graph[u].append(v)
+            graph[v].append(u)
+        
+        discovery = [-1] * n  # Discovery time
+        low = [-1] * n        # Low-link value
+        parent = [-1] * n     # Parent in DFS tree
+        bridges = []
+        time = [0]
+        
+        def tarjan_dfs(u):
+            discovery[u] = low[u] = time[0]
+            time[0] += 1
+            
+            for v in graph[u]:
+                if discovery[v] == -1:  # Tree edge
+                    parent[v] = u
+                    tarjan_dfs(v)
+                    low[u] = min(low[u], low[v])
                     
-                    if 0 <= nr < m and 0 <= nc < n and (nr, nc) not in visited:
-                        if directions[grid[r][c]] == (dr, dc):
-                            dq.appendleft((nr, nc, cost))  # Cost 0
-                        else:
-                            dq.append((nr, nc, cost + 1))  # Cost 1
-            
-            return -1
-        ```
-    
-    === "Swim in Rising Water"
-        ```python
-        import heapq
+                    # Bridge condition
+                    if low[v] > discovery[u]:
+                        bridges.append([u, v])
+                elif v != parent[u]:  # Back edge
+                    low[u] = min(low[u], discovery[v])
+        
+        for i in range(n):
+            if discovery[i] == -1:
+                tarjan_dfs(i)
+        
+        return bridges
+    ```
 
-        def swimInWater(grid):
-            """
-            Binary search on water level + BFS reachability check
-            Alternative: Dijkstra for min-max path
-            """
-            n = len(grid)
-            
-            # Dijkstra approach: minimize maximum elevation
-            heap = [(grid[0][0], 0, 0)]
-            visited = set()
-            
-            while heap:
-                max_elev, r, c = heapq.heappop(heap)
-                
-                if (r, c) in visited:
-                    continue
-                visited.add((r, c))
-                
-                if r == n - 1 and c == n - 1:
-                    return max_elev
-                
-                for dr, dc in [(0,1), (0,-1), (1,0), (-1,0)]:
-                    nr, nc = r + dr, c + dc
-                    
-                    if 0 <= nr < n and 0 <= nc < n and (nr, nc) not in visited:
-                        new_max = max(max_elev, grid[nr][nc])
-                        heapq.heappush(heap, (new_max, nr, nc))
-            
-            return -1
-        ```
-    
-    === "Bus Routes"
-        ```python
-        from collections import defaultdict, deque
+    **Key Insights:**
+    - Tarjan's algorithm finds bridges in single DFS pass
+    - Low-link values track earliest reachable vertex
+    - Bridge exists when low[v] > discovery[u] for tree edge
+    - Essential for network reliability analysis
 
-        def numBusesToDestination(routes, source, target):
-            """
-            Model as graph of routes (not stops)
-            BFS to find minimum route changes
-            """
-            if source == target:
-                return 0
-            
-            # Map stops to routes containing them
-            stop_to_routes = defaultdict(list)
-            for i, route in enumerate(routes):
-                for stop in route:
-                    stop_to_routes[stop].append(i)
-            
-            # BFS on routes
-            queue = deque()
-            visited_routes = set()
-            
-            for route_id in stop_to_routes[source]:
-                queue.append((route_id, 1))
-                visited_routes.add(route_id)
-            
-            while queue:
-                route_id, buses = queue.popleft()
-                
-                if target in routes[route_id]:
-                    return buses
-                
-                # Explore connected routes
-                for stop in routes[route_id]:
-                    for next_route in stop_to_routes[stop]:
-                        if next_route not in visited_routes:
-                            visited_routes.add(next_route)
-                            queue.append((next_route, buses + 1))
-            
-            return -1
-        ```
-    
-    === "Word Ladder II"
-        ```python
-        from collections import defaultdict, deque
+=== "Reconstruct Itinerary"
 
-        def findLadders(beginWord, endWord, wordList):
-            """
-            BFS to find shortest distances + DFS to construct paths
-            """
-            if endWord not in wordList:
-                return []
-            
-            wordList = set(wordList)
-            queue = deque([beginWord])
-            distances = {beginWord: 0}
-            graph = defaultdict(list)
-            found = False
-            
-            while queue and not found:
-                level_words = set()
-                
-                for _ in range(len(queue)):
-                    word = queue.popleft()
-                    
-                    # Try all single-character changes
-                    for i in range(len(word)):
-                        for c in 'abcdefghijklmnopqrstuvwxyz':
-                            if c == word[i]:
-                                continue
-                            
-                            next_word = word[:i] + c + word[i+1:]
-                            
-                            if next_word in wordList:
-                                if next_word == endWord:
-                                    found = True
-                                
-                                if next_word not in distances:
-                                    if next_word not in level_words:
-                                        level_words.add(next_word)
-                                        queue.append(next_word)
-                                        distances[next_word] = distances[word] + 1
-                                
-                                # Build transformation graph
-                                if distances.get(next_word, float('inf')) == distances[word] + 1:
-                                    graph[word].append(next_word)
-            
-            # DFS to find all shortest paths
-            def dfs(word, path, target):
-                if word == target:
-                    result.append(path)
-                    return
-                
-                for next_word in graph[word]:
-                    dfs(next_word, path + [next_word], target)
-            
-            result = []
-            if endWord in distances:
-                dfs(beginWord, [beginWord], endWord)
-            
-            return result
-        ```
-    
-    === "Maximum Flow"
-        ```python
-        from collections import defaultdict, deque
+    **Problem Statement:**
+    You are given a list of airline tickets where tickets[i] = [fromi, toi] represent the departure and the arrival airports of one ticket. Reconstruct the itinerary in order and return it. All of the tickets belong to a man who departs from "JFK", thus, the itinerary must begin with "JFK".
 
-        class MaxFlow:
-            def __init__(self, edges):
-                self.graph = defaultdict(dict)
-                for u, v, capacity in edges:
-                    self.graph[u][v] = capacity
-                    if v not in self.graph or u not in self.graph[v]:
-                        self.graph[v][u] = 0  # Reverse edge
+    **Example:**
+    ```text
+    Input: tickets = [["MUC","LHR"],["JFK","MUC"],["SFO","SJC"],["LHR","SFO"]]
+    Output: ["JFK","MUC","LHR","SFO","SJC"]
+    ```
+
+    **Solution:**
+    ```python
+    from collections import defaultdict
+    import heapq
+
+    def findItinerary(tickets):
+        """
+        Find Eulerian path using Hierholzer's algorithm
+        Use heap for lexicographical ordering
+        
+        Time: O(E log E) - sorting edges
+        Space: O(E) - graph storage
+        """
+        # Build graph with min-heap for each departure
+        graph = defaultdict(list)
+        for src, dst in tickets:
+            heapq.heappush(graph[src], dst)
+        
+        def dfs(airport):
+            while graph[airport]:
+                next_airport = heapq.heappop(graph[airport])
+                dfs(next_airport)
+            path.append(airport)
+        
+        path = []
+        dfs("JFK")
+        return path[::-1]
+    ```
+
+    **Key Insights:**
+    - Problem is finding Eulerian path in directed graph
+    - Use heap to ensure lexicographical order
+    - Hierholzer's algorithm builds path in reverse
+    - DFS with edge removal handles the traversal
+
+=== "Min Cost Valid Path"
+
+    **Problem Statement:**
+    Given a m x n grid where each cell has a sign pointing to the next cell you should visit if you are currently in this cell. The sign of grid[i][j] can be: 1 which means go to the cell to the right, 2 which means go to the cell to the left, 3 which means go to the cell below, 4 which means go to the cell above. Return the minimum cost to make the path from the top-left cell to the bottom-right cell valid.
+
+    **Example:**
+    ```text
+    Input: grid = [[1,1,1,1],[2,2,2,2],[1,1,1,1],[2,2,2,2]]
+    Output: 3
+    ```
+
+    **Solution:**
+    ```python
+    from collections import deque
+
+    def minCost(grid):
+        """
+        0-1 BFS for minimum cost path
+        Cost 0: follow existing direction, Cost 1: change direction
+        
+        Time: O(mn) - each cell processed once
+        Space: O(mn) - deque storage
+        """
+        m, n = len(grid), len(grid[0])
+        directions = {1: (0, 1), 2: (0, -1), 3: (1, 0), 4: (-1, 0)}
+        all_dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        
+        dq = deque([(0, 0, 0)])  # (row, col, cost)
+        visited = set()
+        
+        while dq:
+            r, c, cost = dq.popleft()
             
-            def bfs_find_path(self, source, sink, parent):
-                """Find augmenting path using BFS (Edmonds-Karp)"""
-                visited = {source}
-                queue = deque([source])
+            if (r, c) in visited:
+                continue
+            visited.add((r, c))
+            
+            if r == m - 1 and c == n - 1:
+                return cost
+            
+            for dr, dc in all_dirs:
+                nr, nc = r + dr, c + dc
                 
-                while queue:
-                    u = queue.popleft()
-                    
-                    for v in self.graph[u]:
-                        if v not in visited and self.graph[u][v] > 0:
-                            visited.add(v)
-                            parent[v] = u
-                            if v == sink:
-                                return True
-                            queue.append(v)
+                if 0 <= nr < m and 0 <= nc < n and (nr, nc) not in visited:
+                    if directions[grid[r][c]] == (dr, dc):
+                        dq.appendleft((nr, nc, cost))  # Cost 0
+                    else:
+                        dq.append((nr, nc, cost + 1))  # Cost 1
+        
+        return -1
+    ```
+
+    **Key Insights:**
+    - 0-1 BFS optimal for binary edge weights
+    - Following sign has cost 0, changing direction costs 1
+    - Use deque: appendleft for cost 0, append for cost 1
+    - Guarantees shortest path in linear time
+
+=== "Swim in Rising Water"
+
+    **Problem Statement:**
+    On an N x N grid, each square grid[i][j] represents the elevation at that point (i,j). Now rain starts to fall. At time t, the depth of the water everywhere is t. You can swim from a square to another 4-directionally adjacent square if and only if the elevation of both squares individually are at most t. You can swim infinite distance in zero time. Of course, you must stay within the boundaries of the grid during your swim.
+
+    **Example:**
+    ```text
+    Input: grid = [[0,2],[1,3]]
+    Output: 3
+    ```
+
+    **Solution:**
+    ```python
+    import heapq
+
+    def swimInWater(grid):
+        """
+        Dijkstra approach: minimize maximum elevation
+        
+        Time: O(n² log n) - priority queue operations
+        Space: O(n²) - heap and visited set
+        """
+        n = len(grid)
+        
+        # Dijkstra approach: minimize maximum elevation
+        heap = [(grid[0][0], 0, 0)]
+        visited = set()
+        
+        while heap:
+            max_elev, r, c = heapq.heappop(heap)
+            
+            if (r, c) in visited:
+                continue
+            visited.add((r, c))
+            
+            if r == n - 1 and c == n - 1:
+                return max_elev
+            
+            for dr, dc in [(0,1), (0,-1), (1,0), (-1,0)]:
+                nr, nc = r + dr, c + dc
+                
+                if 0 <= nr < n and 0 <= nc < n and (nr, nc) not in visited:
+                    new_max = max(max_elev, grid[nr][nc])
+                    heapq.heappush(heap, (new_max, nr, nc))
+        
+        return -1
+    ```
+
+    **Alternative (Binary Search):**
+    ```python
+    def swimInWater(grid):
+        """Binary search on answer + BFS validation"""
+        n = len(grid)
+        
+        def canSwim(time):
+            if grid[0][0] > time:
                 return False
             
-            def max_flow(self, source, sink):
-                """Ford-Fulkerson with BFS (Edmonds-Karp)"""
-                parent = {}
-                max_flow_value = 0
-                
-                while self.bfs_find_path(source, sink, parent):
-                    # Find bottleneck capacity
-                    path_flow = float('inf')
-                    s = sink
-                    while s != source:
-                        path_flow = min(path_flow, self.graph[parent[s]][s])
-                        s = parent[s]
+            visited = [[False] * n for _ in range(n)]
+            queue = [(0, 0)]
+            visited[0][0] = True
+            
+            while queue:
+                new_queue = []
+                for r, c in queue:
+                    if r == n-1 and c == n-1:
+                        return True
                     
-                    # Update residual capacities
-                    max_flow_value += path_flow
-                    v = sink
-                    while v != source:
-                        u = parent[v]
-                        self.graph[u][v] -= path_flow
-                        self.graph[v][u] += path_flow
-                        v = parent[v]
-                    
-                    parent.clear()
-                
-                return max_flow_value
-        ```
+                    for dr, dc in [(0,1), (0,-1), (1,0), (-1,0)]:
+                        nr, nc = r + dr, c + dc
+                        if (0 <= nr < n and 0 <= nc < n and 
+                            not visited[nr][nc] and grid[nr][nc] <= time):
+                            visited[nr][nc] = True
+                            new_queue.append((nr, nc))
+                queue = new_queue
+            
+            return False
+        
+        left, right = 0, n * n - 1
+        while left < right:
+            mid = (left + right) // 2
+            if canSwim(mid):
+                right = mid
+            else:
+                left = mid + 1
+        
+        return left
+    ```
+
+    **Key Insights:**
+    - Problem asks for minimum time to reach destination
+    - Dijkstra minimizes maximum elevation in path
+    - Binary search approach validates reachability at each time
+    - Both approaches achieve optimal time complexity
 
 === "📊 Advanced Techniques"
 

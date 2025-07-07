@@ -224,6 +224,13 @@ nav:
       - Video Streaming Platform: system-design/case-studies/video-streaming-platform/index.md
   - Algorithms:
     - algorithms/index.md
+    - Fundamentals:
+      - Overview: algorithms/fundamentals/index.md
+      - Time Complexity: algorithms/fundamentals/time-complexity.md
+      - Learning Paths: algorithms/fundamentals/learning-paths.md
+      - Problem-Solving Patterns: algorithms/fundamentals/problem-solving-patterns.md
+      - Interview Strategy: algorithms/fundamentals/interview-strategy.md
+      - Preparation Planning: algorithms/fundamentals/preparation-planning.md
     - Data Structures:
       - algorithms/data-structures/index.md
       - Arrays:

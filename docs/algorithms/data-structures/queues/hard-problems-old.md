@@ -1,102 +1,22 @@
-# Queues - Hard Problems
+# Queues: Hard Problems
 
-## 🔥 Advanced Queue Techniques
+## 🔥 Advanced Queue Challenges
 
-Master sophisticated queue techniques for complex scenarios:
+These problems require sophisticated queue techniques, multiple data structures, and complex algorithms.
 
-- Multi-source BFS traversals
-- Bidirectional search algorithms
-- Priority queue optimizations
-- BFS with state tracking
-- A* search with queue optimization
+---
 
-=== "📋 Problem List"
+## Problem 1: Shortest Path in Binary Matrix
 
-    | # | Problem | Difficulty | Topics | Solution |
-    |---|---------|------------|--------|----------|
-    | 1 | Shortest Path in Binary Matrix | Hard | BFS, Matrix Traversal | [Solution](#problem-1) |
-    | 2 | Sliding Window Median | Hard | Two Heaps, Sliding Window | [Solution](#problem-2) |
-    | 3 | Serialize and Deserialize Binary Tree | Hard | BFS/DFS with Queue | [Solution](#problem-3) |
-    | 4 | Word Ladder II | Hard | BFS, Backtracking | [Solution](#problem-4) |
-    | 5 | Shortest Bridge | Hard | BFS/DFS Hybrid | [Solution](#problem-5) |
-    | 6 | Cut Off Trees for Golf Event | Hard | Multiple BFS, A* | [Solution](#problem-6) |
-    | 7 | Bus Routes | Hard | BFS, Graph | [Solution](#problem-7) |
-    | 8 | Alien Dictionary | Hard | Topological Sort | [Solution](#problem-8) |
-    | 9 | Minimum Spanning Tree | Hard | Prim's Algorithm | [Solution](#problem-9) |
-    | 10 | Sliding Puzzle | Hard | A* Search | [Solution](#problem-10) |
-    | 11 | Network Delay Time | Hard | Dijkstra's Algorithm | [Solution](#problem-11) |
-    | 12 | Cheapest Flights Within K Stops | Hard | Bellman-Ford | [Solution](#problem-12) |
-    | 13 | Trapping Rain Water II | Hard | Priority Queue | [Solution](#problem-13) |
-    | 14 | Rearrange String k Distance Apart | Hard | Greedy, Priority Queue | [Solution](#problem-14) |
-    | 15 | Minimum Cost to Hire K Workers | Hard | Priority Queue | [Solution](#problem-15) |
+**Difficulty:** Hard  
+**Pattern:** BFS with Obstacles  
+**Time:** O(n²) | **Space:** O(n²)
 
-=== "🎯 Interview Tips"
+### Problem Statement
 
-    **Multi-Source BFS Techniques:**
-    
-    - Initialize queue with all sources at once (distance 0)
-    - Process layer by layer to find shortest paths
-    - Track visited nodes to avoid cycles
-    
-    **Bidirectional BFS Strategy:**
-    
-    - Run two BFS searches simultaneously (from start and end)
-    - Alternate between them, prioritizing smaller frontier
-    - Stop when frontiers meet, calculate minimum distance
-    
-    **Priority Queue Optimization:**
-    
-    - Use priority queues for greedy selection (Dijkstra's, A*)
-    - Maintain heap invariants during updates
-    - Consider lazy deletion for sliding window problems
-    
-    **State-Space Reduction:**
-    
-    - Compress state representation when possible
-    - Use bit manipulation for compact state tracking
-    - Employ memoization to avoid redundant computations
-    
-    **A* Search Heuristics:**
-    
-    - Choose admissible heuristics (never overestimate)
-    - Manhattan distance for grid problems
-    - Custom heuristics for domain-specific problems
+Given an `n x n` binary matrix `grid`, return the length of the shortest clear path from top-left to bottom-right. If no path exists, return `-1`.
 
-=== "📚 Study Plan"
-
-    ### Week 1-2: Foundation
-    
-    - Review BFS and queue implementations
-    - Master basic graph representations
-    - Implement priority queue operations
-    
-    ### Week 3-4: Intermediate Techniques
-    
-    - Practice bidirectional BFS problems
-    - Implement sliding window with queues
-    - Learn state encoding techniques
-    
-    ### Week 5-6: Advanced Algorithms
-    
-    - Study Dijkstra's and A* algorithms
-    - Implement lazy deletion techniques
-    - Practice multi-source BFS problems
-    
-    ### Week 7-8: Mastery
-    
-    - Tackle complex hybrid BFS/DFS problems
-    - Optimize space/time complexity
-    - Design custom heuristics for A* search
-    
-    ### Resources
-    
-    - **Books:** 
-      - "Algorithm Design Manual" (Skiena)
-      - "Algorithms" (Sedgewick & Wayne)
-    
-    - **Online:**
-      - Stanford CS 161 - Design and Analysis of Algorithms
-      - MIT 6.006 - Introduction to Algorithms
+A clear path is from `(0,0)` to `(n-1,n-1)` such that all visited cells are 0, and you can move in 8 directions.
 
 ### Solution
 

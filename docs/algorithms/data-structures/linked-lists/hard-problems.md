@@ -1,717 +1,1294 @@
-# Linked Lists: Hard Problems
-
-These advanced problems will test your mastery of linked list concepts and push you to combine multiple techniques. Success here means you've truly mastered linked lists!
+# Linked Lists - Hard Problems
 
 ## 🎯 Learning Objectives
 
-By completing these problems, you'll achieve:
+Master advanced linked list techniques and complex algorithms:
 
-- Mastery of complex pointer manipulation
-- Ability to combine multiple algorithms  
-- Advanced optimization techniques
-- Real-world problem-solving skills
-- Preparation for system design interviews
+- Advanced pointer manipulation and reversal techniques
+- Complex cycle detection and removal
+- Merging and sorting multiple lists
+- Advanced memory management
+- Real-world implementation challenges
 
----
+=== "Problem 1: Merge k Sorted Lists"
 
-## Problem 1: Merge k Sorted Lists
+    **LeetCode 23** | **Difficulty: Hard**
 
-**LeetCode 23** | **Difficulty: Hard**
+    ## Problem Statement
 
-### Problem Statement
+    You are given an array of k linked-lists, each sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.
 
-You are given an array of k linked-lists, each sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.
+    **Example:**
+    ```
+    Input: lists = [[1,4,5],[1,3,4],[2,6]]
+    Output: [1,1,2,3,4,4,5,6]
+    ```
 
-**Example:**
+    ## Solution
 
-```text
-Input: lists = [[1,4,5],[1,3,4],[2,6]]
-Output: [1,1,2,3,4,4,5,6]
-```
+    ```python
+    def mergeKLists(lists):
+        """
+        Merge k sorted lists using divide and conquer.
+        
+        Time: O(N log k) where N is total number of nodes
+        Space: O(log k) for recursion stack
+        """
+        if not lists:
+            return None
+        
+        def merge_two_lists(l1, l2):
+            """Helper function to merge two sorted lists."""
+            dummy = ListNode(0)
+            current = dummy
+            
+            while l1 and l2:
+                if l1.val <= l2.val:
+                    current.next = l1
+                    l1 = l1.next
+                else:
+                    current.next = l2
+                    l2 = l2.next
+                current = current.next
+            
+            current.next = l1 or l2
+            return dummy.next
+        
+        def merge_lists(start, end):
+            """Divide and conquer approach."""
+            if start == end:
+                return lists[start]
+            
+            if start > end:
+                return None
+            
+            mid = (start + end) // 2
+            left = merge_lists(start, mid)
+            right = merge_lists(mid + 1, end)
+            
+            return merge_two_lists(left, right)
+        
+        return merge_lists(0, len(lists) - 1)
+    ```
 
-### Solution 1: Divide and Conquer
+    ## Alternative: Priority Queue Approach
 
-```python
-def mergeKLists(lists):
-    """
-    Merge k sorted lists using divide and conquer.
-    
-    Time: O(N log k) where N is total number of nodes
-    Space: O(log k) for recursion stack
-    """
-    if not lists:
-        return None
-    
-    def merge_two_lists(l1, l2):
-        """Helper function to merge two sorted lists."""
+    ```python
+    import heapq
+
+    def mergeKLists(lists):
+        """
+        Using priority queue for efficient merging.
+        
+        Time: O(N log k)
+        Space: O(k)
+        """
+        heap = []
+        
+        # Add first node of each list to heap
+        for i, head in enumerate(lists):
+            if head:
+                heapq.heappush(heap, (head.val, i, head))
+        
         dummy = ListNode(0)
         current = dummy
         
-        while l1 and l2:
-            if l1.val <= l2.val:
-                current.next = l1
-                l1 = l1.next
-            else:
-                current.next = l2
-                l2 = l2.next
+        while heap:
+            val, i, node = heapq.heappop(heap)
+            current.next = node
             current = current.next
+            
+            if node.next:
+                heapq.heappush(heap, (node.next.val, i, node.next))
         
-        current.next = l1 if l1 else l2
         return dummy.next
-    
-    def merge_lists(lists, start, end):
-        """Divide and conquer approach."""
-        if start == end:
-            return lists[start]
+    ```
+
+    ## Key Insights
+
+    - Divide and conquer reduces time complexity from O(kN) to O(N log k)
+    - Priority queue approach is more intuitive but requires additional space
+    - Both approaches maintain sorted order efficiently
+
+=== "Problem 2: Reverse Nodes in k-Group"
+
+    **LeetCode 25** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
+
+    **Example:**
+    ```
+    Input: head = [1,2,3,4,5], k = 2
+    Output: [2,1,4,3,5]
+    ```
+
+    ## Solution
+
+    ```python
+    def reverseKGroup(head, k):
+        """
+        Reverse nodes in k-group.
         
-        if start > end:
+        Time: O(n)
+        Space: O(1)
+        """
+        def reverse_linked_list(start, end):
+            """Reverse linked list from start to end (exclusive)."""
+            prev = None
+            current = start
+            
+            while current != end:
+                next_node = current.next
+                current.next = prev
+                prev = current
+                current = next_node
+            
+            return prev
+        
+        def get_kth_node(start, k):
+            """Get the kth node from start."""
+            current = start
+            for _ in range(k):
+                if not current:
+                    return None
+                current = current.next
+            return current
+        
+        dummy = ListNode(0)
+        dummy.next = head
+        prev_group = dummy
+        
+        while True:
+            # Find the start and end of current group
+            start = prev_group.next
+            end = get_kth_node(start, k)
+            
+            if not end:
+                break
+            
+            # Store the first node of next group
+            next_group = end.next
+            
+            # Reverse current group
+            reversed_head = reverse_linked_list(start, end)
+            
+            # Connect with previous group
+            prev_group.next = reversed_head
+            start.next = next_group
+            
+            # Move to next group
+            prev_group = start
+        
+        return dummy.next
+    ```
+
+    ## Key Insights
+
+    - Use helper functions to break down the complex problem
+    - Careful pointer manipulation is crucial
+    - Handle edge cases when remaining nodes < k
+
+=== "Problem 3: Copy List with Random Pointer"
+
+    **LeetCode 138** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null. Return a deep copy of the list.
+
+    ## Solution
+
+    ```python
+    def copyRandomList(head):
+        """
+        Deep copy linked list with random pointers.
+        
+        Time: O(n)
+        Space: O(1) excluding the result space
+        """
+        if not head:
             return None
         
-        mid = (start + end) // 2
-        left = merge_lists(lists, start, mid)
-        right = merge_lists(lists, mid + 1, end)
+        # Step 1: Create interleaved list
+        current = head
+        while current:
+            new_node = Node(current.val)
+            new_node.next = current.next
+            current.next = new_node
+            current = new_node.next
         
-        return merge_two_lists(left, right)
-    
-    return merge_lists(lists, 0, len(lists) - 1)
-```
-
-### Solution 2: Priority Queue (Heap)
-
-```python
-import heapq
-
-def mergeKListsHeap(lists):
-    """
-    Merge k sorted lists using min heap.
-    
-    Time: O(N log k)
-    Space: O(k) for heap
-    """
-    if not lists:
-        return None
-    
-    # Create min heap with first node from each list
-    heap = []
-    for i, head in enumerate(lists):
-        if head:
-            heapq.heappush(heap, (head.val, i, head))
-    
-    dummy = ListNode(0)
-    current = dummy
-    
-    while heap:
-        val, list_idx, node = heapq.heappop(heap)
-        current.next = node
-        current = current.next
+        # Step 2: Copy random pointers
+        current = head
+        while current:
+            if current.random:
+                current.next.random = current.random.next
+            current = current.next.next
         
-        # Add next node from same list
-        if node.next:
-            heapq.heappush(heap, (node.next.val, list_idx, node.next))
-    
-    return dummy.next
-```
+        # Step 3: Separate the lists
+        dummy = Node(0)
+        current_new = dummy
+        current_old = head
+        
+        while current_old:
+            current_new.next = current_old.next
+            current_old.next = current_old.next.next
+            current_new = current_new.next
+            current_old = current_old.next
+        
+        return dummy.next
+    ```
 
-### 🔍 Analysis
+    ## Alternative: HashMap Approach
 
-**Divide and Conquer vs Heap:**
-- **Divide & Conquer**: Better space complexity O(log k) vs O(k)
-- **Heap**: More intuitive, handles dynamic list addition easily
-- **Both**: Same time complexity O(N log k)
-
----
-
-## Problem 2: Reverse Nodes in k-Group
-
-**LeetCode 25** | **Difficulty: Hard**
-
-### Problem Statement
-
-Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
-
-**Example:**
-
-```text
-Input: head = 1->2->3->4->5, k = 3
-Output: 3->2->1->4->5
-```
-
-### Solution
-
-```python
-def reverseKGroup(head, k):
-    """
-    Reverse nodes in k-group.
-    
-    Time: O(n) where n is number of nodes
-    Space: O(1) - iterative approach
-    """
-    def get_length(node):
-        """Get length of remaining list."""
-        length = 0
-        while node:
-            length += 1
-            node = node.next
-        return length
-    
-    def reverse_list(head, k):
-        """Reverse first k nodes and return new head and tail."""
-        prev = None
+    ```python
+    def copyRandomList(head):
+        """
+        Using HashMap for node mapping.
+        
+        Time: O(n)
+        Space: O(n)
+        """
+        if not head:
+            return None
+        
+        # Create mapping of old nodes to new nodes
+        old_to_new = {}
         current = head
         
-        for _ in range(k):
-            next_temp = current.next
-            current.next = prev
-            prev = current
-            current = next_temp
+        # First pass: create all nodes
+        while current:
+            old_to_new[current] = Node(current.val)
+            current = current.next
         
-        return prev, head  # new_head, new_tail
-    
-    # Check if we have at least k nodes
-    if get_length(head) < k:
-        return head
-    
-    # Reverse first k nodes
-    new_head, new_tail = reverse_list(head, k)
-    
-    # Recursively handle remaining nodes
-    remaining = head
-    for _ in range(k):
-        remaining = remaining.next
-    
-    new_tail.next = reverseKGroup(remaining, k)
-    
-    return new_head
-```
-
-### Iterative Solution
-
-```python
-def reverseKGroupIterative(head, k):
-    """
-    Iterative version of reverse k-group.
-    
-    Time: O(n)
-    Space: O(1)
-    """
-    def reverse_k_nodes(start, k):
-        """Reverse k nodes starting from start."""
-        prev = None
-        current = start
+        # Second pass: set next and random pointers
+        current = head
+        while current:
+            if current.next:
+                old_to_new[current].next = old_to_new[current.next]
+            if current.random:
+                old_to_new[current].random = old_to_new[current.random]
+            current = current.next
         
-        for _ in range(k):
-            next_temp = current.next
-            current.next = prev
-            prev = current
-            current = next_temp
-        
-        return prev  # new head of reversed group
-    
-    # Count total nodes
-    count = 0
-    current = head
-    while current:
-        count += 1
-        current = current.next
-    
-    dummy = ListNode(0)
-    dummy.next = head
-    group_prev = dummy
-    
-    while count >= k:
-        group_start = group_prev.next
-        group_end = group_start
-        
-        # Find end of current group
-        for _ in range(k - 1):
-            group_end = group_end.next
-        
-        # Save next group start
-        next_group_start = group_end.next
-        
-        # Reverse current group
-        new_head = reverse_k_nodes(group_start, k)
-        
-        # Connect with previous group
-        group_prev.next = new_head
-        group_start.next = next_group_start
-        
-        # Move to next group
-        group_prev = group_start
-        count -= k
-    
-    return dummy.next
-```
+        return old_to_new[head]
+    ```
 
----
+    ## Key Insights
 
-## Problem 3: Copy List with Random Pointer
+    - Interleaving approach uses O(1) extra space
+    - HashMap approach is more intuitive but uses O(n) space
+    - Both approaches require careful pointer manipulation
 
-**LeetCode 138** | **Difficulty: Hard**
+=== "Problem 4: LRU Cache"
 
-### Problem Statement
+    **LeetCode 146** | **Difficulty: Hard**
 
-A linked list of length n is given such that each node contains an additional random pointer, which could point to any node in the list, or null. Construct a deep copy of the list.
+    ## Problem Statement
 
-**Example:**
+    Design a data structure that follows the constraints of a Least Recently Used (LRU) cache with O(1) operations.
 
-```text
-Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
-Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
-```
+    ## Solution
 
-### Node Definition
-
-```python
-class Node:
-    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
-        self.val = int(x)
-        self.next = next
-        self.random = random
-```
-
-### Solution 1: HashMap Approach
-
-```python
-def copyRandomList(head):
-    """
-    Copy list with random pointers using HashMap.
-    
-    Time: O(n)
-    Space: O(n) for hashmap
-    """
-    if not head:
-        return None
-    
-    # Map original nodes to new nodes
-    node_map = {}
-    
-    # First pass: create all new nodes
-    current = head
-    while current:
-        node_map[current] = Node(current.val)
-        current = current.next
-    
-    # Second pass: set next and random pointers
-    current = head
-    while current:
-        if current.next:
-            node_map[current].next = node_map[current.next]
-        if current.random:
-            node_map[current].random = node_map[current.random]
-        current = current.next
-    
-    return node_map[head]
-```
-
-### Solution 2: Interweaving Approach (O(1) Space)
-
-```python
-def copyRandomListOptimal(head):
-    """
-    Copy list with random pointers using interweaving.
-    
-    Time: O(n)
-    Space: O(1) - only using constant extra space
-    """
-    if not head:
-        return None
-    
-    # Step 1: Create new nodes and interweave with original
-    current = head
-    while current:
-        new_node = Node(current.val)
-        new_node.next = current.next
-        current.next = new_node
-        current = new_node.next
-    
-    # Step 2: Set random pointers for new nodes
-    current = head
-    while current:
-        if current.random:
-            current.next.random = current.random.next
-        current = current.next.next
-    
-    # Step 3: Separate the two lists
-    dummy = Node(0)
-    new_current = dummy
-    current = head
-    
-    while current:
-        new_current.next = current.next
-        current.next = current.next.next
-        new_current = new_current.next
-        current = current.next
-    
-    return dummy.next
-```
-
-### 🔍 Interweaving Technique
-
-The optimal solution uses a clever interweaving approach:
-
-```text
-Original:  A -> B -> C -> null
-           |    |    |
-           v    v    v
-          B    C    A  (random pointers)
-
-After Step 1:  A -> A' -> B -> B' -> C -> C' -> null
-
-After Step 2:  A -> A' -> B -> B' -> C -> C' -> null
-               |    |    |    |    |    |
-               v    |    v    |    v    |
-              B     B'  C     C'   A    A'
-
-After Step 3:  A -> B -> C -> null
-               A' -> B' -> C' -> null (result)
-```
-
----
-
-## Problem 4: LRU Cache
-
-**LeetCode 146** | **Difficulty: Hard**
-
-### Problem Statement
-
-Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
-
-Implement the LRUCache class:
-- `LRUCache(int capacity)` Initialize with positive size capacity
-- `int get(int key)` Return value of key if exists, otherwise -1
-- `void put(int key, int value)` Update value if key exists, otherwise add key-value pair
-
-Both operations should run in O(1) average time complexity.
-
-### Solution: HashMap + Doubly Linked List
-
-```python
-class DLLNode:
-    def __init__(self, key=0, value=0):
-        self.key = key
-        self.value = value
-        self.prev = None
-        self.next = None
-
-class LRUCache:
-    def __init__(self, capacity: int):
+    ```python
+    class LRUCache:
         """
-        Initialize LRU Cache with given capacity.
+        LRU Cache implementation using doubly linked list + hashmap.
         
-        Uses HashMap + Doubly Linked List for O(1) operations.
+        Time: O(1) for all operations
+        Space: O(capacity)
         """
-        self.capacity = capacity
-        self.cache = {}  # key -> node mapping
         
-        # Create dummy head and tail nodes
-        self.head = DLLNode()
-        self.tail = DLLNode()
-        self.head.next = self.tail
-        self.tail.prev = self.head
-    
-    def _add_node(self, node):
-        """Add node right after head."""
-        node.prev = self.head
-        node.next = self.head.next
+        def __init__(self, capacity):
+            self.capacity = capacity
+            self.cache = {}
+            
+            # Create dummy head and tail
+            self.head = Node(0, 0)
+            self.tail = Node(0, 0)
+            self.head.next = self.tail
+            self.tail.prev = self.head
         
-        self.head.next.prev = node
-        self.head.next = node
-    
-    def _remove_node(self, node):
-        """Remove an existing node from linked list."""
-        prev_node = node.prev
-        next_node = node.next
+        def _add_node(self, node):
+            """Add node right after head."""
+            node.prev = self.head
+            node.next = self.head.next
+            
+            self.head.next.prev = node
+            self.head.next = node
         
-        prev_node.next = next_node
-        next_node.prev = prev_node
-    
-    def _move_to_head(self, node):
-        """Move node to head (mark as recently used)."""
-        self._remove_node(node)
-        self._add_node(node)
-    
-    def _pop_tail(self):
-        """Remove last node before tail."""
-        last_node = self.tail.prev
-        self._remove_node(last_node)
-        return last_node
-    
-    def get(self, key: int) -> int:
-        """
-        Get value for key, mark as recently used.
+        def _remove_node(self, node):
+            """Remove an existing node."""
+            prev_node = node.prev
+            next_node = node.next
+            
+            prev_node.next = next_node
+            next_node.prev = prev_node
         
-        Time: O(1)
-        """
-        node = self.cache.get(key)
+        def _move_to_head(self, node):
+            """Move node to head (mark as recently used)."""
+            self._remove_node(node)
+            self._add_node(node)
         
-        if not node:
+        def _pop_tail(self):
+            """Remove last node."""
+            last_node = self.tail.prev
+            self._remove_node(last_node)
+            return last_node
+        
+        def get(self, key):
+            node = self.cache.get(key)
+            
+            if node:
+                # Move to head (recently used)
+                self._move_to_head(node)
+                return node.value
+            
             return -1
         
-        # Move to head (mark as recently used)
-        self._move_to_head(node)
-        
-        return node.value
-    
-    def put(self, key: int, value: int) -> None:
-        """
-        Put key-value pair, handle capacity overflow.
-        
-        Time: O(1)
-        """
-        node = self.cache.get(key)
-        
-        if not node:
-            new_node = DLLNode(key, value)
+        def put(self, key, value):
+            node = self.cache.get(key)
             
-            if len(self.cache) >= self.capacity:
-                # Remove least recently used
-                tail = self._pop_tail()
-                del self.cache[tail.key]
-            
-            # Add new node
-            self.cache[key] = new_node
-            self._add_node(new_node)
-        else:
-            # Update existing node
-            node.value = value
-            self._move_to_head(node)
+            if node:
+                # Update existing node
+                node.value = value
+                self._move_to_head(node)
+            else:
+                # Add new node
+                new_node = Node(key, value)
+                
+                if len(self.cache) >= self.capacity:
+                    # Remove least recently used
+                    tail = self._pop_tail()
+                    del self.cache[tail.key]
+                
+                self.cache[key] = new_node
+                self._add_node(new_node)
+    ```
 
-# Usage
-lru = LRUCache(2)
-lru.put(1, 1)
-lru.put(2, 2)
-print(lru.get(1))  # 1
-lru.put(3, 3)      # evicts key 2
-print(lru.get(2))  # -1 (not found)
-lru.put(4, 4)      # evicts key 1
-print(lru.get(1))  # -1 (not found)
-print(lru.get(3))  # 3
-print(lru.get(4))  # 4
-```
+    ## Key Insights
 
-### 🔍 Design Insights
+    - Doubly linked list enables O(1) node removal
+    - HashMap provides O(1) key lookup
+    - Combination achieves O(1) for all operations
 
-**Why HashMap + Doubly Linked List?**
-- **HashMap**: O(1) key lookup
-- **Doubly Linked List**: O(1) insertion/deletion at any position
-- **Combination**: Achieves O(1) for both get and put operations
+=== "Problem 5: Serialize and Deserialize Binary Tree"
 
-**Key Operations:**
-1. **Get**: Move node to head (recently used)
-2. **Put (new)**: Add to head, evict from tail if needed
-3. **Put (existing)**: Update value, move to head
+    **LeetCode 297** | **Difficulty: Hard**
 
----
+    ## Problem Statement
 
-## Problem 5: Design Linked List
+    Design an algorithm to serialize and deserialize a binary tree.
 
-**LeetCode 707** | **Difficulty: Hard** (Design)
+    ## Solution
 
-### Problem Statement
-
-Design your implementation of the linked list with the following operations:
-- `get(index)`: Get the value of the index-th node
-- `addAtHead(val)`: Add a node of value val before the first element
-- `addAtTail(val)`: Append a node of value val to the last element
-- `addAtIndex(index, val)`: Add node before the index-th node
-- `deleteAtIndex(index)`: Delete the index-th node if valid
-
-### Solution: Doubly Linked List Implementation
-
-```python
-class ListNode:
-    def __init__(self, val=0):
-        self.val = val
-        self.next = None
-        self.prev = None
-
-class MyLinkedList:
-    def __init__(self):
-        """Initialize with dummy head and tail."""
-        self.head = ListNode()
-        self.tail = ListNode()
-        self.head.next = self.tail
-        self.tail.prev = self.head
-        self.size = 0
-    
-    def get(self, index: int) -> int:
-        """Get value at index."""
-        if index < 0 or index >= self.size:
-            return -1
+    ```python
+    def serialize(root):
+        """
+        Serialize binary tree to string.
         
-        node = self._get_node(index)
-        return node.val
+        Time: O(n)
+        Space: O(n)
+        """
+        def preorder(node):
+            if not node:
+                return 'null'
+            return str(node.val) + ',' + preorder(node.left) + ',' + preorder(node.right)
+        
+        return preorder(root)
     
-    def addAtHead(self, val: int) -> None:
-        """Add node at head."""
-        self._add_after(self.head, val)
-    
-    def addAtTail(self, val: int) -> None:
-        """Add node at tail."""
-        self._add_before(self.tail, val)
-    
-    def addAtIndex(self, index: int, val: int) -> None:
-        """Add node at index."""
-        if index < 0 or index > self.size:
+    def deserialize(data):
+        """
+        Deserialize string to binary tree.
+        
+        Time: O(n)
+        Space: O(n)
+        """
+        def build_tree():
+            nonlocal index
+            if index >= len(nodes):
+                return None
+            
+            val = nodes[index]
+            index += 1
+            
+            if val == 'null':
+                return None
+            
+            node = TreeNode(int(val))
+            node.left = build_tree()
+            node.right = build_tree()
+            return node
+        
+        nodes = data.split(',')
+        index = 0
+        return build_tree()
+    ```
+
+    ## Key Insights
+
+    - Preorder traversal maintains structure information
+    - Recursive approach simplifies tree reconstruction
+    - Proper handling of null nodes is crucial
+
+=== "Problem 6: Flatten Binary Tree to Linked List"
+
+    **LeetCode 114** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    Given the root of a binary tree, flatten it to a linked list in-place.
+
+    ## Solution
+
+    ```python
+    def flatten(root):
+        """
+        Flatten binary tree to linked list in-place.
+        
+        Time: O(n)
+        Space: O(h) where h is height of tree
+        """
+        def flatten_tree(node):
+            """Returns the tail of flattened tree."""
+            if not node:
+                return None
+            
+            # Leaf node
+            if not node.left and not node.right:
+                return node
+            
+            # Flatten left and right subtrees
+            left_tail = flatten_tree(node.left)
+            right_tail = flatten_tree(node.right)
+            
+            # If left subtree exists, rewire connections
+            if left_tail:
+                left_tail.right = node.right
+                node.right = node.left
+                node.left = None
+            
+            # Return the tail of current subtree
+            return right_tail or left_tail
+        
+        flatten_tree(root)
+    ```
+
+    ## Iterative Approach
+
+    ```python
+    def flatten(root):
+        """
+        Iterative approach using stack.
+        
+        Time: O(n)
+        Space: O(h)
+        """
+        if not root:
             return
         
-        if index == self.size:
-            self.addAtTail(val)
-        else:
-            node = self._get_node(index)
-            self._add_before(node, val)
-    
-    def deleteAtIndex(self, index: int) -> None:
-        """Delete node at index."""
-        if index < 0 or index >= self.size:
-            return
+        stack = [root]
         
-        node = self._get_node(index)
-        self._remove_node(node)
-    
-    def _get_node(self, index):
-        """Get node at index (optimized for closer end)."""
-        if index < self.size // 2:
-            # Start from head
-            current = self.head.next
-            for _ in range(index):
-                current = current.next
-        else:
-            # Start from tail
-            current = self.tail.prev
-            for _ in range(self.size - index - 1):
-                current = current.prev
+        while stack:
+            node = stack.pop()
+            
+            if node.right:
+                stack.append(node.right)
+            if node.left:
+                stack.append(node.left)
+            
+            if stack:
+                node.right = stack[-1]
+            node.left = None
+    ```
+
+    ## Key Insights
+
+    - Morris-like traversal can achieve O(1) space
+    - Careful rewiring of pointers is essential
+    - Stack-based approach is more intuitive
+
+=== "Problem 7: Binary Tree Maximum Path Sum"
+
+    **LeetCode 124** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    Given the root of a binary tree, return the maximum path sum of any non-empty path.
+
+    ## Solution
+
+    ```python
+    def maxPathSum(root):
+        """
+        Find maximum path sum in binary tree.
         
-        return current
-    
-    def _add_after(self, node, val):
-        """Add new node after given node."""
-        new_node = ListNode(val)
-        new_node.next = node.next
-        new_node.prev = node
-        node.next.prev = new_node
-        node.next = new_node
-        self.size += 1
-    
-    def _add_before(self, node, val):
-        """Add new node before given node."""
-        new_node = ListNode(val)
-        new_node.next = node
-        new_node.prev = node.prev
-        node.prev.next = new_node
-        node.prev = new_node
-        self.size += 1
-    
-    def _remove_node(self, node):
-        """Remove given node."""
-        node.prev.next = node.next
-        node.next.prev = node.prev
-        self.size -= 1
-```
+        Time: O(n)
+        Space: O(h) where h is height of tree
+        """
+        self.max_sum = float('-inf')
+        
+        def max_gain(node):
+            """Returns max gain from current node to leaf."""
+            if not node:
+                return 0
+            
+            # Max gain from left and right subtrees
+            left_gain = max(max_gain(node.left), 0)
+            right_gain = max(max_gain(node.right), 0)
+            
+            # Max path sum through current node
+            current_max = node.val + left_gain + right_gain
+            
+            # Update global maximum
+            self.max_sum = max(self.max_sum, current_max)
+            
+            # Return max gain from current node
+            return node.val + max(left_gain, right_gain)
+        
+        max_gain(root)
+        return self.max_sum
+    ```
 
----
+    ## Key Insights
 
-## 🎯 Advanced Patterns Mastered
+    - Path can start and end at any nodes
+    - Each node can contribute to path through it or extend path from parent
+    - Negative gains should be ignored
 
-### 1. Divide and Conquer
-- **Merge k Lists**: Split problem into subproblems
-- **Time Complexity**: Reduces from O(k*N) to O(N log k)
+=== "Problem 8: Word Ladder"
 
-### 2. Interweaving Technique
-- **Copy with Random Pointer**: Clever space optimization
-- **Pattern**: Temporarily modify structure, then restore
+    **LeetCode 127** | **Difficulty: Hard**
 
-### 3. Dual Data Structure Design
-- **LRU Cache**: HashMap + Doubly Linked List
-- **Benefit**: O(1) operations for complex requirements
+    ## Problem Statement
 
-### 4. Optimized Traversal
-- **Design Linked List**: Bidirectional traversal optimization
-- **Technique**: Choose starting point based on position
+    Given two words, beginWord and endWord, and a word list, find the length of the shortest transformation sequence from beginWord to endWord.
 
-## 🧠 Problem-Solving Strategies
+    ## Solution
 
-### 1. Break Down Complex Problems
-```python
-# Instead of solving everything at once:
-def complex_operation(head):
-    # Step 1: Handle edge cases
-    if not head:
-        return None
-    
-    # Step 2: Preprocess if needed
-    length = get_length(head)
-    
-    # Step 3: Main algorithm
-    result = main_logic(head, length)
-    
-    # Step 4: Post-process if needed
-    return finalize(result)
-```
+    ```python
+    from collections import deque
 
-### 2. Use Helper Functions
-```python
-def main_function(head):
-    def helper_function(node, param):
-        # Focused logic
-        pass
-    
-    return helper_function(head, initial_param)
-```
+    def ladderLength(beginWord, endWord, wordList):
+        """
+        Find shortest word ladder using BFS.
+        
+        Time: O(M²×N) where M is word length, N is number of words
+        Space: O(M²×N)
+        """
+        if endWord not in wordList:
+            return 0
+        
+        wordList = set(wordList)
+        queue = deque([(beginWord, 1)])
+        visited = {beginWord}
+        
+        while queue:
+            word, length = queue.popleft()
+            
+            if word == endWord:
+                return length
+            
+            # Try all possible transformations
+            for i in range(len(word)):
+                for c in 'abcdefghijklmnopqrstuvwxyz':
+                    if c != word[i]:
+                        new_word = word[:i] + c + word[i+1:]
+                        
+                        if new_word in wordList and new_word not in visited:
+                            visited.add(new_word)
+                            queue.append((new_word, length + 1))
+        
+        return 0
+    ```
 
-### 3. Consider Multiple Approaches
-- **Recursive vs Iterative**: Space vs simplicity trade-off
-- **One-pass vs Multi-pass**: Time vs space considerations
-- **Extra space vs In-place**: Space optimization opportunities
+    ## Bidirectional BFS
 
-## 🏆 Mastery Checklist
+    ```python
+    def ladderLength(beginWord, endWord, wordList):
+        """
+        Bidirectional BFS for optimization.
+        
+        Time: O(M²×N)
+        Space: O(M²×N)
+        """
+        if endWord not in wordList:
+            return 0
+        
+        wordList = set(wordList)
+        front = {beginWord}
+        back = {endWord}
+        dist = 1
+        
+        while front and back:
+            # Always expand smaller set
+            if len(front) > len(back):
+                front, back = back, front
+            
+            next_front = set()
+            
+            for word in front:
+                for i in range(len(word)):
+                    for c in 'abcdefghijklmnopqrstuvwxyz':
+                        if c != word[i]:
+                            new_word = word[:i] + c + word[i+1:]
+                            
+                            if new_word in back:
+                                return dist + 1
+                            
+                            if new_word in wordList:
+                                wordList.remove(new_word)
+                                next_front.add(new_word)
+            
+            front = next_front
+            dist += 1
+        
+        return 0
+    ```
 
-### Core Concepts Mastered
-- [ ] **Complex Pointer Manipulation** - K-group reversal
-- [ ] **Multiple Data Structure Integration** - LRU Cache
-- [ ] **Advanced Optimization Techniques** - Interweaving
-- [ ] **Divide and Conquer** - Merge k lists
-- [ ] **System Design Principles** - Design linked list
+    ## Key Insights
 
-### Problem-Solving Skills
-- [ ] **Pattern Recognition** - Identify optimal approach quickly
-- [ ] **Trade-off Analysis** - Time vs space considerations
-- [ ] **Edge Case Handling** - Robust solution design
-- [ ] **Code Organization** - Clean, maintainable implementations
+    - BFS guarantees shortest path
+    - Bidirectional search reduces search space
+    - Set operations provide O(1) lookup
 
-### Interview Readiness
-- [ ] **Explain Approach** - Clear problem-solving communication
-- [ ] **Optimize Solutions** - Improve time/space complexity
-- [ ] **Handle Follow-ups** - Adapt to requirement changes
-- [ ] **Design Discussions** - Architectural considerations
+=== "Problem 9: Palindrome Partitioning II"
 
-## 🚀 Congratulations!
+    **LeetCode 132** | **Difficulty: Hard**
 
-You've mastered the hardest linked list problems! You can now:
+    ## Problem Statement
 
-✅ **Solve complex linked list problems** with confidence
-✅ **Optimize solutions** for time and space complexity  
-✅ **Design data structures** that use linked lists effectively
-✅ **Handle interview questions** at any difficulty level
-✅ **Apply techniques** to real-world problems
+    Given a string s, partition s such that every substring of the partition is a palindrome. Return the minimum cuts needed.
 
-### What's Next?
+    ## Solution
 
-1. **Practice Implementation**: Implement data structures from scratch
-2. **System Design**: Apply linked lists in larger system contexts
-3. **Competitive Programming**: Tackle contest-level problems
-4. **Teach Others**: Solidify understanding by helping peers
+    ```python
+    def minCut(s):
+        """
+        Find minimum cuts for palindrome partitioning.
+        
+        Time: O(n²)
+        Space: O(n²)
+        """
+        n = len(s)
+        
+        # Precompute palindrome information
+        is_palindrome = [[False] * n for _ in range(n)]
+        
+        # Every single character is palindrome
+        for i in range(n):
+            is_palindrome[i][i] = True
+        
+        # Check for palindromes of length 2
+        for i in range(n - 1):
+            if s[i] == s[i + 1]:
+                is_palindrome[i][i + 1] = True
+        
+        # Check for palindromes of length 3 and more
+        for length in range(3, n + 1):
+            for i in range(n - length + 1):
+                j = i + length - 1
+                if s[i] == s[j] and is_palindrome[i + 1][j - 1]:
+                    is_palindrome[i][j] = True
+        
+        # DP for minimum cuts
+        dp = [float('inf')] * n
+        
+        for i in range(n):
+            if is_palindrome[0][i]:
+                dp[i] = 0
+            else:
+                for j in range(i):
+                    if is_palindrome[j + 1][i]:
+                        dp[i] = min(dp[i], dp[j] + 1)
+        
+        return dp[n - 1]
+    ```
 
-### Real-World Applications
+    ## Optimized Approach
 
-Your linked list mastery applies to:
-- **Database Systems**: Record linking and indexing
-- **Operating Systems**: Process scheduling and memory management
-- **Web Development**: Undo/redo functionality, caching systems
-- **Game Development**: Object management and state tracking
-- **Network Programming**: Packet queuing and routing
+    ```python
+    def minCut(s):
+        """
+        Optimized approach with center expansion.
+        
+        Time: O(n²)
+        Space: O(n)
+        """
+        n = len(s)
+        cuts = list(range(n))
+        
+        def expand_around_center(left, right):
+            while left >= 0 and right < n and s[left] == s[right]:
+                if left == 0:
+                    cuts[right] = 0
+                else:
+                    cuts[right] = min(cuts[right], cuts[left - 1] + 1)
+                left -= 1
+                right += 1
+        
+        for i in range(n):
+            # Odd length palindromes
+            expand_around_center(i, i)
+            # Even length palindromes
+            expand_around_center(i, i + 1)
+        
+        return cuts[n - 1]
+    ```
 
----
+    ## Key Insights
 
-*Congratulations on completing the comprehensive linked list mastery journey! 🎉*
+    - Precomputing palindrome information saves time
+    - Center expansion technique is elegant
+    - DP builds solution incrementally
+
+=== "Problem 10: Regular Expression Matching"
+
+    **LeetCode 10** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*'.
+
+    ## Solution
+
+    ```python
+    def isMatch(s, p):
+        """
+        Regular expression matching using DP.
+        
+        Time: O(m×n)
+        Space: O(m×n)
+        """
+        m, n = len(s), len(p)
+        
+        # dp[i][j] = True if s[0:i] matches p[0:j]
+        dp = [[False] * (n + 1) for _ in range(m + 1)]
+        
+        # Empty pattern matches empty string
+        dp[0][0] = True
+        
+        # Handle patterns with *
+        for j in range(2, n + 1):
+            if p[j - 1] == '*':
+                dp[0][j] = dp[0][j - 2]
+        
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if p[j - 1] == '*':
+                    # Can ignore the character before *
+                    dp[i][j] = dp[i][j - 2]
+                    
+                    # Or match current character
+                    if p[j - 2] == s[i - 1] or p[j - 2] == '.':
+                        dp[i][j] = dp[i][j] or dp[i - 1][j]
+                else:
+                    # Direct character match
+                    if p[j - 1] == s[i - 1] or p[j - 1] == '.':
+                        dp[i][j] = dp[i - 1][j - 1]
+        
+        return dp[m][n]
+    ```
+
+    ## Recursive with Memoization
+
+    ```python
+    def isMatch(s, p):
+        """
+        Recursive approach with memoization.
+        
+        Time: O(m×n)
+        Space: O(m×n)
+        """
+        memo = {}
+        
+        def helper(i, j):
+            if (i, j) in memo:
+                return memo[(i, j)]
+            
+            # Base case: pattern exhausted
+            if j == len(p):
+                return i == len(s)
+            
+            # Check if current characters match
+            first_match = i < len(s) and (p[j] == s[i] or p[j] == '.')
+            
+            # Handle * in pattern
+            if j + 1 < len(p) and p[j + 1] == '*':
+                # Either skip the pattern or match current character
+                result = helper(i, j + 2) or (first_match and helper(i + 1, j))
+            else:
+                # Direct character match
+                result = first_match and helper(i + 1, j + 1)
+            
+            memo[(i, j)] = result
+            return result
+        
+        return helper(0, 0)
+    ```
+
+    ## Key Insights
+
+    - DP table captures all possible matching states
+    - '*' can match zero or more characters
+    - Memoization prevents redundant computations
+
+=== "Problem 11: Edit Distance"
+
+    **LeetCode 72** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2.
+
+    ## Solution
+
+    ```python
+    def minDistance(word1, word2):
+        """
+        Edit distance using dynamic programming.
+        
+        Time: O(m×n)
+        Space: O(m×n)
+        """
+        m, n = len(word1), len(word2)
+        
+        # dp[i][j] = min operations to convert word1[0:i] to word2[0:j]
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+        
+        # Initialize base cases
+        for i in range(m + 1):
+            dp[i][0] = i  # Delete all characters
+        
+        for j in range(n + 1):
+            dp[0][j] = j  # Insert all characters
+        
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if word1[i - 1] == word2[j - 1]:
+                    dp[i][j] = dp[i - 1][j - 1]  # No operation needed
+                else:
+                    dp[i][j] = 1 + min(
+                        dp[i - 1][j],      # Delete
+                        dp[i][j - 1],      # Insert
+                        dp[i - 1][j - 1]   # Replace
+                    )
+        
+        return dp[m][n]
+    ```
+
+    ## Space-Optimized Version
+
+    ```python
+    def minDistance(word1, word2):
+        """
+        Space-optimized edit distance.
+        
+        Time: O(m×n)
+        Space: O(min(m,n))
+        """
+        if len(word1) < len(word2):
+            word1, word2 = word2, word1
+        
+        m, n = len(word1), len(word2)
+        prev = list(range(n + 1))
+        
+        for i in range(1, m + 1):
+            curr = [i] + [0] * n
+            
+            for j in range(1, n + 1):
+                if word1[i - 1] == word2[j - 1]:
+                    curr[j] = prev[j - 1]
+                else:
+                    curr[j] = 1 + min(prev[j], curr[j - 1], prev[j - 1])
+            
+            prev = curr
+        
+        return prev[n]
+    ```
+
+    ## Key Insights
+
+    - Classical DP problem with optimal substructure
+    - Three operations: insert, delete, replace
+    - Space can be optimized to O(min(m,n))
+
+=== "Problem 12: Longest Valid Parentheses"
+
+    **LeetCode 32** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    Given a string containing just the characters '(' and ')', find the length of the longest valid parentheses substring.
+
+    ## Solution
+
+    ```python
+    def longestValidParentheses(s):
+        """
+        Find longest valid parentheses using DP.
+        
+        Time: O(n)
+        Space: O(n)
+        """
+        n = len(s)
+        if n <= 1:
+            return 0
+        
+        # dp[i] = length of longest valid parentheses ending at index i
+        dp = [0] * n
+        max_length = 0
+        
+        for i in range(1, n):
+            if s[i] == ')':
+                if s[i - 1] == '(':
+                    # Case: ...()
+                    dp[i] = (dp[i - 2] if i >= 2 else 0) + 2
+                elif dp[i - 1] > 0:
+                    # Case: ...))
+                    match_index = i - dp[i - 1] - 1
+                    if match_index >= 0 and s[match_index] == '(':
+                        dp[i] = dp[i - 1] + 2 + (dp[match_index - 1] if match_index > 0 else 0)
+                
+                max_length = max(max_length, dp[i])
+        
+        return max_length
+    ```
+
+    ## Stack-Based Approach
+
+    ```python
+    def longestValidParentheses(s):
+        """
+        Using stack to track indices.
+        
+        Time: O(n)
+        Space: O(n)
+        """
+        stack = [-1]  # Initialize with -1 as base
+        max_length = 0
+        
+        for i, char in enumerate(s):
+            if char == '(':
+                stack.append(i)
+            else:  # char == ')'
+                stack.pop()
+                if not stack:
+                    stack.append(i)  # No matching '('
+                else:
+                    max_length = max(max_length, i - stack[-1])
+        
+        return max_length
+    ```
+
+    ## Key Insights
+
+    - DP approach builds solution incrementally
+    - Stack tracks unmatched parentheses positions
+    - Both approaches achieve O(n) time complexity
+
+=== "Problem 13: Trapping Rain Water"
+
+    **LeetCode 42** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    Given n non-negative integers representing an elevation map, compute how much water can be trapped after raining.
+
+    ## Solution
+
+    ```python
+    def trap(height):
+        """
+        Trap rainwater using two pointers.
+        
+        Time: O(n)
+        Space: O(1)
+        """
+        if not height:
+            return 0
+        
+        left, right = 0, len(height) - 1
+        left_max, right_max = 0, 0
+        water = 0
+        
+        while left < right:
+            if height[left] < height[right]:
+                if height[left] >= left_max:
+                    left_max = height[left]
+                else:
+                    water += left_max - height[left]
+                left += 1
+            else:
+                if height[right] >= right_max:
+                    right_max = height[right]
+                else:
+                    water += right_max - height[right]
+                right -= 1
+        
+        return water
+    ```
+
+    ## Stack-Based Approach
+
+    ```python
+    def trap(height):
+        """
+        Using stack to find water levels.
+        
+        Time: O(n)
+        Space: O(n)
+        """
+        stack = []
+        water = 0
+        
+        for i, h in enumerate(height):
+            while stack and height[stack[-1]] < h:
+                bottom = stack.pop()
+                
+                if not stack:
+                    break
+                
+                width = i - stack[-1] - 1
+                bounded_height = min(h, height[stack[-1]]) - height[bottom]
+                water += width * bounded_height
+            
+            stack.append(i)
+        
+        return water
+    ```
+
+    ## Key Insights
+
+    - Two-pointer approach is most efficient
+    - Water level determined by shorter boundary
+    - Stack approach calculates water layer by layer
+
+=== "Problem 14: Sliding Window Maximum"
+
+    **LeetCode 239** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    Given an array and a sliding window of size k, find the maximum value in each window.
+
+    ## Solution
+
+    ```python
+    from collections import deque
+
+    def maxSlidingWindow(nums, k):
+        """
+        Find sliding window maximum using deque.
+        
+        Time: O(n)
+        Space: O(k)
+        """
+        if not nums or k == 0:
+            return []
+        
+        dq = deque()  # Store indices
+        result = []
+        
+        for i in range(len(nums)):
+            # Remove indices outside current window
+            while dq and dq[0] <= i - k:
+                dq.popleft()
+            
+            # Remove indices with smaller values
+            while dq and nums[dq[-1]] <= nums[i]:
+                dq.pop()
+            
+            dq.append(i)
+            
+            # Add maximum to result (window is complete)
+            if i >= k - 1:
+                result.append(nums[dq[0]])
+        
+        return result
+    ```
+
+    ## Alternative: Segment Tree
+
+    ```python
+    class SegmentTree:
+        def __init__(self, nums):
+            self.n = len(nums)
+            self.tree = [0] * (4 * self.n)
+            self.build(nums, 0, 0, self.n - 1)
+        
+        def build(self, nums, node, start, end):
+            if start == end:
+                self.tree[node] = nums[start]
+            else:
+                mid = (start + end) // 2
+                self.build(nums, 2 * node + 1, start, mid)
+                self.build(nums, 2 * node + 2, mid + 1, end)
+                self.tree[node] = max(self.tree[2 * node + 1], self.tree[2 * node + 2])
+        
+        def query(self, node, start, end, l, r):
+            if r < start or end < l:
+                return float('-inf')
+            if l <= start and end <= r:
+                return self.tree[node]
+            
+            mid = (start + end) // 2
+            left_max = self.query(2 * node + 1, start, mid, l, r)
+            right_max = self.query(2 * node + 2, mid + 1, end, l, r)
+            return max(left_max, right_max)
+        
+        def range_max(self, l, r):
+            return self.query(0, 0, self.n - 1, l, r)
+
+    def maxSlidingWindow(nums, k):
+        """
+        Using segment tree for range maximum queries.
+        
+        Time: O(n log n)
+        Space: O(n)
+        """
+        if not nums or k == 0:
+            return []
+        
+        seg_tree = SegmentTree(nums)
+        result = []
+        
+        for i in range(len(nums) - k + 1):
+            result.append(seg_tree.range_max(i, i + k - 1))
+        
+        return result
+    ```
+
+    ## Key Insights
+
+    - Deque maintains decreasing order for O(1) maximum
+    - Segment tree provides flexible range queries
+    - Deque approach is optimal for sliding window
+
+=== "Problem 15: Minimum Window Substring"
+
+    **LeetCode 76** | **Difficulty: Hard**
+
+    ## Problem Statement
+
+    Given strings s and t, return the minimum window substring of s such that every character in t is included in the window.
+
+    ## Solution
+
+    ```python
+    def minWindow(s, t):
+        """
+        Find minimum window substring using sliding window.
+        
+        Time: O(|s| + |t|)
+        Space: O(|s| + |t|)
+        """
+        if not s or not t:
+            return ""
+        
+        # Count characters in t
+        t_count = {}
+        for char in t:
+            t_count[char] = t_count.get(char, 0) + 1
+        
+        required = len(t_count)  # Number of unique characters in t
+        left = right = 0
+        formed = 0  # Number of unique characters in window with desired frequency
+        
+        window_count = {}
+        
+        # Result: (window length, left, right)
+        result = float('inf'), None, None
+        
+        while right < len(s):
+            # Add character to window
+            char = s[right]
+            window_count[char] = window_count.get(char, 0) + 1
+            
+            # Check if current character's frequency matches desired frequency
+            if char in t_count and window_count[char] == t_count[char]:
+                formed += 1
+            
+            # Try to shrink window from left
+            while left <= right and formed == required:
+                char = s[left]
+                
+                # Update result if current window is smaller
+                if right - left + 1 < result[0]:
+                    result = (right - left + 1, left, right)
+                
+                # Remove character from window
+                window_count[char] -= 1
+                if char in t_count and window_count[char] < t_count[char]:
+                    formed -= 1
+                
+                left += 1
+            
+            right += 1
+        
+        return "" if result[0] == float('inf') else s[result[1]:result[2] + 1]
+    ```
+
+    ## Optimized Version
+
+    ```python
+    def minWindow(s, t):
+        """
+        Optimized version with filtered string.
+        
+        Time: O(|s| + |t|)
+        Space: O(|s| + |t|)
+        """
+        if not s or not t:
+            return ""
+        
+        t_count = {}
+        for char in t:
+            t_count[char] = t_count.get(char, 0) + 1
+        
+        required = len(t_count)
+        
+        # Filter s to only include characters in t
+        filtered_s = []
+        for i, char in enumerate(s):
+            if char in t_count:
+                filtered_s.append((i, char))
+        
+        left = right = 0
+        formed = 0
+        window_count = {}
+        
+        result = float('inf'), None, None
+        
+        while right < len(filtered_s):
+            char = filtered_s[right][1]
+            window_count[char] = window_count.get(char, 0) + 1
+            
+            if window_count[char] == t_count[char]:
+                formed += 1
+            
+            while left <= right and formed == required:
+                char = filtered_s[left][1]
+                
+                start = filtered_s[left][0]
+                end = filtered_s[right][0]
+                
+                if end - start + 1 < result[0]:
+                    result = (end - start + 1, start, end)
+                
+                window_count[char] -= 1
+                if window_count[char] < t_count[char]:
+                    formed -= 1
+                
+                left += 1
+            
+            right += 1
+        
+        return "" if result[0] == float('inf') else s[result[1]:result[2] + 1]
+    ```
+
+    ## Key Insights
+
+    - Sliding window with character frequency tracking
+    - Shrink window when all characters are covered
+    - Filtering optimization reduces irrelevant characters

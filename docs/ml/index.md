@@ -8,10 +8,12 @@ Welcome to my Machine Learning learning journey! This section covers everything 
 graph TB
     A[ML Fundamentals] --> B[Supervised Learning]
     A --> C[Unsupervised Learning]
-    B --> D[Classification]
-    B --> E[Regression]
-    C --> F[Clustering]
-    C --> G[Dimensionality Reduction]
+    A --> D[Semi Supervised Learning]
+    A --> E[Reinforcement Learning]
+    B --> F[Classification]
+    B --> G[Regression]
+    C --> H[Clustering]
+    C --> I[Dimensionality Reduction]
     D --> H[Deep Learning]
     E --> H
     H --> I[MLOps]

@@ -2,6 +2,28 @@
 
 Your comprehensive guide to mastering algorithms and data structures - from fundamentals to advanced concepts. This is your one-stop resource for problem-solving, technical interviews, and competitive programming.
 
+## 📚 Quick Access
+
+<div class="grid cards" markdown>
+
+- :material-book-open-variant: **Algorithm Fundamentals**
+
+    ---
+
+    Core concepts, complexity analysis, problem-solving patterns, and study plans
+
+    [Learn fundamentals →](fundamentals/index.md)
+
+- :material-strategy: **Interview Preparation**
+
+    ---
+
+    Study strategies, practice routines, and problem frameworks
+
+    [Ace interviews →](interview-preparation.md)
+
+</div>
+
 ## 🎯 Learning Path
 
 <div class="grid cards" markdown>
@@ -82,6 +104,9 @@ Your comprehensive guide to mastering algorithms and data structures - from fund
 
 ## 📊 Algorithm Categories Overview
 
+!!! tip "Want a deeper dive?"
+    Check our [Algorithm Fundamentals](fundamentals/index.md) section for comprehensive guides on complexity analysis, study plans, and learning pathways.
+
 ### By Problem Type
 
 | Category | Common Problems | Key Algorithms | Difficulty |
@@ -97,62 +122,71 @@ Your comprehensive guide to mastering algorithms and data structures - from fund
 
 ### By Data Structure
 
-=== "Linear Structures"
+<div class="grid cards" markdown>
 
-    - **Arrays**: Random access, cache-friendly
-    - **Linked Lists**: Dynamic size, insertion/deletion
-    - **Stacks**: LIFO operations, recursion simulation
-    - **Queues**: FIFO operations, BFS, scheduling
-    - **Deques**: Double-ended operations
+- :material-view-sequential: **Linear Structures**
 
-=== "Hierarchical Structures"
+    ---
 
-    - **Binary Trees**: Hierarchical relationships
-    - **Binary Search Trees**: Ordered data, O(log n) operations
-    - **Heaps**: Priority operations, min/max finding
-    - **Tries**: String processing, prefix matching
-    - **Segment Trees**: Range queries and updates
+    Arrays, Linked Lists, Stacks, Queues, Deques
+    
+    [Learn more →](data-structures/index.md#linear-data-structures)
 
-=== "Graph Structures"
+- :material-graph-outline: **Hierarchical Structures**
 
-    - **Adjacency Matrix**: Dense graphs, O(1) edge lookup
-    - **Adjacency List**: Sparse graphs, memory efficient
-    - **Weighted Graphs**: Shortest path algorithms
-    - **Directed/Undirected**: Different traversal patterns
+    ---
 
-## ⏱️ Time & Space Complexity Cheat Sheet
+    Binary Trees, BSTs, Heaps, Tries, Segment Trees
+    
+    [Learn more →](data-structures/index.md#hierarchical-data-structures)
 
-| Complexity | Name | Example Algorithms | Performance |
-|------------|------|-------------------|-------------|
-| **O(1)** | Constant | Array access, Hash table lookup | 🟢 Excellent |
-| **O(log n)** | Logarithmic | Binary search, Balanced BST operations | 🟢 Excellent |
-| **O(n)** | Linear | Linear search, Array traversal | 🟡 Good |
-| **O(n log n)** | Linearithmic | Merge sort, Heap sort | 🟡 Good |
-| **O(n²)** | Quadratic | Bubble sort, Selection sort | 🔴 Poor |
-| **O(2ⁿ)** | Exponential | Recursive Fibonacci, Subset generation | 🔴 Terrible |
+- :material-graph: **Graph Structures**
 
-## 🎯 Quick Start Guide
+    ---
 
-### For Beginners
+    Adjacency Matrix/List, Weighted Graphs, Directed Graphs
+    
+    [Learn more →](graphs/index.md)
 
-1. **Start with [Data Structures](data-structures/index.md)** - Arrays, Linked Lists, Stacks, Queues
-2. **Learn [Problem-Solving Patterns](problem-solving-patterns.md)** - Two Pointers, Sliding Window
-3. **Practice [Sorting](sorting/index.md)** - Understand comparison-based algorithms
-4. **Master [Trees](trees/index.md)** - Binary trees and traversals
+</div>
 
-### For Interview Preparation
+## 🔍 Where to Start?
 
-1. **Follow [Interview Strategy](interview-preparation.md)** - Structured study plans
-2. **Master [Problem Patterns](problem-solving-patterns.md)** - 80% of interview problems
-3. **Practice [Dynamic Programming](dp/index.md)** - Essential for FAANG interviews
-4. **Study [System Design](../system-design/index.md)** - For senior roles
+We've created a dedicated **[Algorithm Fundamentals](fundamentals/index.md)** section to help you build a strong foundation. This section is organized into focused guides:
 
-### For Competitive Programming
+<div class="grid cards" markdown>
 
-1. **Master [Mathematical Algorithms](math/index.md)** - Number theory, combinatorics
-2. **Advanced [Graph Algorithms](graphs/index.md)** - Complex shortest path, flow
-3. **Optimize with [Greedy](greedy/index.md)** - Fast decision making
-4. **Complex [DP Patterns](dp/index.md)** - Multi-dimensional optimization
+- :material-clock-outline: **[Time & Space Complexity](fundamentals/time-complexity.md)**
+
+    ---
+
+    Understanding Big O notation, algorithm efficiency, and optimization strategies
+
+- :material-map-outline: **[Learning Pathways](fundamentals/learning-paths.md)**
+
+    ---
+
+    Structured learning paths based on your goals and experience level
+
+- :material-puzzle-outline: **[Problem-Solving Patterns](fundamentals/problem-solving-patterns.md)**
+
+    ---
+
+    Essential algorithmic patterns with interactive examples and practice problems
+
+- :material-target: **[Interview Strategy](fundamentals/interview-strategy.md)**
+
+    ---
+
+    Comprehensive approach to mastering technical interviews
+
+- :material-calendar-outline: **[Preparation Planning](fundamentals/preparation-planning.md)**
+
+    ---
+
+    Customized study plans based on your timeline and goals
+
+</div>
 
 ## 📚 Essential Learning Resources
 
@@ -175,22 +209,16 @@ Your comprehensive guide to mastering algorithms and data structures - from fund
 Ready to start your algorithms journey? Choose your path:
 
 - **New to algorithms?** Begin with [Data Structures Basics](data-structures/index.md)
-- **Preparing for interviews?** Check out [Interview Strategy](interview-preparation.md)
-- **Want to see patterns?** Explore [Problem-Solving Patterns](problem-solving-patterns.md)
+- **Preparing for interviews?** Check out [Interview Strategy](fundamentals/interview-strategy.md)
+- **Want to see patterns?** Explore [Problem-Solving Patterns](fundamentals/problem-solving-patterns.md)
 - **Need specific algorithms?** Browse by category in the sections above
 
 ---
 
 **Remember**: Mastering algorithms is a journey, not a destination. Stay consistent, practice regularly, and focus on understanding over memorization. You've got this! 🎯💪
 
-| Complexity | Name | Example Algorithms | Performance |
-|------------|------|-------------------|-------------|
-| **O(1)** | Constant | Array access, Hash table lookup | 🟢 Excellent |
-| **O(log n)** | Logarithmic | Binary search, Balanced BST operations | 🟢 Excellent |
-| **O(n)** | Linear | Linear search, Array traversal | 🟡 Good |
-| **O(n log n)** | Linearithmic | Merge sort, Heap sort | 🟡 Good |
-| **O(n²)** | Quadratic | Bubble sort, Selection sort | 🔴 Poor |
-| **O(2ⁿ)** | Exponential | Recursive Fibonacci, Subset generation | 🔴 Terrible |
+!!! tip "Comprehensive Complexity Analysis"
+    For a detailed explanation of time and space complexity with visual comparisons, optimization tips, and cheat sheets, check our [Time Complexity Guide](fundamentals/time-complexity.md).
 
 ## 🏆 Popular Sorting Algorithms
 
@@ -204,54 +232,46 @@ Ready to start your algorithms journey? Choose your path:
 
 ## 🎯 Essential Problem-Solving Patterns
 
-### Two Pointers
+!!! tip "Detailed Patterns Guide"
+    Our [Problem-Solving Patterns](fundamentals/problem-solving-patterns.md) section covers these techniques in much greater detail with comprehensive examples, practice problems, and complexity analysis.
 
-Perfect for array problems, palindromes, and sum problems.
+### Key Algorithmic Patterns
 
-```python
-def two_sum_sorted(arr, target):
-    left, right = 0, len(arr) - 1
-    while left < right:
-        current_sum = arr[left] + arr[right]
-        if current_sum == target:
-            return [left, right]
-        elif current_sum < target:
-            left += 1
-        else:
-            right -= 1
-    return []
-```
+<div class="grid cards" markdown>
 
-### Sliding Window
+- :material-sync: **Two Pointers**
 
-Ideal for subarray/substring problems with constraints.
+    ---
 
-```python
-def max_sum_subarray(arr, k):
-    window_sum = sum(arr[:k])
-    max_sum = window_sum
-    
-    for i in range(k, len(arr)):
-        window_sum = window_sum - arr[i - k] + arr[i]
-        max_sum = max(max_sum, window_sum)
-    
-    return max_sum
-```
+    Perfect for array problems, palindromes, and sum problems in O(n) time
 
-### Fast & Slow Pointers
+    [Learn more →](fundamentals/problem-solving-patterns.md#two-pointers-technique)
 
-Great for cycle detection and finding middle elements.
+- :material-view-carousel: **Sliding Window**
 
-```python
-def has_cycle(head):
-    slow = fast = head
-    while fast and fast.next:
-        slow = slow.next
-        fast = fast.next.next
-        if slow == fast:
-            return True
-    return False
-```
+    ---
+
+    Ideal for subarray/substring problems with O(n) efficiency
+
+    [Learn more →](fundamentals/problem-solving-patterns.md#sliding-window-technique)
+
+- :material-rabbit: **Fast & Slow Pointers**
+
+    ---
+
+    Great for cycle detection and finding middle elements
+
+    [Learn more →](fundamentals/problem-solving-patterns.md#fast-slow-pointers-technique)
+
+- :material-format-horizontal-merge: **Merge Intervals**
+
+    ---
+
+    Effective for overlapping intervals and scheduling problems
+
+    [Learn more →](fundamentals/problem-solving-patterns.md#merge-intervals-technique)
+
+</div>
 
 ## 📚 Learning Resources
 
@@ -271,78 +291,93 @@ def has_cycle(head):
 - **Algorithm Design Manual (Skiena)** - Practical problem-solving approach
 - **Elements of Programming Interviews** - Language-specific interview prep
 
-## 🗓️ 12-Week Study Plan
+## 🗓️ Study Plans
 
-| Week | Focus | Topics | Practice Problems |
-|------|-------|--------|------------------|
-| **1-2** | Arrays & Strings | Two pointers, sliding window | Two Sum, Longest Substring |
-| **3-4** | Linked Lists | Manipulation, cycle detection | Reverse List, Merge Lists |
-| **5-6** | Trees & BSTs | Traversals, construction | Inorder Traversal, Path Sum |
-| **7-8** | Graphs | BFS, DFS, shortest path | Number of Islands, Course Schedule |
-| **9-10** | Dynamic Programming | Basic patterns | Climbing Stairs, Coin Change |
-| **11-12** | Review & Practice | Mock interviews | Mixed hard problems |
+!!! tip "Customized Study Plans"
+    Visit our [Preparation Planning](fundamentals/preparation-planning.md) section for detailed study plans:
+    
+    - **12-Week Comprehensive Plan** - Complete roadmap for thorough preparation
+    - **4-Week Accelerated Plan** - Focused preparation for upcoming interviews
+    - **Topic-Specific Plans** - Focus areas based on your strengths and weaknesses
 
 ## 🎯 Interview Preparation Strategy
 
-### Problem Frequency by Category
+!!! tip "Comprehensive Interview Guide"
+    Our [Interview Strategy](fundamentals/interview-strategy.md) section provides detailed guidance on preparation timelines, practice routines, company-specific strategies, and post-interview learning.
 
-1. **Arrays & Strings** (35% of interviews)
-2. **Trees & Graphs** (25% of interviews)
-3. **Dynamic Programming** (20% of interviews)
-4. **Linked Lists** (15% of interviews)
-5. **Others** (5% of interviews)
+### Key Interview Components
 
-### Daily Practice Routine
+<div class="grid cards" markdown>
 
-!!! tip "Recommended Schedule"
+- :material-chart-pie: **[Problem Distribution](fundamentals/interview-strategy.md#understanding-the-interview-landscape)**
 
-    - **Warm-up**: 1 easy problem (10-15 min)
-    - **Main**: 1-2 medium problems (30-45 min each)
-    - **Challenge**: 1 hard problem (weekly)
-    - **Review**: Revisit problems from 1 week ago
+    ---
 
-### Problem-Solving Framework
+    Arrays & Strings (35%), Trees & Graphs (25%), Dynamic Programming (20%), Linked Lists (15%), Others (5%)
 
-!!! note "Step-by-Step Approach"
+- :material-calendar-clock: **[Preparation Timelines](fundamentals/interview-strategy.md#structured-preparation-plan)**
 
-    1. **Understand**: Read carefully, identify constraints
-    2. **Plan**: Think of approach, consider edge cases
-    3. **Code**: Implement solution step by step
-    4. **Test**: Verify with examples, check edge cases
-    5. **Optimize**: Analyze complexity, improve if possible
-    6. **Reflect**: Note patterns and techniques used
+    ---
+
+    12-week comprehensive plan and 4-week accelerated timeline
+
+- :material-clock-outline: **[Daily Routines](fundamentals/interview-strategy.md#daily-practice-routine)**
+
+    ---
+
+    Structured practice schedules for different time constraints
+
+- :material-map-marker-path: **[Problem Framework](fundamentals/interview-strategy.md#problem-solving-framework)**
+
+    ---
+
+    Step-by-step approach to solving algorithmic problems
+
+</div>
 
 ## 🚀 Next Steps
 
-Ready to dive deeper? Choose your path:
+Ready to dive deeper? Choose your path based on your current level:
 
-=== "Beginner"
+<div class="grid cards" markdown>
 
-    Start with fundamentals:
+- :material-school: **Beginner**
+
+    ---
+
+    Start with strong foundations:
     
-    1. [Data Structures Basics](data-structures.md)
-    2. [Simple Sorting Algorithms](sorting.md)
-    3. [Backtracking Problems](backtracking/index.md)
+    1. [Algorithm Fundamentals](fundamentals/index.md)
+    2. [Data Structures Basics](data-structures/index.md)
+    3. [Simple Sorting Algorithms](sorting/index.md)
 
-=== "Intermediate"
+- :material-certificate: **Intermediate**
+
+    ---
 
     Build advanced skills:
     
-    1. [Graph Algorithms](graphs.md)
-    2. [Dynamic Programming](dp.md)
-    3. [Advanced Sorting](sorting/quick-sort.md)
+    1. [Graph Algorithms](graphs/index.md)
+    2. [Dynamic Programming](dp/index.md)
+    3. [Problem-Solving Patterns](fundamentals/problem-solving-patterns.md)
 
-=== "Advanced"
+- :material-trophy: **Advanced**
+
+    ---
 
     Master complex topics:
     
-    1. [Greedy Algorithms](greedy/index.md)
-    2. [Mathematical Algorithms](math.md)
-    3. [Divide & Conquer Patterns](divide-conquer/index.md)
+    1. [Advanced Algorithms](advanced.md)
+    2. [Mathematical Algorithms](math/index.md)
+    3. [Interview Preparation](fundamentals/interview-strategy.md)
+
+</div>
 
 ---
 
-**Master algorithms, ace interviews, build amazing systems! 🚀💻**
+## Ready to Begin Your Algorithm Journey?
+
+Start exploring the guides above to build your skills systematically.
 
 Understanding algorithmic complexity is fundamental to writing efficient code.
 
@@ -359,74 +394,35 @@ Understanding algorithmic complexity is fundamental to writing efficient code.
 | **O(2ⁿ)** | Exponential | Recursive Fibonacci, Subset generation | 🔴 Terrible |
 | **O(n!)** | Factorial | Permutation generation, Traveling salesman (brute force) | 🔴 Terrible |
 
-### Complexity Growth Visualization
+### Complexity Growth
 
-```python
-import matplotlib.pyplot as plt
-import numpy as np
-
-# Complexity growth comparison
-def plot_complexity_growth():
-    n = np.linspace(1, 100, 100)
-    
-    plt.figure(figsize=(12, 8))
-    
-    complexities = {
-        'O(1)': np.ones_like(n),
-        'O(log n)': np.log2(n),
-        'O(n)': n,
-        'O(n log n)': n * np.log2(n),
-        'O(n²)': n**2,
-    }
-    
-    for name, values in complexities.items():
-        plt.plot(n, values, label=name, linewidth=2)
-    
-    plt.xlabel('Input Size (n)', fontsize=12)
-    plt.ylabel('Operations', fontsize=12)
-    plt.title('Algorithm Complexity Growth Comparison', fontsize=14)
-    plt.legend(fontsize=10)
-    plt.grid(True, alpha=0.3)
-    plt.yscale('log')
-    plt.show()
-
-# Call this function to see the complexity comparison
-# plot_complexity_growth()
-```
+!!! info "See Visualization"
+    For interactive complexity visualizations and detailed explanations of algorithm efficiency, check our [Time Complexity Guide](fundamentals/time-complexity.md).
 
 ## 🏆 Problem-Solving Strategies
 
-### 1. Understand the Problem
+!!! tip "Detailed Problem-Solving Guide"
+    Visit our comprehensive [Problem-Solving Patterns](fundamentals/problem-solving-patterns.md) guide for detailed strategies, examples, and practice problems.
 
-- Read the problem statement carefully
-- Identify inputs, outputs, and constraints
-- Work through examples manually
-- Ask clarifying questions
+<div class="grid cards" markdown>
 
-### 2. Choose the Right Approach
+- :material-lightbulb-on-outline: **Understanding Approach**
 
-- **Brute Force**: Start simple, then optimize
-- **Divide & Conquer**: Break into smaller subproblems
-- **Greedy**: Make locally optimal choices
-- **Dynamic Programming**: Overlapping subproblems
-- **Backtracking**: Explore all possibilities systematically
+    ---
+    
+    Problem analysis, constraints identification, and selecting the right algorithmic approach
+    
+    [Learn more →](fundamentals/problem-solving-patterns.md#approach-selection)
 
-### 3. Implement and Test
+- :material-pattern: **Pattern Recognition**
 
-- Write clean, readable code
-- Handle edge cases
-- Test with various inputs
-- Optimize after correctness
+    ---
+    
+    Two Pointers, Sliding Window, Hash Maps, and other essential problem-solving patterns
+    
+    [Learn more →](fundamentals/problem-solving-patterns.md#common-patterns)
 
-### 4. Common Patterns to Recognize
-
-| Pattern | When to Use | Examples |
-|---------|-------------|----------|
-| **Two Pointers** | Sorted arrays, palindromes | Two Sum, Container with Most Water |
-| **Sliding Window** | Subarray/substring problems | Longest Substring, Max Sum Subarray |
-| **Hash Maps** | Frequency counting, lookups | Anagram check, First non-repeating char |
-| **BFS/DFS** | Tree/graph traversal | Level order, Connected components |
-| **Binary Search** | Sorted data, search space | Find element, Search in rotated array |
+</div>
 
 ## 📚 Essential Topics by Category
 
@@ -569,24 +565,8 @@ def plot_complexity_growth():
     - [ ] Word Ladder II
     - [ ] Palindrome Partitioning II
 
-### Weekly Goals Template
-
-```markdown
-## Week X Goals
-- **Topic Focus**: [e.g., Dynamic Programming]
-- **Problems to Solve**: 15-20
-- **New Concepts**: [e.g., Knapsack pattern]
-- **Review**: Previous week's difficult problems
-- **Mock Interview**: 1 session
-
-### Daily Breakdown
-- Monday: 3-4 easy problems
-- Tuesday: 2-3 medium problems
-- Wednesday: 1 hard problem + review
-- Thursday: 2-3 medium problems
-- Friday: Mixed difficulty + mock interview
-- Weekend: Review and solidify concepts
-```
+!!! tip "Study Planning"
+    Visit our [Preparation Planning](fundamentals/preparation-planning.md) guide for detailed weekly study templates, daily practice routines, and customizable learning plans.
 
 ## 🎓 Success Tips
 
@@ -618,453 +598,64 @@ def plot_complexity_growth():
 
 ## 🚀 Ready to Start?
 
-Choose your learning path based on your goals:
-
-- **Job Interview Prep**: Start with [Data Structures](data-structures.md) → [Sorting](sorting.md) → [Dynamic Programming](dp.md)
-- **Competitive Programming**: Begin with [Mathematical Algorithms](math.md) → [Greedy Algorithms](greedy/index.md) → [Graph Algorithms](graphs.md)
-- **Academic Study**: Follow the structured path: [Data Structures](data-structures.md) → [Sorting](sorting.md) → [Graphs](graphs.md) → [DP](dp.md) → [Backtracking](backtracking/index.md)
-
-Remember: The key to mastering algorithms is consistent practice and understanding the underlying patterns. Start with the basics and gradually work your way up to more complex problems.
+Choose your learning path based on your goals and explore our detailed [Algorithm Fundamentals](fundamentals/index.md) section for comprehensive guides and strategies.
 
 *Happy coding! 🎯*
 
-Understanding algorithmic complexity is fundamental to writing efficient code.
+## 🔧 Core Data Structures
 
-### Big O Notation Cheat Sheet
+<div class="grid cards" markdown>
 
-| Complexity | Name | Example Algorithms | Performance |
-|------------|------|-------------------|-------------|
-| **O(1)** | Constant | Array access, Hash table lookup | 🟢 Excellent |
-| **O(log n)** | Logarithmic | Binary search, Balanced BST operations | 🟢 Excellent |
-| **O(n)** | Linear | Linear search, Array traversal | 🟡 Good |
-| **O(n log n)** | Linearithmic | Merge sort, Heap sort, Fast Fourier Transform | 🟡 Good |
-| **O(n²)** | Quadratic | Bubble sort, Selection sort, Nested loops | 🔴 Poor |
-| **O(n³)** | Cubic | Floyd-Warshall, Matrix multiplication | 🔴 Very Poor |
-| **O(2ⁿ)** | Exponential | Recursive Fibonacci, Subset generation | 🔴 Terrible |
-| **O(n!)** | Factorial | Permutation generation, Traveling salesman (brute force) | 🔴 Terrible |
+- :material-view-sequential: **Linear Data Structures**
 
-### Visual Complexity Comparison
+    ---
 
-```python
-import matplotlib.pyplot as plt
-import numpy as np
-
-# Complexity growth visualization
-n = np.linspace(1, 100, 100)
-complexities = {
-    'O(1)': np.ones_like(n),
-    'O(log n)': np.log2(n),
-    'O(n)': n,
-    'O(n log n)': n * np.log2(n),
-    'O(n²)': n**2,
-    'O(2ⁿ)': 2**n[:20]  # Limited to prevent overflow
-}
-
-# Plot complexity curves
-for name, values in complexities.items():
-    if name == 'O(2ⁿ)':
-        plt.plot(n[:20], values, label=name)
-    else:
-        plt.plot(n, values, label=name)
-
-plt.xlabel('Input Size (n)')
-plt.ylabel('Operations')
-plt.title('Algorithm Complexity Growth')
-plt.legend()
-plt.yscale('log')
-plt.grid(True)
-plt.show()
-```
-
-## 🔧 Core Data Structures Implementation
-
-### Dynamic Array (Python List Alternative)
-
-```python
-class DynamicArray:
-    """
-    A resizable array implementation with amortized O(1) append.
-    Demonstrates capacity doubling strategy.
-    """
-    def __init__(self, capacity=2):
-        self.capacity = capacity
-        self.size = 0
-        self.data = [None] * self.capacity
+    Arrays, linked lists, stacks, queues with implementation details and optimizations
     
-    def __len__(self):
-        return self.size
-    
-    def __getitem__(self, index):
-        if not 0 <= index < self.size:
-            raise IndexError("Index out of range")
-        return self.data[index]
-    
-    def __setitem__(self, index, value):
-        if not 0 <= index < self.size:
-            raise IndexError("Index out of range")
-        self.data[index] = value
-    
-    def _resize(self, new_capacity):
-        """Double the capacity when needed."""
-        old_data = self.data
-        self.capacity = new_capacity
-        self.data = [None] * self.capacity
-        
-        for i in range(self.size):
-            self.data[i] = old_data[i]
-    
-    def append(self, item):
-        """Add item to end. Amortized O(1) time."""
-        if self.size >= self.capacity:
-            self._resize(2 * self.capacity)
-        
-        self.data[self.size] = item
-        self.size += 1
-    
-    def insert(self, index, item):
-        """Insert item at index. O(n) time."""
-        if not 0 <= index <= self.size:
-            raise IndexError("Index out of range")
-        
-        if self.size >= self.capacity:
-            self._resize(2 * self.capacity)
-        
-        # Shift elements to the right
-        for i in range(self.size, index, -1):
-            self.data[i] = self.data[i-1]
-        
-        self.data[index] = item
-        self.size += 1
-    
-    def pop(self, index=-1):
-        """Remove and return item at index. O(n) time."""
-        if self.size == 0:
-            raise IndexError("Pop from empty array")
-        
-        if index < 0:
-            index += self.size
-        
-        if not 0 <= index < self.size:
-            raise IndexError("Index out of range")
-        
-        item = self.data[index]
-        
-        # Shift elements to the left
-        for i in range(index, self.size - 1):
-            self.data[i] = self.data[i + 1]
-        
-        self.size -= 1
-        
-        # Shrink if necessary (optional optimization)
-        if self.size <= self.capacity // 4:
-            self._resize(self.capacity // 2)
-        
-        return item
+    [Explore implementations →](data-structures/linear/index.md)
 
-# Usage example
-arr = DynamicArray()
-for i in range(10):
-    arr.append(i)
+- :material-tree: **Hierarchical Data Structures**
 
-print(f"Array: {[arr[i] for i in range(len(arr))]}")
-print(f"Length: {len(arr)}, Capacity: {arr.capacity}")
-```
+    ---
 
-### Advanced Linked List with Multiple Operations
-
-```python
-class ListNode:
-    """Node for doubly linked list."""
-    def __init__(self, val=0, prev=None, next=None):
-        self.val = val
-        self.prev = prev
-        self.next = next
-
-class DoublyLinkedList:
-    """
-    Doubly linked list with O(1) insertion/deletion at both ends.
-    Useful for implementing deques, LRU cache, etc.
-    """
-    def __init__(self):
-        # Sentinel nodes to simplify edge cases
-        self.head = ListNode()
-        self.tail = ListNode()
-        self.head.next = self.tail
-        self.tail.prev = self.head
-        self.size = 0
+    Trees, heaps, tries, and advanced tree-based structures with practical examples
     
-    def _add_node(self, node, prev_node):
-        """Add node after prev_node."""
-        next_node = prev_node.next
-        
-        prev_node.next = node
-        node.prev = prev_node
-        node.next = next_node
-        next_node.prev = node
-        
-        self.size += 1
+    [Learn tree structures →](data-structures/hierarchical/index.md)
+
+- :material-table: **Hash-Based Structures**
+
+    ---
+
+    Hash tables, hash maps, and sets with collision resolution strategies
     
-    def _remove_node(self, node):
-        """Remove given node."""
-        prev_node = node.prev
-        next_node = node.next
-        
-        prev_node.next = next_node
-        next_node.prev = prev_node
-        
-        self.size -= 1
-    
-    def add_first(self, val):
-        """Add to front. O(1) time."""
-        new_node = ListNode(val)
+    [Hash structure details →](data-structures/hashing/index.md)
+
+</div>
+
+!!! tip "Ready to implement?"
+    For complete implementations, code examples, and optimizations of these data structures, visit the [Data Structures](data-structures/index.md) section.
         self._add_node(new_node, self.head)
     
-    def add_last(self, val):
-        """Add to back. O(1) time."""
-        new_node = ListNode(val)
-        self._add_node(new_node, self.tail.prev)
+!!! tip "Linear Data Structures"
+    Visit our [Linear Data Structures](data-structures/linear/index.md) section for complete implementations of:
     
-    def remove_first(self):
-        """Remove from front. O(1) time."""
-        if self.size == 0:
-            raise IndexError("Remove from empty list")
-        
-        first_node = self.head.next
-        self._remove_node(first_node)
-        return first_node.val
-    
-    def remove_last(self):
-        """Remove from back. O(1) time."""
-        if self.size == 0:
-            raise IndexError("Remove from empty list")
-        
-        last_node = self.tail.prev
-        self._remove_node(last_node)
-        return last_node.val
-    
-    def find_and_remove(self, val):
-        """Find and remove first occurrence. O(n) time."""
-        current = self.head.next
-        while current != self.tail:
-            if current.val == val:
-                self._remove_node(current)
-                return True
-            current = current.next
-        return False
-    
-    def to_list(self):
-        """Convert to Python list for easy viewing."""
-        result = []
-        current = self.head.next
-        while current != self.tail:
-            result.append(current.val)
-            current = current.next
-        return result
-    
-    def __len__(self):
-        return self.size
+    - Linked Lists (Singly & Doubly linked)
+    - Stacks and their applications
+    - Queues and priority queues
+    - Deques for efficient operations at both ends
 
-# Usage example
-dll = DoublyLinkedList()
-for i in range(5):
-    dll.add_last(i)
-    dll.add_first(-i)
+### Tree-Based Data Structures
 
-print(f"List: {dll.to_list()}")
-print(f"Remove first: {dll.remove_first()}")
-print(f"Remove last: {dll.remove_last()}")
-print(f"Final list: {dll.to_list()}")
-```
-
-### Binary Search Tree with Rotations
-
-```python
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-        self.height = 1  # For AVL tree balancing
-
-class BinarySearchTree:
-    """
-    Enhanced BST with various operations and tree traversals.
-    Includes height balancing for AVL tree functionality.
-    """
-    def __init__(self):
-        self.root = None
+!!! tip "Tree Implementations"
+    See our [Tree Data Structures](data-structures/hierarchical/trees.md) guide for detailed implementations of:
     
-    def _get_height(self, node):
-        """Get height of node (0 for None)."""
-        return node.height if node else 0
+    - Binary Search Trees (BST)
+    - AVL Trees with rotation balancing
+    - Red-Black Trees
+    - B-Trees and B+ Trees
+    - Tries for string operations
     
-    def _update_height(self, node):
-        """Update height based on children."""
-        if node:
-            node.height = 1 + max(self._get_height(node.left), 
-                                 self._get_height(node.right))
-    
-    def _get_balance(self, node):
-        """Get balance factor for AVL tree."""
-        return self._get_height(node.left) - self._get_height(node.right) if node else 0
-    
-    def _rotate_right(self, y):
-        """Right rotation for AVL balancing."""
-        x = y.left
-        T2 = x.right
-        
-        # Perform rotation
-        x.right = y
-        y.left = T2
-        
-        # Update heights
-        self._update_height(y)
-        self._update_height(x)
-        
-        return x
-    
-    def _rotate_left(self, x):
-        """Left rotation for AVL balancing."""
-        y = x.right
-        T2 = y.left
-        
-        # Perform rotation
-        y.left = x
-        x.right = T2
-        
-        # Update heights
-        self._update_height(x)
-        self._update_height(y)
-        
-        return y
-    
-    def insert(self, val):
-        """Insert value maintaining BST property and AVL balance."""
-        self.root = self._insert_recursive(self.root, val)
-    
-    def _insert_recursive(self, node, val):
-        # Standard BST insertion
-        if not node:
-            return TreeNode(val)
-        
-        if val < node.val:
-            node.left = self._insert_recursive(node.left, val)
-        elif val > node.val:
-            node.right = self._insert_recursive(node.right, val)
-        else:
-            return node  # No duplicates
-        
-        # Update height
-        self._update_height(node)
-        
-        # Check balance and rotate if needed (AVL property)
-        balance = self._get_balance(node)
-        
-        # Left heavy
-        if balance > 1:
-            if val < node.left.val:  # Left-Left case
-                return self._rotate_right(node)
-            else:  # Left-Right case
-                node.left = self._rotate_left(node.left)
-                return self._rotate_right(node)
-        
-        # Right heavy
-        if balance < -1:
-            if val > node.right.val:  # Right-Right case
-                return self._rotate_left(node)
-            else:  # Right-Left case
-                node.right = self._rotate_right(node.right)
-                return self._rotate_left(node)
-        
-        return node
-    
-    def search(self, val):
-        """Search for value. O(log n) average, O(n) worst."""
-        return self._search_recursive(self.root, val)
-    
-    def _search_recursive(self, node, val):
-        if not node or node.val == val:
-            return node
-        
-        if val < node.val:
-            return self._search_recursive(node.left, val)
-        return self._search_recursive(node.right, val)
-    
-    def delete(self, val):
-        """Delete value maintaining BST property."""
-        self.root = self._delete_recursive(self.root, val)
-    
-    def _delete_recursive(self, node, val):
-        if not node:
-            return node
-        
-        if val < node.val:
-            node.left = self._delete_recursive(node.left, val)
-        elif val > node.val:
-            node.right = self._delete_recursive(node.right, val)
-        else:
-            # Node to delete found
-            if not node.left:
-                return node.right
-            elif not node.right:
-                return node.left
-            else:
-                # Node has two children - find inorder successor
-                successor = self._find_min(node.right)
-                node.val = successor.val
-                node.right = self._delete_recursive(node.right, successor.val)
-        
-        return node
-    
-    def _find_min(self, node):
-        """Find minimum value node in subtree."""
-        while node.left:
-            node = node.left
-        return node
-    
-    def inorder_traversal(self):
-        """Return inorder traversal (sorted order for BST)."""
-        result = []
-        self._inorder_helper(self.root, result)
-        return result
-    
-    def _inorder_helper(self, node, result):
-        if node:
-            self._inorder_helper(node.left, result)
-            result.append(node.val)
-            self._inorder_helper(node.right, result)
-    
-    def level_order_traversal(self):
-        """Return level-order traversal (BFS)."""
-        if not self.root:
-            return []
-        
-        result = []
-        queue = [self.root]
-        
-        while queue:
-            level_size = len(queue)
-            level = []
-            
-            for _ in range(level_size):
-                node = queue.pop(0)
-                level.append(node.val)
-                
-                if node.left:
-                    queue.append(node.left)
-                if node.right:
-                    queue.append(node.right)
-            
-            result.append(level)
-        
-        return result
-    
-    def is_balanced(self):
-        """Check if tree is height-balanced (AVL property)."""
-        return self._is_balanced_helper(self.root)[0]
-    
-    def _is_balanced_helper(self, node):
-        """Returns (is_balanced, height)."""
+    All implementations include proper operations, traversal methods, and complexity analysis.
         if not node:
             return True, 0
         
@@ -1097,144 +688,32 @@ print(f"After deleting 30: {bst.inorder_traversal()}")
 
 Master these patterns to solve 80% of coding interview problems efficiently.
 
+!!! tip "Comprehensive Pattern Guide"
+    See our [Problem-Solving Patterns](fundamentals/problem-solving-patterns.md) guide for detailed explanations and implementations of all common algorithmic patterns.
+
 ### Two Pointers Technique
 
 **Use Cases**: Array problems, string palindromes, sum problems
 **Time**: O(n), **Space**: O(1)
 
-```python
-def two_sum_sorted(arr, target):
-    """Find two numbers that sum to target in sorted array."""
-    left, right = 0, len(arr) - 1
-    
-    while left < right:
-        current_sum = arr[left] + arr[right]
-        if current_sum == target:
-            return [left, right]
-        elif current_sum < target:
-            left += 1
-        else:
-            right -= 1
-    
-    return []
+Learn more about [Two Pointers](fundamentals/problem-solving-patterns.md#two-pointers-technique) including:
 
-def is_palindrome(s):
-    """Check if string is palindrome ignoring case and non-alphanumeric."""
-    left, right = 0, len(s) - 1
-    
-    while left < right:
-        while left < right and not s[left].isalnum():
-            left += 1
-        while left < right and not s[right].isalnum():
-            right -= 1
-        
-        if s[left].lower() != s[right].lower():
-            return False
-        
-        left += 1
-        right -= 1
-    
-    return True
-
-def remove_duplicates(arr):
-    """Remove duplicates from sorted array in-place."""
-    if not arr:
-        return 0
-    
-    write_index = 1
-    for read_index in range(1, len(arr)):
-        if arr[read_index] != arr[read_index - 1]:
-            arr[write_index] = arr[read_index]
-            write_index += 1
-    
-    return write_index
-```
+- Two Sum and its variants
+- Palindrome validation
+- In-place array operations
+- Trapping rain water problems
 
 ### Sliding Window Pattern
 
 **Use Cases**: Subarray problems, string problems with constraints
 **Time**: O(n), **Space**: O(1) or O(k)
 
-```python
-def max_sum_subarray(arr, k):
-    """Find maximum sum of subarray of size k."""
-    if len(arr) < k:
-        return None
-    
-    # Calculate sum of first window
-    window_sum = sum(arr[:k])
-    max_sum = window_sum
-    
-    # Slide the window
-    for i in range(k, len(arr)):
-        window_sum = window_sum - arr[i - k] + arr[i]
-        max_sum = max(max_sum, window_sum)
-    
-    return max_sum
+Learn more about [Sliding Window](fundamentals/problem-solving-patterns.md#sliding-window-technique) including:
 
-def longest_substring_k_distinct(s, k):
-    """Find longest substring with at most k distinct characters."""
-    if not s or k == 0:
-        return 0
-    
-    char_count = {}
-    left = 0
-    max_length = 0
-    
-    for right in range(len(s)):
-        # Expand window
-        char_count[s[right]] = char_count.get(s[right], 0) + 1
-        
-        # Contract window if needed
-        while len(char_count) > k:
-            char_count[s[left]] -= 1
-            if char_count[s[left]] == 0:
-                del char_count[s[left]]
-            left += 1
-        
-        max_length = max(max_length, right - left + 1)
-    
-    return max_length
-
-def min_window_substring(s, t):
-    """Find minimum window substring containing all characters of t."""
-    if not s or not t:
-        return ""
-    
-    # Count characters in t
-    t_count = {}
-    for char in t:
-        t_count[char] = t_count.get(char, 0) + 1
-    
-    left = 0
-    min_len = float('inf')
-    min_start = 0
-    required = len(t_count)
-    formed = 0
-    window_counts = {}
-    
-    for right in range(len(s)):
-        char = s[right]
-        window_counts[char] = window_counts.get(char, 0) + 1
-        
-        if char in t_count and window_counts[char] == t_count[char]:
-            formed += 1
-        
-        # Try to contract window
-        while left <= right and formed == required:
-            if right - left + 1 < min_len:
-                min_len = right - left + 1
-                min_start = left
-            
-            char = s[left]
-            window_counts[char] -= 1
-            if char in t_count and window_counts[char] < t_count[char]:
-                formed -= 1
-            
-            left += 1
-    
-    return "" if min_len == float('inf') else s[min_start:min_start + min_len]
-```
+- Maximum/minimum subarray problems
+- Longest substring with constraints
+- Minimum window substring
+- String anagrams and permutations
 
 ### Fast & Slow Pointers (Floyd's Algorithm)
 
@@ -1258,145 +737,31 @@ def has_cycle(head):
     
     return False
 
-def find_cycle_start(head):
-    """Find the start of cycle in linked list."""
-    if not head or not head.next:
-        return None
-    
-    # Phase 1: Detect cycle
-    slow = fast = head
-    while fast and fast.next:
-        slow = slow.next
-        fast = fast.next.next
-        if slow == fast:
-            break
-    else:
-        return None  # No cycle
-    
-    # Phase 2: Find cycle start
-    slow = head
-    while slow != fast:
-        slow = slow.next
-        fast = fast.next
-    
-    return slow
+### Fast & Slow Pointers (Floyd's Algorithm)
 
-def find_middle(head):
-    """Find middle node of linked list."""
-    slow = fast = head
-    
-    while fast and fast.next:
-        slow = slow.next
-        fast = fast.next.next
-    
-    return slow
+**Use Cases**: Cycle detection, finding middle element, palindrome checking
+**Time**: O(n), **Space**: O(1)
 
-def is_happy_number(n):
-    """Check if number is happy (sum of squares of digits eventually becomes 1)."""
-    def get_sum_of_squares(num):
-        total = 0
-        while num > 0:
-            digit = num % 10
-            total += digit * digit
-            num //= 10
-        return total
-    
-    slow = fast = n
-    
-    while True:
-        slow = get_sum_of_squares(slow)
-        fast = get_sum_of_squares(get_sum_of_squares(fast))
-        
-        if fast == 1:
-            return True
-        if slow == fast:
-            return False
-```
+Learn more about [Fast & Slow Pointers](fundamentals/problem-solving-patterns.md#fast-slow-pointers-technique) including:
+
+- Linked list cycle detection
+- Finding cycle starting point
+- Middle of linked list
+- Happy number problem
+- Palindrome linked list
 
 ### Merge Intervals Pattern
 
 **Use Cases**: Overlapping intervals, scheduling problems
 **Time**: O(n log n), **Space**: O(n)
 
-```python
-def merge_intervals(intervals):
-    """Merge overlapping intervals."""
-    if not intervals:
-        return []
-    
-    # Sort by start time
-    intervals.sort(key=lambda x: x[0])
-    merged = [intervals[0]]
-    
-    for current in intervals[1:]:
-        last_merged = merged[-1]
-        
-        if current[0] <= last_merged[1]:  # Overlap
-            last_merged[1] = max(last_merged[1], current[1])
-        else:
-            merged.append(current)
-    
-    return merged
+Learn more about [Merge Intervals](fundamentals/problem-solving-patterns.md#merge-intervals-technique) including:
 
-def insert_interval(intervals, new_interval):
-    """Insert new interval and merge if necessary."""
-    result = []
-    i = 0
-    
-    # Add all intervals that end before new interval starts
-    while i < len(intervals) and intervals[i][1] < new_interval[0]:
-        result.append(intervals[i])
-        i += 1
-    
-    # Merge overlapping intervals
-    while i < len(intervals) and intervals[i][0] <= new_interval[1]:
-        new_interval[0] = min(new_interval[0], intervals[i][0])
-        new_interval[1] = max(new_interval[1], intervals[i][1])
-        i += 1
-    
-    result.append(new_interval)
-    
-    # Add remaining intervals
-    while i < len(intervals):
-        result.append(intervals[i])
-        i += 1
-    
-    return result
-
-def can_attend_meetings(intervals):
-    """Check if person can attend all meetings (no overlaps)."""
-    intervals.sort(key=lambda x: x[0])
-    
-    for i in range(1, len(intervals)):
-        if intervals[i][0] < intervals[i-1][1]:
-            return False
-    
-    return True
-
-def min_meeting_rooms(intervals):
-    """Find minimum number of meeting rooms required."""
-    if not intervals:
-        return 0
-    
-    import heapq
-    
-    # Sort by start time
-    intervals.sort(key=lambda x: x[0])
-    
-    # Min heap to track end times
-    heap = []
-    
-    for interval in intervals:
-        start, end = interval
-        
-        # Remove meetings that have ended
-        while heap and heap[0] <= start:
-            heapq.heappop(heap)
-        
-        # Add current meeting end time
-        heapq.heappush(heap, end)
-    
-    return len(heap)
+- Merging overlapping intervals
+- Interval insertion
+- Meeting room scheduling
+- Interval list intersections
+- Employee free time
 ```
 
 ## 🔍 Advanced Algorithm Categories
@@ -1667,21 +1032,10 @@ print(f"MST weight: {weight}, edges: {mst}")
 | **GeeksforGeeks** | Interview questions | Easy-Hard | Concept learning |
 | **InterviewBit** | Structured learning | Easy-Hard | Systematic prep |
 
-### Must-Read Books
+### Recommended Resources
 
-**Fundamental Algorithms:**
-
-- **Introduction to Algorithms (CLRS)** - Comprehensive theoretical foundation
-- **Algorithm Design Manual (Skiena)** - Practical problem-solving approach
-- **Algorithms (Sedgewick & Wayne)** - Clear explanations with Java examples
-
-**Interview Preparation:**
-
-- **Cracking the Coding Interview (McDowell)** - Essential for tech interviews
-- **Elements of Programming Interviews** - Language-specific versions available
-- **Programming Pearls (Bentley)** - Problem-solving methodology
-
-**Advanced Topics:**
+!!! tip "Resource Guide"
+    For a comprehensive list of books, courses, and online resources, visit our [Learning Resources](fundamentals/learning-resources.md) page.
 
 - **Competitive Programming (Halim)** - Contest-level algorithms
 - **The Art of Computer Programming (Knuth)** - Mathematical depth
@@ -1758,4 +1112,6 @@ print(f"MST weight: {weight}, edges: {mst}")
 
 ---
 
-**Master algorithms, ace interviews, build amazing systems! 🚀💻**
+## Keep Building Your Skills
+
+Consistent practice and understanding of core principles will help you master algorithms and data structures.
