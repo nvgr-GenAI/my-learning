@@ -57,13 +57,7 @@ Expand your knowledge with:
 3. [Problem-Solving Patterns](fundamentals/problem-solving-patterns.md)
 4. [Advanced Data Structures](data-structures/index.md#advanced-data-structures)
 
-### For Advanced Practitioners
 
-Master complex topics:
-
-1. [Advanced Algorithms](advanced.md)
-2. [Mathematical Algorithms](math/index.md)
-3. [Advanced Problem Solving](advanced.md)
 
 ## 🔍 Essential Concepts by Category
 
@@ -239,3 +233,4 @@ Understanding time and space complexity is crucial for writing efficient code.
 ---
 
 **Remember**: Mastering algorithms is a journey, not a destination. Focus on building conceptual understanding rather than memorizing solutions.
+avatar

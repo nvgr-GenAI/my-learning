@@ -1,13 +1,42 @@
 # Heaps 🏔️
 
-## 🎯 Overview
+## Introduction
 
 Heaps are complete binary trees that satisfy the heap property. They're essential for priority queues, sorting algorithms, and many graph algorithms like Dijkstra's shortest path.
 
-## 📋 Key Properties
+=== "Overview"
+    **Core Concept**:
+    
+    - Special binary tree-based data structure that satisfies the heap property
+    - Complete binary tree (all levels filled except possibly the last)
+    - Allows efficient access to the minimum or maximum element
+    
+    **When to Use**:
+    
+    - When you need quick access to the minimum/maximum element
+    - For implementing priority queues
+    - When you need to efficiently extract elements in priority order
+    - In algorithms requiring partial sorting
+    
+    **Time Complexity**:
+    
+    - Insert: O(log n)
+    - Extract Min/Max: O(log n)
+    - Peek Min/Max: O(1)
+    - Heapify: O(n)
+    
+    **Real-World Applications**:
+    
+    - Priority scheduling in operating systems
+    - Dijkstra's and Prim's algorithms for graphs
+    - Event-driven simulation
+    - Task scheduling in distributed systems
 
-### Heap Property
-- **Max Heap**: Parent ≥ Children (root is maximum)
+=== "Heap Properties"
+    **Basic Properties**:
+    
+    - **Max Heap**: For each node, parent key ≥ children's keys (root is maximum)
+    - **Min Heap**: For each node, parent key ≤ children's keys (root is minimum)
 - **Min Heap**: Parent ≤ Children (root is minimum)
 - **Complete Binary Tree**: All levels filled except possibly the last
 - **Array Representation**: Efficient storage using indices

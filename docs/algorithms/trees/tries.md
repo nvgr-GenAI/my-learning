@@ -1,13 +1,44 @@
-# Tries (Prefix Trees)
+# Tries (Prefix Trees) 📚
 
-## 🎯 Overview
+## Introduction
 
 A Trie, also known as a prefix tree, is a tree-like data structure used to store strings efficiently. Each node represents a character, and paths from root to leaves represent complete strings.
 
-## 🔑 Key Concepts
+=== "Overview"
+    **Core Concept**:
+    
+    - Tree-like data structure optimized for string operations
+    - Each node represents a single character in a sequence
+    - Paths from root to nodes form prefixes; paths to leaf nodes form complete words
+    - Common prefixes share the same initial nodes, saving space
+    
+    **When to Use**:
+    
+    - Fast prefix matching and lookup
+    - Autocomplete and predictive text systems
+    - Spell checking
+    - IP routing (CIDR)
+    - String sorting and searching
+    
+    **Time Complexity**:
+    
+    - Insert: O(m) where m is string length
+    - Search: O(m) where m is string length
+    - Prefix search: O(p) where p is prefix length
+    
+    **Real-World Applications**:
+    
+    - Autocomplete features in search engines
+    - Spell checkers
+    - IP routing tables
+    - T9 predictive text and keyboard suggestions
+    - Search engines and typeahead systems
 
-### Structure
-- **Root Node**: Empty node at the start
+=== "Structure"
+    **Basic Components**:
+    
+    - **Root Node**: Empty node at the start
+    - **Character Nodes**: Each node represents a character
 - **Character Nodes**: Each node stores one character
 - **End Markers**: Flag to indicate end of valid word
 - **Paths**: Root-to-node paths form prefixes

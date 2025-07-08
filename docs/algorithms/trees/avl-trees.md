@@ -1,13 +1,40 @@
 # AVL Trees 🌳⚖️
 
-## 🎯 Overview
+## Introduction
 
 AVL Trees are self-balancing binary search trees where the height difference between left and right subtrees of any node is at most 1. Named after Adelson-Velsky and Landis.
 
-## 📋 Key Properties
+=== "Overview"
+    **Core Concept**:
+    
+    - Self-balancing binary search tree that maintains O(log n) height
+    - Named after inventors Adelson-Velsky and Landis (1962)
+    - For any node, the height difference between left and right subtrees is at most 1
+    
+    **When to Use**:
+    
+    - When you need guaranteed O(log n) operations for search, insert, and delete
+    - When the tree will undergo frequent modifications
+    - When balanced performance is critical for all operations
+    
+    **Time Complexity**:
+    
+    - Search, Insert, Delete: O(log n) guaranteed
+    - Space complexity: O(n)
+    
+    **Real-World Applications**:
+    
+    - Database indexing requiring strict performance guarantees
+    - Memory management systems
+    - In-memory caches with predictable performance
 
-### Balance Factor
-- **Balance Factor (BF)** = height(left) - height(right)
+=== "Balance Properties"
+    **Balance Factor**:
+    
+    - **Balance Factor (BF)** = height(left) - height(right)
+    - Valid values: {-1, 0, 1}
+    - BF > 1: Left subtree is too tall (left-heavy)
+    - BF < -1: Right subtree is too tall (right-heavy)
 - **Valid range**: -1, 0, +1
 - **Violation**: |BF| > 1 requires rebalancing
 

@@ -1,12 +1,44 @@
-# Segment Trees
+# Segment Trees 📊
 
-## 🎯 Overview
+## Introduction
 
 Segment Trees are binary trees used for storing information about array intervals efficiently. They allow querying and updating ranges in O(log n) time, making them essential for competitive programming and range query problems.
 
-## 🔑 Key Concepts
+=== "Overview"
+    **Core Concept**:
+    
+    - Specialized tree data structure for efficiently processing range queries and updates
+    - Divides an array into segments and pre-computes results for those segments
+    - Enables operations like range sum, minimum, maximum, and more
+    - Leverages divide-and-conquer approach for efficient range operations
+    
+    **When to Use**:
+    
+    - Frequent range queries (sum, min, max, etc.)
+    - Frequent element updates
+    - Need for both operations to be faster than O(n)
+    - Range query problems in competitive programming
+    
+    **Time Complexity**:
+    
+    - Construction: O(n)
+    - Query: O(log n)
+    - Update: O(log n)
+    - Space: O(4n) ≈ O(n)
+    
+    **Real-World Applications**:
+    
+    - Range query databases
+    - Geographic information systems
+    - Computational geometry
+    - Financial data analysis (range-based statistics)
 
-### Structure
+=== "Structure"
+    **Basic Organization**:
+    
+    - **Complete binary tree**: Each internal node represents a segment of the array
+    - **Leaf nodes**: Individual elements of the original array
+    - **Internal nodes**: Store computed results for the segment they represent
 
 - **Binary Tree**: Each node represents an array segment
 - **Leaf Nodes**: Represent individual array elements  

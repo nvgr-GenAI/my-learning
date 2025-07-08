@@ -1,13 +1,39 @@
 # Binary Search Trees (BST) 🔍
 
-## 🎯 Overview
+## Introduction
 
 Binary Search Trees are binary trees with the ordering property: for every node, all values in the left subtree are less than the node's value, and all values in the right subtree are greater.
 
-## 📋 Key Properties
+=== "Overview"
+    **Core Concept**:
+    
+    - Binary tree with an ordering property that enables efficient search, insertion, and deletion
+    - For every node: all values in left subtree < node.value < all values in right subtree
+    
+    **When to Use**:
+    
+    - When you need ordered data with fast search, insert, and delete operations
+    - When you need to perform in-order traversal to get sorted data
+    - For implementing sets and maps with ordered keys
+    
+    **Time Complexity**:
+    
+    - Average case: O(log n) for search, insert, delete
+    - Worst case: O(n) if tree becomes unbalanced
+    
+    **Real-World Applications**:
+    
+    - Database indexing
+    - Symbol tables in compilers
+    - Priority queues
+    - Implementing sets and maps
 
-### BST Invariant
-- **Left subtree**: All values < node.val
+=== "BST Properties"
+    **Key Invariant**:
+    
+    - **Left subtree**: All values < node.value
+    - **Right subtree**: All values > node.value
+    - **No duplicates**: Typically, duplicates are not allowed (or handled specially)
 - **Right subtree**: All values > node.val
 - **In-order traversal**: Yields sorted sequence
 - **No duplicates**: Traditional BSTs don't allow duplicate values

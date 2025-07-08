@@ -290,14 +290,33 @@ nav:
     - Trees:
       - algorithms/trees/index.md
       - algorithms/trees/fundamentals.md
-      - algorithms/trees/binary-trees.md
-      - algorithms/trees/bst.md
-      - algorithms/trees/avl-trees.md
-      - algorithms/trees/tree-traversal.md
-      - algorithms/trees/heaps.md
-      - algorithms/trees/easy-problems.md
-      - algorithms/trees/medium-problems.md
-      - algorithms/trees/hard-problems.md
+      - Tree Types:
+        - Basic Trees:
+          - Binary Trees: algorithms/trees/binary-trees.md
+          - Binary Search Trees: algorithms/trees/bst.md
+        - Balanced Trees:
+          - AVL Trees: algorithms/trees/avl-trees.md
+          - Red-Black Trees: algorithms/trees/red-black-trees.md
+          - Splay Trees: algorithms/trees/splay-trees.md
+          - B-Trees: algorithms/trees/b-trees.md
+        - Specialized Trees:
+          - Tries (Prefix Trees): algorithms/trees/tries.md
+          - Suffix Trees: algorithms/trees/suffix-trees.md
+          - Segment Trees: algorithms/trees/segment-trees.md
+          - Fenwick Trees: algorithms/trees/fenwick-trees.md
+      - Tree Implementation:
+        - algorithms/trees/tree-implementation.md
+      - Tree Traversal: 
+        - algorithms/trees/tree-traversal.md        
+      - Tree-Based Data Structures:
+        - Heaps: algorithms/trees/heaps.md
+        - Disjoint Set Union: algorithms/trees/dsu.md
+        - Cartesian Trees: algorithms/trees/cartesian-trees.md
+        - Heavy-Light Decomposition: algorithms/trees/heavy-light.md
+      - Problem Sets:
+        - Easy Problems: algorithms/trees/easy-problems.md
+        - Medium Problems: algorithms/trees/medium-problems.md
+        - Hard Problems: algorithms/trees/hard-problems.md
     - Sorting:
       - algorithms/sorting/index.md
       - algorithms/sorting/fundamentals.md
@@ -327,16 +346,35 @@ nav:
     - Dynamic Programming:
       - algorithms/dp/index.md
       - algorithms/dp/fundamentals.md
-      - algorithms/dp/patterns.md
-      - algorithms/dp/fibonacci.md
-      - algorithms/dp/knapsack.md
-      - algorithms/dp/lcs.md
-      - algorithms/dp/edit-distance.md
-      - algorithms/dp/easy-problems.md
-      - algorithms/dp/medium-problems.md
-      - algorithms/dp/hard-problems.md
-      - algorithms/dp/2d-dp.md
-      - algorithms/dp/interval-dp.md
+      - DP Patterns:
+        - Overview: algorithms/dp/patterns.md
+        - Linear Sequence:
+          - Fibonacci: algorithms/dp/fibonacci.md
+          - Longest Increasing Subsequence: algorithms/dp/lis.md
+        - Two-Sequence:
+          - Longest Common Subsequence: algorithms/dp/lcs.md
+          - Edit Distance: algorithms/dp/edit-distance.md
+        - Grid:
+          - Unique Paths: algorithms/dp/unique-paths.md
+          - Min/Max Path Sum: algorithms/dp/min-max-path-sum.md
+        - Knapsack:
+          - 0/1 Knapsack: algorithms/dp/knapsack.md
+          - Unbounded Knapsack: algorithms/dp/unbounded-knapsack.md
+          - Multi-dimensional Knapsack: algorithms/dp/multi-dimensional-knapsack.md
+        - Interval:
+          - Matrix Chain Multiplication: algorithms/dp/matrix-chain.md
+          - Palindrome Partitioning: algorithms/dp/palindrome-partitioning.md
+          - Optimal Triangulation: algorithms/dp/optimal-triangulation.md
+        - Decision Making:
+          - Buy/Sell Stock: algorithms/dp/buy-sell-stock.md
+          - Game Theory: algorithms/dp/game-theory.md
+      - Problem Difficulty:
+        - Easy Problems: algorithms/dp/easy-problems.md
+        - Medium Problems: algorithms/dp/medium-problems.md
+        - Hard Problems: algorithms/dp/hard-problems.md
+      - Other DP Concepts:
+        - 2D Dynamic Programming: algorithms/dp/2d-dp.md
+        - Interval DP: algorithms/dp/interval-dp.md
     - Math:
       - algorithms/math/index.md
       - algorithms/math/number-theory.md

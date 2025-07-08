@@ -1,13 +1,36 @@
 # Binary Trees 🌱
 
-## 🎯 Overview
+## Introduction
 
 Binary trees are the foundation of tree data structures, where each node has at most two children, typically called left and right child.
 
-## 📋 Key Concepts
+=== "Overview"
+    **Core Concepts**:
+    
+    - **Node Structure**: Each node contains data and at most two child references
+    - **Tree Properties**: Height, depth, completeness, and balance
+    - **Special Types**: Complete, full, perfect, and balanced binary trees
+    
+    **Key Properties**:
+    
+    - Maximum number of nodes at level i: 2^i
+    - Maximum nodes in a tree of height h: 2^(h+1) - 1
+    - For n nodes, minimum possible height: ⌊log₂(n)⌋
+    
+    **Real-World Applications**:
+    
+    - Expression trees for parsing and evaluation
+    - Huffman coding for data compression
+    - Decision trees in machine learning
+    - Base for more specialized tree structures
 
-### Basic Properties
-- **Node**: Contains data and references to children
+=== "Basic Properties"
+    **Node Structure**:
+    
+    - **Data**: The value stored in the node
+    - **Left Child**: Reference to the left subtree
+    - **Right Child**: Reference to the right subtree
+    - **Parent** (optional): Reference to the parent node
 - **Root**: Top node of the tree
 - **Leaf**: Node with no children
 - **Height**: Longest path from root to leaf
