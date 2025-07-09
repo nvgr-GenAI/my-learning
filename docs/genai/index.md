@@ -23,10 +23,16 @@ Generative AI represents a revolutionary approach to artificial intelligence tha
 
 ## 🎯 Structured Learning Path
 
-This comprehensive curriculum is designed for systematic skill building:
+This comprehensive curriculum is designed for systematic skill building. **Choose your path** based on your current experience and goals:
 
 ### 📚 Phase 1: Foundation (Weeks 1-3)
-**Build theoretical understanding and core knowledge**
+**Perfect for**: Complete beginners to AI  
+**Goal**: Build theoretical understanding and core knowledge
+
+!!! info "🎯 Foundation Learning Path"
+    **Week 1**: [Mathematics Made Simple](fundamentals/mathematics.md) → [Neural Networks from Zero](fundamentals/neural-networks.md)  
+    **Week 2**: [Core GenAI Concepts](fundamentals/core-concepts.md) → [LLM Basics](llms/index.md)  
+    **Week 3**: [Transformer Architecture](transformers/index.md) → [Quick Start Guide](quick-start.md)
 
 <div class="grid cards" markdown>
 
@@ -34,48 +40,51 @@ This comprehensive curriculum is designed for systematic skill building:
     
     ---
     
-    **Duration**: 1-2 weeks  
-    **Level**: Beginner
+    **Duration**: 1-2 weeks | **Level**: Beginner
     
     Mathematical foundations, neural networks, and core concepts
     
-    - Linear algebra and calculus
-    - Probability and statistics
-    - Neural network theory
-    - Deep learning fundamentals
+    - Linear algebra basics (intuitive approach)
+    - Neural network fundamentals (from zero)
+    - Probability and statistics (practical focus)
+    - Deep learning essentials
 
 -   :material-robot-outline: **[Large Language Models](llms/index.md)**
     
     ---
     
-    **Duration**: 2-3 weeks  
-    **Level**: Intermediate
+    **Duration**: 2-3 weeks | **Level**: Intermediate
     
-    Architecture, training, and working with LLMs
+    Understanding and working with LLMs
     
-    - Transformer architecture
-    - Pre-training and fine-tuning
-    - Model APIs and usage
-    - Performance optimization
+    - What are LLMs? (beginner-friendly)
+    - Model architecture (simplified)
+    - Using LLM APIs (hands-on)
+    - Model comparison and selection
 
 -   :material-swap-horizontal: **[Transformers](transformers/index.md)**
     
     ---
     
-    **Duration**: 2-3 weeks  
-    **Level**: Intermediate
+    **Duration**: 2-3 weeks | **Level**: Intermediate
     
-    Deep dive into attention mechanisms and architecture
+    Deep dive into the architecture behind modern AI
     
-    - Self-attention mechanisms
-    - Multi-head attention
-    - Positional encoding
-    - Architecture variants
+    - Attention mechanisms (intuitive)
+    - Transformer components
+    - Modern improvements
+    - Implementation basics
 
 </div>
 
 ### 🛠️ Phase 2: Core Skills (Weeks 4-6)
-**Develop practical implementation skills**
+**Perfect for**: Those with basic AI understanding  
+**Goal**: Develop practical implementation skills
+
+!!! info "🎯 Core Skills Learning Path"
+    **Week 4**: [Prompt Engineering](prompt-engineering/index.md) → [Advanced Techniques](prompt-engineering/advanced-techniques.md)  
+    **Week 5**: [RAG Systems](rag/index.md) → [Vector Databases](rag/vector-databases.md)  
+    **Week 6**: [AI Agents](agents/index.md) → [Multi-Agent Systems](agents/multi-agent.md)
 
 <div class="grid cards" markdown>
 
@@ -83,48 +92,52 @@ This comprehensive curriculum is designed for systematic skill building:
     
     ---
     
-    **Duration**: 1-2 weeks  
-    **Level**: Beginner to Intermediate
+    **Duration**: 1-2 weeks | **Level**: Beginner to Intermediate
     
-    Master AI communication and optimization
+    Master AI communication for better results
     
-    - Prompt fundamentals
-    - Advanced techniques
+    - Prompt fundamentals (start here)
+    - Advanced techniques (chain-of-thought)
     - Systematic optimization
-    - Best practices
+    - Best practices and patterns
 
 -   :material-database-search: **[RAG Systems](rag/index.md)**
     
     ---
     
-    **Duration**: 2-3 weeks  
-    **Level**: Intermediate
+    **Duration**: 2-3 weeks | **Level**: Intermediate
     
     Build knowledge-enhanced AI systems
     
-    - Vector databases
-    - Retrieval patterns
-    - Implementation strategies
-    - Performance tuning
+    - RAG explained simply
+    - Vector databases and search
+    - Implementation patterns
+    - Performance optimization
 
 -   :material-robot-excited: **[AI Agents](agents/index.md)**
     
     ---
     
-    **Duration**: 3-4 weeks  
-    **Level**: Advanced
+    **Duration**: 3-4 weeks | **Level**: Advanced
     
     Create autonomous AI systems
     
     - Agent architectures
-    - Multi-agent systems
     - Tool integration
+    - Multi-agent systems
     - Workflow orchestration
 
 </div>
 
 ### ⚡ Phase 3: Advanced Applications (Weeks 7-10)
-**Specialize in cutting-edge techniques**
+**Perfect for**: Intermediate practitioners  
+**Goal**: Specialize in cutting-edge techniques
+
+!!! info "🎯 Advanced Applications Learning Path"
+    **Week 7**: [Fine-tuning](fine-tuning/index.md) → [LoRA Techniques](fine-tuning/lora.md)  
+    **Week 8**: [Multimodal AI](multimodal/index.md) → [Vision-Language Models](multimodal/vision.md)  
+    **Week 9**: [Providers](providers/index.md) → [Platform Comparison](providers/cloud.md)  
+    **Week 10**: [Ethical AI](ethical-ai/index.md) → [Safety Measures](ethical-ai/safety.md)
 
 <div class="grid cards" markdown>
 
@@ -132,48 +145,50 @@ This comprehensive curriculum is designed for systematic skill building:
     
     ---
     
-    **Duration**: 3-4 weeks  
-    **Level**: Advanced
+    **Duration**: 3-4 weeks | **Level**: Advanced
     
     Customize models for specific tasks
     
-    - LoRA and QLoRA
+    - Fine-tuning fundamentals
+    - LoRA and efficient methods
     - RLHF techniques
-    - Custom training
-    - Model adaptation
+    - Custom training pipelines
 
 -   :material-image-multiple: **[Multimodal AI](multimodal/index.md)**
     
     ---
     
-    **Duration**: 2-3 weeks  
-    **Level**: Intermediate to Advanced
+    **Duration**: 2-3 weeks | **Level**: Intermediate to Advanced
     
     Vision, audio, and cross-modal systems
     
     - Vision-language models
     - Audio processing
-    - Multimodal fusion
-    - Applications
+    - Cross-modal understanding
+    - Multimodal applications
 
 -   :material-cloud-outline: **[Providers & APIs](providers/index.md)**
     
     ---
     
-    **Duration**: 1-2 weeks  
-    **Level**: Intermediate
+    **Duration**: 1-2 weeks | **Level**: Intermediate
     
     Work with major AI platforms
     
-    - OpenAI APIs
+    - OpenAI ecosystem
     - Anthropic Claude
-    - Open-source models
-    - Platform comparison
+    - Open-source alternatives
+    - Platform selection guide
 
 </div>
 
 ### 🏗️ Phase 4: Enterprise & Production (Weeks 11-12)
-**Deploy and scale AI systems**
+**Perfect for**: Advanced practitioners and professionals  
+**Goal**: Deploy and scale AI systems
+
+!!! info "🎯 Enterprise & Production Learning Path"
+    **Week 11**: [AI Protocols](protocols/index.md) → [MLOps & AIOps](mlops-aiops/index.md)  
+    **Week 12**: [Advanced Topics](advanced/index.md) → [Projects](projects/index.md)
 
 <div class="grid cards" markdown>
 
@@ -181,8 +196,7 @@ This comprehensive curriculum is designed for systematic skill building:
     
     ---
     
-    **Duration**: 1-2 weeks  
-    **Level**: Advanced
+    **Duration**: 1-2 weeks | **Level**: Advanced
     
     Enterprise AI communication standards
     
@@ -195,8 +209,67 @@ This comprehensive curriculum is designed for systematic skill building:
     
     ---
     
-    **Duration**: 2-3 weeks  
-    **Level**: Advanced
+    **Duration**: 2-3 weeks | **Level**: Advanced
+    
+    Production deployment and monitoring
+    
+    - Deployment strategies
+    - Performance monitoring
+    - Scaling techniques
+    - Best practices
+
+-   :material-shield-check: **[Ethical AI](ethical-ai/index.md)**
+    
+    ---
+    
+    **Duration**: 1-2 weeks | **Level**: All levels
+    
+    Responsible AI development
+    
+    - Bias and fairness
+    - Privacy considerations
+    - Safety measures
+    - Governance frameworks
+
+</div>
+
+### 🚀 Phase 5: Mastery & Innovation (Weeks 13+)
+**Perfect for**: Experts and researchers  
+**Goal**: Explore cutting-edge research and build advanced applications
+
+!!! info "🎯 Mastery & Innovation Learning Path"
+    **Ongoing**: [Advanced Topics](advanced/index.md) → [Research Papers](advanced/research.md)  
+    **Projects**: [Hands-on Implementation](projects/index.md) → [Portfolio Development](projects/creative-ai.md)
+
+<div class="grid cards" markdown>
+
+-   :material-chart-line: **[Advanced Topics](advanced/index.md)**
+    
+    ---
+    
+    **Duration**: Ongoing | **Level**: Advanced
+    
+    Cutting-edge research and techniques
+    
+    - GANs and generative models
+    - Diffusion models
+    - Latest research developments
+    - Emerging trends
+
+-   :material-code-braces: **[Hands-on Projects](projects/index.md)**
+    
+    ---
+    
+    **Duration**: Ongoing | **Level**: All levels
+    
+    Real-world implementation experience
+    
+    - Chatbot development
+    - RAG applications
+    - Agent systems
+    - Creative AI projects
+
+</div>
     
     Production deployment and monitoring
     
