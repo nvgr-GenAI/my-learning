@@ -1,297 +1,718 @@
 # Core Concepts in GenAI
 
 !!! info "Essential Building Blocks"
-    Master the fundamental concepts that underpin all generative AI systems, from embeddings to attention mechanisms.
+    Master the fundamental concepts that underpin all generative AI systems. We'll explore these concepts intuitively first, then see how they work in practice.
+
+## Learning Objectives
+
+By the end of this guide, you'll understand:
+
+- **What embeddings are** and why they're crucial for AI
+- **How attention mechanisms** help models focus on relevant information
+- **The autoregressive generation process** that powers text generation
+- **Different sampling strategies** and their trade-offs
+- **Training objectives** that teach models to generate coherent content
+
+---
 
 ## Embeddings and Representation Learning
 
-### What are Embeddings?
+### What are Embeddings? 🎯
 
-Embeddings are dense vector representations that capture semantic relationships between discrete objects (words, images, etc.) in a continuous space.
+Imagine you're organizing a massive library. Instead of just putting books randomly on shelves, you want to place similar books near each other. Romance novels go together, science textbooks cluster in one area, and cookbooks have their own section.
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
-import seaborn as sns
+**Embeddings do exactly this for computers with words, images, or any data.**
 
-# Simple word embedding example
-class SimpleWordEmbedding:
-    def __init__(self, vocab_size, embedding_dim):
-        self.vocab_size = vocab_size
-        self.embedding_dim = embedding_dim
-        
-        # Initialize embeddings randomly
-        self.embeddings = np.random.randn(vocab_size, embedding_dim) * 0.1
-        
-        # Word to index mapping
-        self.word_to_idx = {}
-        self.idx_to_word = {}
-    
-    def add_word(self, word):
-        """Add a word to vocabulary"""
-        if word not in self.word_to_idx:
-            idx = len(self.word_to_idx)
-            self.word_to_idx[word] = idx
-            self.idx_to_word[idx] = word
-    
-    def get_embedding(self, word):
-        """Get embedding for a word"""
-        if word in self.word_to_idx:
-            idx = self.word_to_idx[word]
-            return self.embeddings[idx]
-        return None
-    
-    def similarity(self, word1, word2):
-        """Calculate cosine similarity between two words"""
-        emb1 = self.get_embedding(word1)
-        emb2 = self.get_embedding(word2)
-        
-        if emb1 is None or emb2 is None:
-            return 0
-        
-        # Cosine similarity
-        dot_product = np.dot(emb1, emb2)
-        norm1 = np.linalg.norm(emb1)
-        norm2 = np.linalg.norm(emb2)
-        
-        return dot_product / (norm1 * norm2)
-    
-    def find_similar(self, word, top_k=5):
-        """Find most similar words"""
-        target_embedding = self.get_embedding(word)
-        if target_embedding is None:
-            return []
-        
-        similarities = []
-        for other_word in self.word_to_idx:
-            if other_word != word:
-                sim = self.similarity(word, other_word)
-                similarities.append((other_word, sim))
-        
-        # Sort by similarity
-        similarities.sort(key=lambda x: x[1], reverse=True)
-        return similarities[:top_k]
+#### The Core Idea
 
-# Create example embeddings
-embedding_model = SimpleWordEmbedding(vocab_size=100, embedding_dim=50)
+- **Traditional approach**: Each word is just a unique symbol (like "cat" = 1, "dog" = 2, "car" = 3)
+- **Embedding approach**: Each word becomes a point in a multi-dimensional space where similar words are close together
 
-# Add some words
-words = ['king', 'queen', 'man', 'woman', 'prince', 'princess', 
-         'cat', 'dog', 'car', 'truck', 'apple', 'orange']
+#### Why This Matters
 
-for word in words:
-    embedding_model.add_word(word)
-
-# Demonstrate embedding relationships
-print("Word Similarities:")
-for word in ['king', 'cat', 'car']:
-    print(f"\nSimilar to '{word}':")
-    similar = embedding_model.find_similar(word, top_k=3)
-    for sim_word, sim_score in similar:
-        print(f"  {sim_word}: {sim_score:.3f}")
+```
+Traditional: "cat" and "dog" are completely unrelated numbers
+Embedding: "cat" and "dog" are close in space (both are animals)
+           "car" and "truck" are close (both are vehicles)
+           "cat" and "car" are far apart (different concepts)
 ```
 
-### Training Embeddings: Word2Vec
+#### Real-World Analogy
 
-```python
-class Word2Vec:
-    def __init__(self, vocab_size, embedding_dim, learning_rate=0.01):
-        self.vocab_size = vocab_size
-        self.embedding_dim = embedding_dim
-        self.learning_rate = learning_rate
-        
-        # Initialize embeddings and context weights
-        self.embeddings = np.random.randn(vocab_size, embedding_dim) * 0.1
-        self.context_weights = np.random.randn(vocab_size, embedding_dim) * 0.1
-        
-        self.word_to_idx = {}
-        self.idx_to_word = {}
-    
-    def softmax(self, x):
-        """Stable softmax implementation"""
-        exp_x = np.exp(x - np.max(x))
-        return exp_x / np.sum(exp_x)
-    
-    def train_pair(self, center_word_idx, context_word_idx):
-        """Train on a single word pair (Skip-gram)"""
-        # Forward pass
-        center_embedding = self.embeddings[center_word_idx]
-        
-        # Calculate scores for all words
-        scores = np.dot(self.context_weights, center_embedding)
-        probs = self.softmax(scores)
-        
-        # Calculate loss (negative log likelihood)
-        loss = -np.log(probs[context_word_idx] + 1e-8)
-        
-        # Backward pass
-        # Gradient for context weights
-        grad_context = np.outer(probs, center_embedding)
-        grad_context[context_word_idx] -= center_embedding
-        
-        # Gradient for center embedding
-        grad_center = np.sum((probs.reshape(-1, 1) * self.context_weights), axis=0)
-        grad_center -= self.context_weights[context_word_idx]
-        
-        # Update weights
-        self.context_weights -= self.learning_rate * grad_context
-        self.embeddings[center_word_idx] -= self.learning_rate * grad_center
-        
-        return loss
-    
-    def generate_training_data(self, sentences, window_size=2):
-        """Generate training pairs from sentences"""
-        training_pairs = []
-        
-        for sentence in sentences:
-            for i, center_word in enumerate(sentence):
-                center_idx = self.word_to_idx.get(center_word)
-                if center_idx is None:
-                    continue
-                
-                # Context window
-                start = max(0, i - window_size)
-                end = min(len(sentence), i + window_size + 1)
-                
-                for j in range(start, end):
-                    if i != j:
-                        context_word = sentence[j]
-                        context_idx = self.word_to_idx.get(context_word)
-                        if context_idx is not None:
-                            training_pairs.append((center_idx, context_idx))
-        
-        return training_pairs
+Think of embeddings like a GPS coordinate system:
+- **New York** and **Boston** have coordinates close to each other (both East Coast cities)
+- **New York** and **Los Angeles** are far apart (different coasts)
+- **Paris** and **London** are closer than **Paris** and **Tokyo**
 
-# Example training data
-sentences = [
-    ['the', 'cat', 'sits', 'on', 'the', 'mat'],
-    ['the', 'dog', 'runs', 'in', 'the', 'park'],
-    ['cats', 'and', 'dogs', 'are', 'pets'],
-    ['the', 'king', 'rules', 'the', 'kingdom'],
-    ['the', 'queen', 'is', 'royal']
-]
+### How Embeddings Capture Meaning
 
-# Build vocabulary
-vocab = set()
-for sentence in sentences:
-    vocab.update(sentence)
+#### 1. **Semantic Similarity**
+Words with similar meanings end up close together in the embedding space.
 
-vocab = list(vocab)
-print(f"Vocabulary size: {len(vocab)}")
-print(f"Vocabulary: {vocab}")
+```
+Animals: cat, dog, horse, elephant (clustered together)
+Vehicles: car, truck, bicycle, airplane (clustered together)
+Colors: red, blue, green, yellow (clustered together)
 ```
 
-### Modern Embeddings: Transformers
+#### 2. **Relationships and Analogies**
+Embeddings can capture relationships like:
+- **King** - **Man** + **Woman** ≈ **Queen**
+- **Paris** - **France** + **Germany** ≈ **Berlin**
 
-```python
-def positional_encoding(seq_length, d_model):
-    """Generate sinusoidal positional encodings"""
-    pos_encoding = np.zeros((seq_length, d_model))
-    
-    for pos in range(seq_length):
-        for i in range(0, d_model, 2):
-            pos_encoding[pos, i] = np.sin(pos / (10000 ** (i / d_model)))
-            if i + 1 < d_model:
-                pos_encoding[pos, i + 1] = np.cos(pos / (10000 ** (i / d_model)))
-    
-    return pos_encoding
+#### 3. **Context Sensitivity**
+The same word can have different embeddings in different contexts:
+- "Apple" (fruit) vs "Apple" (company)
+- "Bank" (financial) vs "Bank" (river)
 
-def visualize_positional_encoding():
-    """Visualize positional encodings"""
-    seq_len = 100
-    d_model = 64
-    
-    pos_enc = positional_encoding(seq_len, d_model)
-    
-    plt.figure(figsize=(12, 8))
-    
-    # Plot the positional encoding
-    plt.subplot(2, 2, 1)
-    plt.imshow(pos_enc.T, cmap='RdYlBu', aspect='auto')
-    plt.colorbar()
-    plt.title('Positional Encoding Heatmap')
-    plt.xlabel('Position')
-    plt.ylabel('Dimension')
-    
-    # Plot specific dimensions
-    plt.subplot(2, 2, 2)
-    for dim in [0, 1, 4, 8]:
-        plt.plot(pos_enc[:, dim], label=f'Dim {dim}')
-    plt.title('Positional Encoding for Different Dimensions')
-    plt.xlabel('Position')
-    plt.ylabel('Value')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Plot similarity between positions
-    plt.subplot(2, 2, 3)
-    similarity_matrix = np.dot(pos_enc, pos_enc.T)
-    plt.imshow(similarity_matrix, cmap='viridis')
-    plt.colorbar()
-    plt.title('Position Similarity Matrix')
-    plt.xlabel('Position')
-    plt.ylabel('Position')
-    
-    # Plot encoding for a specific position
-    plt.subplot(2, 2, 4)
-    position = 10
-    plt.plot(pos_enc[position])
-    plt.title(f'Positional Encoding at Position {position}')
-    plt.xlabel('Dimension')
-    plt.ylabel('Value')
-    plt.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
+### From Word2Vec to Modern Embeddings
 
-visualize_positional_encoding()
-```
+#### **Word2Vec Era (2013)**
+- **Core idea**: Words appearing in similar contexts should have similar embeddings
+- **Training**: Predict surrounding words given a center word
+- **Limitation**: Each word gets exactly one embedding
+
+#### **BERT Era (2018)**
+- **Innovation**: Same word can have different embeddings based on context
+- **Training**: Predict masked words in sentences
+- **Breakthrough**: Understanding context dramatically improves performance
+
+#### **GPT Era (2018-present)**
+- **Approach**: Learn embeddings while learning to generate text
+- **Advantage**: Embeddings optimized for generation tasks
+- **Scale**: Billions of parameters create incredibly rich representations
+
+### Practical Applications
+
+#### **1. Search Engines**
+- Query: "fast car"
+- Matches: "speedy vehicle", "quick automobile", "rapid transportation"
+- **Why**: Embeddings understand synonyms and related concepts
+
+#### **2. Recommendation Systems**
+- You liked: "The Matrix"
+- Recommendations: "Blade Runner", "Ghost in the Shell"
+- **Why**: Sci-fi movies cluster together in embedding space
+
+#### **3. Language Translation**
+- English "cat" and French "chat" have similar embeddings
+- **Why**: Cross-lingual embeddings align concepts across languages
+
+---
 
 ## Attention Mechanisms
 
-### Self-Attention Explained
+### What is Attention? 🧠
 
-```python
-class SimpleAttention:
-    def __init__(self, d_model):
-        self.d_model = d_model
-        self.scale = np.sqrt(d_model)
-    
-    def attention(self, query, key, value, mask=None):
-        """
-        Compute scaled dot-product attention
-        
-        Args:
-            query: (seq_len, d_model)
-            key: (seq_len, d_model) 
-            value: (seq_len, d_model)
-            mask: (seq_len, seq_len) - optional
-        """
-        # Compute attention scores
-        scores = np.dot(query, key.T) / self.scale
-        
-        # Apply mask if provided
-        if mask is not None:
-            scores = np.where(mask == 0, -1e9, scores)
-        
-        # Apply softmax
-        attention_weights = self.softmax(scores)
-        
-        # Apply attention to values
-        output = np.dot(attention_weights, value)
-        
-        return output, attention_weights
-    
-    def softmax(self, x):
-        """Softmax along the last dimension"""
-        exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
-        return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
+Imagine reading a complex sentence: "The cat that was sitting on the mat yesterday was very fluffy."
 
-def demonstrate_attention():
-    """Demonstrate self-attention with a simple example"""
-    # Create example sequence
+When you process "was very fluffy," your brain automatically focuses on "cat" (not "mat" or "yesterday"). This selective focus is exactly what attention mechanisms do in AI.
+
+### The Attention Revolution
+
+#### **Before Attention (RNN Era)**
+```
+Problem: "The cat ... [100 words] ... was fluffy"
+         ^                           ^
+         Important info gets "forgotten" by the time we reach the end
+```
+
+#### **With Attention**
+```
+Solution: "The cat ... [100 words] ... was fluffy"
+          ^                           ^
+          Direct connection! The model can "look back" to relevant parts
+```
+
+### How Attention Works: The Restaurant Analogy
+
+Think of attention like a restaurant scene:
+
+#### **The Players**
+- **Query**: "What am I looking for?" (the customer's order)
+- **Key**: "What do I have?" (items on the menu)
+- **Value**: "What do I actually provide?" (the prepared dish)
+
+#### **The Process**
+1. **Customer arrives** with a specific craving (Query)
+2. **Compares craving** to menu items (Query × Key)
+3. **Decides how much** they want each dish (Attention weights)
+4. **Receives a combination** of dishes based on their preferences (Weighted Value)
+
+### Self-Attention: The Game Changer
+
+#### **What is Self-Attention?**
+The sentence talks to itself: each word figures out which other words are most relevant to it.
+
+```
+Sentence: "The cat sat on the mat"
+
+For word "cat":
+- "The" → Low attention (just an article)
+- "cat" → Medium attention (self-reference)
+- "sat" → High attention (what the cat did)
+- "on" → Low attention (preposition)
+- "the" → Low attention (article)
+- "mat" → Medium attention (where the cat sat)
+```
+
+#### **Why This is Powerful**
+- **Parallel processing**: All words attend to all others simultaneously
+- **Long-range dependencies**: First word can directly influence the last word
+- **Relationship understanding**: Captures who did what to whom
+
+### Multi-Head Attention: Multiple Perspectives
+
+#### **The Concept**
+Like having multiple experts look at the same sentence, each focusing on different aspects:
+
+- **Head 1**: Focuses on grammatical relationships (subject-verb-object)
+- **Head 2**: Focuses on semantic relationships (related concepts)
+- **Head 3**: Focuses on temporal relationships (sequence and timing)
+- **Head 4**: Focuses on emotional tone
+
+#### **The Benefit**
+Each head learns different types of relationships, then combines insights for richer understanding.
+
+### Attention Patterns in Practice
+
+#### **1. Translation**
+```
+English: "The cat is sleeping"
+French:  "Le chat dort"
+
+Attention shows: "cat" ↔ "chat", "sleeping" ↔ "dort"
+```
+
+#### **2. Question Answering**
+```
+Context: "Paris is the capital of France. It has a population of 2.2 million."
+Question: "What is the capital of France?"
+Answer: "Paris"
+
+Attention highlights: "capital" connects to "Paris"
+```
+
+#### **3. Creative Writing**
+```
+Story: "The old wizard raised his staff. Lightning crackled..."
+Next: "...across the dark sky"
+
+Attention connects: "Lightning" → "wizard", "staff" → "crackled"
+```
+
+---
+
+## Autoregressive Generation
+
+### What is Autoregressive Generation? 📝
+
+Think of autoregressive generation like telling a story word by word, where each new word depends on everything you've said before.
+
+#### **The Process**
+```
+1. Start with: "Once upon a time"
+2. Predict next: "Once upon a time there"
+3. Predict next: "Once upon a time there was"
+4. Predict next: "Once upon a time there was a"
+5. Continue until story is complete...
+```
+
+### The Human Analogy
+
+#### **How Humans Write**
+- You have an idea for a story
+- You write the first sentence
+- Each new sentence builds on what came before
+- You sometimes revise, but generally move forward
+
+#### **How AI Generates**
+- Model has learned patterns from millions of texts
+- Generates one token at a time
+- Each token is predicted based on all previous tokens
+- No "going back" - each choice affects all future choices
+
+### Why Autoregressive Works
+
+#### **1. Coherence**
+Each new word considers the entire context, maintaining consistency.
+
+```
+Good: "The cat sat on the mat. It was very comfortable."
+      (refers back to "cat" correctly)
+
+Bad: "The cat sat on the mat. He was very comfortable."
+     (gender inconsistency - autoregressive helps avoid this)
+```
+
+#### **2. Flexibility**
+Can generate text of any length, adapting to context.
+
+```
+Short: "Hello!"
+Medium: "Hello! How are you doing today?"
+Long: "Hello! How are you doing today? I hope you're having a wonderful time..."
+```
+
+#### **3. Controllability**
+You can guide generation by providing specific starting contexts.
+
+```
+Prompt: "Write a recipe for chocolate cake:"
+Output: "Ingredients: 2 cups flour, 1 cup sugar..."
+
+Prompt: "Explain quantum physics:"
+Output: "Quantum physics is the study of matter and energy..."
+```
+
+### The Challenge: Exposure Bias
+
+#### **Training vs. Generation**
+- **Training**: Model sees correct previous words
+- **Generation**: Model sees its own (possibly incorrect) previous words
+
+#### **Example**
+```
+Training: "The cat sat on the [mat]" ← Model learns to predict "mat"
+Generation: "The cat sat on the [rug]" ← Model predicted "rug" instead
+
+Now for next word:
+Training context: "The cat sat on the mat [...]"
+Generation context: "The cat sat on the rug [...]"
+```
+
+This difference can lead to error accumulation during long generation.
+
+### Applications of Autoregressive Generation
+
+#### **1. Text Completion**
+```
+Input: "The weather today is"
+Output: "sunny and warm, perfect for a picnic in the park."
+```
+
+#### **2. Creative Writing**
+```
+Input: "In a world where gravity works backwards"
+Output: "everything fell upward toward the sky. People built their houses on the undersides of floating islands..."
+```
+
+#### **3. Code Generation**
+```
+Input: "def calculate_fibonacci(n):"
+Output: "    if n <= 1:
+              return n
+          return calculate_fibonacci(n-1) + calculate_fibonacci(n-2)"
+```
+
+---
+
+## Sampling Strategies
+
+### Why Sampling Matters 🎲
+
+When a model generates text, it doesn't just pick the single "best" word. Instead, it considers probabilities and makes choices. Different sampling strategies create different styles of generation.
+
+### The Probability Landscape
+
+Imagine the model's prediction as a landscape:
+- **Mountains**: High-probability words (likely choices)
+- **Hills**: Medium-probability words (possible choices)
+- **Valleys**: Low-probability words (unlikely choices)
+
+### Sampling Strategies Explained
+
+#### **1. Greedy Sampling**
+**Strategy**: Always pick the highest probability word.
+
+```
+Model predictions: "The cat [sat: 60%, walked: 25%, ran: 10%, jumped: 5%]"
+Greedy choice: "sat" (always picks 60%)
+```
+
+**Characteristics**:
+- ✅ Deterministic and consistent
+- ❌ Repetitive and boring
+- ❌ Can get stuck in loops
+
+#### **2. Temperature Sampling**
+**Strategy**: Adjust the "confidence" of the model's predictions.
+
+```
+Low temperature (0.2): Makes confident predictions more likely
+High temperature (1.5): Makes predictions more random
+```
+
+**Temperature Effects**:
+- **Low (0.1-0.7)**: Conservative, coherent, predictable
+- **Medium (0.7-1.2)**: Balanced creativity and coherence
+- **High (1.2-2.0)**: Creative, surprising, potentially chaotic
+
+#### **3. Top-k Sampling**
+**Strategy**: Only consider the k most likely words.
+
+```
+Model predictions: [word1: 30%, word2: 25%, word3: 20%, word4: 15%, word5: 10%]
+Top-k (k=3): Only consider word1, word2, word3
+Ignore: word4, word5 (cut off less likely options)
+```
+
+**Benefits**:
+- ✅ Prevents very unlikely words
+- ✅ Maintains quality while allowing variety
+- ❌ Fixed cutoff might be too restrictive
+
+#### **4. Top-p (Nucleus) Sampling**
+**Strategy**: Consider the smallest set of words that make up p% of the probability.
+
+```
+Model predictions: [A: 40%, B: 30%, C: 20%, D: 8%, E: 2%]
+Top-p (p=0.9): Include A, B, C, D (total = 98% > 90%)
+Exclude: E (adds too little probability)
+```
+
+**Advantages**:
+- ✅ Adaptive cutoff based on confidence
+- ✅ Includes more options when model is uncertain
+- ✅ Includes fewer options when model is confident
+
+### Choosing the Right Strategy
+
+#### **For Creative Writing**
+```
+Strategy: Top-p (p=0.9) + Temperature (1.0-1.2)
+Result: Creative but coherent stories
+```
+
+#### **For Technical Documentation**
+```
+Strategy: Top-k (k=5) + Temperature (0.3-0.7)
+Result: Accurate, professional tone
+```
+
+#### **For Consistent Responses**
+```
+Strategy: Greedy or Low temperature (0.1-0.3)
+Result: Predictable, reliable outputs
+```
+
+### The Trade-off Spectrum
+
+```
+Deterministic ←→ Creative
+Coherent ←→ Surprising
+Safe ←→ Risky
+Repetitive ←→ Diverse
+```
+
+Every sampling strategy sits somewhere on this spectrum, and the best choice depends on your specific use case.
+
+---
+
+## Training Objectives and Loss Functions
+
+### What are Training Objectives? 🎯
+
+Training objectives are like teaching methods. They define what the model should learn and how it should be evaluated.
+
+### Language Modeling: The Foundation
+
+#### **The Basic Objective**
+"Given some text, predict what comes next."
+
+```
+Training example:
+Input: "The cat sat on the"
+Target: "mat"
+
+Model learns: When you see "The cat sat on the", "mat" is likely next
+```
+
+#### **Why This Works**
+- **Massive scale**: Learn from billions of text examples
+- **Universal patterns**: Grammar, facts, reasoning emerge naturally
+- **Task agnostic**: Same objective works for many applications
+
+### Cross-Entropy Loss: The Mathematics of Learning
+
+#### **What is Cross-Entropy?**
+A way to measure how "surprised" the model is by the correct answer.
+
+```
+Model is confident and correct: Low loss (good!)
+Model is confident and wrong: High loss (bad!)
+Model is uncertain: Medium loss (needs improvement)
+```
+
+#### **The Learning Process**
+1. **Prediction**: Model predicts probabilities for next word
+2. **Comparison**: Compare prediction to actual next word
+3. **Adjustment**: Adjust model to be less surprised next time
+4. **Repeat**: Process millions of examples
+
+### Perplexity: Measuring Confusion
+
+#### **What is Perplexity?**
+Perplexity measures how "confused" the model is on average.
+
+```
+Low perplexity (2-10): Model is confident and usually correct
+Medium perplexity (10-100): Model has reasonable understanding
+High perplexity (100+): Model is confused and often wrong
+```
+
+#### **Intuitive Understanding**
+- **Perplexity of 2**: Model choosing between 2 equally likely options
+- **Perplexity of 10**: Model choosing between 10 equally likely options
+- **Perplexity of 100**: Model is very uncertain
+
+### Contrastive Learning: Learning by Comparison
+
+#### **The Core Idea**
+"Learn to distinguish between similar and different examples."
+
+```
+Positive pairs: "The cat is sleeping" ↔ "A cat is taking a nap"
+Negative pairs: "The cat is sleeping" ↔ "The car is driving"
+
+Goal: Make positive pairs more similar, negative pairs more different
+```
+
+#### **Why This is Powerful**
+- **Semantic understanding**: Learns meaning beyond just word patterns
+- **Robustness**: Works with paraphrases and variations
+- **Efficiency**: Learns from comparisons, not just next-word prediction
+
+### Modern Training Objectives
+
+#### **1. Masked Language Modeling (BERT-style)**
+```
+Original: "The cat sat on the mat"
+Masked: "The cat [MASK] on the mat"
+Task: Predict "sat"
+```
+
+#### **2. Autoregressive Generation (GPT-style)**
+```
+Input: "The cat sat on the"
+Task: Predict "mat"
+Continue: "The cat sat on the mat and"
+Task: Predict "slept"
+```
+
+#### **3. Instruction Following**
+```
+Instruction: "Translate this to French:"
+Input: "Hello, how are you?"
+Expected output: "Bonjour, comment allez-vous?"
+```
+
+#### **4. Reinforcement Learning from Human Feedback (RLHF)**
+```
+Generate multiple responses → Humans rank them → Train model to prefer highly-ranked responses
+```
+
+---
+
+---
+
+## Putting It All Together
+
+### How These Concepts Work Together
+
+Now that you understand each concept individually, let's see how they combine to create powerful AI systems:
+
+#### **The Complete Generation Pipeline**
+
+1. **Input Processing**: Convert text to embeddings
+2. **Context Understanding**: Use attention to focus on relevant parts
+3. **Prediction**: Generate probability distribution over next words
+4. **Sampling**: Choose next word using sampling strategy
+5. **Iteration**: Repeat process for each new word
+
+#### **Real-World Example: Chatbot Response**
+
+```
+User: "What's the weather like in Paris?"
+
+1. Embeddings: Convert words to vectors that capture meaning
+2. Attention: Focus on "weather" and "Paris" as key concepts
+3. Generation: Predict response words autoregressively
+4. Sampling: Balance creativity with coherence
+5. Output: "The weather in Paris is currently sunny and warm..."
+```
+
+### Why This Foundation Matters
+
+Understanding these core concepts helps you:
+
+- **Debug AI behavior**: Know why models make certain choices
+- **Improve performance**: Tune parameters like temperature and sampling
+- **Design better systems**: Combine techniques effectively
+- **Stay current**: Understand new developments in the field
+
+---
+
+!!! success "🎉 Conceptual Foundation Complete!"
+    You now understand the core concepts that power modern generative AI! These building blocks work together to create the intelligent systems you interact with daily.
+
+!!! tip "💡 Key Insights"
+    - **Embeddings** transform discrete symbols into meaningful numerical representations
+    - **Attention** allows models to focus on relevant information across long sequences
+    - **Autoregressive generation** creates coherent text by predicting one word at a time
+    - **Sampling strategies** control the balance between creativity and consistency
+    - **Training objectives** shape what models learn and how they behave
+
+!!! note "🚀 Ready for More?"
+    - **Next**: [Neural Networks](neural-networks.md) - Deep dive into the underlying architecture
+    - **Advanced**: [Transformers](../transformers/index.md) - Modern architecture powering most GenAI
+    - **Practical**: [Building Your First Model](../practical/first-model.md) - Hands-on implementation
+
+---
+
+## Implementation Examples
+
+=== "📚 Explanation"
+    
+    ## Understanding Through Code
+    
+    Now that you understand the core concepts, let's see how they're implemented in practice. The code examples demonstrate:
+    
+    - **Embeddings**: How words become vectors and find similar words
+    - **Attention**: How models focus on relevant parts of sequences
+    - **Generation**: How text is produced one word at a time
+    - **Sampling**: How different strategies affect output creativity
+    - **Training**: How models learn from data
+    
+    Each implementation is simplified for clarity while maintaining the essential concepts.
+    
+    !!! tip "Learning Approach"
+        - Start with the explanation tab to understand concepts
+        - Switch to code tab to see practical implementation
+        - Try running the code examples to see results
+        - Experiment with different parameters
+
+=== "💻 Code Examples"
+    
+    ### Embedding Implementation
+    
+    Here's how you might implement simple word embeddings from scratch:
+    ```python
+    class SimpleWordEmbedding:
+        def __init__(self, vocab_size, embedding_dim):
+            self.vocab_size = vocab_size
+            self.embedding_dim = embedding_dim
+            
+            # Initialize embeddings randomly
+            self.embeddings = np.random.randn(vocab_size, embedding_dim) * 0.1
+            
+            # Word to index mapping
+            self.word_to_idx = {}
+            self.idx_to_word = {}
+        
+        def add_word(self, word):
+            """Add a word to vocabulary"""
+            if word not in self.word_to_idx:
+                idx = len(self.word_to_idx)
+                self.word_to_idx[word] = idx
+                self.idx_to_word[idx] = word
+        
+        def get_embedding(self, word):
+            """Get embedding for a word"""
+            if word in self.word_to_idx:
+                idx = self.word_to_idx[word]
+                return self.embeddings[idx]
+            return None
+        
+        def similarity(self, word1, word2):
+            """Calculate cosine similarity between two words"""
+            emb1 = self.get_embedding(word1)
+            emb2 = self.get_embedding(word2)
+            
+            if emb1 is None or emb2 is None:
+                return 0
+            
+            # Cosine similarity
+            dot_product = np.dot(emb1, emb2)
+            norm1 = np.linalg.norm(emb1)
+            norm2 = np.linalg.norm(emb2)
+            
+            return dot_product / (norm1 * norm2)
+        
+        def find_similar(self, word, top_k=5):
+            """Find most similar words"""
+            target_embedding = self.get_embedding(word)
+            if target_embedding is None:
+                return []
+            
+            similarities = []
+            for other_word in self.word_to_idx:
+                if other_word != word:
+                    sim = self.similarity(word, other_word)
+                    similarities.append((other_word, sim))
+            
+            # Sort by similarity
+            similarities.sort(key=lambda x: x[1], reverse=True)
+            return similarities[:top_k]
+    
+    # Example usage
+    embedding_model = SimpleWordEmbedding(vocab_size=100, embedding_dim=50)
+    
+    # Add some words
+    words = ['king', 'queen', 'man', 'woman', 'prince', 'princess',
+             'cat', 'dog', 'car', 'truck', 'apple', 'orange']
+    
+    for word in words:
+        embedding_model.add_word(word)
+    
+    # Demonstrate embedding relationships
+    print("Word Similarities:")
+    for word in ['king', 'cat', 'car']:
+        print(f"\nSimilar to '{word}':")
+        similar = embedding_model.find_similar(word, top_k=3)
+        for sim_word, sim_score in similar:
+            print(f"  {sim_word}: {sim_score:.3f}")
+    ```
+    
+    ### Attention Mechanism Implementation
+    
+    ```python
+    class SimpleAttention:
+        def __init__(self, d_model):
+            self.d_model = d_model
+            self.scale = np.sqrt(d_model)
+        
+        def attention(self, query, key, value, mask=None):
+            """
+            Compute scaled dot-product attention
+            
+            Args:
+                query: (seq_len, d_model)
+                key: (seq_len, d_model) 
+                value: (seq_len, d_model)
+                mask: (seq_len, seq_len) - optional
+            """
+            # Compute attention scores
+            scores = np.dot(query, key.T) / self.scale
+            
+            # Apply mask if provided
+            if mask is not None:
+                scores = np.where(mask == 0, -1e9, scores)
+            
+            # Apply softmax
+            attention_weights = self.softmax(scores)
+            
+            # Apply attention to values
+            output = np.dot(attention_weights, value)
+            
+            return output, attention_weights
+        
+        def softmax(self, x):
+            """Softmax along the last dimension"""
+            exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+            return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
+    
+    # Example usage
     seq_length = 5
     d_model = 8
     
@@ -308,537 +729,320 @@ def demonstrate_attention():
     print("Input shape:", embeddings.shape)
     print("Output shape:", output.shape)
     print("Attention weights shape:", weights.shape)
+    ```
     
-    # Visualize attention weights
-    plt.figure(figsize=(12, 5))
+    ### Autoregressive Generation Implementation
     
-    plt.subplot(1, 2, 1)
-    plt.imshow(weights, cmap='Blues')
-    plt.colorbar()
-    plt.title('Self-Attention Weights')
-    plt.xlabel('Key Position')
-    plt.ylabel('Query Position')
-    
-    # Show how each position attends to others
-    plt.subplot(1, 2, 2)
-    positions = ['Pos 0', 'Pos 1', 'Pos 2', 'Pos 3', 'Pos 4']
-    for i in range(seq_length):
-        plt.plot(weights[i], label=f'Query {i}', marker='o')
-    plt.title('Attention Patterns by Query Position')
-    plt.xlabel('Key Position')
-    plt.ylabel('Attention Weight')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    return output, weights
-
-attention_output, attention_weights = demonstrate_attention()
-```
-
-### Multi-Head Attention
-
-```python
-class MultiHeadAttention:
-    def __init__(self, d_model, num_heads):
-        assert d_model % num_heads == 0
+    ```python
+    class SimpleLanguageModel:
+        def __init__(self, vocab_size, embedding_dim, hidden_dim):
+            self.vocab_size = vocab_size
+            self.embedding_dim = embedding_dim
+            self.hidden_dim = hidden_dim
+            
+            # Embedding layer
+            self.embeddings = np.random.randn(vocab_size, embedding_dim) * 0.1
+            
+            # Simple RNN
+            self.W_h = np.random.randn(hidden_dim, hidden_dim) * 0.1
+            self.W_x = np.random.randn(embedding_dim, hidden_dim) * 0.1
+            self.b_h = np.zeros(hidden_dim)
+            
+            # Output layer
+            self.W_out = np.random.randn(hidden_dim, vocab_size) * 0.1
+            self.b_out = np.zeros(vocab_size)
+            
+            # Vocabulary
+            self.word_to_idx = {}
+            self.idx_to_word = {}
         
-        self.d_model = d_model
-        self.num_heads = num_heads
-        self.d_k = d_model // num_heads
+        def add_word(self, word):
+            """Add word to vocabulary"""
+            if word not in self.word_to_idx:
+                idx = len(self.word_to_idx)
+                self.word_to_idx[word] = idx
+                self.idx_to_word[idx] = word
         
-        # Initialize projection matrices
-        self.W_q = np.random.randn(d_model, d_model) * 0.1
-        self.W_k = np.random.randn(d_model, d_model) * 0.1
-        self.W_v = np.random.randn(d_model, d_model) * 0.1
-        self.W_o = np.random.randn(d_model, d_model) * 0.1
-    
-    def split_heads(self, x):
-        """Split input into multiple heads"""
-        seq_len, d_model = x.shape
-        x = x.reshape(seq_len, self.num_heads, self.d_k)
-        return x.transpose(1, 0, 2)  # (num_heads, seq_len, d_k)
-    
-    def combine_heads(self, x):
-        """Combine multiple heads back"""
-        num_heads, seq_len, d_k = x.shape
-        x = x.transpose(1, 0, 2)  # (seq_len, num_heads, d_k)
-        return x.reshape(seq_len, self.d_model)
-    
-    def scaled_dot_product_attention(self, Q, K, V, mask=None):
-        """Attention for a single head"""
-        d_k = Q.shape[-1]
-        scores = np.matmul(Q, K.transpose(0, 2, 1)) / np.sqrt(d_k)
-        
-        if mask is not None:
-            scores = np.where(mask == 0, -1e9, scores)
-        
-        attention_weights = self.softmax(scores)
-        output = np.matmul(attention_weights, V)
-        
-        return output, attention_weights
-    
-    def softmax(self, x):
-        """Softmax along the last dimension"""
-        exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
-        return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
-    
-    def forward(self, x, mask=None):
-        """Forward pass through multi-head attention"""
-        seq_len = x.shape[0]
-        
-        # Linear projections
-        Q = np.dot(x, self.W_q)
-        K = np.dot(x, self.W_k)
-        V = np.dot(x, self.W_v)
-        
-        # Split into heads
-        Q_heads = self.split_heads(Q)
-        K_heads = self.split_heads(K)
-        V_heads = self.split_heads(V)
-        
-        # Apply attention to each head
-        head_outputs = []
-        head_weights = []
-        
-        for i in range(self.num_heads):
-            head_output, head_weight = self.scaled_dot_product_attention(
-                Q_heads[i:i+1], K_heads[i:i+1], V_heads[i:i+1], mask
+        def forward_step(self, word_idx, hidden_state):
+            """Single forward step"""
+            # Embedding lookup
+            x = self.embeddings[word_idx]
+            
+            # RNN step
+            hidden_state = np.tanh(
+                np.dot(x, self.W_x) + np.dot(hidden_state, self.W_h) + self.b_h
             )
-            head_outputs.append(head_output[0])
-            head_weights.append(head_weight[0])
-        
-        # Combine heads
-        combined_output = np.concatenate(head_outputs, axis=-1)
-        
-        # Final linear projection
-        output = np.dot(combined_output, self.W_o)
-        
-        return output, head_weights
-
-def visualize_multi_head_attention():
-    """Visualize multi-head attention patterns"""
-    seq_length = 8
-    d_model = 64
-    num_heads = 8
-    
-    # Create input
-    np.random.seed(42)
-    x = np.random.randn(seq_length, d_model)
-    
-    # Initialize multi-head attention
-    mha = MultiHeadAttention(d_model, num_heads)
-    
-    # Forward pass
-    output, head_weights = mha.forward(x)
-    
-    # Visualize attention patterns for each head
-    fig, axes = plt.subplots(2, 4, figsize=(16, 8))
-    axes = axes.flatten()
-    
-    for i, head_weight in enumerate(head_weights):
-        im = axes[i].imshow(head_weight, cmap='Blues')
-        axes[i].set_title(f'Head {i+1}')
-        axes[i].set_xlabel('Key Position')
-        axes[i].set_ylabel('Query Position')
-        plt.colorbar(im, ax=axes[i])
-    
-    plt.tight_layout()
-    plt.show()
-    
-    print(f"Input shape: {x.shape}")
-    print(f"Output shape: {output.shape}")
-    print(f"Number of attention heads: {len(head_weights)}")
-
-visualize_multi_head_attention()
-```
-
-## Autoregressive Generation
-
-### Language Modeling Basics
-
-```python
-class SimpleLanguageModel:
-    def __init__(self, vocab_size, embedding_dim, hidden_dim):
-        self.vocab_size = vocab_size
-        self.embedding_dim = embedding_dim
-        self.hidden_dim = hidden_dim
-        
-        # Embedding layer
-        self.embeddings = np.random.randn(vocab_size, embedding_dim) * 0.1
-        
-        # Simple RNN
-        self.W_h = np.random.randn(hidden_dim, hidden_dim) * 0.1
-        self.W_x = np.random.randn(embedding_dim, hidden_dim) * 0.1
-        self.b_h = np.zeros(hidden_dim)
-        
-        # Output layer
-        self.W_out = np.random.randn(hidden_dim, vocab_size) * 0.1
-        self.b_out = np.zeros(vocab_size)
-        
-        # Vocabulary
-        self.word_to_idx = {}
-        self.idx_to_word = {}
-    
-    def add_word(self, word):
-        """Add word to vocabulary"""
-        if word not in self.word_to_idx:
-            idx = len(self.word_to_idx)
-            self.word_to_idx[word] = idx
-            self.idx_to_word[idx] = word
-    
-    def forward_step(self, word_idx, hidden_state):
-        """Single forward step"""
-        # Embedding lookup
-        x = self.embeddings[word_idx]
-        
-        # RNN step
-        hidden_state = np.tanh(
-            np.dot(x, self.W_x) + np.dot(hidden_state, self.W_h) + self.b_h
-        )
-        
-        # Output projection
-        logits = np.dot(hidden_state, self.W_out) + self.b_out
-        
-        return logits, hidden_state
-    
-    def predict_next(self, sequence, temperature=1.0):
-        """Predict next word given sequence"""
-        hidden_state = np.zeros(self.hidden_dim)
-        
-        # Process sequence
-        for word in sequence:
-            if word in self.word_to_idx:
-                word_idx = self.word_to_idx[word]
-                logits, hidden_state = self.forward_step(word_idx, hidden_state)
-        
-        # Apply temperature
-        logits = logits / temperature
-        
-        # Softmax to get probabilities
-        exp_logits = np.exp(logits - np.max(logits))
-        probs = exp_logits / np.sum(exp_logits)
-        
-        return probs
-    
-    def generate_text(self, seed_sequence, max_length=20, temperature=1.0):
-        """Generate text autoregressively"""
-        generated = list(seed_sequence)
-        
-        for _ in range(max_length):
-            # Predict next word probabilities
-            probs = self.predict_next(generated, temperature)
             
-            # Sample next word
-            next_word_idx = np.random.choice(len(probs), p=probs)
-            next_word = self.idx_to_word.get(next_word_idx, '<UNK>')
+            # Output projection
+            logits = np.dot(hidden_state, self.W_out) + self.b_out
             
-            generated.append(next_word)
+            return logits, hidden_state
+        
+        def predict_next(self, sequence, temperature=1.0):
+            """Predict next word given sequence"""
+            hidden_state = np.zeros(self.hidden_dim)
             
-            # Stop if we generate an end token
-            if next_word == '<END>':
-                break
+            # Process sequence
+            for word in sequence:
+                if word in self.word_to_idx:
+                    word_idx = self.word_to_idx[word]
+                    logits, hidden_state = self.forward_step(word_idx, hidden_state)
+            
+            # Apply temperature
+            logits = logits / temperature
+            
+            # Softmax to get probabilities
+            exp_logits = np.exp(logits - np.max(logits))
+            probs = exp_logits / np.sum(exp_logits)
+            
+            return probs
         
-        return generated
-
-def demonstrate_autoregressive_generation():
-    """Demonstrate autoregressive text generation"""
-    # Create a simple language model
-    lm = SimpleLanguageModel(vocab_size=1000, embedding_dim=50, hidden_dim=100)
+        def generate_text(self, seed_sequence, max_length=20, temperature=1.0):
+            """Generate text autoregressively"""
+            generated = list(seed_sequence)
+            
+            for _ in range(max_length):
+                # Predict next word probabilities
+                probs = self.predict_next(generated, temperature)
+                
+                # Sample next word
+                next_word_idx = np.random.choice(len(probs), p=probs)
+                next_word = self.idx_to_word.get(next_word_idx, '<UNK>')
+                
+                generated.append(next_word)
+                
+                # Stop if we generate an end token
+                if next_word == '<END>':
+                    break
+            
+            return generated
+    ```
     
-    # Build vocabulary from sample text
-    sample_text = [
-        "the cat sits on the mat",
-        "the dog runs in the park", 
-        "cats and dogs are pets",
-        "the sun shines bright",
-        "birds fly in the sky"
-    ]
+    ### Sampling Strategies Implementation
     
-    vocab = set()
-    for sentence in sample_text:
-        words = sentence.split()
-        vocab.update(words)
-    
-    vocab.update(['<START>', '<END>', '<UNK>'])
-    
-    for word in vocab:
-        lm.add_word(word)
-    
-    print(f"Vocabulary size: {len(lm.word_to_idx)}")
-    print(f"Sample vocabulary: {list(lm.word_to_idx.keys())[:10]}")
-    
-    # Generate text with different temperatures
-    seed = ['the', 'cat']
-    
-    print("\nText Generation Examples:")
-    for temp in [0.5, 1.0, 1.5]:
-        generated = lm.generate_text(seed, max_length=10, temperature=temp)
-        print(f"Temperature {temp}: {' '.join(generated)}")
-
-demonstrate_autoregressive_generation()
-```
-
-### Sampling Strategies
-
-```python
-class SamplingStrategies:
-    @staticmethod
-    def greedy_sampling(logits):
-        """Always pick the most likely token"""
-        return np.argmax(logits)
-    
-    @staticmethod
-    def temperature_sampling(logits, temperature=1.0):
-        """Sample with temperature scaling"""
-        if temperature == 0:
-            return SamplingStrategies.greedy_sampling(logits)
+    ```python
+    class SamplingStrategies:
+        @staticmethod
+        def greedy_sampling(logits):
+            """Always pick the most likely token"""
+            return np.argmax(logits)
         
-        scaled_logits = logits / temperature
-        exp_logits = np.exp(scaled_logits - np.max(scaled_logits))
-        probs = exp_logits / np.sum(exp_logits)
+        @staticmethod
+        def temperature_sampling(logits, temperature=1.0):
+            """Sample with temperature scaling"""
+            if temperature == 0:
+                return SamplingStrategies.greedy_sampling(logits)
+            
+            scaled_logits = logits / temperature
+            exp_logits = np.exp(scaled_logits - np.max(scaled_logits))
+            probs = exp_logits / np.sum(exp_logits)
+            
+            return np.random.choice(len(probs), p=probs)
         
-        return np.random.choice(len(probs), p=probs)
+        @staticmethod
+        def top_k_sampling(logits, k=10, temperature=1.0):
+            """Sample from top-k most likely tokens"""
+            # Get top-k indices
+            top_k_indices = np.argpartition(logits, -k)[-k:]
+            top_k_logits = logits[top_k_indices]
+            
+            # Apply temperature
+            scaled_logits = top_k_logits / temperature
+            exp_logits = np.exp(scaled_logits - np.max(scaled_logits))
+            probs = exp_logits / np.sum(exp_logits)
+            
+            # Sample from top-k
+            selected_idx = np.random.choice(len(probs), p=probs)
+            return top_k_indices[selected_idx]
+        
+        @staticmethod
+        def top_p_sampling(logits, p=0.9, temperature=1.0):
+            """Nucleus sampling - sample from smallest set with cumulative prob >= p"""
+            # Apply temperature
+            scaled_logits = logits / temperature
+            exp_logits = np.exp(scaled_logits - np.max(scaled_logits))
+            probs = exp_logits / np.sum(exp_logits)
+            
+            # Sort probabilities in descending order
+            sorted_indices = np.argsort(probs)[::-1]
+            sorted_probs = probs[sorted_indices]
+            
+            # Find nucleus (smallest set with cumulative prob >= p)
+            cumulative_probs = np.cumsum(sorted_probs)
+            nucleus_size = np.argmax(cumulative_probs >= p) + 1
+            
+            # Sample from nucleus
+            nucleus_indices = sorted_indices[:nucleus_size]
+            nucleus_probs = sorted_probs[:nucleus_size]
+            nucleus_probs = nucleus_probs / np.sum(nucleus_probs)  # Renormalize
+            
+            selected_idx = np.random.choice(len(nucleus_probs), p=nucleus_probs)
+            return nucleus_indices[selected_idx]
     
-    @staticmethod
-    def top_k_sampling(logits, k=10, temperature=1.0):
-        """Sample from top-k most likely tokens"""
-        # Get top-k indices
-        top_k_indices = np.argpartition(logits, -k)[-k:]
-        top_k_logits = logits[top_k_indices]
-        
-        # Apply temperature
-        scaled_logits = top_k_logits / temperature
-        exp_logits = np.exp(scaled_logits - np.max(scaled_logits))
-        probs = exp_logits / np.sum(exp_logits)
-        
-        # Sample from top-k
-        selected_idx = np.random.choice(len(probs), p=probs)
-        return top_k_indices[selected_idx]
-    
-    @staticmethod
-    def top_p_sampling(logits, p=0.9, temperature=1.0):
-        """Nucleus sampling - sample from smallest set with cumulative prob >= p"""
-        # Apply temperature
-        scaled_logits = logits / temperature
-        exp_logits = np.exp(scaled_logits - np.max(scaled_logits))
-        probs = exp_logits / np.sum(exp_logits)
-        
-        # Sort probabilities in descending order
-        sorted_indices = np.argsort(probs)[::-1]
-        sorted_probs = probs[sorted_indices]
-        
-        # Find nucleus (smallest set with cumulative prob >= p)
-        cumulative_probs = np.cumsum(sorted_probs)
-        nucleus_size = np.argmax(cumulative_probs >= p) + 1
-        
-        # Sample from nucleus
-        nucleus_indices = sorted_indices[:nucleus_size]
-        nucleus_probs = sorted_probs[:nucleus_size]
-        nucleus_probs = nucleus_probs / np.sum(nucleus_probs)  # Renormalize
-        
-        selected_idx = np.random.choice(len(nucleus_probs), p=nucleus_probs)
-        return nucleus_indices[selected_idx]
-
-def compare_sampling_strategies():
-    """Compare different sampling strategies"""
-    # Create example logits (simulating model output)
-    np.random.seed(42)
+    # Example usage
     vocab_size = 50
     logits = np.random.randn(vocab_size)
     
-    # Make some tokens much more likely
-    logits[5] = 3.0   # High probability token
-    logits[12] = 2.5  # Second highest
-    logits[23] = 2.0  # Third highest
-    
-    strategies = {
-        'Greedy': lambda: SamplingStrategies.greedy_sampling(logits),
-        'Temp=0.5': lambda: SamplingStrategies.temperature_sampling(logits, 0.5),
-        'Temp=1.0': lambda: SamplingStrategies.temperature_sampling(logits, 1.0),
-        'Temp=1.5': lambda: SamplingStrategies.temperature_sampling(logits, 1.5),
-        'Top-k=5': lambda: SamplingStrategies.top_k_sampling(logits, k=5),
-        'Top-p=0.9': lambda: SamplingStrategies.top_p_sampling(logits, p=0.9)
-    }
-    
-    # Sample multiple times from each strategy
-    num_samples = 1000
-    results = {}
-    
-    for name, sampler in strategies.items():
-        samples = []
-        for _ in range(num_samples):
-            samples.append(sampler())
-        results[name] = samples
-    
-    # Visualize distributions
-    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
-    axes = axes.flatten()
-    
-    for i, (name, samples) in enumerate(results.items()):
-        # Count frequency of each token
-        unique, counts = np.unique(samples, return_counts=True)
-        
-        axes[i].bar(unique, counts / num_samples)
-        axes[i].set_title(f'{name} Sampling')
-        axes[i].set_xlabel('Token Index')
-        axes[i].set_ylabel('Probability')
-        axes[i].set_xlim(0, 30)  # Show first 30 tokens
-    
-    plt.tight_layout()
-    plt.show()
-    
-    # Print statistics
+    # Compare different sampling strategies
     print("Sampling Strategy Comparison:")
-    for name, samples in results.items():
-        unique_tokens = len(set(samples))
-        most_common = max(set(samples), key=samples.count)
-        frequency = samples.count(most_common) / len(samples)
-        print(f"{name:12}: {unique_tokens:2d} unique tokens, most common: {most_common:2d} ({frequency:.2%})")
-
-compare_sampling_strategies()
-```
-
-## Loss Functions and Training Objectives
-
-### Language Modeling Loss
-
-```python
-def cross_entropy_loss(logits, targets):
-    """Compute cross-entropy loss for language modeling"""
-    # Apply softmax to logits
-    exp_logits = np.exp(logits - np.max(logits, axis=-1, keepdims=True))
-    probs = exp_logits / np.sum(exp_logits, axis=-1, keepdims=True)
+    print(f"Greedy: {SamplingStrategies.greedy_sampling(logits)}")
+    print(f"Temperature 0.5: {SamplingStrategies.temperature_sampling(logits, 0.5)}")
+    print(f"Temperature 1.0: {SamplingStrategies.temperature_sampling(logits, 1.0)}")
+    print(f"Top-k (k=5): {SamplingStrategies.top_k_sampling(logits, k=5)}")
+    print(f"Top-p (p=0.9): {SamplingStrategies.top_p_sampling(logits, p=0.9)}")
+    ```
     
-    # Extract probabilities for target tokens
-    target_probs = probs[np.arange(len(targets)), targets]
+    ### Training Objectives Implementation
     
-    # Compute negative log likelihood
-    loss = -np.mean(np.log(target_probs + 1e-8))
-    
-    return loss
-
-def perplexity(logits, targets):
-    """Compute perplexity from logits and targets"""
-    loss = cross_entropy_loss(logits, targets)
-    return np.exp(loss)
-
-# Example calculation
-np.random.seed(42)
-batch_size = 32
-vocab_size = 10000
-seq_length = 128
-
-# Simulate model outputs and targets
-logits = np.random.randn(batch_size, vocab_size)
-targets = np.random.randint(0, vocab_size, batch_size)
-
-loss = cross_entropy_loss(logits, targets)
-ppl = perplexity(logits, targets)
-
-print(f"Cross-entropy loss: {loss:.4f}")
-print(f"Perplexity: {ppl:.2f}")
-```
-
-### Contrastive Learning
-
-```python
-class ContrastiveLearning:
-    def __init__(self, temperature=0.07):
-        self.temperature = temperature
-    
-    def compute_similarity(self, embeddings1, embeddings2):
-        """Compute cosine similarity between embeddings"""
-        # Normalize embeddings
-        norm1 = embeddings1 / np.linalg.norm(embeddings1, axis=1, keepdims=True)
-        norm2 = embeddings2 / np.linalg.norm(embeddings2, axis=1, keepdims=True)
+    ```python
+    def cross_entropy_loss(logits, targets):
+        """Compute cross-entropy loss for language modeling"""
+        # Apply softmax to logits
+        exp_logits = np.exp(logits - np.max(logits, axis=-1, keepdims=True))
+        probs = exp_logits / np.sum(exp_logits, axis=-1, keepdims=True)
         
-        # Compute similarity matrix
-        similarity = np.dot(norm1, norm2.T)
-        return similarity
-    
-    def contrastive_loss(self, anchor_embeddings, positive_embeddings, negative_embeddings=None):
-        """Compute contrastive loss (InfoNCE)"""
-        batch_size = anchor_embeddings.shape[0]
+        # Extract probabilities for target tokens
+        target_probs = probs[np.arange(len(targets)), targets]
         
-        # If no negative embeddings provided, use other samples in batch
-        if negative_embeddings is None:
-            # Concatenate positive and anchor embeddings as negatives
-            all_embeddings = np.concatenate([positive_embeddings, anchor_embeddings], axis=0)
-            
-            # Compute similarities
-            similarities = self.compute_similarity(anchor_embeddings, all_embeddings)
-            
-            # Scale by temperature
-            similarities = similarities / self.temperature
-            
-            # Positive similarities are diagonal elements
-            positive_similarities = similarities[:, :batch_size]
-            positive_scores = np.diag(positive_similarities)
-            
-            # Compute softmax denominator (all similarities except self-similarity)
-            mask = np.eye(batch_size * 2, dtype=bool)
-            mask[:batch_size, batch_size:] = True  # Remove self-similarities
-            
-            exp_similarities = np.exp(similarities)
-            exp_similarities[mask] = 0  # Mask out self-similarities
-            
-            denominator = np.sum(exp_similarities, axis=1)
-            
-            # Compute loss
-            loss = -np.mean(positive_scores - np.log(denominator + 1e-8))
-            
+        # Compute negative log likelihood
+        loss = -np.mean(np.log(target_probs + 1e-8))
+        
         return loss
-
-def demonstrate_contrastive_learning():
-    """Demonstrate contrastive learning concepts"""
-    # Generate example embeddings
+    
+    def perplexity(logits, targets):
+        """Compute perplexity from logits and targets"""
+        loss = cross_entropy_loss(logits, targets)
+        return np.exp(loss)
+    
+    # Example calculation
     np.random.seed(42)
-    embedding_dim = 128
-    batch_size = 64
+    batch_size = 32
+    vocab_size = 10000
     
-    # Anchor embeddings (original sentences)
-    anchor_embeddings = np.random.randn(batch_size, embedding_dim)
+    # Simulate model outputs and targets
+    logits = np.random.randn(batch_size, vocab_size)
+    targets = np.random.randint(0, vocab_size, batch_size)
     
-    # Positive embeddings (paraphrases or augmented versions)
-    positive_embeddings = anchor_embeddings + np.random.normal(0, 0.1, (batch_size, embedding_dim))
+    loss = cross_entropy_loss(logits, targets)
+    ppl = perplexity(logits, targets)
     
-    # Initialize contrastive learning
-    cl = ContrastiveLearning(temperature=0.07)
-    
-    # Compute loss
-    loss = cl.contrastive_loss(anchor_embeddings, positive_embeddings)
-    
-    print(f"Contrastive loss: {loss:.4f}")
-    
-    # Visualize similarity patterns
-    similarities = cl.compute_similarity(anchor_embeddings[:20], positive_embeddings[:20])
-    
-    plt.figure(figsize=(10, 8))
-    plt.imshow(similarities, cmap='coolwarm', vmin=-1, vmax=1)
-    plt.colorbar()
-    plt.title('Similarity Matrix (Anchor vs Positive)')
-    plt.xlabel('Positive Embeddings')
-    plt.ylabel('Anchor Embeddings')
-    plt.show()
-    
-    # Show distribution of similarities
-    diagonal_similarities = np.diag(similarities)
-    off_diagonal_similarities = similarities[~np.eye(similarities.shape[0], dtype=bool)]
-    
-    plt.figure(figsize=(10, 6))
-    plt.hist(diagonal_similarities, bins=20, alpha=0.7, label='Positive Pairs', density=True)
-    plt.hist(off_diagonal_similarities, bins=20, alpha=0.7, label='Negative Pairs', density=True)
-    plt.xlabel('Cosine Similarity')
-    plt.ylabel('Density')
-    plt.title('Distribution of Similarities')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.show()
+    print(f"Cross-entropy loss: {loss:.4f}")
+    print(f"Perplexity: {ppl:.2f}")
+    ```
 
-demonstrate_contrastive_learning()
+=== "🎯 Exercises"
+    
+    ## Practice Exercises
+    
+    Try these exercises to reinforce your understanding:
+    
+    ### Exercise 1: Embedding Exploration
+    
+    **Task**: Create embeddings for a small vocabulary and explore relationships
+    
+    ```python
+    # Create your own word embeddings
+    words = ['apple', 'orange', 'banana', 'car', 'truck', 'bicycle']
+    
+    # Questions to explore:
+    # 1. Which words are most similar to 'apple'?
+    # 2. Can you find the 'fruit' vs 'vehicle' clustering?
+    # 3. How does embedding dimension affect similarity?
+    ```
+    
+    ### Exercise 2: Attention Patterns
+    
+    **Task**: Visualize attention patterns for different sentences
+    
+    ```python
+    # Try with different sentences:
+    sentences = [
+        "The cat sat on the mat",
+        "The quick brown fox jumps over the lazy dog",
+        "To be or not to be, that is the question"
+    ]
+    
+    # Questions to explore:
+    # 1. Which words attend to each other most?
+    # 2. How does sentence length affect attention?
+    # 3. Can you identify grammatical patterns?
+    ```
+    
+    ### Exercise 3: Sampling Comparison
+    
+    **Task**: Compare different sampling strategies on the same model
+    
+    ```python
+    # Generate text with different strategies
+    strategies = ['greedy', 'temperature', 'top_k', 'top_p']
+    
+    # Questions to explore:
+    # 1. Which strategy produces most creative text?
+    # 2. Which is most consistent?
+    # 3. How do parameters affect output quality?
+    ```
+    
+    ### Exercise 4: Loss Function Analysis
+    
+    **Task**: Understand how loss changes during training
+    
+    ```python
+    # Simulate training progress
+    epochs = [1, 10, 50, 100, 500]
+    
+    # Questions to explore:
+    # 1. How does loss change over time?
+    # 2. What does perplexity tell us about model quality?
+    # 3. When might training be complete?
+    ```
+
+=== "📚 Further Reading"
+    
+    ## Deep Dive Resources
+    
+    ### Academic Papers
+    
+    - **Attention Is All You Need** (Vaswani et al., 2017)
+        - The seminal transformer paper
+        - Introduced modern attention mechanisms
+    
+    - **BERT: Pre-training of Deep Bidirectional Transformers** (Devlin et al., 2018)
+        - Revolutionized language understanding
+        - Contextual embeddings
+    
+    - **Language Models are Few-Shot Learners** (Brown et al., 2020)
+        - GPT-3 and emergence of few-shot learning
+        - Scaling laws and emergent abilities
+    
+    ### Technical Tutorials
+    
+    - **The Illustrated Transformer** (Jay Alammar)
+        - Visual explanation of transformer architecture
+        - Excellent for understanding attention
+    
+    - **Word2Vec Tutorial** (Chris McCormick)
+        - Detailed explanation of word embeddings
+        - Skip-gram and CBOW methods
+    
+    ### Interactive Learning
+    
+    - **Transformer Debugger** (Anthropic)
+        - Interactive transformer visualization
+        - See attention patterns in real-time
+    
+    - **Embedding Projector** (TensorFlow)
+        - Visualize high-dimensional embeddings
+        - Explore word relationships
+    
+    ### Advanced Topics
+    
+    - **Attention Mechanisms Survey** (Chaudhari et al., 2021)
+        - Comprehensive overview of attention variants
+        - Recent developments and applications
+    
+    - **Sampling Methods for Language Models** (Holtzman et al., 2019)
+        - Analysis of different sampling strategies
+        - Quality vs diversity trade-offs
 ```
 
 ---
