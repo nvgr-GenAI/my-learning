@@ -1,103 +1,311 @@
 # Mathematics for GenAI
 
-!!! info "Mathematical Foundations"
-    Essential mathematical concepts that underpin generative AI, from linear algebra to probability theory.
+!!! abstract "Mathematical Foundations"
+    Master the essential mathematical concepts that power generative AI systems. This section focuses on intuitive understanding backed by practical examples.
 
-## Linear Algebra Fundamentals
+## Why Mathematics Matters in GenAI
 
-### Vectors and Vector Spaces
+Understanding the mathematics behind GenAI isn't just academic—it's practical:
 
-Linear algebra forms the backbone of all machine learning, providing the mathematical framework for representing and manipulating data.
+- **Better Prompting**: Understand how models process information
+- **Efficient Implementation**: Optimize performance and memory usage
+- **Debugging**: Diagnose issues when things go wrong
+- **Innovation**: Build upon existing techniques for new applications
 
-#### Vector Operations
+## Linear Algebra Essentials
+
+### Vectors: The Building Blocks
+
+Everything in GenAI starts with vectors—lists of numbers that represent information.
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Vector basics
-vector_a = np.array([3, 4])
-vector_b = np.array([2, 1])
+# A word embedding is just a vector
+word_embedding = np.array([0.2, -0.1, 0.8, 0.3, -0.5])
+print(f"Word embedding: {word_embedding}")
 
-# Vector addition
-sum_vector = vector_a + vector_b
-print(f"Vector sum: {sum_vector}")
-
-# Dot product
-dot_product = np.dot(vector_a, vector_b)
-print(f"Dot product: {dot_product}")
-
-# Vector magnitude
-magnitude_a = np.linalg.norm(vector_a)
-print(f"Magnitude of vector A: {magnitude_a}")
-
-# Unit vector
-unit_vector_a = vector_a / magnitude_a
-print(f"Unit vector A: {unit_vector_a}")
-```
-
-#### High-Dimensional Spaces
-
-In GenAI, we work with very high-dimensional vectors (embeddings can be 768, 1024, or even higher dimensions).
-
-```python
-# High-dimensional vector example
-embedding_dim = 768  # Common transformer embedding size
-random_embedding = np.random.randn(embedding_dim)
-
-# Cosine similarity between high-dimensional vectors
+# Similarity between words = similarity between vectors
 def cosine_similarity(vec1, vec2):
-    return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
+    """Calculate similarity between two vectors"""
+    dot_product = np.dot(vec1, vec2)
+    magnitude1 = np.linalg.norm(vec1)
+    magnitude2 = np.linalg.norm(vec2)
+    return dot_product / (magnitude1 * magnitude2)
 
-# Example with word embeddings
-word1_embedding = np.random.randn(embedding_dim)
-word2_embedding = np.random.randn(embedding_dim)
+# Example: Similar words have similar embeddings
+king = np.array([0.5, 0.8, 0.2, 0.9, 0.1])
+queen = np.array([0.4, 0.7, 0.3, 0.8, 0.2])
+cat = np.array([-0.3, 0.1, 0.6, -0.2, 0.8])
 
-similarity = cosine_similarity(word1_embedding, word2_embedding)
-print(f"Cosine similarity: {similarity}")
+print(f"King-Queen similarity: {cosine_similarity(king, queen):.3f}")
+print(f"King-Cat similarity: {cosine_similarity(king, cat):.3f}")
 ```
 
-### Matrices and Transformations
+### Matrices: Transforming Information
 
-#### Matrix Operations for Neural Networks
+Matrices transform vectors from one representation to another.
 
 ```python
-# Weight matrices in neural networks
-input_size = 512
-hidden_size = 256
-output_size = 10
+# Neural network layer: matrix multiplication
+input_dim = 4
+hidden_dim = 3
 
-# Initialize weight matrices
-W1 = np.random.randn(input_size, hidden_size) * 0.01
-W2 = np.random.randn(hidden_size, output_size) * 0.01
+# Weight matrix transforms input to hidden representation
+W = np.random.randn(input_dim, hidden_dim)
+b = np.zeros(hidden_dim)
 
-# Bias vectors
-b1 = np.zeros((hidden_size,))
-b2 = np.zeros((output_size,))
+# Input vector
+x = np.array([1.0, 0.5, -0.3, 0.8])
 
-# Forward pass simulation
-def forward_pass(x, W1, b1, W2, b2):
-    # First layer
-    z1 = np.dot(x, W1) + b1
-    a1 = np.maximum(0, z1)  # ReLU activation
-    
-    # Second layer
-    z2 = np.dot(a1, W2) + b2
-    
-    return z2, a1, z1
-
-# Example input
-input_vector = np.random.randn(input_size)
-output, hidden, pre_activation = forward_pass(input_vector, W1, b1, W2, b2)
-print(f"Output shape: {output.shape}")
+# Linear transformation
+hidden = np.dot(x, W) + b
+print(f"Input: {x}")
+print(f"Hidden: {hidden}")
 ```
 
-#### Eigenvalues and Eigenvectors
+### The Attention Matrix
 
-Important for understanding transformations and dimensionality reduction.
+The heart of transformers is matrix operations that compute attention.
 
 ```python
-# Eigenvalue decomposition
+# Simplified attention calculation
+def simple_attention(query, key, value):
+    """
+    Args:
+        query: What we're looking for [seq_len, d_model]
+        key: What we're comparing against [seq_len, d_model]
+        value: What we actually use [seq_len, d_model]
+    """
+    # Step 1: Calculate attention scores
+    scores = np.dot(query, key.T)  # [seq_len, seq_len]
+    
+    # Step 2: Normalize scores
+    attention_weights = np.exp(scores) / np.sum(np.exp(scores), axis=1, keepdims=True)
+    
+    # Step 3: Apply attention to values
+    output = np.dot(attention_weights, value)
+    
+    return output, attention_weights
+
+# Example with 3 words
+seq_len, d_model = 3, 4
+query = np.random.randn(seq_len, d_model)
+key = np.random.randn(seq_len, d_model)
+value = np.random.randn(seq_len, d_model)
+
+output, weights = simple_attention(query, key, value)
+print(f"Attention weights:\n{weights}")
+```
+
+## Probability and Statistics
+
+### Why Probability Matters
+
+AI models are fundamentally probabilistic—they predict the **likelihood** of different outcomes.
+
+```python
+# Language model predicts next word probability
+vocabulary = ['the', 'cat', 'sat', 'on', 'mat']
+probabilities = [0.3, 0.2, 0.25, 0.15, 0.1]
+
+# Higher probability = more likely next word
+print("Next word predictions:")
+for word, prob in zip(vocabulary, probabilities):
+    print(f"'{word}': {prob:.1%}")
+```
+
+### Distributions in GenAI
+
+```python
+# Softmax: Convert numbers to probabilities
+def softmax(x):
+    exp_x = np.exp(x - np.max(x))  # Numerical stability
+    return exp_x / np.sum(exp_x)
+
+# Model outputs (logits)
+logits = np.array([2.0, 1.0, 0.5, 3.0])
+probs = softmax(logits)
+
+print(f"Logits: {logits}")
+print(f"Probabilities: {probs}")
+print(f"Sum: {np.sum(probs):.3f}")  # Should be 1.0
+```
+
+## Calculus for Optimization
+
+### Gradients: The Direction of Improvement
+
+Models learn by following gradients—the direction that reduces error.
+
+```python
+# Simple loss function
+def loss_function(w):
+    return (w - 2) ** 2  # Minimum at w = 2
+
+# Gradient (derivative)
+def gradient(w):
+    return 2 * (w - 2)
+
+# Gradient descent
+w = 0.0  # Starting point
+learning_rate = 0.1
+
+for step in range(10):
+    grad = gradient(w)
+    w = w - learning_rate * grad
+    loss = loss_function(w)
+    print(f"Step {step}: w={w:.3f}, loss={loss:.3f}")
+```
+
+### Backpropagation: Chain Rule in Action
+
+```python
+# Simple 2-layer network
+def forward_pass(x, w1, w2):
+    h = np.maximum(0, x * w1)  # ReLU activation
+    y = h * w2
+    return y, h
+
+def backward_pass(x, y_pred, y_true, w1, w2, h):
+    # Loss gradient
+    dy = 2 * (y_pred - y_true)
+    
+    # Gradients through layers
+    dw2 = dy * h
+    dh = dy * w2
+    
+    # ReLU gradient
+    dw1 = dh * x if h > 0 else 0
+    
+    return dw1, dw2
+
+# Training example
+x, y_true = 1.0, 3.0
+w1, w2 = 0.5, 0.5
+
+for epoch in range(5):
+    y_pred, h = forward_pass(x, w1, w2)
+    dw1, dw2 = backward_pass(x, y_pred, y_true, w1, w2, h)
+    
+    # Update weights
+    w1 -= 0.1 * dw1
+    w2 -= 0.1 * dw2
+    
+    loss = (y_pred - y_true) ** 2
+    print(f"Epoch {epoch}: loss={loss:.3f}, w1={w1:.3f}, w2={w2:.3f}")
+```
+
+## Information Theory
+
+### Entropy: Measuring Uncertainty
+
+```python
+# Entropy measures information content
+def entropy(probabilities):
+    return -np.sum(probabilities * np.log2(probabilities + 1e-10))
+
+# Low entropy = predictable
+certain_probs = np.array([0.9, 0.05, 0.05])
+print(f"Certain distribution entropy: {entropy(certain_probs):.3f}")
+
+# High entropy = unpredictable
+uncertain_probs = np.array([0.33, 0.33, 0.34])
+print(f"Uncertain distribution entropy: {entropy(uncertain_probs):.3f}")
+```
+
+### Cross-Entropy Loss
+
+```python
+# Cross-entropy: How far off are our predictions?
+def cross_entropy_loss(y_true, y_pred):
+    return -np.sum(y_true * np.log(y_pred + 1e-10))
+
+# True answer (one-hot encoded)
+true_label = np.array([0, 1, 0])  # Word 2 is correct
+
+# Model predictions
+good_prediction = np.array([0.1, 0.8, 0.1])
+bad_prediction = np.array([0.4, 0.3, 0.3])
+
+print(f"Good prediction loss: {cross_entropy_loss(true_label, good_prediction):.3f}")
+print(f"Bad prediction loss: {cross_entropy_loss(true_label, bad_prediction):.3f}")
+```
+
+## Practical Applications
+
+### Attention Computation
+
+```python
+# Scaled dot-product attention (simplified)
+def scaled_dot_product_attention(Q, K, V):
+    """
+    Args:
+        Q: Query matrix [seq_len, d_k]
+        K: Key matrix [seq_len, d_k]
+        V: Value matrix [seq_len, d_v]
+    """
+    d_k = Q.shape[-1]
+    
+    # Attention scores
+    scores = np.dot(Q, K.T) / np.sqrt(d_k)
+    
+    # Attention weights
+    attention_weights = softmax(scores)
+    
+    # Weighted values
+    output = np.dot(attention_weights, V)
+    
+    return output, attention_weights
+
+# Example usage
+seq_len, d_k, d_v = 4, 8, 8
+Q = np.random.randn(seq_len, d_k)
+K = np.random.randn(seq_len, d_k)
+V = np.random.randn(seq_len, d_v)
+
+output, attention = scaled_dot_product_attention(Q, K, V)
+print(f"Attention pattern:\n{attention}")
+```
+
+### Embedding Arithmetic
+
+```python
+# Famous example: King - Man + Woman ≈ Queen
+king = np.array([0.5, 0.8, 0.2, 0.9])
+man = np.array([0.3, 0.4, 0.1, 0.6])
+woman = np.array([0.2, 0.7, 0.3, 0.8])
+
+# Vector arithmetic
+result = king - man + woman
+print(f"King - Man + Woman = {result}")
+
+# This should be close to queen embedding
+queen = np.array([0.4, 0.9, 0.4, 0.9])
+similarity = cosine_similarity(result, queen)
+print(f"Similarity to Queen: {similarity:.3f}")
+```
+
+## Key Takeaways
+
+!!! success "Mathematical Intuition"
+    - **Vectors** represent information (words, images, concepts)
+    - **Matrices** transform information between representations
+    - **Attention** weights determine what information to focus on
+    - **Gradients** guide learning in the right direction
+    - **Probability** quantifies uncertainty and prediction confidence
+
+## Next Steps
+
+Now that you understand the mathematical foundations:
+
+1. **Practice**: Try the code examples and experiment with different values
+2. **Visualize**: Use matplotlib to plot attention weights and embeddings
+3. **Connect**: See how these concepts appear in transformer architectures
+4. **Build**: Apply these principles in your own GenAI projects
+
+**Ready to dive deeper?** Continue with [Neural Networks](neural-networks.md) to see how these mathematical concepts combine to create intelligent systems.
 A = np.array([[4, 2], [1, 3]])
 eigenvalues, eigenvectors = np.linalg.eig(A)
 
