@@ -186,24 +186,37 @@ nav:
     - Learning Path: system-design/learning-path.md
     - Fundamentals:
       - system-design/fundamentals/index.md
-      - Principles: system-design/fundamentals/principles.md
-      - Scalability:
-        - system-design/scalability/index.md
-        - Horizontal Scaling: system-design/scalability/horizontal-scaling.md
+      - Core Principles: system-design/fundamentals/principles.md
+      - CAP Theorem: system-design/fundamentals/cap-theorem.md
+      - Data Consistency: system-design/fundamentals/data-consistency.md
+      - Scalability Patterns: system-design/fundamentals/scalability-patterns.md
+      - Performance Fundamentals: system-design/fundamentals/performance-fundamentals.md
+      - Reliability & Fault Tolerance: system-design/fundamentals/reliability-fault-tolerance.md
+      - Networking Fundamentals: system-design/fundamentals/networking-fundamentals.md
+      - Microservices Architecture: system-design/fundamentals/microservices.md
+      - API Design: system-design/fundamentals/api-design.md
+      - Event-Driven Architecture: system-design/fundamentals/event-driven-architecture.md
+      - Security Fundamentals: system-design/fundamentals/security.md
       - Databases:
         - system-design/databases/index.md
         - Database Types: system-design/databases/types.md
+        - Indexing Algorithms: system-design/databases/indexing.md
+        - Scaling Patterns: system-design/databases/scaling-patterns.md
         - Sharding: system-design/databases/sharding.md
         - Replication: system-design/databases/replication.md
       - Caching:
         - system-design/caching/index.md
+        - Cache Patterns: system-design/caching/patterns.md
       - Load Balancing:
         - system-design/load-balancing/index.md
+      - Proxy & Reverse Proxy:
+        - system-design/proxy/index.md
       - Networking:
         - system-design/networking/index.md
         - CDN: system-design/networking/cdn.md
       - Messaging:
         - system-design/messaging/index.md
+        - Message Patterns: system-design/messaging/patterns.md
       - Sessions:
         - system-design/sessions/index.md
       - Consistent Hashing:
@@ -212,6 +225,7 @@ nav:
         - system-design/data-storage/index.md
       - Distributed Systems:
         - system-design/distributed-systems/index.md
+        - Consensus Algorithms: system-design/distributed-systems/consensus.md
       - Reliability & Security:
         - system-design/reliability-security/index.md
         - Fault Tolerance: system-design/reliability-security/fault-tolerance.md

@@ -1,53 +1,346 @@
-# Hash Tables - Medium Problems
+# Hash Tables: Medium Problems
 
-## 🎯 Learning Objectives
+## 🚀 Intermediate Hash Table Challenges
 
-Master intermediate hash table techniques:
+Master intermediate hash table techniques for solving complex problems involving frequency counting, custom key design, and advanced lookup patterns.
 
-- Advanced frequency counting and grouping
-- Sliding window with hash maps  
-- Custom hash map design
-- Complex key-value relationships
+=== "📋 Problem List"
 
----
+    | # | Problem | Pattern | Difficulty | Time | Space |
+    |---|---------|---------|------------|------|-------|
+    | 1 | Group Anagrams | Grouping with Hash Keys | Medium | O(n×m log m) | O(n×m) |
+    | 2 | LRU Cache | Custom Data Structure | Medium | O(1) | O(n) |
+    | 3 | Subarray Sum Equals K | Prefix Sum | Medium | O(n) | O(n) |
+    | 4 | Longest Substring Without Repeating Characters | Sliding Window | Medium | O(n) | O(min(n,m)) |
+    | 5 | Top K Frequent Elements | Bucket Sort | Medium | O(n) | O(n) |
+    | 6 | Design HashMap | Direct Addressing | Medium | O(1) | O(n) |
+    | 7 | Valid Sudoku | Matrix Validation | Medium | O(1) | O(1) |
+    | 8 | Copy List with Random Pointer | HashMap | Medium | O(n) | O(n) |
+    | 9 | Longest Consecutive Sequence | Set Operations | Medium | O(n) | O(n) |
+    | 10 | Find All Anagrams in a String | Sliding Window | Medium | O(n) | O(1) |
+    | 11 | 4Sum II | Hash Counting | Medium | O(n²) | O(n²) |
+    | 12 | Continuous Subarray Sum | Prefix Sum with Modulo | Medium | O(n) | O(k) |
+    | 13 | Design Twitter | Custom Data Structure | Medium | O(n log k) | O(n) |
+    | 14 | Time Based Key-Value Store | Binary Search with HashMap | Medium | O(log n) | O(n) |
+    | 15 | Longest Substring with At Most K Distinct Characters | Sliding Window | Medium | O(n) | O(k) |
 
-## Problem 1: Group Anagrams
+=== "🎯 Interview Tips"
 
-**Difficulty**: 🟡 Medium  
-**Pattern**: Grouping with Hash Keys  
-**Time**: O(N × M log M), **Space**: O(N × M)
-
-### Problem Description
-
-Given an array of strings `strs`, group the anagrams together.
-
-```python
-Input: strs = ["eat","tea","tan","ate","nat","bat"]
-Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
-```
-
-### Solution Approaches
-
-```python
-def group_anagrams(strs):
-    """
-    Method 1: Use sorted string as hash key
-    """
-    from collections import defaultdict
+    **📝 Key Hash Table Patterns:**
     
-    groups = defaultdict(list)
+    - **Frequency Counting**: Counting elements, characters, or patterns
+    - **Two-Sum Pattern**: Use complement lookup for efficient pair finding
+    - **Custom Hash Keys**: Creating unique hash keys for complex objects
+    - **Prefix Sum**: Track cumulative sums for subarray calculations
+    - **Sliding Window**: Combine with hash table for efficient window tracking
     
-    for s in strs:
-        # Sorted string as unique key for anagrams
-        key = ''.join(sorted(s))
-        groups[key].append(s)
+    **⚡ Problem-Solving Strategies:**
     
-    return list(groups.values())
+    - Identify what makes a good hash key for the problem
+    - Use `defaultdict` or `Counter` for frequency problems
+    - Consider using multiple hash maps for complex relationships
+    - For optimization problems, store computed results in a hash table
+    - Combine hash tables with other data structures like heaps or arrays
+    
+    **🚫 Common Pitfalls:**
+    
+    - Not handling collisions properly in custom implementations
+    - Forgetting to check if a key exists before accessing
+    - Creating unnecessarily complex hash functions
+    - Not considering string vs object equality for custom objects
+    - Using mutable objects as hash keys
 
-def group_anagrams_v2(strs):
-    """
-    Method 2: Use character frequency as hash key
-    """
+=== "📚 Study Plan"
+
+    **Week 1: Basic Hash Table Applications (Problems 1-5)**
+    - Master grouping and counting techniques
+    - Practice frequency-based problems
+    - Learn custom hash key design
+    
+    **Week 2: Advanced Implementations (Problems 6-10)**
+    - Implement custom hash structures
+    - Combine with other data structures
+    - Practice sliding window with hash tables
+    
+    **Week 3: Complex Applications (Problems 11-15)**
+    - Multi-step hash table approaches
+    - Time-based and dynamic hash tables
+    - Performance optimization techniques
+
+=== "Group Anagrams"
+
+    **Problem Statement:**
+    Given an array of strings `strs`, group the anagrams together. An anagram is a word formed by rearranging the letters of another, using all the original letters exactly once.
+
+    **Example:**
+    ```text
+    Input: strs = ["eat","tea","tan","ate","nat","bat"]
+    Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+    ```
+
+    **Solution:**
+    ```python
+    def groupAnagrams(strs):
+        """
+        Use sorted string as hash key.
+        
+        Time: O(n×m log m) where n=number of strings, m=max string length
+        Space: O(n×m) for the dictionary and result
+        """
+        from collections import defaultdict
+        
+        groups = defaultdict(list)
+        
+        for s in strs:
+            # Sorted string as unique key for anagrams
+            key = ''.join(sorted(s))
+            groups[key].append(s)
+        
+        return list(groups.values())
+    ```
+
+    **Key Insights:**
+    - The sorted version of an anagram creates a unique identifier
+    - Using a hash map allows O(1) lookup for each group
+    - defaultdict avoids key existence checking
+    - For very large inputs, can use character count as key instead of sorting
+
+=== "LRU Cache"
+
+    **Problem Statement:**
+    Design and implement a data structure for Least Recently Used (LRU) cache. It should support get and put operations with O(1) time complexity.
+    
+    - get(key): Return the value of the key if it exists, otherwise return -1.
+    - put(key, value): Update or insert the value if the key exists. When the cache reaches capacity, invalidate the least recently used key.
+
+    **Example:**
+    ```text
+    LRUCache cache = new LRUCache(2);  // capacity = 2
+    cache.put(1, 1);
+    cache.put(2, 2);
+    cache.get(1);       // returns 1
+    cache.put(3, 3);    // evicts key 2
+    cache.get(2);       // returns -1 (not found)
+    cache.put(4, 4);    // evicts key 1
+    cache.get(1);       // returns -1 (not found)
+    cache.get(3);       // returns 3
+    cache.get(4);       // returns 4
+    ```
+
+    **Solution:**
+    ```python
+    class LRUCache:
+        """
+        Hash map + Doubly linked list implementation.
+        
+        Time: O(1) for both get and put
+        Space: O(capacity) for storing at most capacity entries
+        """
+        class Node:
+            def __init__(self, key=0, value=0):
+                self.key = key
+                self.value = value
+                self.prev = None
+                self.next = None
+                
+        def __init__(self, capacity):
+            self.capacity = capacity
+            self.cache = {}  # map key to node
+            
+            # Initialize doubly linked list with dummy head and tail
+            self.head = self.Node()  # Most recently used
+            self.tail = self.Node()  # Least recently used
+            self.head.next = self.tail
+            self.tail.prev = self.head
+            
+        def _remove_node(self, node):
+            # Remove node from list
+            p, n = node.prev, node.next
+            p.next, n.prev = n, p
+            
+        def _add_node(self, node):
+            # Always add to head (most recently used)
+            node.prev = self.head
+            node.next = self.head.next
+            self.head.next.prev = node
+            self.head.next = node
+            
+        def get(self, key):
+            if key in self.cache:
+                # Update usage by moving to front
+                node = self.cache[key]
+                self._remove_node(node)
+                self._add_node(node)
+                return node.value
+            return -1
+            
+        def put(self, key, value):
+            # Remove old key if present
+            if key in self.cache:
+                self._remove_node(self.cache[key])
+                
+            # Create new node and add to head
+            node = self.Node(key, value)
+            self._add_node(node)
+            self.cache[key] = node
+            
+            # Evict if over capacity
+            if len(self.cache) > self.capacity:
+                lru = self.tail.prev
+                self._remove_node(lru)
+                del self.cache[lru.key]
+    ```
+
+    **Key Insights:**
+    - Combining hash map and doubly-linked list gives O(1) operations
+    - Hash map enables O(1) lookups by key
+    - Doubly-linked list tracks usage order and enables O(1) removals
+    - Dummy head/tail nodes simplify edge cases
+    - Move-to-front strategy maintains recency order
+
+=== "Subarray Sum Equals K"
+
+    **Problem Statement:**
+    Given an array of integers `nums` and an integer `k`, return the total number of continuous subarrays whose sum equals to `k`.
+
+    **Example:**
+    ```text
+    Input: nums = [1,1,1], k = 2
+    Output: 2
+    Explanation: [1,1] and [1,1] are two continuous subarrays with sum 2.
+    ```
+
+    **Solution:**
+    ```python
+    def subarraySum(nums, k):
+        """
+        Use a hashmap to track prefix sums.
+        
+        Time: O(n) - single pass through the array
+        Space: O(n) - store prefix sum counts
+        """
+        count = 0
+        curr_sum = 0
+        # Maps prefix sum to number of occurrences
+        prefix_sum = {0: 1}  # Initialize with 0 sum occurring once
+        
+        for num in nums:
+            # Update running sum
+            curr_sum += num
+            
+            # Check if we've seen curr_sum - k before
+            # If so, it means subarray(s) with sum k exist
+            if curr_sum - k in prefix_sum:
+                count += prefix_sum[curr_sum - k]
+            
+            # Update prefix sum frequency
+            prefix_sum[curr_sum] = prefix_sum.get(curr_sum, 0) + 1
+        
+        return count
+    ```
+
+    **Key Insights:**
+    - Use prefix sums to convert to a "two-sum" like problem
+    - Hash map stores the frequency of each prefix sum
+    - For each position, check if (currSum - k) exists in our prefix map
+    - This indicates a subarray ending at current position with sum k
+    - Track frequencies instead of just presence to handle multiple matches
+
+=== "Longest Substring Without Repeating Characters"
+
+    **Problem Statement:**
+    Given a string `s`, find the length of the longest substring without repeating characters.
+
+    **Example:**
+    ```text
+    Input: s = "abcabcbb"
+    Output: 3
+    Explanation: The answer is "abc", with the length of 3.
+    ```
+
+    **Solution:**
+    ```python
+    def lengthOfLongestSubstring(s):
+        """
+        Sliding window with hash set.
+        
+        Time: O(n) - each character is processed at most twice
+        Space: O(min(m,n)) where m is the size of the character set
+        """
+        char_set = set()  # Track characters in current window
+        left = 0
+        max_length = 0
+        
+        for right in range(len(s)):
+            # If duplicate found, shrink window from left
+            while s[right] in char_set:
+                char_set.remove(s[left])
+                left += 1
+                
+            # Add current character and update max length
+            char_set.add(s[right])
+            max_length = max(max_length, right - left + 1)
+        
+        return max_length
+    ```
+
+    **Key Insights:**
+    - Sliding window with two pointers controls the substring range
+    - Hash set provides O(1) lookups for character existence
+    - Expanding window adds characters, contracting removes them
+    - Only need to contract until the duplicate is removed
+    - For large character sets, a dictionary mapping chars to indices is more efficient
+
+=== "Top K Frequent Elements"
+
+    **Problem Statement:**
+    Given an integer array `nums` and an integer `k`, return the `k` most frequent elements. You may return the answer in any order.
+
+    **Example:**
+    ```text
+    Input: nums = [1,1,1,2,2,3], k = 2
+    Output: [1,2]
+    Explanation: Elements 1 and 2 appear most frequently.
+    ```
+
+    **Solution:**
+    ```python
+    def topKFrequent(nums, k):
+        """
+        Frequency counting with bucket sort.
+        
+        Time: O(n) - linear time counting and retrieval
+        Space: O(n) - for the frequency map and buckets
+        """
+        # Count frequencies
+        count = {}
+        for num in nums:
+            count[num] = count.get(num, 0) + 1
+            
+        # Create frequency buckets
+        # bucket[i] contains elements that appear i times
+        bucket = [[] for _ in range(len(nums) + 1)]
+        
+        # Place elements in buckets by frequency
+        for num, freq in count.items():
+            bucket[freq].append(num)
+            
+        # Collect top k elements from highest frequencies
+        result = []
+        for i in range(len(bucket) - 1, 0, -1):
+            result.extend(bucket[i])
+            if len(result) >= k:
+                return result[:k]
+                
+        return result  # Should not reach here if k is valid
+    ```
+
+    **Key Insights:**
+    - Hash map counts frequencies in linear time
+    - Bucket sort efficiently finds top k without sorting entire array
+    - Buckets are indexed by frequency, making retrieval O(n)
+    - This is more efficient than heap-based approach (O(n log k))
+    - Works well when the range of frequencies is limited
     from collections import defaultdict
     
     groups = defaultdict(list)

@@ -1,53 +1,241 @@
-# Set Medium Problems 🟡
+# Sets: Medium Problems
 
-## 🎯 Overview
+## 🚀 Intermediate Set Challenges
 
-Advance your set skills with more complex algorithms and optimization techniques. These problems require deeper understanding of set operations and their applications.
+Master intermediate set techniques for solving complex problems involving efficient lookups, deduplication, and advanced set operations.
 
-## 🔧 Problem Categories
+=== "📋 Problem List"
 
-### 1. Advanced Set Operations
-- Complex intersection and union scenarios
-- Set-based graph algorithms
-- Multi-set problems
+    | # | Problem | Pattern | Difficulty | Time | Space |
+    |---|---------|---------|------------|------|-------|
+    | 1 | Longest Substring Without Repeating Characters | Sliding Window | Medium | O(n) | O(min(n,m)) |
+    | 2 | Longest Consecutive Sequence | Set Operations | Medium | O(n) | O(n) |
+    | 3 | Valid Sudoku | Matrix Validation | Medium | O(1) | O(1) |
+    | 4 | Contains Duplicate II | Sliding Window | Medium | O(n) | O(k) |
+    | 5 | Jewels and Stones | Set Lookup | Medium | O(n+m) | O(n) |
+    | 6 | Find the Difference of Two Arrays | Set Operations | Medium | O(n+m) | O(n+m) |
+    | 7 | Contiguous Array | Prefix Sum with Set | Medium | O(n) | O(n) |
+    | 8 | Intersection of Two Arrays II | Counting | Medium | O(n+m) | O(n) |
+    | 9 | Unique Email Addresses | String Processing | Medium | O(n×m) | O(n×m) |
+    | 10 | Maximum Length of a Concatenated String with Unique Characters | Backtracking | Medium | O(2ⁿ) | O(n) |
+    | 11 | Word Pattern | Bijection | Medium | O(n) | O(n) |
+    | 12 | Group Shifted Strings | Custom Set Keys | Medium | O(n×k) | O(n×k) |
+    | 13 | Find Duplicate Subtrees | Tree Serialization | Medium | O(n²) | O(n) |
+    | 14 | Palindrome Pairs | Set Operations | Medium | O(n×k²) | O(n×k) |
+    | 15 | Count Number of Nice Subarrays | Prefix Sum | Medium | O(n) | O(n) |
 
-### 2. Optimization with Sets  
-- Space-time trade-offs
-- Sliding window with sets
-- Set-based dynamic programming
+=== "🎯 Interview Tips"
 
-### 3. String Processing with Sets
-- Anagram problems
-- Pattern matching with sets
-- Substring problems
-
----
-
-## 📝 Problems
-
-### Problem 1: Longest Substring Without Repeating Characters
-
-**Problem**: Find the length of the longest substring without repeating characters.
-
-```python
-def length_of_longest_substring(s):
-    """
-    Sliding window with set
-    Time: O(n), Space: O(min(m,n)) where m = charset size
-    """
-    char_set = set()
-    left = 0
-    max_length = 0
+    **📝 Key Set Patterns:**
     
-    for right in range(len(s)):
-        while s[right] in char_set:
-            char_set.remove(s[left])
-            left += 1
+    - **Set Membership**: O(1) lookups for efficient presence checks
+    - **Sliding Window**: Track unique elements in a window
+    - **Deduplication**: Remove duplicates from data
+    - **Set Operations**: Use union, intersection, difference efficiently
+    - **Custom Objects**: Define proper equality and hash methods
+    
+    **⚡ Problem-Solving Strategies:**
+    
+    - Convert lookup-heavy operations to use sets
+    - Use sets to eliminate duplicates in pre-processing
+    - Convert between sets and other data structures as needed
+    - Leverage built-in set operations (union, intersection, difference)
+    - For problems involving unique items, sets are usually the right choice
+    
+    **🚫 Common Pitfalls:**
+    
+    - Using mutable objects as set elements (they're not hashable)
+    - Forgetting that sets are unordered (use sorted() if order matters)
+    - Not checking if an item exists before removing it
+    - Inefficient repeated conversions between sets and lists
+    - Using sets when order preservation is required
+
+=== "📚 Study Plan"
+
+    **Week 1: Basic Set Operations (Problems 1-5)**
+    - Master set membership and lookups
+    - Practice sliding window with sets
+    - Understand set-based deduplication
+    
+    **Week 2: Advanced Set Patterns (Problems 6-10)**
+    - Set operation problems (union, intersection, difference)
+    - Combining sets with other data structures
+    - Set-based string processing
+    
+    **Week 3: Complex Applications (Problems 11-15)**
+    - Set usage in tree and graph problems
+    - Multi-set techniques
+    - Performance optimization with sets
+
+=== "Longest Substring Without Repeating Characters"
+
+    **Problem Statement:**
+    Given a string `s`, find the length of the longest substring without repeating characters.
+
+    **Example:**
+    ```text
+    Input: s = "abcabcbb"
+    Output: 3
+    Explanation: The answer is "abc", with the length of 3.
+    ```
+
+    **Solution:**
+    ```python
+    def lengthOfLongestSubstring(s):
+        """
+        Sliding window with set.
         
-        char_set.add(s[right])
-        max_length = max(max_length, right - left + 1)
+        Time: O(n) - each character is processed at most twice
+        Space: O(min(n,m)) where m is the size of the character set
+        """
+        char_set = set()  # Track characters in current window
+        left = 0
+        max_length = 0
+        
+        for right in range(len(s)):
+            # If duplicate found, shrink window from left
+            while s[right] in char_set:
+                char_set.remove(s[left])
+                left += 1
+                
+            # Add current character and update max length
+            char_set.add(s[right])
+            max_length = max(max_length, right - left + 1)
+        
+        return max_length
+    ```
+
+    **Key Insights:**
+    - Set provides O(1) lookups to check for duplicates
+    - Sliding window technique with two pointers (left and right)
+    - Window expands when unique characters are found
+    - Window contracts just enough to remove duplicates
+    - Time complexity is O(n) because each character is processed at most twice
+
+=== "Longest Consecutive Sequence"
+
+    **Problem Statement:**
+    Given an unsorted array of integers `nums`, find the length of the longest consecutive elements sequence. The algorithm should run in O(n) time.
+
+    **Example:**
+    ```text
+    Input: nums = [100,4,200,1,3,2]
+    Output: 4
+    Explanation: The longest consecutive elements sequence is [1,2,3,4]. Therefore its length is 4.
+    ```
+
+    **Solution:**
+    ```python
+    def longestConsecutive(nums):
+        """
+        Set-based approach for O(n) time complexity.
+        
+        Time: O(n) - each number is processed only once
+        Space: O(n) - to store the set of numbers
+        """
+        if not nums:
+            return 0
+            
+        # Create a set for O(1) lookups
+        num_set = set(nums)
+        max_length = 0
+        
+        # Check each possible sequence
+        for num in num_set:
+            # Only start counting sequences at the beginning
+            # of the sequence to avoid duplicating work
+            if num - 1 not in num_set:
+                current_num = num
+                current_streak = 1
+                
+                # Count consecutive numbers
+                while current_num + 1 in num_set:
+                    current_num += 1
+                    current_streak += 1
+                    
+                # Update max length found so far
+                max_length = max(max_length, current_streak)
+                
+        return max_length
+    ```
+
+    **Key Insights:**
+    - Using a set provides O(1) lookups for each number
+    - Only starting sequences at their beginning avoids redundant work
+    - Checking if num-1 exists identifies potential sequence starts
+    - The algorithm is O(n) because each number is visited at most twice
+    - Set-based solution is much faster than sorting approach (O(n log n))
+
+=== "Valid Sudoku"
+
+    **Problem Statement:**
+    Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
     
-    return max_length
+    1. Each row must contain the digits 1-9 without repetition.
+    2. Each column must contain the digits 1-9 without repetition.
+    3. Each of the nine 3 x 3 sub-boxes must contain the digits 1-9 without repetition.
+
+    **Example:**
+    ```text
+    Input: board = 
+    [["5","3",".",".","7",".",".",".","."]
+    ,["6",".",".","1","9","5",".",".","."]
+    ,[".","9","8",".",".",".",".","6","."]
+    ,["8",".",".",".","6",".",".",".","3"]
+    ,["4",".",".","8",".","3",".",".","1"]
+    ,["7",".",".",".","2",".",".",".","6"]
+    ,[".","6",".",".",".",".","2","8","."]
+    ,[".",".",".","4","1","9",".",".","5"]
+    ,[".",".",".",".","8",".",".","7","9"]]
+    Output: true
+    ```
+
+    **Solution:**
+    ```python
+    def isValidSudoku(board):
+        """
+        Use sets to track seen elements in rows, columns, and boxes.
+        
+        Time: O(1) - constant board size of 9x9
+        Space: O(1) - constant space for storing seen elements
+        """
+        # Initialize sets for rows, columns, and boxes
+        row_sets = [set() for _ in range(9)]
+        col_sets = [set() for _ in range(9)]
+        box_sets = [set() for _ in range(9)]
+        
+        # Validate all cells
+        for r in range(9):
+            for c in range(9):
+                # Skip empty cells
+                if board[r][c] == ".":
+                    continue
+                
+                val = board[r][c]
+                
+                # Calculate box index (0-8) from row and column
+                box_idx = (r // 3) * 3 + (c // 3)
+                
+                # Check for duplicates in row, column, or box
+                if (val in row_sets[r] or 
+                    val in col_sets[c] or 
+                    val in box_sets[box_idx]):
+                    return False
+                
+                # Add value to all relevant sets
+                row_sets[r].add(val)
+                col_sets[c].add(val)
+                box_sets[box_idx].add(val)
+        
+        return True
+    ```
+
+    **Key Insights:**
+    - Sets are perfect for tracking unique elements in each constraint
+    - Parallel validation checks all three rules simultaneously in one pass
+    - Box index calculation maps 9 boxes to indices 0-8
+    - Early termination when any constraint is violated improves efficiency
+    - Time and space complexity are O(1) because the board size is fixed
 
 def length_of_longest_substring_optimized(s):
     """

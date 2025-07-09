@@ -160,47 +160,95 @@ This section focuses purely on the essential concepts and principles that form t
     
     The 5 pillars that guide every system design decision
 
-- :material-scale-balance: **[Trade-offs & Decisions](scalability/)**
+- :material-theorem: **[CAP Theorem](cap-theorem.md)**
 
     ---
 
-    **CAP Theorem • Consistency Models • Architecture Choices**
+    **Consistency • Availability • Partition Tolerance**
     
-    Learn to make smart engineering trade-offs
+    Understanding trade-offs in distributed systems
 
-- :material-trending-up: **[Scalability Patterns](scalability/)**
+- :material-sync: **[Data Consistency](data-consistency.md)**
 
     ---
 
-    **Horizontal vs Vertical • Load Distribution • Capacity Planning**
+    **Strong • Eventual • Weak Consistency Models**
     
-    Scale from startup to global platform
+    Managing data consistency across distributed systems
 
-- :material-speedometer: **[Performance & Optimization](performance/)**
+- :material-rocket: **[Scalability Patterns](scalability-patterns.md)**
 
     ---
 
-    **Latency • Throughput • Bottlenecks • Caching**
+    **Horizontal • Vertical • Load Balancing • Auto-scaling**
     
-    Build systems that are lightning fast
+    Scale your system from 100 to 100 million users
 
-- :material-database: **[Data & Storage](data-storage/)**
+- :material-flash: **[Performance Fundamentals](performance-fundamentals.md)**
 
     ---
 
-    **SQL vs NoSQL • Consistency • Replication • Sharding**
+    **Latency • Throughput • Optimization • Monitoring**
     
-    Store and retrieve data at any scale
+    Build high-performance systems that scale
 
-- :material-network: **[Distributed Systems](distributed-systems/)**
+- :material-shield-check: **[Reliability & Fault Tolerance](reliability-fault-tolerance.md)**
 
     ---
 
-    **Consensus • Fault Tolerance • Event Streaming**
+    **Fault Tolerance • Circuit Breakers • Disaster Recovery**
     
-    Build systems that span multiple machines
+    Build systems that fail gracefully and recover quickly
 
-- :material-lightning-bolt: **[Caching Strategies](caching/)**
+- :material-network: **[Networking Fundamentals](networking-fundamentals.md)**
+
+    ---
+
+    **Protocols • Load Balancing • CDN • Network Patterns**
+    
+    Optimize network performance for distributed systems
+
+- :material-apps: **[Microservices Architecture](microservices.md)**
+
+    ---
+
+    **Service Decomposition • Communication • Orchestration**
+    
+    Build maintainable, scalable service architectures
+
+- :material-api: **[API Design](api-design.md)**
+
+    ---
+
+    **REST • GraphQL • gRPC • API Gateway • Versioning**
+    
+    Design robust and scalable APIs
+
+- :material-message-processing: **[Event-Driven Architecture](event-driven-architecture.md)**
+
+    ---
+
+    **Event Sourcing • CQRS • Pub/Sub • Event Streaming**
+    
+    Build decoupled, event-driven systems
+
+- :material-security: **[Security Fundamentals](security.md)**
+
+    ---
+
+    **Authentication • Authorization • Encryption • Security Patterns**
+    
+    Secure your systems from threats and vulnerabilities
+
+- :material-database: **[Database Design](../databases/)**
+
+    ---
+
+    **SQL • NoSQL • Sharding • Replication • Consistency**
+    
+    Choose the right data storage for your needs
+
+- :material-lightning-bolt: **[Caching Strategies](../caching/)**
 
     ---
 
@@ -208,7 +256,7 @@ This section focuses purely on the essential concepts and principles that form t
     
     Speed up your system with smart caching
 
-- :material-scale-balance: **[Load Balancing](load-balancing/)**
+- :material-scale-balance: **[Load Balancing](../load-balancing/)**
 
     ---
 
@@ -216,7 +264,7 @@ This section focuses purely on the essential concepts and principles that form t
     
     Distribute traffic efficiently across servers
 
-- :material-cloud-sync: **[Networking & CDN](networking/)**
+- :material-cloud-sync: **[Networking & CDN](../networking/)**
 
     ---
 
@@ -224,7 +272,7 @@ This section focuses purely on the essential concepts and principles that form t
     
     Optimize network performance globally
 
-- :material-message-processing: **[Messaging Systems](messaging/)**
+- :material-message-processing: **[Messaging Systems](../messaging/)**
 
     ---
 
@@ -232,7 +280,7 @@ This section focuses purely on the essential concepts and principles that form t
     
     Build decoupled, event-driven architectures
 
-- :material-account-group: **[Session Management](sessions/)**
+- :material-account-group: **[Session Management](../sessions/)**
 
     ---
 
@@ -240,7 +288,7 @@ This section focuses purely on the essential concepts and principles that form t
     
     Handle user sessions at scale
 
-- :material-chart-donut: **[Consistent Hashing](consistent-hashing/)**
+- :material-chart-donut: **[Consistent Hashing](../consistent-hashing/)**
 
     ---
 
@@ -248,13 +296,13 @@ This section focuses purely on the essential concepts and principles that form t
     
     Distribute data evenly across nodes
 
-- :material-security: **[Reliability & Security](reliability-security/)**
+- :material-server-network: **[Distributed Systems](../distributed-systems/)**
 
     ---
 
-    **Fault Tolerance • Circuit Breakers • Security Patterns**
+    **Microservices • Service Mesh • Communication Patterns**
     
-    Build systems that fail gracefully and stay secure
+    Build systems that span multiple machines
 
 </div>
 

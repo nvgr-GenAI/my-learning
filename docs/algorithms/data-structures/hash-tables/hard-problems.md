@@ -1,52 +1,161 @@
-# Hash Tables - Hard Problems
+# Hash Tables: Hard Problems
 
-## 🎯 Learning Objectives
+## 🚀 Advanced Hash Table Challenges
 
-Master advanced hash table applications:
+Master complex hash table applications that combine multiple data structures and algorithmic patterns for solving the most challenging problems.
 
-- Complex data structure design with multiple hash maps
-- LRU Cache and advanced caching strategies
-- System design with hash-based solutions
-- Advanced algorithmic patterns combining multiple techniques
+=== "📋 Problem List"
 
----
+    | # | Problem | Pattern | Difficulty | Time | Space |
+    |---|---------|---------|------------|------|-------|
+    | 1 | LFU Cache | Custom Data Structure | Hard | O(1) | O(n) |
+    | 2 | Minimum Window Substring | Sliding Window | Hard | O(n) | O(k) |
+    | 3 | Substring with Concatenation of All Words | Sliding Window | Hard | O(n×m) | O(m) |
+    | 4 | Word Ladder | BFS + Hash Set | Hard | O(n×m²) | O(n×m) |
+    | 5 | All O`one Data Structure | Custom Data Structure | Hard | O(1) | O(n) |
+    | 6 | Longest Duplicate Substring | Binary Search + Rabin-Karp | Hard | O(n log n) | O(n) |
+    | 7 | Palindrome Pairs | Trie/HashMap | Hard | O(n×k²) | O(n×k) |
+    | 8 | Number of Valid Words for Each Puzzle | Bitmask + HashMap | Hard | O(n×k + m×2^p) | O(n) |
+    | 9 | Maximum Frequency Stack | Multi-level HashMap | Hard | O(1) | O(n) |
+    | 10 | First Missing Positive | Array Hashing | Hard | O(n) | O(1) |
+    | 11 | Subarrays with K Different Integers | Sliding Window | Hard | O(n) | O(k) |
+    | 12 | Design Search Autocomplete System | Trie + HashMap | Hard | O(p+q) | O(n) |
+    | 13 | Design In-Memory File System | Trie + HashMap | Hard | O(l) | O(n) |
+    | 14 | Random Pick with Blacklist | HashMap + Math | Hard | O(b) | O(b) |
+    | 15 | Longest Consecutive Sequence | Set Operations | Hard | O(n) | O(n) |
 
-## Problem 1: LRU Cache
+=== "🎯 Interview Tips"
 
-**Difficulty**: 🔴 Hard  
-**Pattern**: Hash Map + Doubly Linked List  
-**Time**: O(1) for all operations, **Space**: O(capacity)
-
-### Problem Statement
-
-Design a data structure that follows Least Recently Used (LRU) cache constraints.
-
-Implement `LRUCache` class:
-- `LRUCache(int capacity)` - Initialize with positive size capacity
-- `int get(int key)` - Return value of key if exists, otherwise -1
-- `void put(int key, int value)` - Update value or insert new key-value pair
-
-Both operations should be O(1) average time complexity.
-
-### Complete Solution
-
-```python
-class LRUCache:
-    """
-    LRU Cache using Hash Map + Doubly Linked List
+    **📝 Key Advanced Hash Table Patterns:**
     
-    Key insight: 
-    - Hash map provides O(1) access to nodes
-    - Doubly linked list provides O(1) insertion/deletion
-    - Combine both for O(1) LRU operations
-    """
+    - **Multi-layer Hash Maps**: Nesting hash maps for complex relationships
+    - **Hash + Heap Combinations**: For prioritized access with fast lookups
+    - **Custom Hash Functions**: For specialized equality comparisons
+    - **Distributed Hash Tables**: For system design questions
+    - **Probabilistic Data Structures**: Bloom filters, Count-Min sketch
     
-    class Node:
-        def __init__(self, key=0, value=0):
-            self.key = key
-            self.value = value
-            self.prev = None
-            self.next = None
+    **⚡ Problem-Solving Strategies:**
+    
+    - Design custom hash keys for complex objects or patterns
+    - Combine hash tables with other data structures (trees, heaps, graphs)
+    - Use memoization with hash tables for dynamic programming optimization
+    - Apply sliding window with counters for substring problems
+    - Leverage bit manipulation with hash tables for space optimization
+    
+    **🚫 Common Pitfalls:**
+    
+    - Creating overly complex hash functions that slow down operations
+    - Excessive memory use in multi-map solutions
+    - Not accounting for collisions in custom implementations
+    - Using mutable objects as hash keys
+    - Inefficient handling of resizing operations in custom implementations
+
+=== "📚 Study Plan"
+
+    **Week 1: Hash Table Design Challenges (Problems 1-5)**
+    - Focus on custom data structure design
+    - Master frequency tracking and efficient updates
+    - Practice cache implementation patterns
+    
+    **Week 2: String & Substring Problems (Problems 6-10)**
+    - Learn advanced sliding window techniques
+    - Implement string matching with hash tables
+    - Practice substring and subsequence problems
+    
+    **Week 3: System Design with Hash Tables (Problems 11-15)**
+    - Build complex system components
+    - Optimize for memory and access patterns
+    - Combine with other data structures for efficient solutions
+
+=== "LFU Cache"
+
+    **Problem Statement:**
+    Design and implement a data structure for a Least Frequently Used (LFU) cache.
+    
+    Implement the `LFUCache` class:
+    - `LFUCache(int capacity)` - Initialize the object with the capacity of the data structure.
+    - `int get(int key)` - Return the value of the key if it exists, otherwise return -1.
+    - `void put(int key, int value)` - Update the value of the key if present, or insert the key if not present. When the cache reaches its capacity, invalidate the least frequently used item before inserting a new item. If there is a tie (i.e., two or more keys with the same frequency), the least recently used key would be invalidated.
+
+    **Example:**
+    ```text
+    Input:
+    ["LFUCache", "put", "put", "get", "put", "get", "get", "put", "get", "get", "get"]
+    [[2], [1, 1], [2, 2], [1], [3, 3], [2], [3], [4, 4], [1], [3], [4]]
+    Output:
+    [null, null, null, 1, null, -1, 3, null, -1, 3, 4]
+    ```
+
+    **Solution:**
+    ```python
+    class LFUCache:
+        """
+        Implementation using hash maps and frequency counting.
+        
+        Time: O(1) for all operations
+        Space: O(capacity) for storing key-value pairs and frequency info
+        """
+        def __init__(self, capacity: int):
+            self.capacity = capacity
+            self.min_freq = 0
+            self.key_to_val = {}  # Maps key to value
+            self.key_to_freq = {}  # Maps key to frequency
+            self.freq_to_keys = defaultdict(OrderedDict)  # Maps frequency to ordered keys
+            
+        def get(self, key: int) -> int:
+            if key not in self.key_to_val:
+                return -1
+                
+            # Get current frequency and value
+            freq = self.key_to_freq[key]
+            val = self.key_to_val[key]
+            
+            # Remove key from current frequency list
+            self.freq_to_keys[freq].pop(key)
+            
+            # Update min_freq if needed
+            if len(self.freq_to_keys[self.min_freq]) == 0 and self.min_freq == freq:
+                self.min_freq += 1
+                
+            # Increment frequency and update mappings
+            self.key_to_freq[key] = freq + 1
+            self.freq_to_keys[freq + 1][key] = None  # OrderedDict as queue, value doesn't matter
+            
+            return val
+            
+        def put(self, key: int, value: int) -> None:
+            if self.capacity == 0:
+                return
+                
+            # If key exists, update value and increment frequency
+            if key in self.key_to_val:
+                self.key_to_val[key] = value
+                self.get(key)  # Use get to increment frequency
+                return
+                
+            # If at capacity, remove least frequent item
+            if len(self.key_to_val) >= self.capacity:
+                # Get least frequently used key
+                lfu_key, _ = self.freq_to_keys[self.min_freq].popitem(last=False)
+                del self.key_to_val[lfu_key]
+                del self.key_to_freq[lfu_key]
+                
+            # Add new key-value pair
+            self.key_to_val[key] = value
+            self.key_to_freq[key] = 1
+            self.freq_to_keys[1][key] = None
+            self.min_freq = 1  # New item is least frequent
+    ```
+
+    **Key Insights:**
+    - Use three hash maps to maintain all required information:
+      1. key → value mapping
+      2. key → frequency mapping
+      3. frequency → ordered set of keys mapping
+    - OrderedDict preserves insertion order for LRU tie-breaking
+    - Track minimum frequency for O(1) eviction of least frequent item
+    - Use get operation logic to update frequency in the put method
+    - Handle edge cases like capacity of zero or existing keys
     
     def __init__(self, capacity):
         self.capacity = capacity
