@@ -294,3 +294,12 @@ The Fibonacci pattern appears when:
 - [ ] Min Cost Climbing Stairs
 - [ ] N-th Tribonacci Number
 - [ ] Delete and Earn
+- [ ] Jump Game
+- [ ] Jump Game II
+- [ ] Maximum Alternating Subsequence Sum
+- [ ] Unique Paths
+- [ ] Unique Binary Search Trees
+- [ ] Decode Ways
+- [ ] Coin Change
+- [ ] Domino and Tromino Tiling
+- [ ] Paint House

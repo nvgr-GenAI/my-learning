@@ -1,0 +1,1738 @@
+# Graph Algorithms - Hard Problems
+
+## 🎯 Learning Objectives
+
+Master advanced graph algorithms and complex optimization techniques:
+
+- Strongly connected components (Tarjan's, Kosaraju's)
+- Maximum flow algorithms (Ford-Fulkerson, Edmonds-Karp)
+- Advanced shortest path algorithms
+- Complex graph construction and manipulation
+- Optimization problems with multiple constraints
+
+## 📋 Problems Overview
+
+=== "Problem List"
+
+    | # | Problem | Pattern | Difficulty | Time | Space |
+    |---|---------|---------|------------|------|-------|
+    | 1 | Alien Dictionary | Topological Sort + Graph | Hard | O(C) | O(1) |
+    | 2 | Critical Connections | Tarjan's Bridge Finding | Hard | O(V+E) | O(V+E) |
+    | 3 | Reconstruct Itinerary | Eulerian Path (Hierholzer) | Hard | O(E log E) | O(E) |
+    | 4 | Min Cost Valid Path | Modified Dijkstra / 0-1 BFS | Hard | O(mn) | O(mn) |
+    | 5 | Swim in Rising Water | Binary Search + BFS/DFS | Hard | O(n² log n) | O(n²) |
+    | 6 | Bus Routes | Graph Modeling + BFS | Hard | O(N²M) | O(NM) |
+    | 7 | Word Ladder II | BFS + Backtracking | Hard | O(M²×N) | O(M²×N) |
+    | 8 | Cheapest Flights K Stops | Modified Dijkstra | Hard | O(E + V×K) | O(V×K) |
+    | 9 | Network Delay Time | Dijkstra's Shortest Path | Hard | O(E log V) | O(V+E) |
+    | 10 | Max Probability Path | Modified Dijkstra (Max) | Hard | O(E log V) | O(V+E) |
+    | 11 | Minimum Spanning Tree | Prim's Algorithm | Hard | O(E log V) | O(V+E) |
+    | 12 | Dijkstra Path Reconstruction | Dijkstra + Path Tracking | Hard | O(E log V) | O(V+E) |
+    | 13 | Maximum Flow | Ford-Fulkerson Algorithm | Hard | O(E × max_flow) | O(V²) |
+    | 14 | Strongly Connected Components | Tarjan's Algorithm | Hard | O(V+E) | O(V) |
+    | 15 | Minimum Cut | Stoer-Wagner Algorithm | Hard | O(V³) | O(V²) |
+
+=== "🎯 Advanced Patterns"
+
+    **🔗 Complex Graph Properties:**
+    - Strongly connected components analysis
+    - Bridge and articulation point detection
+    - Eulerian paths and circuits
+    
+    **🌊 Network Flow:**
+    - Maximum flow algorithms
+    - Minimum cut problems
+    - Bipartite matching applications
+    
+    **🎯 Advanced Search:**
+    - Modified Dijkstra for constraints
+    - 0-1 BFS for binary weights
+    - Binary search on graph properties
+    
+    **🧩 Graph Modeling:**
+    - Transform complex problems to graphs
+    - Multi-level graph representations
+    - Abstract graph constructions
+
+=== "📚 Study Plan"
+
+    **Week 1: Advanced Graph Theory (Problems 1-5)**
+    - Master topological sort and Tarjan's algorithms
+    - Practice complex graph construction
+    
+    **Week 2: Network Flow & Optimization (Problems 6-10)**
+    - Learn flow algorithms and path optimization
+    - Focus on multi-constraint problems
+    
+    **Week 3: Expert Level (Problems 11-15)**
+    - Advanced algorithms and complex modeling
+    - Competitive programming techniques
+
+---
+
+## Problem 1: Alien Dictionary
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: Topological Sort + Graph  
+    **Time**: O(C), **Space**: O(1)  
+
+    There is a new alien language that uses the English alphabet. However, the order among the letters is unknown to you. You are given a list of strings words from the alien language's dictionary, where the strings in words are sorted lexicographically by the rules of this new language.
+
+    **Example:**
+    ```text
+    Input: words = ["wrt","wrf","er","ett","rftt"]
+    Output: "wertf"
+    ```
+
+=== "Solution"
+    ```python
+    from collections import defaultdict, deque
+
+    def alienOrder(words):
+        """
+        Derive alien language character order from dictionary
+        Use topological sort on character dependency graph
+        
+        Time: O(C) where C is total content of words
+        Space: O(1) as max 26 characters
+        """
+        # Initialize in-degree for all characters
+        in_degree = {c: 0 for word in words for c in word}
+        graph = defaultdict(list)
+        
+        # Build graph from adjacent word pairs
+        for i in range(len(words) - 1):
+            word1, word2 = words[i], words[i + 1]
+            min_len = min(len(word1), len(word2))
+            
+            # Invalid case: longer word is prefix of shorter
+            if len(word1) > len(word2) and word1[:min_len] == word2[:min_len]:
+                return ""
+            
+            # Find first differing character
+            for j in range(min_len):
+                if word1[j] != word2[j]:
+                    if word2[j] not in graph[word1[j]]:
+                        graph[word1[j]].append(word2[j])
+                        in_degree[word2[j]] += 1
+                    break
+        
+        # Topological sort using Kahn's algorithm
+        queue = deque([c for c in in_degree if in_degree[c] == 0])
+        result = []
+        
+        while queue:
+            char = queue.popleft()
+            result.append(char)
+            
+            for neighbor in graph[char]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+        
+        # Check for cycle
+        return "".join(result) if len(result) == len(in_degree) else ""
+    ```
+
+=== "Alternative Approach"
+    **DFS-based Topological Sort:**
+    ```python
+    def alienOrder(words):
+        # Build adjacency list of character dependencies
+        graph = {c: set() for word in words for c in word}
+        
+        # Compare adjacent words to build graph
+        for i in range(len(words) - 1):
+            w1, w2 = words[i], words[i + 1]
+            min_len = min(len(w1), len(w2))
+            
+            # Check for invalid case (longer word is prefix)
+            if len(w1) > len(w2) and w1[:len(w2)] == w2:
+                return ""
+                
+            # Find first differing character
+            for j in range(min_len):
+                if w1[j] != w2[j]:
+                    graph[w1[j]].add(w2[j])
+                    break
+        
+        # DFS with cycle detection
+        # 0: not visited, 1: visiting, 2: visited
+        visited = {}
+        result = []
+        
+        def dfs(char):
+            if char in visited:
+                return visited[char] != 1  # Return False if in-progress (cycle)
+            
+            visited[char] = 1  # Mark as visiting
+            
+            # Visit all neighbors
+            for neighbor in graph[char]:
+                if not dfs(neighbor):
+                    return False
+            
+            visited[char] = 2  # Mark as visited
+            result.append(char)
+            return True
+        
+        # Run DFS on all characters
+        for char in graph:
+            if char not in visited:
+                if not dfs(char):
+                    return ""  # Cycle detected
+        
+        return "".join(reversed(result))  # Reverse for correct order
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Dictionary sorting rules → Character ordering constraints
+    - Letter precedence → Directed graph edges
+    - Need valid ordering → Topological sort
+    
+    **Common Mistakes:**
+    - Not handling the case where longer word is prefix of shorter
+    - Missing character dependencies by only checking word beginnings
+    - Not detecting cycles in the character graph
+    
+    **Interview Tips:**
+    - Explain clearly how you derive the character ordering rules
+    - Discuss how to detect invalid dictionaries
+    - Mention the optimal O(C) time complexity where C is total content
+
+---
+
+## Problem 2: Critical Connections
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: Tarjan's Bridge Finding  
+    **Time**: O(V+E), **Space**: O(V+E)  
+
+    There are n servers numbered from 0 to n - 1 connected by undirected server-to-server connections forming a network where connections[i] = [ai, bi] represents a connection between servers ai and bi. Any server can reach other servers directly or indirectly through the network. A critical connection is a connection that, if removed, will make some servers unable to reach some other servers.
+
+    **Example:**
+    ```text
+    Input: n = 4, connections = [[0,1],[1,2],[2,0],[1,3]]
+    Output: [[1,3]]
+    ```
+
+=== "Solution"
+    ```python
+    def criticalConnections(n, connections):
+        """
+        Find bridges using Tarjan's algorithm
+        Bridge: edge whose removal increases connected components
+        
+        Time: O(V+E) - single DFS traversal
+        Space: O(V+E) - graph and arrays
+        """
+        # Build adjacency list
+        graph = [[] for _ in range(n)]
+        for u, v in connections:
+            graph[u].append(v)
+            graph[v].append(u)
+        
+        discovery = [-1] * n  # Discovery time
+        low = [-1] * n        # Low-link value
+        parent = [-1] * n     # Parent in DFS tree
+        bridges = []
+        time = [0]
+        
+        def tarjan_dfs(u):
+            discovery[u] = low[u] = time[0]
+            time[0] += 1
+            
+            for v in graph[u]:
+                if discovery[v] == -1:  # Tree edge
+                    parent[v] = u
+                    tarjan_dfs(v)
+                    low[u] = min(low[u], low[v])
+                    
+                    # Bridge condition
+                    if low[v] > discovery[u]:
+                        bridges.append([u, v])
+                elif v != parent[u]:  # Back edge
+                    low[u] = min(low[u], discovery[v])
+        
+        for i in range(n):
+            if discovery[i] == -1:
+                tarjan_dfs(i)
+        
+        return bridges
+    ```
+
+=== "Alternative Approach"
+    **Iterative DFS Implementation:**
+    ```python
+    def criticalConnections(n, connections):
+        import collections
+        
+        # Build graph
+        graph = collections.defaultdict(list)
+        for u, v in connections:
+            graph[u].append(v)
+            graph[v].append(u)
+        
+        # Initialize arrays
+        discovery = [-1] * n
+        low_link = [-1] * n
+        time = 0
+        bridges = []
+        
+        # Iterative DFS using stack
+        stack = [(0, -1, 'start')]  # (node, parent, state)
+        while stack:
+            node, parent, state = stack.pop()
+            
+            if state == 'start':
+                if discovery[node] == -1:
+                    discovery[node] = low_link[node] = time
+                    time += 1
+                    
+                    # Add to process children later
+                    stack.append((node, parent, 'end'))
+                    
+                    for neighbor in graph[node]:
+                        if discovery[neighbor] == -1:  # Unvisited
+                            stack.append((neighbor, node, 'start'))
+                        elif neighbor != parent:  # Back edge
+                            low_link[node] = min(low_link[node], discovery[neighbor])
+            
+            else:  # 'end' state - update low links after children processed
+                for child in graph[node]:
+                    if parent != child and discovery[child] > discovery[node]:
+                        low_link[node] = min(low_link[node], low_link[child])
+                        if low_link[child] > discovery[node]:
+                            bridges.append([node, child])
+        
+        return bridges
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Network reliability → Bridge detection
+    - Need to identify critical connections → Use Tarjan's algorithm
+    - Single point of failure identification
+    
+    **Common Mistakes:**
+    - Confusing bridges with articulation points
+    - Not correctly handling back edges in the DFS
+    - Incorrect low-link value updates
+    
+    **Interview Tips:**
+    - Explain Tarjan's algorithm clearly with discovery/low values
+    - Draw the DFS spanning tree to illustrate bridge detection
+    - Mention real-world applications (network reliability, infrastructure planning)
+    - Discuss the O(V+E) efficiency compared to naïve O(E*(V+E)) approach
+
+---
+
+## Problem 3: Reconstruct Itinerary
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: Eulerian Path (Hierholzer)  
+    **Time**: O(E log E), **Space**: O(E)  
+
+    You are given a list of airline tickets where tickets[i] = [fromi, toi] represent the departure and the arrival airports of one ticket. Reconstruct the itinerary in order and return it. All of the tickets belong to a man who departs from "JFK", thus, the itinerary must begin with "JFK".
+
+    **Example:**
+    ```text
+    Input: tickets = [["MUC","LHR"],["JFK","MUC"],["SFO","SJC"],["LHR","SFO"]]
+    Output: ["JFK","MUC","LHR","SFO","SJC"]
+    ```
+
+=== "Solution"
+    ```python
+    from collections import defaultdict
+    import heapq
+
+    def findItinerary(tickets):
+        """
+        Find Eulerian path using Hierholzer's algorithm
+        Use heap for lexicographical ordering
+        
+        Time: O(E log E) - sorting edges
+        Space: O(E) - graph storage
+        """
+        # Build graph with min-heap for each departure
+        graph = defaultdict(list)
+        for src, dst in tickets:
+            heapq.heappush(graph[src], dst)
+        
+        def dfs(airport):
+            while graph[airport]:
+                next_airport = heapq.heappop(graph[airport])
+                dfs(next_airport)
+            path.append(airport)
+        
+        path = []
+        dfs("JFK")
+        return path[::-1]
+    ```
+
+=== "Alternative Approach"
+    **Iterative Approach:**
+    ```python
+    def findItinerary(tickets):
+        from collections import defaultdict
+        import heapq
+        
+        # Build graph with destinations in lexical order
+        graph = defaultdict(list)
+        for src, dst in tickets:
+            heapq.heappush(graph[src], dst)
+        
+        # Iterative solution with stack
+        route = []
+        stack = ["JFK"]
+        
+        while stack:
+            # Get current airport
+            curr = stack[-1]
+            
+            if graph[curr]:
+                # If has outgoing edges, take the lexically smallest one
+                next_dest = heapq.heappop(graph[curr])
+                stack.append(next_dest)
+            else:
+                # If no more outgoing edges, add to result
+                route.append(stack.pop())
+        
+        # Reverse to get correct order
+        return route[::-1]
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Complete flight path using all tickets → Eulerian path
+    - Need lexicographically smallest path → Use priority queue
+    - Post-order DFS creates path in reverse
+    
+    **Common Mistakes:**
+    - Not considering the lexicographical ordering requirement
+    - Incorrect handling of the path construction (should be reversed)
+    - Not detecting when the graph has no valid path
+    
+    **Interview Tips:**
+    - Explain Hierholzer's algorithm for Eulerian paths
+    - Discuss how the priority queue ensures lexicographically smallest path
+    - Mention the connection to graph theory concepts (Eulerian paths)
+    - Explain how to handle cases with multiple valid paths
+
+---
+
+## Problem 4: Min Cost Valid Path
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: Modified Dijkstra / 0-1 BFS  
+    **Time**: O(mn), **Space**: O(mn)  
+
+    Given a m x n grid where each cell has a sign pointing to the next cell you should visit if you are currently in this cell. The sign of grid[i][j] can be: 1 which means go to the cell to the right, 2 which means go to the cell to the left, 3 which means go to the cell below, 4 which means go to the cell above. Return the minimum cost to make the path from the top-left cell to the bottom-right cell valid.
+
+    **Example:**
+    ```text
+    Input: grid = [[1,1,1,1],[2,2,2,2],[1,1,1,1],[2,2,2,2]]
+    Output: 3
+    ```
+
+=== "Solution"
+    ```python
+    from collections import deque
+
+    def minCost(grid):
+        """
+        0-1 BFS for minimum cost path
+        Cost 0: follow existing direction, Cost 1: change direction
+        
+        Time: O(mn) - each cell processed once
+        Space: O(mn) - deque storage
+        """
+        m, n = len(grid), len(grid[0])
+        directions = {1: (0, 1), 2: (0, -1), 3: (1, 0), 4: (-1, 0)}
+        all_dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        
+        dq = deque([(0, 0, 0)])  # (row, col, cost)
+        visited = set()
+        
+        while dq:
+            r, c, cost = dq.popleft()
+            
+            if (r, c) in visited:
+                continue
+            visited.add((r, c))
+            
+            if r == m - 1 and c == n - 1:
+                return cost
+            
+            for dr, dc in all_dirs:
+                nr, nc = r + dr, c + dc
+                
+                if 0 <= nr < m and 0 <= nc < n and (nr, nc) not in visited:
+                    if directions[grid[r][c]] == (dr, dc):
+                        dq.appendleft((nr, nc, cost))  # Cost 0
+                    else:
+                        dq.append((nr, nc, cost + 1))  # Cost 1
+        
+        return -1
+    ```
+
+=== "Alternative Approach"
+    **Dijkstra's Algorithm:**
+    ```python
+    def minCost(grid):
+        import heapq
+        
+        m, n = len(grid), len(grid[0])
+        directions = {1: (0, 1), 2: (0, -1), 3: (1, 0), 4: (-1, 0)}
+        
+        # Initialize distance matrix
+        dist = [[float('inf')] * n for _ in range(m)]
+        dist[0][0] = 0
+        
+        # Priority queue for Dijkstra's (cost, row, col)
+        pq = [(0, 0, 0)]
+        
+        while pq:
+            cost, r, c = heapq.heappop(pq)
+            
+            if cost > dist[r][c]:
+                continue
+                
+            if r == m - 1 and c == n - 1:
+                return cost
+            
+            # Try all four directions
+            for i, (dr, dc) in enumerate([(0, 1), (0, -1), (1, 0), (-1, 0)], 1):
+                nr, nc = r + dr, c + dc
+                
+                if 0 <= nr < m and 0 <= nc < n:
+                    # Cost to change sign if needed
+                    new_cost = cost + (0 if grid[r][c] == i else 1)
+                    
+                    if new_cost < dist[nr][nc]:
+                        dist[nr][nc] = new_cost
+                        heapq.heappush(pq, (new_cost, nr, nc))
+        
+        return -1
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Binary edge weights (0 or 1) → Use 0-1 BFS
+    - Optimization problem → Consider Dijkstra's algorithm
+    - Grid traversal with costs → Graph search algorithms
+    
+    **Common Mistakes:**
+    - Using regular BFS which doesn't account for variable costs
+    - Not properly implementing 0-1 BFS with the deque strategy
+    - Incorrect handling of the direction mapping
+    
+    **Interview Tips:**
+    - Explain why 0-1 BFS is more efficient than Dijkstra for binary weights
+    - Discuss the deque technique (appendleft for cost 0, append for cost 1)
+    - Analyze time complexity benefits of 0-1 BFS (O(V+E) vs O(E log V) for Dijkstra)
+    - Mention applications of this algorithm pattern in networking (e.g., routing)
+
+---
+
+## Problem 5: Swim in Rising Water
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: Binary Search + BFS/DFS  
+    **Time**: O(n² log n), **Space**: O(n²)  
+
+    On an N x N grid, each square grid[i][j] represents the elevation at that point (i,j). Now rain starts to fall. At time t, the depth of the water everywhere is t. You can swim from a square to another 4-directionally adjacent square if and only if the elevation of both squares individually are at most t. You can swim infinite distance in zero time. Of course, you must stay within the boundaries of the grid during your swim.
+
+    **Example:**
+    ```text
+    Input: grid = [[0,2],[1,3]]
+    Output: 3
+    ```
+
+=== "Solution"
+    ```python
+    import heapq
+
+    def swimInWater(grid):
+        """
+        Dijkstra approach: minimize maximum elevation
+        
+        Time: O(n² log n) - priority queue operations
+        Space: O(n²) - heap and visited set
+        """
+        n = len(grid)
+        
+        # Dijkstra approach: minimize maximum elevation
+        heap = [(grid[0][0], 0, 0)]
+        visited = set()
+        
+        while heap:
+            max_elev, r, c = heapq.heappop(heap)
+            
+            if (r, c) in visited:
+                continue
+            visited.add((r, c))
+            
+            if r == n - 1 and c == n - 1:
+                return max_elev
+            
+            for dr, dc in [(0,1), (0,-1), (1,0), (-1,0)]:
+                nr, nc = r + dr, c + dc
+                
+                if 0 <= nr < n and 0 <= nc < n and (nr, nc) not in visited:
+                    new_max = max(max_elev, grid[nr][nc])
+                    heapq.heappush(heap, (new_max, nr, nc))
+        
+        return -1
+    ```
+
+=== "Alternative Approach"
+    **Binary Search + BFS:**
+    ```python
+    def swimInWater(grid):
+        """
+        Binary search on the minimum time needed
+        For each time, use BFS to check if destination is reachable
+        
+        Time: O(n² log n) - binary search with BFS validation
+        Space: O(n²) - BFS queue and visited array
+        """
+        n = len(grid)
+        
+        def canSwim(time):
+            if grid[0][0] > time:
+                return False
+            
+            visited = [[False] * n for _ in range(n)]
+            queue = [(0, 0)]
+            visited[0][0] = True
+            
+            while queue:
+                new_queue = []
+                for r, c in queue:
+                    if r == n-1 and c == n-1:
+                        return True
+                    
+                    for dr, dc in [(0,1), (0,-1), (1,0), (-1,0)]:
+                        nr, nc = r + dr, c + dc
+                        if (0 <= nr < n and 0 <= nc < n and 
+                            not visited[nr][nc] and grid[nr][nc] <= time):
+                            visited[nr][nc] = True
+                            new_queue.append((nr, nc))
+                queue = new_queue
+            
+            return False
+        
+        left, right = 0, n * n - 1
+        while left < right:
+            mid = (left + right) // 2
+            if canSwim(mid):
+                right = mid
+            else:
+                left = mid + 1
+        
+        return left
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Min-max problem → Modified Dijkstra
+    - Determining threshold value → Binary search
+    - Grid traversal with constraints → BFS/DFS validation
+    
+    **Common Mistakes:**
+    - Not recognizing the min-max path characteristic
+    - Implementing inefficient validation in binary search
+    - Incorrect handling of elevation/water level constraints
+    
+    **Interview Tips:**
+    - Compare Dijkstra vs binary search approaches for clarity
+    - Explain why we're finding the minimum of maximum values
+    - Discuss how to adapt this solution for different constraints
+    - Analyze the tradeoffs between different implementations
+    - Mention that this is a disguised form of the "bottleneck paths" problem
+
+---
+
+## Problem 6: Bus Routes
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: Graph Modeling + BFS  
+    **Time**: O(N²M), **Space**: O(NM)  
+
+    You are given an array routes representing bus routes where routes[i] is a bus route that the i-th bus repeats forever. For example, if routes[0] = [1, 5, 7], this means that the 0-th bus travels in the sequence 1 -> 5 -> 7 -> 1 -> 5 -> 7 -> ... forever.
+
+    You will start at bus stop source (not necessarily a stop on any line) and want to go to bus stop target. Return the least number of buses you must take to travel from source to target. Return -1 if it is not possible.
+
+    **Example:**
+    ```text
+    Input: routes = [[1,2,7],[3,6,7]], source = 1, target = 6
+    Output: 2
+    Explanation: Take the first bus to stop 7, then take the second bus to stop 6.
+    ```
+
+=== "Solution"
+    ```python
+    from collections import defaultdict, deque
+
+    def numBusesToDestination(routes, source, target):
+        """
+        BFS on graph of buses where edges connect buses with common stops
+        
+        Time: O(N²M) where N = number of routes, M = max stops per route
+        Space: O(N²) for the bus graph
+        """
+        if source == target:
+            return 0
+            
+        # Map each stop to the buses that go through it
+        stop_to_buses = defaultdict(set)
+        for bus, stops in enumerate(routes):
+            for stop in stops:
+                stop_to_buses[stop].add(bus)
+        
+        # Start BFS from source
+        queue = deque([(bus, 1) for bus in stop_to_buses[source]])
+        visited_buses = set(stop_to_buses[source])
+        
+        while queue:
+            bus, count = queue.popleft()
+            
+            # Check all stops this bus visits
+            for stop in routes[bus]:
+                if stop == target:
+                    return count
+                
+                # Try all buses at this stop that we haven't taken
+                for next_bus in stop_to_buses[stop]:
+                    if next_bus not in visited_buses:
+                        visited_buses.add(next_bus)
+                        queue.append((next_bus, count + 1))
+        
+        return -1
+    ```
+
+=== "Alternative Approach"
+    **Stop-based BFS:**
+    ```python
+    def numBusesToDestination(routes, source, target):
+        from collections import defaultdict, deque
+        
+        if source == target:
+            return 0
+            
+        # Create stop-to-bus mapping
+        stop_to_routes = defaultdict(list)
+        for i, route in enumerate(routes):
+            for stop in route:
+                stop_to_routes[stop].append(i)
+        
+        # Convert routes to sets for O(1) lookup
+        routes = [set(r) for r in routes]
+        
+        # BFS from source to target
+        queue = deque([(source, 0)])  # (stop, bus_count)
+        visited_stops = {source}
+        visited_routes = set()
+        
+        while queue:
+            stop, bus_count = queue.popleft()
+            
+            # Try all buses from this stop
+            for route_idx in stop_to_routes[stop]:
+                if route_idx in visited_routes:
+                    continue
+                    
+                visited_routes.add(route_idx)
+                
+                # Try all stops on this route
+                for next_stop in routes[route_idx]:
+                    if next_stop == target:
+                        return bus_count + 1
+                    
+                    if next_stop not in visited_stops:
+                        visited_stops.add(next_stop)
+                        queue.append((next_stop, bus_count + 1))
+        
+        return -1
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Transport network → Graph modeling problem
+    - Multiple connections → Multi-level BFS
+    - Optimization for least transfers → Breadth-first approach
+    
+    **Common Mistakes:**
+    - Confusing stops and buses in the traversal
+    - Inefficient checking of common stops
+    - Not handling the case where source = target
+    
+    **Interview Tips:**
+    - Discuss different graph representations (bus-to-bus vs. stop-based)
+    - Explain the time complexity analysis clearly
+    - Mention real-world applications (public transportation routing)
+
+---
+
+## Problem 7: Word Ladder II
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: BFS + Backtracking  
+    **Time**: O(M²×N), **Space**: O(M²×N)  
+
+    Given two words, beginWord and endWord, and a dictionary wordList, return all the shortest transformation sequences from beginWord to endWord. Each sequence should be returned as a list of the words.
+
+    A transformation sequence from word1 to word2 is a sequence of words word1 → s1 → s2 → ... → sk such that:
+    - Every adjacent pair of words differs by a single letter.
+    - Every si for 1 <= i <= k is in wordList.
+    - Note that beginWord does not need to be in wordList.
+    - sk == endWord
+
+    **Example:**
+    ```text
+    Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+    Output: [["hit","hot","dot","dog","cog"],["hit","hot","lot","log","cog"]]
+    ```
+
+=== "Solution"
+    ```python
+    from collections import defaultdict, deque
+
+    def findLadders(beginWord, endWord, wordList):
+        """
+        Two-phase approach:
+        1. BFS to find shortest distance and build graph
+        2. DFS to build paths from graph
+        
+        Time: O(M²×N) where M = word length, N = number of words
+        Space: O(M²×N) for graph and queue storage
+        """
+        # Create word set for O(1) lookup
+        word_set = set(wordList)
+        if endWord not in word_set:
+            return []
+        
+        # Build graph level by level with BFS
+        graph = defaultdict(list)
+        level = {beginWord: 0}
+        queue = deque([beginWord])
+        found = False
+        
+        while queue and not found:
+            word = queue.popleft()
+            curr_level = level[word]
+            
+            # Try all possible one-letter changes
+            for i in range(len(word)):
+                for c in "abcdefghijklmnopqrstuvwxyz":
+                    next_word = word[:i] + c + word[i+1:]
+                    
+                    if next_word == endWord:
+                        found = True
+                    
+                    if next_word in word_set and next_word not in level:
+                        level[next_word] = curr_level + 1
+                        queue.append(next_word)
+                        graph[word].append(next_word)
+                    elif next_word in level and level[next_word] == curr_level + 1:
+                        # Add words at same level for multiple paths
+                        graph[word].append(next_word)
+        
+        # DFS to build all shortest paths
+        results = []
+        
+        def dfs(word, path):
+            if word == endWord:
+                results.append(list(path))
+                return
+            
+            for next_word in graph[word]:
+                path.append(next_word)
+                dfs(next_word, path)
+                path.pop()
+        
+        dfs(beginWord, [beginWord])
+        return results
+    ```
+
+=== "Alternative Approach"
+    **Bidirectional BFS:**
+    ```python
+    def findLadders(beginWord, endWord, wordList):
+        from collections import defaultdict, deque
+        
+        wordSet = set(wordList)
+        if endWord not in wordSet:
+            return []
+        
+        # Add beginWord to the set
+        wordSet.add(beginWord)
+        
+        # Map words to their distance from beginWord
+        distance = {beginWord: 0}
+        
+        # Map words to all words that can lead to them
+        neighbors = defaultdict(list)
+        
+        # BFS to build distance map and neighbors
+        queue = deque([beginWord])
+        while queue:
+            word = queue.popleft()
+            
+            # Try all possible one-letter changes
+            for i in range(len(word)):
+                for c in 'abcdefghijklmnopqrstuvwxyz':
+                    next_word = word[:i] + c + word[i+1:]
+                    
+                    if next_word in wordSet:
+                        if next_word not in distance:
+                            distance[next_word] = distance[word] + 1
+                            queue.append(next_word)
+                        
+                        # Only add neighbors if they are at the next level
+                        if distance[next_word] == distance[word] + 1:
+                            neighbors[next_word].append(word)
+        
+        # DFS to find all shortest paths
+        result = []
+        
+        def dfs(word, path):
+            if word == beginWord:
+                result.append(path[::-1])
+                return
+            
+            for prev in neighbors[word]:
+                dfs(prev, path + [prev])
+        
+        # Start DFS from endWord if it's reachable
+        if endWord in distance:
+            dfs(endWord, [endWord])
+        
+        return result
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Word transformation → Graph with edges for one-letter differences
+    - All shortest paths → BFS + backtracking
+    - Multiple valid solutions → Graph construction then path finding
+    
+    **Common Mistakes:**
+    - Using naive approach that times out for large inputs
+    - Not handling multiple paths correctly
+    - Inefficient word difference checking
+    
+    **Interview Tips:**
+    - Explain the two-phase approach (BFS then DFS)
+    - Discuss optimizations for word transformation checking
+    - Analyze the time complexity based on word length and dictionary size
+    - Mention possible bidirectional BFS optimization
+
+---
+
+## Problem 8: Cheapest Flights K Stops
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: Modified Dijkstra  
+    **Time**: O(E + V×K), **Space**: O(V×K)  
+
+    There are n cities connected by some number of flights. You are given an array flights where flights[i] = [fromi, toi, pricei] indicates that there is a flight from city fromi to city toi with cost pricei.
+
+    You are also given three integers src, dst, and k, return the cheapest price from src to dst with at most k stops. If there is no such route, return -1.
+
+    **Example:**
+    ```text
+    Input: n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 1
+    Output: 200
+    Explanation: The optimal path is 0 -> 1 -> 2 with cost 100 + 100 = 200.
+    ```
+
+=== "Solution"
+    ```python
+    def findCheapestPrice(n, flights, src, dst, k):
+        """
+        Modified BFS with level tracking for stop constraints
+        
+        Time: O(E + V×K) - process each edge once per level
+        Space: O(V×K) - store costs for each node per level
+        """
+        # Initialize prices
+        prices = [float('inf')] * n
+        prices[src] = 0
+        
+        # Process K+1 iterations (K stops means K+1 flights)
+        for i in range(k + 1):
+            # Create a copy to avoid using updated values within same iteration
+            temp_prices = prices.copy()
+            
+            for from_city, to_city, price in flights:
+                # Only update if path to from_city is valid
+                if prices[from_city] != float('inf'):
+                    # Update if cheaper path found
+                    temp_prices[to_city] = min(temp_prices[to_city], 
+                                           prices[from_city] + price)
+            
+            # Update prices for next iteration
+            prices = temp_prices
+        
+        return prices[dst] if prices[dst] != float('inf') else -1
+    ```
+
+=== "Alternative Approach"
+    **Dijkstra with Stop Constraints:**
+    ```python
+    def findCheapestPrice(n, flights, src, dst, k):
+        import heapq
+        
+        # Build adjacency list
+        graph = [[] for _ in range(n)]
+        for u, v, w in flights:
+            graph[u].append((v, w))
+        
+        # Priority queue: (price, city, stops)
+        pq = [(0, src, 0)]
+        
+        # Visited dictionary tracks (node, stops)
+        visited = {}
+        
+        while pq:
+            price, city, stops = heapq.heappop(pq)
+            
+            # If reached destination, return price
+            if city == dst:
+                return price
+                
+            # If exceeded stops or already found better path, skip
+            if stops > k or (city, stops) in visited and visited[(city, stops)] <= price:
+                continue
+                
+            # Mark as visited
+            visited[(city, stops)] = price
+            
+            # Try all neighbors
+            for neighbor, cost in graph[city]:
+                heapq.heappush(pq, (price + cost, neighbor, stops + 1))
+        
+        return -1
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Path with constraints → Modified Dijkstra/BFS
+    - Limited stops → Level-by-level processing
+    - Multiple paths → Dynamic programming approach
+    
+    **Common Mistakes:**
+    - Using standard Dijkstra without considering stop constraints
+    - Not handling price updates correctly within iterations
+    - Inefficient handling of the stop constraint
+    
+    **Interview Tips:**
+    - Compare Bellman-Ford-like approach vs. modified Dijkstra
+    - Explain the importance of copying prices to avoid interference
+    - Discuss time complexity in relation to the number of stops
+    - Mention real-world applications in flight routing systems
+
+---
+
+## Problem 9: Network Delay Time
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: Dijkstra's Shortest Path  
+    **Time**: O(E log V), **Space**: O(V+E)  
+
+    You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node, vi is the target node, and wi is the time it takes for a signal to travel from source to target.
+
+    We will send a signal from a given node k. Return the minimum time it takes for all the n nodes to receive the signal. If it is impossible for all the n nodes to receive the signal, return -1.
+
+    **Example:**
+    ```text
+    Input: times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2
+    Output: 2
+    ```
+
+=== "Solution"
+    ```python
+    import heapq
+
+    def networkDelayTime(times, n, k):
+        """
+        Dijkstra's algorithm to find shortest paths from source
+        Return max time as that's when all nodes receive signal
+        
+        Time: O(E log V) - Dijkstra with priority queue
+        Space: O(V+E) - graph and distance array
+        """
+        # Build adjacency list
+        graph = [[] for _ in range(n + 1)]
+        for u, v, w in times:
+            graph[u].append((v, w))
+        
+        # Distance array
+        dist = [float('inf')] * (n + 1)
+        dist[k] = 0
+        
+        # Priority queue for Dijkstra
+        pq = [(0, k)]  # (time, node)
+        
+        while pq:
+            time, node = heapq.heappop(pq)
+            
+            # Skip if we already found better path
+            if time > dist[node]:
+                continue
+            
+            # Process neighbors
+            for neighbor, travel_time in graph[node]:
+                if dist[neighbor] > time + travel_time:
+                    dist[neighbor] = time + travel_time
+                    heapq.heappush(pq, (dist[neighbor], neighbor))
+        
+        # Find max time excluding the 0-th dummy node
+        max_time = max(dist[1:])
+        return max_time if max_time < float('inf') else -1
+    ```
+
+=== "Alternative Approach"
+    **Bellman-Ford Algorithm:**
+    ```python
+    def networkDelayTime(times, n, k):
+        # Initialize distances
+        dist = [float('inf')] * (n + 1)
+        dist[k] = 0
+        
+        # Relax all edges n-1 times
+        for _ in range(n - 1):
+            updated = False
+            for u, v, w in times:
+                if dist[u] != float('inf') and dist[v] > dist[u] + w:
+                    dist[v] = dist[u] + w
+                    updated = True
+            
+            # Early termination if no updates
+            if not updated:
+                break
+        
+        # Find maximum time excluding the 0-th dummy node
+        max_time = max(dist[1:])
+        return max_time if max_time < float('inf') else -1
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Single source shortest path → Dijkstra's algorithm
+    - Need time for all nodes → Max of shortest paths
+    - Directed weighted graph → Consider alternatives (Bellman-Ford)
+    
+    **Common Mistakes:**
+    - Not handling disconnected components
+    - Forgetting to skip the 0-th index when finding max
+    - Inefficient priority queue operations
+    
+    **Interview Tips:**
+    - Compare Dijkstra vs. Bellman-Ford for this problem
+    - Discuss how to optimize Dijkstra with different data structures
+    - Explain the importance of checking if all nodes are reachable
+    - Relate to real-world network latency applications
+
+---
+
+## Problem 10: Max Probability Path
+
+=== "Problem Statement"
+    **Difficulty**: 🔴 Hard  
+    **Pattern**: Modified Dijkstra (Max)  
+    **Time**: O(E log V), **Space**: O(V+E)  
+
+    You are given an undirected weighted graph of n nodes (0-indexed), represented by an edge list where edges[i] = [a, b] is an undirected edge connecting nodes a and b with a probability of success of traversing that edge succProb[i].
+
+    Given two nodes start and end, find the path with the maximum probability of success to go from start to end and return its success probability. If there is no path, return 0.
+
+    **Example:**
+    ```text
+    Input: n = 3, edges = [[0,1],[1,2],[0,2]], succProb = [0.5,0.5,0.2], start = 0, end = 2
+    Output: 0.25
+    Explanation: There are two paths from start to end: 0 -> 1 -> 2 and 0 -> 2.
+    The first path has probability 0.5 * 0.5 = 0.25.
+    The second path has probability 0.2.
+    So we choose the first path.
+    ```
+
+=== "Solution"
+    ```python
+    import heapq
+
+    def maxProbability(n, edges, succProb, start, end):
+        """
+        Modified Dijkstra for maximum probability path
+        Use negative probabilities for max-heap behavior
+        
+        Time: O(E log V) - Dijkstra with priority queue
+        Space: O(V+E) - graph and probability array
+        """
+        # Build adjacency list
+        graph = [[] for _ in range(n)]
+        for i, (u, v) in enumerate(edges):
+            graph[u].append((v, succProb[i]))
+            graph[v].append((u, succProb[i]))  # Undirected
+        
+        # Initialize probabilities
+        probs = [0.0] * n
+        probs[start] = 1.0
+        
+        # Priority queue for modified Dijkstra (negative for max-heap)
+        pq = [(-1.0, start)]  # (-probability, node)
+        
+        while pq:
+            prob, node = heapq.heappop(pq)
+            prob = -prob  # Convert back to positive
+            
+            # Reached end
+            if node == end:
+                return prob
+            
+            # Skip if we found better path
+            if prob < probs[node]:
+                continue
+            
+            # Process neighbors
+            for neighbor, edge_prob in graph[node]:
+                new_prob = prob * edge_prob
+                
+                if new_prob > probs[neighbor]:
+                    probs[neighbor] = new_prob
+                    heapq.heappush(pq, (-new_prob, neighbor))
+        
+        # No path found
+        return 0.0
+    ```
+
+=== "Alternative Approach"
+    **BFS with Relaxation:**
+    ```python
+    def maxProbability(n, edges, succProb, start, end):
+        from collections import deque
+        
+        # Build graph
+        graph = [[] for _ in range(n)]
+        for i, (u, v) in enumerate(edges):
+            graph[u].append((v, succProb[i]))
+            graph[v].append((u, succProb[i]))
+        
+        # Initialize probabilities
+        probs = [0.0] * n
+        probs[start] = 1.0
+        
+        # BFS queue
+        queue = deque([start])
+        visited = set()
+        
+        while queue:
+            node = queue.popleft()
+            
+            # Skip if already processed with higher probability
+            if node in visited:
+                continue
+            visited.add(node)
+            
+            # Process neighbors
+            for neighbor, prob in graph[node]:
+                new_prob = probs[node] * prob
+                
+                # Only update and enqueue if probability increases
+                if new_prob > probs[neighbor]:
+                    probs[neighbor] = new_prob
+                    queue.append(neighbor)
+        
+        return probs[end]
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    - Maximum path value → Modified Dijkstra
+    - Probability multiplication → Logarithm transformation option
+    - Undirected weighted graph → Consider BFS variants
+    
+    **Common Mistakes:**
+    - Using min-heap instead of max-heap for probabilities
+    - Not handling multiplication of probabilities correctly
+    - Inefficient priority queue operations
+    
+    **Interview Tips:**
+    - Explain how to adapt Dijkstra for maximization problems
+    - Discuss the trick of using negative values with a min-heap
+    - Consider logarithm transformation to convert multiplication to addition
+    - Mention real-world applications in network reliability
+
+## Problem 11: Minimum Spanning Tree
+
+!!! note "Content Development"
+    This problem section is under development. The problem is based on Prim's algorithm for finding the minimum spanning tree of a graph.
+
+=== "Problem Statement"
+    **Problem:**
+    
+    Given an undirected weighted graph, find a minimum spanning tree that connects all vertices together with the minimum possible total edge weight.
+    
+    **Constraints:**
+    
+    - The graph is connected
+    - Edge weights are positive
+    - Number of vertices: 1 <= V <= 10,000
+    - Number of edges: 1 <= E <= 100,000
+
+=== "Solution"
+    **Approach: Prim's Algorithm**
+    
+    ```python
+    # Placeholder for Prim's algorithm implementation
+    import heapq
+    
+    def minimum_spanning_tree(graph, n):
+        """
+        Prim's algorithm for minimum spanning tree
+        graph: adjacency list with weights
+        n: number of vertices
+        """
+        # Start from vertex 0
+        visited = [False] * n
+        min_heap = [(0, 0)]  # (weight, vertex)
+        total_weight = 0
+        
+        while min_heap and not all(visited):
+            weight, vertex = heapq.heappop(min_heap)
+            
+            if visited[vertex]:
+                continue
+                
+            visited[vertex] = True
+            total_weight += weight
+            
+            # Add all edges from current vertex
+            for next_vertex, edge_weight in graph[vertex]:
+                if not visited[next_vertex]:
+                    heapq.heappush(min_heap, (edge_weight, next_vertex))
+        
+        return total_weight
+    ```
+
+=== "Alternative Approach"
+    **Kruskal's Algorithm:**
+    
+    An alternative approach is to use Kruskal's algorithm, which works by sorting edges and adding them to the spanning tree if they don't create a cycle:
+    
+    ```python
+    # Placeholder for Kruskal's algorithm implementation
+    def find(parent, i):
+        if parent[i] != i:
+            parent[i] = find(parent, parent[i])
+        return parent[i]
+        
+    def union(parent, rank, x, y):
+        root_x = find(parent, x)
+        root_y = find(parent, y)
+        
+        if root_x != root_y:
+            if rank[root_x] < rank[root_y]:
+                parent[root_x] = root_y
+            elif rank[root_x] > rank[root_y]:
+                parent[root_y] = root_x
+            else:
+                parent[root_y] = root_x
+                rank[root_x] += 1
+    
+    def kruskal_mst(graph, vertices, edges):
+        # Implementation details would go here
+        pass
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    
+    - Spanning tree problems often appear in network design
+    - Prim's works well for dense graphs
+    - Kruskal's works better for sparse graphs
+    
+    **Common Mistakes:**
+    
+    - Not handling disconnected components
+    - Incorrect implementation of priority queue operations
+    - Not checking for cycles in Kruskal's algorithm
+    
+    **Interview Tips:**
+    
+    - Explain differences between Prim's and Kruskal's algorithms
+    - Discuss time complexity analysis of both approaches
+    - Mention applications in network design and clustering
+
+## Problem 12: Dijkstra Path Reconstruction
+
+!!! note "Content Development"
+    This problem section is under development. The problem involves reconstructing the shortest path using Dijkstra's algorithm.
+
+=== "Problem Statement"
+    **Problem:**
+    
+    Given a weighted directed graph and two vertices, find the shortest path from the source vertex to the destination vertex.
+    
+    **Constraints:**
+    
+    - Graph weights are non-negative
+    - Number of vertices: 1 <= V <= 10,000
+    - Number of edges: 1 <= E <= 100,000
+
+=== "Solution"
+    **Approach: Dijkstra with Path Tracking**
+    
+    ```python
+    # Placeholder for Dijkstra's algorithm with path tracking
+    import heapq
+    
+    def dijkstra_path(graph, start, end):
+        """
+        Find shortest path using Dijkstra's algorithm
+        graph: adjacency list with weights
+        start: source vertex
+        end: destination vertex
+        """
+        distances = {vertex: float('infinity') for vertex in graph}
+        distances[start] = 0
+        priority_queue = [(0, start)]
+        previous = {vertex: None for vertex in graph}
+        
+        while priority_queue:
+            current_distance, current_vertex = heapq.heappop(priority_queue)
+            
+            if current_distance > distances[current_vertex]:
+                continue
+                
+            if current_vertex == end:
+                break
+                
+            for neighbor, weight in graph[current_vertex]:
+                distance = current_distance + weight
+                
+                if distance < distances[neighbor]:
+                    distances[neighbor] = distance
+                    previous[neighbor] = current_vertex
+                    heapq.heappush(priority_queue, (distance, neighbor))
+        
+        # Reconstruct path
+        path = []
+        current = end
+        while current:
+            path.append(current)
+            current = previous[current]
+            
+        return path[::-1]  # Reverse path to get from start to end
+    ```
+
+=== "Alternative Approach"
+    **A* Algorithm:**
+    
+    For path finding with a heuristic:
+    
+    ```python
+    # Placeholder for A* algorithm implementation
+    def a_star_search(graph, start, goal, heuristic):
+        """
+        A* Search Algorithm with a heuristic function
+        """
+        # Implementation details would go here
+        pass
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    
+    - Path reconstruction requires tracking predecessors
+    - Consider bidirectional search for faster results
+    - Use A* when a good heuristic is available
+    
+    **Common Mistakes:**
+    
+    - Forgetting to track the path during the algorithm
+    - Not handling unreachable destinations
+    - Inefficient priority queue operations
+    
+    **Interview Tips:**
+    
+    - Explain how to reconstruct paths from predecessor information
+    - Discuss time and space complexity of different approaches
+    - Mention real-world applications in navigation systems
+
+## Problem 13: Maximum Flow
+
+!!! note "Content Development"
+    This problem section is under development. The problem involves calculating maximum flow in a network using Ford-Fulkerson algorithm.
+
+=== "Problem Statement"
+    **Problem:**
+    
+    Given a directed graph representing a flow network with a source node s and a sink node t, calculate the maximum flow from s to t.
+    
+    **Constraints:**
+    
+    - Edge capacities are positive integers
+    - Number of vertices: 1 <= V <= 1,000
+    - Number of edges: 1 <= E <= 10,000
+
+=== "Solution"
+    **Approach: Ford-Fulkerson Algorithm**
+    
+    ```python
+    # Placeholder for Ford-Fulkerson implementation
+    def ford_fulkerson(graph, source, sink):
+        """
+        Ford-Fulkerson algorithm for maximum flow
+        graph: adjacency list with capacities
+        source: source vertex
+        sink: sink vertex
+        """
+        def dfs(u, flow):
+            if u == sink:
+                return flow
+                
+            for v in range(len(graph)):
+                if residual_capacity[u][v] > 0 and visited[v] == False:
+                    visited[v] = True
+                    temp_flow = dfs(v, min(flow, residual_capacity[u][v]))
+                    
+                    if temp_flow > 0:
+                        residual_capacity[u][v] -= temp_flow
+                        residual_capacity[v][u] += temp_flow
+                        return temp_flow
+            
+            return 0
+        
+        # Initialize residual capacity matrix
+        residual_capacity = [row[:] for row in graph]
+        max_flow = 0
+        
+        while True:
+            visited = [False] * len(graph)
+            visited[source] = True
+            path_flow = dfs(source, float('infinity'))
+            
+            if path_flow == 0:
+                break
+                
+            max_flow += path_flow
+            
+        return max_flow
+    ```
+
+=== "Alternative Approach"
+    **Edmonds-Karp Algorithm:**
+    
+    Uses BFS instead of DFS to find augmenting paths:
+    
+    ```python
+    # Placeholder for Edmonds-Karp implementation
+    from collections import deque
+    
+    def edmonds_karp(graph, source, sink):
+        """
+        Edmonds-Karp algorithm for maximum flow (uses BFS)
+        """
+        # Implementation details would go here
+        pass
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    
+    - Network flow problems often model resource allocation
+    - Edmonds-Karp guarantees O(VE²) time complexity
+    - Augmenting path algorithms find incremental improvements
+    
+    **Common Mistakes:**
+    
+    - Not updating residual capacities correctly
+    - Forgetting to create reverse edges for residual graph
+    - Inefficient augmenting path finding
+    
+    **Interview Tips:**
+    
+    - Explain the concept of residual networks and augmenting paths
+    - Discuss applications in bipartite matching and network design
+    - Mention the min-cut max-flow theorem
+
+## Problem 14: Strongly Connected Components
+
+!!! note "Content Development"
+    This problem section is under development. The problem focuses on finding strongly connected components using Tarjan's algorithm.
+
+=== "Problem Statement"
+    **Problem:**
+    
+    Given a directed graph, find all strongly connected components (SCCs) in the graph.
+    
+    A strongly connected component is a subgraph where every vertex is reachable from every other vertex in the subgraph.
+    
+    **Constraints:**
+    
+    - Number of vertices: 1 <= V <= 10,000
+    - Number of edges: 1 <= E <= 100,000
+
+=== "Solution"
+    **Approach: Tarjan's Algorithm**
+    
+    ```python
+    # Placeholder for Tarjan's algorithm implementation
+    def tarjan_scc(graph):
+        """
+        Tarjan's algorithm for strongly connected components
+        graph: adjacency list
+        """
+        n = len(graph)
+        disc = [-1] * n  # Discovery time
+        low = [-1] * n   # Earliest visited vertex reachable
+        stack_member = [False] * n
+        stack = []
+        scc_list = []
+        time = 0
+        
+        def dfs(u):
+            nonlocal time
+            disc[u] = low[u] = time
+            time += 1
+            stack.append(u)
+            stack_member[u] = True
+            
+            for v in graph[u]:
+                if disc[v] == -1:  # If v is not visited
+                    dfs(v)
+                    low[u] = min(low[u], low[v])
+                elif stack_member[v]:  # If v is in stack
+                    low[u] = min(low[u], disc[v])
+            
+            # If u is root of SCC
+            if low[u] == disc[u]:
+                component = []
+                w = -1
+                while w != u:
+                    w = stack.pop()
+                    stack_member[w] = False
+                    component.append(w)
+                scc_list.append(component)
+        
+        for i in range(n):
+            if disc[i] == -1:
+                dfs(i)
+                
+        return scc_list
+    ```
+
+=== "Alternative Approach"
+    **Kosaraju's Algorithm:**
+    
+    An alternative two-pass algorithm for finding SCCs:
+    
+    ```python
+    # Placeholder for Kosaraju's algorithm implementation
+    from collections import defaultdict
+    
+    def kosaraju_scc(graph):
+        """
+        Kosaraju's two-pass algorithm for SCCs
+        """
+        # Implementation details would go here
+        pass
+    ```
+
+=== "Tips & Insights"
+    **Pattern Recognition:**
+    
+    - SCCs represent groups of vertices that can reach each other
+    - Applications in compiler optimization and social network analysis
+    - Can be used for cycle detection in directed graphs
+    
+    **Common Mistakes:**
+    
+    - Confusing strongly connected with weakly connected components
+    - Incorrect handling of stack during algorithm execution
+    - Inefficient tracking of discovery and low-link values
+    
+    **Interview Tips:**
+    
+    - Explain the intuition behind using low-link values in Tarjan's algorithm
+    - Compare Tarjan's and Kosaraju's approaches
+    - Discuss applications in dependency resolution and graph reduction
+
+## 📊 Advanced Techniques
+
+=== "Algorithm Design"
+    **🔧 Core Principles:**
+    - **Tarjan's Algorithm**: Use DFS with discovery times and low-link values
+    - **Hierholzer's Algorithm**: Find Eulerian paths through edge removal
+    - **0-1 BFS**: Use deque for graphs with binary edge weights
+    - **Network Flow**: Model capacity constraints and flow conservation
+    - **Graph Modeling**: Abstract complex problems into graph representations
+    
+    **⚡ Optimization Strategies:**
+    - **Binary Search on Graphs**: Search answer space with graph validation
+    - **Modified Dijkstra**: Adapt for different optimization criteria
+    - **Multi-level BFS**: Process layers with different objectives
+    - **Path Reconstruction**: Track parent pointers during search
+    - **State Space Reduction**: Use appropriate data structures and pruning
+
+=== "Pattern Recognition"
+    **Key Patterns to Recognize:**
+    - **Bridge/Articulation**: Look for critical graph components
+    - **Eulerian Paths**: Check degree conditions and connectivity
+    - **Flow Networks**: Identify source, sink, and capacity constraints
+    - **Graph Construction**: Build graphs from problem constraints
+    - **Multi-dimensional**: Use additional state dimensions for complex problems
+
+=== "Expert Tips"
+    **💡 Problem-Solving Strategy:**
+    1. **Identify Graph Structure**: What are nodes and edges?
+    2. **Choose Algorithm**: Match problem type to known algorithms
+    3. **Handle Edge Cases**: Empty graphs, disconnected components
+    4. **Optimize Implementation**: Use appropriate data structures
+    5. **Verify Correctness**: Test with various graph configurations
+    
+    **🔍 Common Challenges:**
+    - **Complexity Management**: Keep track of multiple algorithm components
+    - **State Representation**: Design efficient state encoding
+    - **Memory Optimization**: Balance time vs space trade-offs
+    - **Numerical Stability**: Handle large numbers in flow algorithms
+    
+    **🏆 Advanced Applications:**
+    - **Compiler Design**: Dependency analysis and optimization
+    - **Network Analysis**: Critical infrastructure identification
+    - **Game Development**: Pathfinding and AI decision trees
+    - **Distributed Systems**: Load balancing and fault tolerance
+    - **Operations Research**: Supply chain and logistics optimization
+
+## 📝 Summary
+
+These hard graph problems demonstrate:
+
+- **Advanced Graph Theory** with sophisticated algorithms
+- **Network Flow** for optimization and matching problems
+- **Complex Modeling** to transform real-world problems
+- **Algorithmic Engineering** for performance optimization
+- **Theoretical Foundations** for problem-solving approaches
+
+These techniques are essential for:
+
+- **System Architecture** requiring graph-based solutions
+- **Research and Development** in algorithms and optimization
+- **Competitive Programming** at the highest levels
+- **Industry Leadership** in technical problem solving
+- **Academic Research** in graph theory and algorithms
+
+Master these patterns to tackle the most challenging graph problems in computer science and become an expert in graph algorithms!
