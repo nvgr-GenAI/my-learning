@@ -241,14 +241,19 @@ nav:
         - system-design/performance/index.md
     - Interview Prep:
       - system-design/interviews/index.md
+      - The Framework: system-design/interviews/framework.md
+      - Practice Problems: system-design/interviews/practice-problems.md
+      - Communication Tips: system-design/interviews/communication.md
+      - Calculations Guide: system-design/interviews/calculations.md
+      - Common Mistakes: system-design/interviews/common-mistakes.md
     - Case Studies:
       - system-design/case-studies/index.md
       - Video Streaming Platform: system-design/case-studies/video-streaming-platform/index.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:
-      - Overview: algorithms/fundamentals/index.md
       - Time Complexity: algorithms/fundamentals/time-complexity.md
+      - Advanced Complexity Analysis: algorithms/fundamentals/complexity-analysis-advanced.md
       - Learning Paths: algorithms/fundamentals/learning-paths.md
       - Problem-Solving Patterns: algorithms/fundamentals/problem-solving-patterns.md
       - Interview Strategy: algorithms/fundamentals/interview-strategy.md

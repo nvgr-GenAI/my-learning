@@ -1,246 +1,208 @@
-# 📘 System Design & Architecture
+# System Design & Architecture
 
-Welcome to the System Design Mastery Guide — your comprehensive journey from understanding basic concepts to architecting systems that serve millions of users worldwide.
-
-## 🌟 The Story of System Design
-
-Imagine you've built a simple web app that your friends love. It runs perfectly on your laptop, handles a few dozen users, and everything seems great. But then something amazing happens — your app goes viral. Suddenly, you have thousands, then millions of users trying to access it simultaneously.
-
-Your single server crashes. Your database can't handle the load. Users are getting errors, and your dream is turning into a nightmare. **This is where system design begins.**
-
-System design is the art and science of building software systems that can grow, adapt, and remain reliable as they scale from serving dozens to millions of users. It's about making intelligent trade-offs, anticipating problems, and designing solutions that work not just today, but years into the future.
-
-## 🧠 What Exactly is System Design?
-
-System design is the process of defining how different components of a software system work together to meet specific requirements. It's like being an architect for the digital world — you need to plan how all the pieces fit together before you start building.
-
-### The Questions System Design Answers
-
-- **How do you design Instagram's news feed** that loads instantly for 2 billion users?
-- **How does WhatsApp deliver messages** reliably across the globe in milliseconds?
-- **How do you build a URL shortener** like bit.ly that handles billions of clicks?
-- **How does Netflix stream videos** to millions of users without buffering?
-- **How do banks process thousands of transactions** per second without losing money?
-
-## 🎯 Why System Design Matters More Than Ever
-
-### For Your Career
-**🚀 Ace Technical Interviews** — System design rounds are make-or-break in FAANG and top tech companies. Senior engineers are expected to think architecturally.
-
-**💼 Level Up Your Role** — Understanding system design is what separates senior engineers from junior ones. It's about thinking beyond just writing code.
-
-**🏗️ Build Real Impact** — Design systems that actually work at scale. Move from "it works on my machine" to "it works for millions of users."
-
-### For the World
-Modern digital life depends on well-designed systems. Every app you use, every website you visit, every online transaction you make — they all rely on thoughtful system design to work reliably and securely.
-
-## 🧩 The Core Building Blocks
-
-Every scalable system is built from the same fundamental components, like LEGO blocks that can be combined in countless ways:
-
-### 🌐 **Client & Server**
-The foundation of all web systems — clients request data, servers provide it.
-
-### 💾 **Databases**
-Where your data lives permanently. SQL for consistency, NoSQL for flexibility.
-
-### ⚡ **Caching**
-The secret to fast systems — store frequently accessed data in memory.
-
-### ⚖️ **Load Balancers**
-Distribute traffic across multiple servers so no single server gets overwhelmed.
-
-### 📨 **Message Queues**
-Enable different parts of your system to communicate asynchronously.
-
-### 🔒 **Security & Authentication**
-Protect your users' data and ensure only authorized access.
-
-### 📊 **Monitoring & Logging**
-Know what's happening in your system and fix problems before users notice.
-
-## 🗺️ Your Learning Journey: From Zero to System Design Hero
-
-### 🌱 Stage 1: Foundation (Weeks 1-4)
-**"Understanding the Basics"**
-
-Start here even if you're an experienced developer. You need to build your system design vocabulary and understand core concepts.
-
-**What You'll Learn:**
-- What is scalability and why it matters
-- Database fundamentals (SQL vs NoSQL)
-- Basic caching patterns
-- HTTP, DNS, and web fundamentals
-- Introduction to load balancing
-
-**Milestone:** Design a simple blog system with basic caching
-
-### 🌿 Stage 2: Growth (Weeks 5-8)
-**"Thinking About Scale"**
-
-Now you understand the pieces — learn how to combine them to handle real-world loads.
-
-**What You'll Learn:**
-- Horizontal vs vertical scaling strategies
-- Advanced caching (Redis, CDNs)
-- Database optimization and indexing
-- API design principles
-- Introduction to microservices
-
-**Milestone:** Design a social media feed system for 100K users
-
-### 🌳 Stage 3: Mastery (Weeks 9-16)
-**"Architecting for Millions"**
-
-Master the advanced patterns used by tech giants to serve billions of users.
-
-**What You'll Learn:**
-- Distributed systems concepts
-- Database sharding and replication
-- Event-driven architectures
-- Security at scale
-- Monitoring and observability
-- Disaster recovery planning
-
-**Milestone:** Design a complete system like Uber or WhatsApp
-
-## 🏗️ Types of Systems You'll Master
-
-As you progress, you'll learn to design different categories of systems, each with unique challenges:
-
-=== "Web Applications"
-
-    **Examples:** Facebook, Twitter, LinkedIn
-    
-    | Component | Considerations | Technologies |
-    |-----------|---------------|--------------|
-    | **Frontend** | User experience, performance | React, Vue, CDN |
-    | **Backend** | API design, business logic | REST, GraphQL, microservices |
-    | **Database** | User data, relationships | PostgreSQL, MongoDB |
-    | **Caching** | Fast page loads | Redis, CDN, browser cache |
-
-=== "Data-Intensive Systems"
-
-    **Examples:** Google Analytics, Spotify recommendations
-    
-    | Component | Considerations | Technologies |
-    |-----------|---------------|--------------|
-    | **Data Ingestion** | Handle massive data streams | Kafka, Kinesis |
-    | **Processing** | Real-time vs batch processing | Spark, Flink, MapReduce |
-    | **Storage** | Petabytes of data | HDFS, S3, BigQuery |
-    | **Analytics** | Fast queries on big data | Elasticsearch, ClickHouse |
-
-=== "Real-Time Systems"
-
-    **Examples:** WhatsApp, online gaming, trading platforms
-    
-    | Component | Considerations | Technologies |
-    |-----------|---------------|--------------|
-    | **Communication** | Low latency messaging | WebSockets, gRPC |
-    | **State Management** | Consistent state across users | Redis, in-memory DBs |
-    | **Scaling** | Handle traffic spikes | Auto-scaling, load balancing |
-    | **Reliability** | 99.99% uptime requirements | Redundancy, failover |
-
-## 📈 Your Study Plan
-
-### 🟢 **Beginner Track** (1-2 months)
-*Perfect if you're new to backend development*
-
-**Week 1-2:** [**System Design Fundamentals**](fundamentals/index.md)
-
-- Core concepts and terminology
-- Scalability principles  
-- Basic system components
-- [Database fundamentals](fundamentals/databases/)
-- [Caching basics](fundamentals/caching/)
-
-**Week 3-4:** [**Data & Storage Deep Dive**](fundamentals/data-storage/)
-
-- Database selection criteria
-- Advanced caching strategies
-- Data modeling and storage patterns
-
-**Practice:** Design a URL shortener, simple blog system
-
-### 🟡 **Intermediate Track** (2-3 months)
-
-*Ideal if you understand software basics*
-
-**Week 5-6:** [**Networking & Communication**](fundamentals/networking/)
-
-- API design patterns
-- [Load balancing strategies](fundamentals/load-balancing/)
-- [Message queues and pub/sub](fundamentals/messaging/)
-
-**Week 7-8:** [**Scalability & Performance**](fundamentals/scalability/)
-
-- Horizontal scaling patterns
-- [Performance optimization](fundamentals/performance/)
-- Capacity planning
-
-**Practice:** Design Instagram feed, chat application
-
-### 🔴 **Advanced Track** (3-4 months)
-
-*For senior engineers and interview prep*
-
-**Week 9-12:** [**Distributed Systems**](fundamentals/distributed-systems/)
-
-- Microservices architecture
-- [Consistent hashing](fundamentals/consistent-hashing/)
-- [Session management](fundamentals/sessions/)
-
-**Week 13-16:** [**Reliability & Security**](fundamentals/reliability-security/)
-
-- Fault tolerance patterns
-- Security best practices
-- Monitoring and observability
-
-**Practice:** Design Uber, Netflix, payment systems
-
-## 🎯 Ready to Start Your Journey?
-
-### Choose Your Starting Point
-
-**🌱 New to System Design?**  
-Start with [**System Design Fundamentals**](fundamentals/index.md) to build your foundation
-
-**📚 Want a Structured Path?**  
-Follow our comprehensive [**Learning Path**](learning-path.md) - a 30-day journey from beginner to expert
-
-**🧠 Preparing for Interviews?**  
-Jump to [**Interview Preparation**](interviews/index.md) for frameworks and practice problems
-
-**📚 Want Real Examples?**  
-Explore [**Case Studies**](case-studies/index.md) of how tech giants built their systems
-
-**🎪 Learn by Practice?**  
-Try hands-on exercises in each section, starting with simple systems and progressing to complex architectures
-
-## 💡 The Principles That Guide Everything
-
-Remember these core principles as you learn — they apply to every system, from simple apps to global platforms:
-
-!!! abstract "Universal System Design Principles"
-
-    **🎯 Reliability** — Your system should work correctly even when things go wrong
-    
-    **📈 Scalability** — Handle growth gracefully, from 100 to 100 million users
-    
-    **🚀 Performance** — Fast response times and efficient resource usage
-    
-    **🔒 Security** — Protect user data and prevent unauthorized access
-    
-    **💰 Cost-Effectiveness** — Balance features, performance, and operational costs
-    
-    **🔧 Maintainability** — Easy to understand, modify, and debug
+Learn to design scalable, reliable systems that serve millions of users—from basic concepts to complex distributed architectures.
 
 ---
 
-## 🚀 Your System Design Adventure Starts Now
+## What is System Design?
 
-System design isn't just about memorizing patterns or technologies — it's about developing the mindset to build systems that can grow, adapt, and serve users reliably. Every system you'll design tells a story of trade-offs, creativity, and engineering excellence.
+System design is the process of defining the architecture, components, modules, interfaces, and data for a system to satisfy specified requirements. It's about making informed trade-offs between competing concerns like scalability, reliability, performance, and cost.
 
-**Ready to begin?** Start with [**Design Fundamentals**](fundamentals/index.md) and take your first step toward mastering the art of building scalable systems.
+Whether you're building a startup MVP or architecting systems for millions of users, system design skills help you:
+- Make better technical decisions
+- Communicate architecture effectively
+- Scale systems efficiently
+- Anticipate and prevent failures
 
-*The journey of a thousand microservices begins with a single server.* 🌟
+---
+
+## I Want To...
+
+Choose what best describes your goal:
+
+=== "📖 Learn System Design"
+
+    **Start from the beginning:**
+
+    | Your Level | Start Here | Time |
+    |------------|------------|------|
+    | Complete Beginner | [Fundamentals](fundamentals/index.md) → [Learning Path](learning-path.md) | 8-12 weeks |
+    | Some Experience | [Learning Path: Intermediate](learning-path.md#intermediate-path) | 6-8 weeks |
+    | Refresh Knowledge | Browse [Topics](#topics) below | As needed |
+
+=== "💼 Prepare for Interviews"
+
+    **Getting ready for tech interviews:**
+
+    1. Start: [Interview Preparation Guide](interviews/index.md)
+    2. Study: [Core Topics](#essential-interview-topics) below
+    3. Practice: Work through [Interview Problems](interviews/index.md#practice-problems)
+    4. Timeline: 4-8 weeks intensive
+
+=== "🏗️ Design a Specific System"
+
+    **Need to build something now:**
+
+    | System Type | Key Resources |
+    |-------------|---------------|
+    | **Web Application** | [Fundamentals](fundamentals/index.md) · [Databases](databases/index.md) · [Caching](caching/index.md) · [Load Balancing](load-balancing/index.md) |
+    | **Real-Time App** | [Messaging](messaging/index.md) · [WebSockets](networking/index.md) · [Distributed Systems](distributed-systems/index.md) |
+    | **Data Pipeline** | [Databases](databases/index.md) · [Messaging](messaging/index.md) · [Scalability](scalability/index.md) |
+    | **API Service** | [Load Balancing](load-balancing/index.md) · [Caching](caching/index.md) · [Reliability](reliability-security/index.md) |
+
+    Then check: [Case Studies](case-studies/index.md) for real-world examples
+
+=== "🎯 Study a Specific Topic"
+
+    **Jump to what you need:**
+
+    Browse [Topics](#topics) below or use search (press `/`)
+
+---
+
+## Essential Interview Topics
+
+If preparing for interviews, prioritize these:
+
+| Priority | Topic | Why Important | Time to Learn |
+|----------|-------|---------------|---------------|
+| 🔴 Critical | [Databases](databases/index.md) | 80% of systems need data storage | 1 week |
+| 🔴 Critical | [Caching](caching/index.md) | First optimization technique | 3 days |
+| 🔴 Critical | [Scalability](scalability/index.md) | Core interview concept | 1 week |
+| 🟡 Important | [Load Balancing](load-balancing/index.md) | Common scaling strategy | 2 days |
+| 🟡 Important | [Distributed Systems](distributed-systems/index.md) | Advanced problems | 1 week |
+| 🟢 Useful | [Messaging](messaging/index.md) | Async architectures | 3 days |
+| 🟢 Useful | [Consistent Hashing](consistent-hashing/index.md) | Data distribution | 2 days |
+
+**Full interview guide:** [Interview Preparation](interviews/index.md)
+
+---
+
+## Topics
+
+### Foundation
+Start here if you're new to system design.
+
+- **[Fundamentals](fundamentals/index.md)** - Core concepts, trade-offs, design principles
+- **[Scalability](scalability/index.md)** - Grow from 10 to 10 million users
+- **[Performance](performance/index.md)** - Latency, throughput, optimization
+- **[Reliability & Security](reliability-security/index.md)** - Build systems that don't fail
+
+### Data & Storage
+How to store and retrieve data efficiently.
+
+- **[Databases](databases/index.md)** - SQL vs NoSQL, choosing the right database
+- **[Caching](caching/index.md)** - Redis, Memcached, CDN strategies
+- **[Consistent Hashing](consistent-hashing/index.md)** - Distribute data across servers
+
+### Communication
+How components talk to each other.
+
+- **[Networking](networking/index.md)** - HTTP, TCP/IP, DNS, protocols
+- **[Load Balancing](load-balancing/index.md)** - Distribute traffic across servers
+- **[Messaging](messaging/index.md)** - Queues, pub/sub, event streaming
+- **[Proxy](proxy/index.md)** - Forward and reverse proxies
+
+### Advanced
+Complex distributed system concepts.
+
+- **[Distributed Systems](distributed-systems/index.md)** - CAP theorem, consistency, consensus
+- **[Sessions](sessions/index.md)** - Stateful vs stateless, session management
+
+### Practice & Application
+Learn from real systems and prepare for interviews.
+
+- **[Case Studies](case-studies/index.md)** - How Netflix, Uber, Twitter built their systems
+- **[Interview Preparation](interviews/index.md)** - Framework, problems, tips
+
+---
+
+## Quick Reference
+
+### The Trade-Off Triangle
+
+Every system design decision involves trade-offs. You typically optimize for 2 of these 3:
+
+```
+        Consistency
+           /\
+          /  \
+         /    \
+        /______\
+  Availability  Partition Tolerance
+```
+
+**The CAP Theorem:** In a distributed system, you can only guarantee 2 out of 3.
+
+### Common Architecture Patterns
+
+| Pattern | Use When | Examples |
+|---------|----------|----------|
+| **Monolith** | Small team, simple domain, MVP | Early Instagram, GitHub |
+| **Microservices** | Large team, complex domain, need to scale independently | Netflix, Amazon, Uber |
+| **Serverless** | Event-driven, variable load, want no ops | AWS Lambda apps |
+| **Event-Driven** | Async workflows, loose coupling | Order processing, notifications |
+
+### Technology Cheat Sheet
+
+| Need | Use |
+|------|-----|
+| Relational data + ACID | PostgreSQL, MySQL |
+| Document storage | MongoDB, DynamoDB |
+| Caching | Redis, Memcached |
+| Message queue | RabbitMQ, SQS |
+| Event streaming | Kafka, Kinesis |
+| Search | Elasticsearch |
+| CDN | CloudFront, Cloudflare |
+
+---
+
+## Learning Resources
+
+| Resource | Best For |
+|----------|----------|
+| [Structured Learning Path](learning-path.md) | Follow week-by-week program (8-12 weeks) |
+| [Interview Guide](interviews/index.md) | Prepare for tech interviews (4-8 weeks) |
+| [Case Studies](case-studies/index.md) | Learn from real-world systems |
+| [Fundamentals](fundamentals/index.md) | Start with core concepts |
+
+---
+
+## Interview Readiness Checklist
+
+**Before your interview, make sure you can:**
+
+### Concepts
+- [ ] Explain CAP theorem with real examples
+- [ ] Discuss SQL vs NoSQL trade-offs
+- [ ] Design multi-tier caching strategy
+- [ ] Explain horizontal vs vertical scaling
+- [ ] Understand consistent hashing
+- [ ] Know when to use message queues
+
+### Skills
+- [ ] Follow a structured 4-step framework
+- [ ] Draw clear architecture diagrams
+- [ ] Do back-of-envelope calculations quickly
+- [ ] Discuss trade-offs for every technical choice
+- [ ] Handle "what if" questions confidently
+- [ ] Think out loud effectively
+
+### Practice
+- [ ] Completed 5+ easy problems
+- [ ] Completed 5+ medium problems
+- [ ] Completed 2+ mock interviews
+- [ ] Can design Twitter/WhatsApp/Uber confidently
+
+**Full preparation guide:** [Interview Prep](interviews/index.md)
+
+---
+
+## Getting Started
+
+1. **New to system design?** → Start with [Fundamentals](fundamentals/index.md)
+2. **Have some experience?** → Follow the [Learning Path](learning-path.md)
+3. **Preparing for interviews?** → Jump to [Interview Guide](interviews/index.md)
+4. **Need specific info?** → Browse [Topics](#topics) above
+
+**Questions?** The fundamentals guide explains all core concepts.
