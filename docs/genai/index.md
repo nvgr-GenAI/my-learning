@@ -5,7 +5,13 @@
 
 ## 🤖 What is Generative AI?
 
-Generative AI represents a revolutionary approach to artificial intelligence that **creates new content** rather than just analyzing existing data. These systems generate human-like text, images, code, audio, and video with remarkable quality and creativity.
+Generative AI refers to a class of artificial intelligence algorithms that **creates new content**, such as text, images, music, and videos. Unlike discriminative models that classify or predict based on input data, generative models learn the underlying patterns and distributions of the training data and then use this knowledge to create new, similar data.
+
+<figure markdown>
+  ![Generative AI Overview](../assets/images/genai/genai-1.png){ width="600" height="200" }
+  <figcaption>Generative AI creates new content by learning patterns from training data</figcaption>
+</figure>
+
 
 ### Key Characteristics
 
@@ -26,6 +32,7 @@ Generative AI represents a revolutionary approach to artificial intelligence tha
 This comprehensive curriculum is designed for systematic skill building. **Choose your path** based on your current experience and goals:
 
 ### 📚 Phase 1: Foundation (Weeks 1-3)
+
 **Perfect for**: Complete beginners to AI  
 **Goal**: Build theoretical understanding and core knowledge
 
@@ -36,7 +43,7 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
 
 <div class="grid cards" markdown>
 
--   :material-brain: **[Fundamentals](fundamentals/index.md)**
+- :material-brain: **[Fundamentals](fundamentals/index.md)**
     
     ---
     
@@ -44,12 +51,12 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Mathematical foundations, neural networks, and core concepts
     
-    - Linear algebra basics (intuitive approach)
-    - Neural network fundamentals (from zero)
-    - Probability and statistics (practical focus)
-    - Deep learning essentials
+  - Linear algebra basics (intuitive approach)
+  - Neural network fundamentals (from zero)
+  - Probability and statistics (practical focus)
+  - Deep learning essentials
 
--   :material-robot-outline: **[Large Language Models](llms/index.md)**
+- :material-robot-outline: **[Large Language Models](llms/index.md)**
     
     ---
     
@@ -57,12 +64,12 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Understanding and working with LLMs
     
-    - What are LLMs? (beginner-friendly)
-    - Model architecture (simplified)
-    - Using LLM APIs (hands-on)
-    - Model comparison and selection
+  - What are LLMs? (beginner-friendly)
+  - Model architecture (simplified)
+  - Using LLM APIs (hands-on)
+  - Model comparison and selection
 
--   :material-swap-horizontal: **[Transformers](transformers/index.md)**
+- :material-swap-horizontal: **[Transformers](transformers/index.md)**
     
     ---
     
@@ -70,14 +77,15 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Deep dive into the architecture behind modern AI
     
-    - Attention mechanisms (intuitive)
-    - Transformer components
-    - Modern improvements
-    - Implementation basics
+  - Attention mechanisms (intuitive)
+  - Transformer components
+  - Modern improvements
+  - Implementation basics
 
 </div>
 
 ### 🛠️ Phase 2: Core Skills (Weeks 4-6)
+
 **Perfect for**: Those with basic AI understanding  
 **Goal**: Develop practical implementation skills
 
@@ -88,7 +96,7 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
 
 <div class="grid cards" markdown>
 
--   :material-message-processing: **[Prompt Engineering](prompt-engineering/index.md)**
+- :material-message-processing: **[Prompt Engineering](prompt-engineering/index.md)**
     
     ---
     
@@ -96,12 +104,12 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Master AI communication for better results
     
-    - Prompt fundamentals (start here)
-    - Advanced techniques (chain-of-thought)
-    - Systematic optimization
-    - Best practices and patterns
+  - Prompt fundamentals (start here)
+  - Advanced techniques (chain-of-thought)
+  - Systematic optimization
+  - Best practices and patterns
 
--   :material-database-search: **[RAG Systems](rag/index.md)**
+- :material-database-search: **[RAG Systems](rag/index.md)**
     
     ---
     
@@ -109,12 +117,12 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Build knowledge-enhanced AI systems
     
-    - RAG explained simply
-    - Vector databases and search
-    - Implementation patterns
-    - Performance optimization
+  - RAG explained simply
+  - Vector databases and search
+  - Implementation patterns
+  - Performance optimization
 
--   :material-robot-excited: **[AI Agents](agents/index.md)**
+- :material-robot-excited: **[AI Agents](agents/index.md)**
     
     ---
     
@@ -122,14 +130,15 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Create autonomous AI systems
     
-    - Agent architectures
-    - Tool integration
-    - Multi-agent systems
-    - Workflow orchestration
+  - Agent architectures
+  - Tool integration
+  - Multi-agent systems
+  - Workflow orchestration
 
 </div>
 
 ### ⚡ Phase 3: Advanced Applications (Weeks 7-10)
+
 **Perfect for**: Intermediate practitioners  
 **Goal**: Specialize in cutting-edge techniques
 
@@ -141,7 +150,7 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
 
 <div class="grid cards" markdown>
 
--   :material-tune: **[Fine-tuning](fine-tuning/index.md)**
+- :material-tune: **[Fine-tuning](fine-tuning/index.md)**
     
     ---
     
@@ -149,12 +158,12 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Customize models for specific tasks
     
-    - Fine-tuning fundamentals
-    - LoRA and efficient methods
-    - RLHF techniques
-    - Custom training pipelines
+  - Fine-tuning fundamentals
+  - LoRA and efficient methods
+  - RLHF techniques
+  - Custom training pipelines
 
--   :material-image-multiple: **[Multimodal AI](multimodal/index.md)**
+- :material-image-multiple: **[Multimodal AI](multimodal/index.md)**
     
     ---
     
@@ -162,12 +171,12 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Vision, audio, and cross-modal systems
     
-    - Vision-language models
-    - Audio processing
-    - Cross-modal understanding
-    - Multimodal applications
+  - Vision-language models
+  - Audio processing
+  - Cross-modal understanding
+  - Multimodal applications
 
--   :material-cloud-outline: **[Providers & APIs](providers/index.md)**
+- :material-cloud-outline: **[Providers & APIs](providers/index.md)**
     
     ---
     
@@ -175,14 +184,15 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Work with major AI platforms
     
-    - OpenAI ecosystem
-    - Anthropic Claude
-    - Open-source alternatives
-    - Platform selection guide
+  - OpenAI ecosystem
+  - Anthropic Claude
+  - Open-source alternatives
+  - Platform selection guide
 
 </div>
 
 ### 🏗️ Phase 4: Enterprise & Production (Weeks 11-12)
+
 **Perfect for**: Advanced practitioners and professionals  
 **Goal**: Deploy and scale AI systems
 
@@ -192,7 +202,7 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
 
 <div class="grid cards" markdown>
 
--   :material-network: **[AI Protocols](protocols/index.md)**
+- :material-network: **[AI Protocols](protocols/index.md)**
     
     ---
     
@@ -200,12 +210,12 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Enterprise AI communication standards
     
-    - MCP Protocol
-    - Industry standards
-    - Interoperability
-    - Integration patterns
+  - MCP Protocol
+  - Industry standards
+  - Interoperability
+  - Integration patterns
 
--   :material-cog-outline: **[MLOps & AIOps](mlops-aiops/index.md)**
+- :material-cog-outline: **[MLOps & AIOps](mlops-aiops/index.md)**
     
     ---
     
@@ -213,12 +223,12 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Production deployment and monitoring
     
-    - Deployment strategies
-    - Performance monitoring
-    - Scaling techniques
-    - Best practices
+  - Deployment strategies
+  - Performance monitoring
+  - Scaling techniques
+  - Best practices
 
--   :material-shield-check: **[Ethical AI](ethical-ai/index.md)**
+- :material-shield-check: **[Ethical AI](ethical-ai/index.md)**
     
     ---
     
@@ -226,14 +236,15 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Responsible AI development
     
-    - Bias and fairness
-    - Privacy considerations
-    - Safety measures
-    - Governance frameworks
+  - Bias and fairness
+  - Privacy considerations
+  - Safety measures
+  - Governance frameworks
 
 </div>
 
 ### 🚀 Phase 5: Mastery & Innovation (Weeks 13+)
+
 **Perfect for**: Experts and researchers  
 **Goal**: Explore cutting-edge research and build advanced applications
 
@@ -243,7 +254,7 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
 
 <div class="grid cards" markdown>
 
--   :material-chart-line: **[Advanced Topics](advanced/index.md)**
+- :material-chart-line: **[Advanced Topics](advanced/index.md)**
     
     ---
     
@@ -251,12 +262,12 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Cutting-edge research and techniques
     
-    - GANs and generative models
-    - Diffusion models
-    - Latest research developments
-    - Emerging trends
+  - GANs and generative models
+  - Diffusion models
+  - Latest research developments
+  - Emerging trends
 
--   :material-code-braces: **[Hands-on Projects](projects/index.md)**
+- :material-code-braces: **[Hands-on Projects](projects/index.md)**
     
     ---
     
@@ -264,68 +275,10 @@ This comprehensive curriculum is designed for systematic skill building. **Choos
     
     Real-world implementation experience
     
-    - Chatbot development
-    - RAG applications
-    - Agent systems
-    - Creative AI projects
-
-</div>
-    
-    Production deployment and monitoring
-    
-    - Deployment strategies
-    - Performance monitoring
-    - Scaling techniques
-    - Best practices
-
--   :material-shield-check: **[Ethical AI](ethical-ai/index.md)**
-    
-    ---
-    
-    **Duration**: 1-2 weeks  
-    **Level**: All levels
-    
-    Responsible AI development
-    
-    - Bias and fairness
-    - Privacy considerations
-    - Safety measures
-    - Governance frameworks
-
-</div>
-
-### 🚀 Phase 5: Advanced Topics & Projects (Weeks 13+)
-**Explore cutting-edge research and applications**
-
-<div class="grid cards" markdown>
-
--   :material-chart-line: **[Advanced Topics](advanced/index.md)**
-    
-    ---
-    
-    **Duration**: Ongoing  
-    **Level**: Advanced
-    
-    Cutting-edge research and techniques
-    
-    - GANs and VAEs
-    - Diffusion models
-    - Latest research
-    - Emerging trends
-
--   :material-code-braces: **[Projects](projects/index.md)**
-    
-    ---
-    
-    **Duration**: Ongoing  
-    **Level**: All levels
-    
-    Hands-on implementation projects
-    
-    - Chatbot development
-    - RAG applications
-    - Agent systems
-    - Creative AI projects
+  - Chatbot development
+  - RAG applications
+  - Agent systems
+  - Creative AI projects
 
 </div>
 

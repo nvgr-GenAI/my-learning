@@ -108,10 +108,14 @@ nav:
       - APIs: genai/llms/apis.md
       - Comparison: genai/llms/comparison.md
     - Transformers:
-      - genai/transformers/index.md
+      - Learning Journey: genai/transformers/index.md
+      - Introduction: genai/transformers/introduction.md
+      - Core Concepts: genai/transformers/core-concepts.md
       - Architecture: genai/transformers/architecture.md
-      - Attention: genai/transformers/attention.md
-      - Implementation: genai/transformers/implementation.md
+      - Attention Mechanisms: genai/transformers/attention-concepts.md
+      - Tokenization: genai/transformers/tokenization.md
+      - Implementation Guide: genai/transformers/implementation-guide.md
+      - Training Objectives: genai/transformers/training-objectives.md
       - Optimization: genai/transformers/optimization.md
     - Prompt Engineering:
       - genai/prompt-engineering/index.md
@@ -121,10 +125,14 @@ nav:
       - Patterns: genai/prompt-engineering/patterns.md
     - RAG Systems:
       - genai/rag/index.md
+      - Introduction: genai/rag/introduction.md
       - Fundamentals: genai/rag/fundamentals.md
+      - Core Concepts: genai/rag/core-concepts.md
+      - RAG Patterns: genai/rag/patterns.md
       - Vector Databases: genai/rag/vector-databases.md
-      - Patterns: genai/rag/patterns.md
       - Implementation: genai/rag/implementation.md
+      - Evaluation: genai/rag/evaluation.md
+      - Advanced Techniques: genai/rag/advanced.md
     - AI Agents:
       - genai/agents/index.md
       - Fundamentals: genai/agents/fundamentals.md

@@ -12,7 +12,7 @@ The core of this pattern is documented in the `feature-development-pattern.md` f
 
 For a comprehensive understanding of the methodology, roles, and detailed steps involved, please refer to the main pattern document hosted in our repository:
 
-[View the Copilot Feature Development Pattern](https://github.com/nvgr-GenAI/my-notes/blob/master/docs/templates/feature-development-pattern.md)
+[View the Copilot Feature Development Pattern](https://github.com/nvgr-GenAI/my-learning/blob/master/docs/templates/feature-development-pattern.md)
 
 This document outlines:
 
