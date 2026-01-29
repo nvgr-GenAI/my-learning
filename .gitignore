@@ -140,3 +140,8 @@ tramp
 # GitHub Pages deployment (if using gh-deploy)
 # Uncomment if you're using mkdocs gh-deploy command
 # .gh-pages/
+
+# Claude Code and BMAD
+.claude/
+_bmad/
+_bmad-output/
