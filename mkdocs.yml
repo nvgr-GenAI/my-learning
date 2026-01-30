@@ -249,6 +249,21 @@ nav:
     - Case Studies:
       - system-design/case-studies/index.md
       - Video Streaming Platform: system-design/case-studies/video-streaming-platform/index.md
+    - System Design Problems:
+      - system-design/problems/index.md
+      - URL Shortener: system-design/problems/url-shortener.md
+      - Pastebin: system-design/problems/pastebin.md
+      - Instagram: system-design/problems/instagram.md
+      - Twitter: system-design/problems/twitter.md
+      - YouTube: system-design/problems/youtube.md
+      - Uber: system-design/problems/uber.md
+      - WhatsApp: system-design/problems/whatsapp.md
+      - Dropbox: system-design/problems/dropbox.md
+      - Web Crawler: system-design/problems/web-crawler.md
+      - Rate Limiter: system-design/problems/rate-limiter.md
+      - TikTok: system-design/problems/tiktok.md
+      - Netflix: system-design/problems/netflix.md
+      - Notification System: system-design/problems/notification-system.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:
