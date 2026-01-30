@@ -267,12 +267,10 @@ nav:
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:
-      - Time Complexity: algorithms/fundamentals/time-complexity.md
-      - Advanced Complexity Analysis: algorithms/fundamentals/complexity-analysis-advanced.md
-      - Learning Paths: algorithms/fundamentals/learning-paths.md
+      - Complexity Analysis: algorithms/fundamentals/complexity-analysis.md
       - Problem-Solving Patterns: algorithms/fundamentals/problem-solving-patterns.md
-      - Interview Strategy: algorithms/fundamentals/interview-strategy.md
-      - Preparation Planning: algorithms/fundamentals/preparation-planning.md
+      - Interview Preparation: algorithms/fundamentals/interview-preparation.md
+      - Learning Paths: algorithms/fundamentals/learning-paths.md
     - Data Structures:
       - algorithms/data-structures/index.md
       - Arrays:
