@@ -1,1068 +1,585 @@
-# Consensus Algorithms & Distributed Coordination 🤝
+# Consensus Algorithms
 
-Understanding how distributed systems reach agreement is crucial for building reliable, consistent systems. This comprehensive guide covers consensus algorithms, coordination patterns, and distributed system synchronization.
-
-## 🎯 The Consensus Problem
-
-### **What is Consensus?**
-
-Consensus is the fundamental problem of getting multiple distributed nodes to agree on a single value, even when some nodes may fail or the network may be unreliable.
-
-> **Real-World Analogy**: Think of distributed consensus like a group of friends deciding on a restaurant for dinner when they can only communicate by text messages that might be delayed or lost.
-
-**Key Requirements**:
-
-1. **Agreement**: All non-faulty nodes must agree on the same value
-2. **Validity**: The agreed value must be proposed by some node  
-3. **Termination**: All non-faulty nodes must eventually decide
-
-### **Challenges in Distributed Systems**
-
-| Challenge | Description | Example |
-|-----------|-------------|---------|
-| **Network Partitions** | Nodes can't communicate with each other | Network split-brain |
-| **Node Failures** | Individual nodes may crash or stop responding | Server hardware failure |
-| **Message Delays** | Messages may be delayed or arrive out of order | Network congestion |
-| **Byzantine Failures** | Nodes may behave maliciously or unpredictably | Compromised nodes |
-
-## 🗳️ Consensus Algorithms
-
-### **1. Raft Algorithm**
-
-Raft is designed to be easy to understand and implement. It decomposes consensus into leader election, log replication, and safety.
-
-**Key Components**:
-- **Leader Election**: One node becomes leader for a term
-- **Log Replication**: Leader replicates commands to followers
-- **Safety**: Ensures committed entries are never lost
-
-**Implementation**:
-
-```python
-import asyncio
-import random
-import time
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass
-from enum import Enum
-
-class NodeState(Enum):
-    FOLLOWER = "follower"
-    CANDIDATE = "candidate"
-    LEADER = "leader"
-
-@dataclass
-class LogEntry:
-    term: int
-    index: int
-    command: Any
-    committed: bool = False
-
-class RaftNode:
-    def __init__(self, node_id: str, peer_ids: List[str]):
-        self.node_id = node_id
-        self.peer_ids = peer_ids
-        self.state = NodeState.FOLLOWER
-        
-        # Persistent state
-        self.current_term = 0
-        self.voted_for: Optional[str] = None
-        self.log: List[LogEntry] = []
-        
-        # Volatile state
-        self.commit_index = 0
-        self.last_applied = 0
-        
-        # Leader state
-        self.next_index: Dict[str, int] = {}
-        self.match_index: Dict[str, int] = {}
-        
-        # Timing
-        self.last_heartbeat = time.time()
-        self.election_timeout = random.uniform(0.5, 1.0)
-        self.heartbeat_interval = 0.1
-        
-        self.running = False
-        self.votes_received = set()
-    
-    async def start(self):
-        """Start the Raft node"""
-        self.running = True
-        
-        # Start main loop
-        await asyncio.gather(
-            self._main_loop(),
-            self._apply_committed_entries()
-        )
-    
-    async def _main_loop(self):
-        """Main state machine loop"""
-        while self.running:
-            if self.state == NodeState.FOLLOWER:
-                await self._follower_loop()
-            elif self.state == NodeState.CANDIDATE:
-                await self._candidate_loop()
-            elif self.state == NodeState.LEADER:
-                await self._leader_loop()
-    
-    async def _follower_loop(self):
-        """Follower state behavior"""
-        while self.state == NodeState.FOLLOWER and self.running:
-            # Check for election timeout
-            if time.time() - self.last_heartbeat > self.election_timeout:
-                print(f"Node {self.node_id}: Election timeout, becoming candidate")
-                self.state = NodeState.CANDIDATE
-                break
-            
-            await asyncio.sleep(0.05)
-    
-    async def _candidate_loop(self):
-        """Candidate state behavior"""
-        # Start new election
-        self.current_term += 1
-        self.voted_for = self.node_id
-        self.votes_received = {self.node_id}
-        self.last_heartbeat = time.time()
-        
-        print(f"Node {self.node_id}: Starting election for term {self.current_term}")
-        
-        # Send vote requests to all peers
-        vote_tasks = []
-        for peer_id in self.peer_ids:
-            task = asyncio.create_task(self._request_vote(peer_id))
-            vote_tasks.append(task)
-        
-        # Wait for votes or timeout
-        timeout_task = asyncio.create_task(asyncio.sleep(self.election_timeout))
-        done, pending = await asyncio.wait(
-            vote_tasks + [timeout_task],
-            return_when=asyncio.FIRST_COMPLETED
-        )
-        
-        # Cancel remaining tasks
-        for task in pending:
-            task.cancel()
-        
-        # Check if we got majority
-        if len(self.votes_received) > len(self.peer_ids) / 2:
-            print(f"Node {self.node_id}: Won election with {len(self.votes_received)} votes")
-            self.state = NodeState.LEADER
-            self._initialize_leader_state()
-        else:
-            print(f"Node {self.node_id}: Lost election, becoming follower")
-            self.state = NodeState.FOLLOWER
-    
-    async def _leader_loop(self):
-        """Leader state behavior"""
-        while self.state == NodeState.LEADER and self.running:
-            # Send heartbeats to all followers
-            heartbeat_tasks = []
-            for peer_id in self.peer_ids:
-                task = asyncio.create_task(self._send_heartbeat(peer_id))
-                heartbeat_tasks.append(task)
-            
-            if heartbeat_tasks:
-                await asyncio.gather(*heartbeat_tasks, return_exceptions=True)
-            
-            await asyncio.sleep(self.heartbeat_interval)
-    
-    def _initialize_leader_state(self):
-        """Initialize leader-specific state"""
-        last_log_index = len(self.log)
-        for peer_id in self.peer_ids:
-            self.next_index[peer_id] = last_log_index + 1
-            self.match_index[peer_id] = 0
-    
-    async def _request_vote(self, peer_id: str) -> bool:
-        """Request vote from peer"""
-        try:
-            # In real implementation, this would be a network call
-            # For simulation, we'll assume some votes are granted
-            await asyncio.sleep(random.uniform(0.01, 0.05))
-            
-            # Simulate vote response
-            if random.random() > 0.3:  # 70% chance of granting vote
-                self.votes_received.add(peer_id)
-                return True
-            return False
-        except Exception:
-            return False
-    
-    async def _send_heartbeat(self, peer_id: str):
-        """Send heartbeat to follower"""
-        try:
-            prev_log_index = self.next_index[peer_id] - 1
-            prev_log_term = self.log[prev_log_index].term if prev_log_index > 0 else 0
-            
-            # In real implementation, this would be AppendEntries RPC
-            await asyncio.sleep(random.uniform(0.001, 0.01))
-            
-            # Simulate successful heartbeat
-            if random.random() > 0.1:  # 90% success rate
-                self.match_index[peer_id] = len(self.log)
-        except Exception:
-            pass
-    
-    async def append_entry(self, command: Any) -> bool:
-        """Append new entry to log (only for leader)"""
-        if self.state != NodeState.LEADER:
-            return False
-        
-        # Create new log entry
-        entry = LogEntry(
-            term=self.current_term,
-            index=len(self.log) + 1,
-            command=command
-        )
-        
-        self.log.append(entry)
-        
-        # Replicate to followers
-        replication_tasks = []
-        for peer_id in self.peer_ids:
-            task = asyncio.create_task(self._replicate_to_peer(peer_id, entry))
-            replication_tasks.append(task)
-        
-        if replication_tasks:
-            results = await asyncio.gather(*replication_tasks, return_exceptions=True)
-            
-            # Check if majority replicated
-            successful_replications = sum(1 for result in results if result is True)
-            if successful_replications >= len(self.peer_ids) / 2:
-                entry.committed = True
-                self.commit_index = entry.index
-                return True
-        
-        return False
-    
-    async def _replicate_to_peer(self, peer_id: str, entry: LogEntry) -> bool:
-        """Replicate entry to specific peer"""
-        try:
-            # In real implementation, this would be AppendEntries RPC
-            await asyncio.sleep(random.uniform(0.01, 0.05))
-            
-            # Simulate replication success
-            if random.random() > 0.2:  # 80% success rate
-                self.match_index[peer_id] = entry.index
-                return True
-            return False
-        except Exception:
-            return False
-    
-    async def _apply_committed_entries(self):
-        """Apply committed entries to state machine"""
-        while self.running:
-            if self.last_applied < self.commit_index:
-                for i in range(self.last_applied + 1, self.commit_index + 1):
-                    if i <= len(self.log):
-                        entry = self.log[i - 1]
-                        if entry.committed:
-                            # Apply to state machine
-                            print(f"Node {self.node_id}: Applying command {entry.command}")
-                            self.last_applied = i
-            
-            await asyncio.sleep(0.1)
-    
-    def stop(self):
-        """Stop the node"""
-        self.running = False
-
-# Example usage
-async def raft_example():
-    # Create 5-node Raft cluster
-    node_ids = ['node1', 'node2', 'node3', 'node4', 'node5']
-    nodes = {}
-    
-    for node_id in node_ids:
-        other_nodes = [id for id in node_ids if id != node_id]
-        nodes[node_id] = RaftNode(node_id, other_nodes)
-    
-    # Start all nodes
-    node_tasks = []
-    for node in nodes.values():
-        task = asyncio.create_task(node.start())
-        node_tasks.append(task)
-    
-    # Let the cluster stabilize
-    await asyncio.sleep(2)
-    
-    # Find leader and send some commands
-    leader = None
-    for node in nodes.values():
-        if node.state == NodeState.LEADER:
-            leader = node
-            break
-    
-    if leader:
-        print(f"Leader is {leader.node_id}")
-        
-        # Send some commands
-        for i in range(5):
-            command = f"command_{i}"
-            success = await leader.append_entry(command)
-            print(f"Command {command} committed: {success}")
-            await asyncio.sleep(0.5)
-    
-    # Stop all nodes
-    for node in nodes.values():
-        node.stop()
-    
-    # Cancel node tasks
-    for task in node_tasks:
-        task.cancel()
-```
-
-### **2. Byzantine Fault Tolerance (BFT)**
-
-BFT algorithms handle malicious or arbitrary failures, where nodes may behave unpredictably.
-
-**PBFT (Practical Byzantine Fault Tolerance)**:
-
-```python
-import hashlib
-import json
-from typing import Dict, List, Set, Optional
-from dataclasses import dataclass
-import asyncio
-
-@dataclass
-class Message:
-    type: str
-    view: int
-    sequence: int
-    digest: str
-    node_id: str
-    timestamp: float
-
-class PBFTNode:
-    def __init__(self, node_id: str, total_nodes: int, f: int):
-        self.node_id = node_id
-        self.total_nodes = total_nodes
-        self.f = f  # Maximum number of faulty nodes
-        self.view = 0
-        self.sequence = 0
-        
-        # Message logs
-        self.prepare_messages: Dict[str, List[Message]] = {}
-        self.commit_messages: Dict[str, List[Message]] = {}
-        
-        # State
-        self.requests_log: List[Dict] = []
-        self.committed_requests: Set[str] = set()
-        
-        self.is_primary = node_id == 'node_0'
-    
-    def create_digest(self, request: Dict) -> str:
-        """Create digest for request"""
-        return hashlib.sha256(json.dumps(request, sort_keys=True).encode()).hexdigest()
-    
-    async def handle_request(self, request: Dict) -> bool:
-        """Handle client request (primary only)"""
-        if not self.is_primary:
-            return False
-        
-        digest = self.create_digest(request)
-        
-        # Skip if already processed
-        if digest in self.committed_requests:
-            return True
-        
-        # Add to log
-        self.requests_log.append(request)
-        
-        # Send PRE-PREPARE to all replicas
-        pre_prepare_msg = Message(
-            type='PRE-PREPARE',
-            view=self.view,
-            sequence=self.sequence,
-            digest=digest,
-            node_id=self.node_id,
-            timestamp=time.time()
-        )
-        
-        # Broadcast to all replicas
-        await self._broadcast_message(pre_prepare_msg)
-        
-        self.sequence += 1
-        return True
-    
-    async def handle_pre_prepare(self, message: Message, request: Dict) -> bool:
-        """Handle PRE-PREPARE message"""
-        if message.node_id == self.node_id:
-            return False
-        
-        # Validate message
-        if not self._validate_pre_prepare(message, request):
-            return False
-        
-        # Send PREPARE to all replicas
-        prepare_msg = Message(
-            type='PREPARE',
-            view=message.view,
-            sequence=message.sequence,
-            digest=message.digest,
-            node_id=self.node_id,
-            timestamp=time.time()
-        )
-        
-        await self._broadcast_message(prepare_msg)
-        return True
-    
-    async def handle_prepare(self, message: Message) -> bool:
-        """Handle PREPARE message"""
-        if message.digest not in self.prepare_messages:
-            self.prepare_messages[message.digest] = []
-        
-        # Avoid duplicate messages
-        if any(msg.node_id == message.node_id for msg in self.prepare_messages[message.digest]):
-            return False
-        
-        self.prepare_messages[message.digest].append(message)
-        
-        # Check if we have enough PREPARE messages (2f)
-        if len(self.prepare_messages[message.digest]) >= 2 * self.f:
-            # Send COMMIT
-            commit_msg = Message(
-                type='COMMIT',
-                view=message.view,
-                sequence=message.sequence,
-                digest=message.digest,
-                node_id=self.node_id,
-                timestamp=time.time()
-            )
-            
-            await self._broadcast_message(commit_msg)
-            return True
-        
-        return False
-    
-    async def handle_commit(self, message: Message) -> bool:
-        """Handle COMMIT message"""
-        if message.digest not in self.commit_messages:
-            self.commit_messages[message.digest] = []
-        
-        # Avoid duplicate messages
-        if any(msg.node_id == message.node_id for msg in self.commit_messages[message.digest]):
-            return False
-        
-        self.commit_messages[message.digest].append(message)
-        
-        # Check if we have enough COMMIT messages (2f+1)
-        if len(self.commit_messages[message.digest]) >= 2 * self.f + 1:
-            # Execute request
-            await self._execute_request(message.digest)
-            return True
-        
-        return False
-    
-    def _validate_pre_prepare(self, message: Message, request: Dict) -> bool:
-        """Validate PRE-PREPARE message"""
-        # Check if digest matches request
-        expected_digest = self.create_digest(request)
-        if message.digest != expected_digest:
-            return False
-        
-        # Check sequence number
-        if message.sequence != self.sequence:
-            return False
-        
-        # Check view
-        if message.view != self.view:
-            return False
-        
-        return True
-    
-    async def _execute_request(self, digest: str):
-        """Execute committed request"""
-        if digest in self.committed_requests:
-            return
-        
-        self.committed_requests.add(digest)
-        print(f"Node {self.node_id}: Committed request with digest {digest[:8]}...")
-    
-    async def _broadcast_message(self, message: Message):
-        """Broadcast message to all nodes"""
-        # In real implementation, this would send over network
-        print(f"Node {self.node_id}: Broadcasting {message.type} for sequence {message.sequence}")
-```
-
-### **3. Distributed Locks**
-
-Distributed locks ensure mutual exclusion across multiple nodes.
-
-**Redis-based Distributed Lock**:
-
-```python
-import redis
-import uuid
-import time
-import asyncio
-from contextlib import asynccontextmanager
-from typing import Optional
-
-class DistributedLock:
-    def __init__(self, redis_client: redis.Redis, key: str, timeout: int = 10):
-        self.redis = redis_client
-        self.key = f"lock:{key}"
-        self.timeout = timeout
-        self.identifier = str(uuid.uuid4())
-        self.acquired = False
-    
-    async def acquire(self, blocking: bool = True, timeout: Optional[float] = None) -> bool:
-        """Acquire distributed lock"""
-        end_time = time.time() + (timeout or self.timeout)
-        
-        while time.time() < end_time:
-            # Try to acquire lock
-            if self.redis.set(self.key, self.identifier, nx=True, ex=self.timeout):
-                self.acquired = True
-                return True
-            
-            if not blocking:
-                return False
-            
-            # Wait before retry
-            await asyncio.sleep(0.001)
-        
-        return False
-    
-    async def release(self) -> bool:
-        """Release distributed lock"""
-        if not self.acquired:
-            return False
-        
-        # Use Lua script to atomically check and release
-        script = """
-        if redis.call('get', KEYS[1]) == ARGV[1] then
-            return redis.call('del', KEYS[1])
-        else
-            return 0
-        end
-        """
-        
-        result = self.redis.eval(script, 1, self.key, self.identifier)
-        self.acquired = False
-        return result == 1
-    
-    async def extend(self, additional_time: int = 10) -> bool:
-        """Extend lock timeout"""
-        if not self.acquired:
-            return False
-        
-        script = """
-        if redis.call('get', KEYS[1]) == ARGV[1] then
-            return redis.call('expire', KEYS[1], ARGV[2])
-        else
-            return 0
-        end
-        """
-        
-        result = self.redis.eval(script, 1, self.key, self.identifier, additional_time)
-        return result == 1
-    
-    @asynccontextmanager
-    async def context(self, timeout: Optional[float] = None):
-        """Context manager for lock"""
-        try:
-            acquired = await self.acquire(timeout=timeout)
-            if not acquired:
-                raise TimeoutError("Could not acquire lock")
-            yield
-        finally:
-            await self.release()
-
-# Usage example
-async def distributed_lock_example():
-    redis_client = redis.Redis(host='localhost', port=6379, db=0)
-    
-    async def worker(worker_id: str):
-        lock = DistributedLock(redis_client, "critical_resource", timeout=5)
-        
-        async with lock.context(timeout=2):
-            print(f"Worker {worker_id} acquired lock")
-            # Simulate work
-            await asyncio.sleep(1)
-            print(f"Worker {worker_id} finished work")
-    
-    # Start multiple workers
-    workers = [worker(f"worker_{i}") for i in range(5)]
-    await asyncio.gather(*workers)
-```
-
-## 🎯 Leader Election Patterns
-
-### **Zookeeper-style Leader Election**
-
-```python
-import asyncio
-import time
-from typing import Dict, List, Optional, Set
-from dataclasses import dataclass
-
-@dataclass
-class ZNode:
-    path: str
-    data: str
-    ephemeral: bool = False
-    sequence: bool = False
-    created_time: float = None
-    
-    def __post_init__(self):
-        if self.created_time is None:
-            self.created_time = time.time()
-
-class MockZooKeeper:
-    """Mock ZooKeeper for demonstration"""
-    
-    def __init__(self):
-        self.nodes: Dict[str, ZNode] = {}
-        self.watchers: Dict[str, Set[asyncio.Future]] = {}
-        self.sequence_counter = 0
-    
-    async def create(self, path: str, data: str, ephemeral: bool = False, sequence: bool = False) -> str:
-        """Create znode"""
-        final_path = path
-        
-        if sequence:
-            self.sequence_counter += 1
-            final_path = f"{path}{self.sequence_counter:010d}"
-        
-        node = ZNode(path=final_path, data=data, ephemeral=ephemeral, sequence=sequence)
-        self.nodes[final_path] = node
-        
-        # Notify watchers
-        await self._notify_watchers(path)
-        
-        return final_path
-    
-    async def get_children(self, path: str) -> List[str]:
-        """Get children of znode"""
-        children = []
-        for node_path in self.nodes:
-            if node_path.startswith(path + '/') and node_path != path:
-                relative_path = node_path[len(path) + 1:]
-                if '/' not in relative_path:
-                    children.append(relative_path)
-        
-        return sorted(children)
-    
-    async def delete(self, path: str):
-        """Delete znode"""
-        if path in self.nodes:
-            del self.nodes[path]
-            await self._notify_watchers(path)
-    
-    async def exists(self, path: str) -> bool:
-        """Check if znode exists"""
-        return path in self.nodes
-    
-    async def watch(self, path: str) -> asyncio.Future:
-        """Watch for changes to znode"""
-        if path not in self.watchers:
-            self.watchers[path] = set()
-        
-        future = asyncio.Future()
-        self.watchers[path].add(future)
-        
-        return future
-    
-    async def _notify_watchers(self, path: str):
-        """Notify watchers about changes"""
-        if path in self.watchers:
-            for future in self.watchers[path]:
-                if not future.done():
-                    future.set_result(True)
-            self.watchers[path].clear()
-
-class LeaderElection:
-    def __init__(self, zk: MockZooKeeper, election_path: str, node_id: str):
-        self.zk = zk
-        self.election_path = election_path
-        self.node_id = node_id
-        self.znode_path: Optional[str] = None
-        self.is_leader = False
-        self.leader_callbacks: List[callable] = []
-        self.follower_callbacks: List[callable] = []
-    
-    async def start_election(self):
-        """Start leader election process"""
-        # Create ephemeral sequential znode
-        self.znode_path = await self.zk.create(
-            f"{self.election_path}/candidate_",
-            self.node_id,
-            ephemeral=True,
-            sequence=True
-        )
-        
-        print(f"Node {self.node_id}: Created election znode {self.znode_path}")
-        
-        # Start monitoring
-        await self._check_leadership()
-    
-    async def _check_leadership(self):
-        """Check if this node is the leader"""
-        children = await self.zk.get_children(self.election_path)
-        
-        if not children:
-            return
-        
-        # Sort children to find the leader
-        sorted_children = sorted(children)
-        leader_path = f"{self.election_path}/{sorted_children[0]}"
-        
-        # Check if we are the leader
-        if self.znode_path == leader_path:
-            if not self.is_leader:
-                self.is_leader = True
-                print(f"Node {self.node_id}: Became leader")
-                
-                # Notify callbacks
-                for callback in self.leader_callbacks:
-                    await callback()
-        else:
-            if self.is_leader:
-                self.is_leader = False
-                print(f"Node {self.node_id}: Lost leadership")
-                
-                # Notify callbacks
-                for callback in self.follower_callbacks:
-                    await callback()
-            
-            # Watch the predecessor
-            my_index = sorted_children.index(self.znode_path.split('/')[-1])
-            if my_index > 0:
-                predecessor = sorted_children[my_index - 1]
-                predecessor_path = f"{self.election_path}/{predecessor}"
-                
-                # Watch for predecessor deletion
-                watch_future = await self.zk.watch(predecessor_path)
-                
-                async def wait_for_predecessor():
-                    await watch_future
-                    # Predecessor is gone, re-check leadership
-                    await self._check_leadership()
-                
-                asyncio.create_task(wait_for_predecessor())
-    
-    def on_leader(self, callback: callable):
-        """Register callback for becoming leader"""
-        self.leader_callbacks.append(callback)
-    
-    def on_follower(self, callback: callable):
-        """Register callback for becoming follower"""
-        self.follower_callbacks.append(callback)
-    
-    async def stop(self):
-        """Stop participating in election"""
-        if self.znode_path:
-            await self.zk.delete(self.znode_path)
-        
-        self.is_leader = False
-
-# Usage example
-async def leader_election_example():
-    zk = MockZooKeeper()
-    election_path = "/election"
-    
-    # Create multiple nodes
-    nodes = []
-    for i in range(5):
-        node_id = f"node_{i}"
-        election = LeaderElection(zk, election_path, node_id)
-        
-        async def leader_callback():
-            print(f"Node {node_id}: I am now the leader!")
-        
-        async def follower_callback():
-            print(f"Node {node_id}: I am now a follower!")
-        
-        election.on_leader(leader_callback)
-        election.on_follower(follower_callback)
-        
-        nodes.append(election)
-    
-    # Start all elections
-    for node in nodes:
-        await node.start_election()
-    
-    # Let them run for a bit
-    await asyncio.sleep(2)
-    
-    # Simulate leader failure
-    leader_node = None
-    for node in nodes:
-        if node.is_leader:
-            leader_node = node
-            break
-    
-    if leader_node:
-        print(f"Stopping leader node {leader_node.node_id}")
-        await leader_node.stop()
-    
-    # Let new leader emerge
-    await asyncio.sleep(1)
-    
-    # Stop all nodes
-    for node in nodes:
-        await node.stop()
-```
-
-## 📊 Distributed Coordination Services
-
-### **Service Discovery Pattern**
-
-```python
-import asyncio
-import time
-from typing import Dict, List, Optional, Set
-from dataclasses import dataclass
-import json
-
-@dataclass
-class ServiceInstance:
-    service_name: str
-    instance_id: str
-    address: str
-    port: int
-    metadata: Dict = None
-    health_check_url: Optional[str] = None
-    last_heartbeat: float = None
-    status: str = "healthy"
-    
-    def __post_init__(self):
-        if self.metadata is None:
-            self.metadata = {}
-        if self.last_heartbeat is None:
-            self.last_heartbeat = time.time()
-
-class ServiceRegistry:
-    def __init__(self, heartbeat_timeout: float = 30):
-        self.services: Dict[str, Dict[str, ServiceInstance]] = {}
-        self.watchers: Dict[str, Set[asyncio.Future]] = {}
-        self.heartbeat_timeout = heartbeat_timeout
-        self.running = False
-    
-    async def register(self, instance: ServiceInstance) -> bool:
-        """Register service instance"""
-        if instance.service_name not in self.services:
-            self.services[instance.service_name] = {}
-        
-        self.services[instance.service_name][instance.instance_id] = instance
-        
-        print(f"Registered service: {instance.service_name}:{instance.instance_id} at {instance.address}:{instance.port}")
-        
-        # Notify watchers
-        await self._notify_watchers(instance.service_name)
-        
-        return True
-    
-    async def deregister(self, service_name: str, instance_id: str) -> bool:
-        """Deregister service instance"""
-        if service_name in self.services and instance_id in self.services[service_name]:
-            del self.services[service_name][instance_id]
-            
-            # Clean up empty service
-            if not self.services[service_name]:
-                del self.services[service_name]
-            
-            print(f"Deregistered service: {service_name}:{instance_id}")
-            
-            # Notify watchers
-            await self._notify_watchers(service_name)
-            
-            return True
-        
-        return False
-    
-    async def discover(self, service_name: str) -> List[ServiceInstance]:
-        """Discover healthy instances of a service"""
-        if service_name not in self.services:
-            return []
-        
-        healthy_instances = []
-        for instance in self.services[service_name].values():
-            if instance.status == "healthy":
-                healthy_instances.append(instance)
-        
-        return healthy_instances
-    
-    async def heartbeat(self, service_name: str, instance_id: str) -> bool:
-        """Update heartbeat for service instance"""
-        if service_name in self.services and instance_id in self.services[service_name]:
-            instance = self.services[service_name][instance_id]
-            instance.last_heartbeat = time.time()
-            instance.status = "healthy"
-            return True
-        
-        return False
-    
-    async def watch(self, service_name: str) -> asyncio.Future:
-        """Watch for changes to service instances"""
-        if service_name not in self.watchers:
-            self.watchers[service_name] = set()
-        
-        future = asyncio.Future()
-        self.watchers[service_name].add(future)
-        
-        return future
-    
-    async def start_health_checker(self):
-        """Start background health checker"""
-        self.running = True
-        
-        while self.running:
-            await self._check_health()
-            await asyncio.sleep(5)
-    
-    async def _check_health(self):
-        """Check health of all registered instances"""
-        current_time = time.time()
-        
-        for service_name in list(self.services.keys()):
-            for instance_id in list(self.services[service_name].keys()):
-                instance = self.services[service_name][instance_id]
-                
-                # Check if instance is stale
-                if current_time - instance.last_heartbeat > self.heartbeat_timeout:
-                    if instance.status == "healthy":
-                        instance.status = "unhealthy"
-                        print(f"Marked instance unhealthy: {service_name}:{instance_id}")
-                        
-                        # Notify watchers
-                        await self._notify_watchers(service_name)
-                    
-                    # Remove if stale for too long
-                    if current_time - instance.last_heartbeat > self.heartbeat_timeout * 2:
-                        await self.deregister(service_name, instance_id)
-    
-    async def _notify_watchers(self, service_name: str):
-        """Notify watchers about service changes"""
-        if service_name in self.watchers:
-            for future in self.watchers[service_name]:
-                if not future.done():
-                    future.set_result(True)
-            self.watchers[service_name].clear()
-    
-    def stop(self):
-        """Stop the registry"""
-        self.running = False
-
-class ServiceClient:
-    def __init__(self, registry: ServiceRegistry):
-        self.registry = registry
-    
-    async def call_service(self, service_name: str, endpoint: str, data: Dict = None) -> Dict:
-        """Make request to service using load balancing"""
-        instances = await self.registry.discover(service_name)
-        
-        if not instances:
-            raise Exception(f"No healthy instances found for service: {service_name}")
-        
-        # Simple round-robin load balancing
-        import random
-        instance = random.choice(instances)
-        
-        try:
-            # Simulate API call
-            await asyncio.sleep(0.1)
-            
-            # Simulate occasional failures
-            if random.random() < 0.1:
-                raise Exception("Service call failed")
-            
-            return {
-                "status": "success",
-                "data": f"Response from {instance.instance_id}",
-                "endpoint": endpoint
-            }
-        
-        except Exception as e:
-            # Could implement retry logic here
-            raise Exception(f"Failed to call {service_name}: {e}")
-
-# Usage example
-async def service_discovery_example():
-    registry = ServiceRegistry(heartbeat_timeout=10)
-    
-    # Start health checker
-    health_checker_task = asyncio.create_task(registry.start_health_checker())
-    
-    # Register multiple service instances
-    instances = [
-        ServiceInstance("user-service", "user-1", "localhost", 8001),
-        ServiceInstance("user-service", "user-2", "localhost", 8002),
-        ServiceInstance("order-service", "order-1", "localhost", 8003),
-        ServiceInstance("order-service", "order-2", "localhost", 8004),
-    ]
-    
-    for instance in instances:
-        await registry.register(instance)
-    
-    # Simulate heartbeats
-    async def send_heartbeats():
-        while True:
-            for instance in instances:
-                await registry.heartbeat(instance.service_name, instance.instance_id)
-            await asyncio.sleep(5)
-    
-    heartbeat_task = asyncio.create_task(send_heartbeats())
-    
-    # Create client and make some requests
-    client = ServiceClient(registry)
-    
-    for i in range(10):
-        try:
-            response = await client.call_service("user-service", f"/users/{i}")
-            print(f"Request {i}: {response}")
-        except Exception as e:
-            print(f"Request {i} failed: {e}")
-        
-        await asyncio.sleep(0.5)
-    
-    # Stop one instance
-    await registry.deregister("user-service", "user-1")
-    
-    # Make more requests
-    for i in range(5):
-        try:
-            response = await client.call_service("user-service", f"/users/{i}")
-            print(f"After deregister {i}: {response}")
-        except Exception as e:
-            print(f"After deregister {i} failed: {e}")
-        
-        await asyncio.sleep(0.5)
-    
-    # Cleanup
-    registry.stop()
-    heartbeat_task.cancel()
-    health_checker_task.cancel()
-```
-
-## 🎯 Best Practices
-
-### **Consensus Algorithm Selection**
-
-| Algorithm | Use Case | Pros | Cons |
-|-----------|----------|------|------|
-| **Raft** | Simple distributed systems | Easy to understand, proven | Leader bottleneck |
-| **PBFT** | Byzantine fault tolerance | Handles malicious nodes | High message complexity |
-| **Paxos** | Strong consistency | Theoretical foundation | Complex to implement |
-
-### **Implementation Guidelines**
-
-1. **Network Partitions**: Handle split-brain scenarios
-2. **Timeouts**: Use appropriate timeout values
-3. **Retries**: Implement exponential backoff
-4. **Monitoring**: Track consensus participation
-5. **Testing**: Use chaos engineering
-
-### **Performance Considerations**
-
-1. **Batch Operations**: Group operations for efficiency
-2. **Asynchronous Processing**: Avoid blocking operations
-3. **Network Optimization**: Minimize round trips
-4. **State Compression**: Use snapshots for large states
+**Reaching agreement in distributed systems** | 🤝 Agreement | 🔄 Replication | 💪 Fault Tolerance
 
 ---
 
-*"In distributed systems, consensus is not about getting everyone to agree on everything, but about getting everyone to agree on the things that matter most."*
+## Overview
+
+Consensus algorithms allow multiple nodes in a distributed system to agree on a single value, even when some nodes fail or the network is unreliable.
+
+**The Problem:** How do distributed nodes agree on state when they can't all communicate reliably?
+
+---
+
+## Why Consensus Matters
+
+=== "Use Cases"
+    **Critical distributed system problems:**
+
+    | Problem | Solution | Example |
+    |---------|----------|---------|
+    | **Leader Election** | Choose one node as leader | Elect primary database |
+    | **Distributed Locks** | Coordinate access to resource | Prevent double-booking |
+    | **Configuration Management** | Agree on system config | Service discovery (Consul) |
+    | **Database Replication** | Keep replicas consistent | MySQL with Galera |
+    | **Distributed Transactions** | Commit or abort together | 2PC in databases |
+
+=== "The Challenge"
+    **What makes consensus hard:**
+
+    ```
+    Perfect Network (doesn't exist):
+    Node A ──────────▶ Node B
+              1ms
+              100% reliable
+
+    Real Network (what we have):
+    Node A ─ ─ ─ ─ ─ ▶ Node B
+              100ms
+              Messages lost
+              Messages reordered
+              Nodes crash
+              Network partitions
+    ```
+
+    **CAP Theorem:**
+    - **C**onsistency: All nodes see same data
+    - **A**vailability: Every request gets response
+    - **P**artition tolerance: Works despite network splits
+
+    **Pick 2 out of 3** (must always have P in distributed systems)
+
+---
+
+## Paxos
+
+=== "Overview"
+    **The original consensus algorithm (1989)**
+
+    **Key Idea:** Use majority voting with proposals and promises
+
+    **Roles:**
+    - **Proposer:** Proposes values
+    - **Acceptor:** Votes on proposals
+    - **Learner:** Learns chosen value
+
+    ```
+    Phase 1 (Prepare):
+    Proposer → All Acceptors: "Can I propose value X?"
+    Acceptors → Proposer: "Yes" or "No, someone else already proposed"
+
+    Phase 2 (Accept):
+    Proposer → Majority: "Please accept value X"
+    Acceptors → Proposer: "Accepted!"
+
+    Result: Value X is chosen (permanent)
+    ```
+
+=== "How It Works"
+    **Two-phase commit process:**
+
+    ```
+    Scenario: 5 nodes need to agree on a value
+
+    Node 1 (Proposer):
+      Prepare(proposal #10, value="foo")
+      ↓
+    Nodes 2, 3, 4, 5 (Acceptors):
+      "OK, I promise not to accept proposals < #10"
+      (3 out of 4 responded - majority!)
+      ↓
+    Node 1:
+      Accept(proposal #10, value="foo")
+      ↓
+    Nodes 2, 3, 4:
+      "Accepted!"
+      (3 out of 4 accepted - value chosen!)
+    ```
+
+    **Guarantees:**
+    - ✅ Only one value chosen
+    - ✅ Survives minority node failures
+    - ✅ Progress with majority
+
+=== "Example"
+    **Real-world scenario:**
+
+    ```python
+    class PaxosNode:
+        def __init__(self, node_id):
+            self.node_id = node_id
+            self.promised_proposal = None
+            self.accepted_proposal = None
+            self.accepted_value = None
+
+        def prepare(self, proposal_number):
+            """Phase 1: Prepare request"""
+            if self.promised_proposal is None or \
+               proposal_number > self.promised_proposal:
+                self.promised_proposal = proposal_number
+                return {
+                    'promise': True,
+                    'accepted_proposal': self.accepted_proposal,
+                    'accepted_value': self.accepted_value
+                }
+            return {'promise': False}
+
+        def accept(self, proposal_number, value):
+            """Phase 2: Accept request"""
+            if proposal_number >= self.promised_proposal:
+                self.accepted_proposal = proposal_number
+                self.accepted_value = value
+                return {'accepted': True}
+            return {'accepted': False}
+
+    # Usage
+    nodes = [PaxosNode(i) for i in range(5)]
+
+    # Phase 1: Prepare
+    proposal_num = 10
+    promises = []
+    for node in nodes:
+        response = node.prepare(proposal_num)
+        if response['promise']:
+            promises.append(response)
+
+    # Need majority (3 out of 5)
+    if len(promises) >= 3:
+        # Phase 2: Accept
+        value = "leader_node_3"
+        accepts = []
+        for node in nodes:
+            response = node.accept(proposal_num, value)
+            if response['accepted']:
+                accepts.append(response)
+
+        if len(accepts) >= 3:
+            print(f"Consensus reached: {value}")
+    ```
+
+=== "Challenges"
+    **Why Paxos is hard:**
+
+    - ❌ Complex to understand and implement
+    - ❌ Doesn't handle membership changes well
+    - ❌ Livelock possible (competing proposers)
+    - ❌ Performance issues under contention
+
+    **Quote from Leslie Lamport (creator):**
+    > "The Paxos algorithm, when presented in plain English, is very simple."
+
+    **Reality:** Most engineers disagree! 😅
+
+---
+
+## Raft
+
+=== "Overview"
+    **Designed for understandability (2014)**
+
+    **Key Innovation:** Decompose consensus into:
+    1. **Leader Election:** Choose one leader
+    2. **Log Replication:** Leader replicates log to followers
+    3. **Safety:** Ensure chosen values never change
+
+    ```
+    Normal Operation:
+    
+    Leader (Node 1):
+      Receives client requests
+      Appends to local log
+      Replicates to followers
+      Commits when majority confirm
+    
+    Followers (Nodes 2, 3, 4, 5):
+      Accept log entries from leader
+      Respond with confirmation
+      Apply committed entries
+    ```
+
+=== "Leader Election"
+    **How leaders are elected:**
+
+    ```
+    State Machine (each node):
+    
+    Follower ────timeout────▶ Candidate ────wins election────▶ Leader
+       ▲                           │                              │
+       │                           │ loses/new term               │
+       └───────────────────────────┴──────────────────────────────┘
+    
+    Process:
+    1. Follower times out (150-300ms, no heartbeat from leader)
+    2. Becomes Candidate, increments term, votes for self
+    3. Requests votes from other nodes
+    4. If gets majority: becomes Leader
+    5. If another leader elected: becomes Follower
+    6. If timeout: starts new election
+    ```
+
+    **Election Example:**
+    ```
+    Initial: All followers
+    ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐
+    │  F  │ │  F  │ │  F  │ │  F  │ │  F  │
+    └─────┘ └─────┘ └─────┘ └─────┘ └─────┘
+
+    Node 3 times out:
+    ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐
+    │  F  │ │  F  │ │  C  │ │  F  │ │  F  │
+    └─────┘ └─────┘ └──┬──┘ └─────┘ └─────┘
+                       │
+                  Vote for me!
+                       │
+    ┌─────────────┬────┴────┬─────────────┐
+    ▼             ▼          ▼             ▼
+    Yes          Yes        No            Yes
+    
+    3 votes (majority) → Node 3 becomes Leader
+    ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐
+    │  F  │ │  F  │ │  L  │ │  F  │ │  F  │
+    └─────┘ └─────┘ └─────┘ └─────┘ └─────┘
+    ```
+
+=== "Log Replication"
+    **Replicating state changes:**
+
+    ```
+    Client Request: SET x = 5
+    
+    Leader Log:
+    [SET x=5] ← New entry (uncommitted)
+        ↓
+    Send to Followers:
+    AppendEntries(entry: "SET x=5", index: 10)
+        ↓
+    Followers append to log:
+    Follower 1: [... SET x=5] ✅
+    Follower 2: [... SET x=5] ✅
+    Follower 3: [... SET x=5] ✅
+        ↓
+    Majority confirmed (3/5)
+        ↓
+    Leader commits entry:
+    [SET x=5] ✓ Committed
+        ↓
+    Leader applies to state machine:
+    x = 5 (visible to clients)
+        ↓
+    Next heartbeat tells followers to commit
+    ```
+
+=== "Implementation"
+    **Raft implementation example:**
+
+    ```python
+    class RaftNode:
+        def __init__(self, node_id, peers):
+            self.node_id = node_id
+            self.peers = peers
+            self.state = 'follower'  # follower, candidate, or leader
+            self.current_term = 0
+            self.voted_for = None
+            self.log = []
+            self.commit_index = 0
+            
+        def start_election(self):
+            """Start election when timeout occurs"""
+            self.state = 'candidate'
+            self.current_term += 1
+            self.voted_for = self.node_id
+            votes_received = 1  # Vote for self
+            
+            # Request votes from peers
+            for peer in self.peers:
+                response = peer.request_vote(
+                    term=self.current_term,
+                    candidate_id=self.node_id,
+                    last_log_index=len(self.log) - 1,
+                    last_log_term=self.log[-1]['term'] if self.log else 0
+                )
+                if response['vote_granted']:
+                    votes_received += 1
+            
+            # Check if won election
+            if votes_received > len(self.peers) // 2:
+                self.become_leader()
+        
+        def become_leader(self):
+            """Transition to leader state"""
+            self.state = 'leader'
+            print(f"Node {self.node_id} became leader for term {self.current_term}")
+            
+            # Start sending heartbeats
+            self.send_heartbeats()
+        
+        def send_heartbeats(self):
+            """Send periodic heartbeats to maintain leadership"""
+            for peer in self.peers:
+                peer.append_entries(
+                    term=self.current_term,
+                    leader_id=self.node_id,
+                    entries=[]  # Empty for heartbeat
+                )
+        
+        def replicate_log(self, entry):
+            """Replicate log entry to followers"""
+            # Append to leader's log
+            entry['term'] = self.current_term
+            self.log.append(entry)
+            
+            # Replicate to followers
+            acks = 1  # Leader counts as ack
+            for peer in self.peers:
+                response = peer.append_entries(
+                    term=self.current_term,
+                    leader_id=self.node_id,
+                    entries=[entry]
+                )
+                if response['success']:
+                    acks += 1
+            
+            # Commit if majority acknowledged
+            if acks > len(self.peers) // 2:
+                self.commit_index = len(self.log) - 1
+                return True
+            return False
+    ```
+
+=== "Advantages"
+    **Why Raft is popular:**
+
+    - ✅ Easier to understand than Paxos
+    - ✅ Clear leader makes operations simpler
+    - ✅ Handles membership changes cleanly
+    - ✅ Strong guarantees (linearizability)
+    - ✅ Many production implementations
+
+    **Used by:**
+    - **etcd:** Kubernetes configuration
+    - **Consul:** Service discovery
+    - **CockroachDB:** Distributed SQL
+    - **TiDB:** Distributed database
+
+---
+
+## 2PC (Two-Phase Commit)
+
+=== "Overview"
+    **Atomic commit protocol for distributed transactions**
+
+    **Goal:** Either all nodes commit or all abort
+
+    ```
+    Coordinator:
+      Prepare Phase → Ask all: "Can you commit?"
+      Commit Phase → Tell all: "Commit" or "Abort"
+    
+    Participants:
+      Prepare → Vote Yes/No
+      Commit → Execute commit or abort
+    ```
+
+=== "How It Works"
+    **Two phases:**
+
+    ```
+    Example: Transfer $100 from Account A to Account B
+             (A on Server 1, B on Server 2)
+
+    Phase 1: Prepare
+    Coordinator: "Can you transfer?"
+    ├─▶ Server 1: Deduct $100 from A → "YES, ready"
+    └─▶ Server 2: Add $100 to B → "YES, ready"
+
+    Both said YES → Proceed to Phase 2
+
+    Phase 2: Commit
+    Coordinator: "COMMIT"
+    ├─▶ Server 1: Commit transaction ✅
+    └─▶ Server 2: Commit transaction ✅
+
+    Result: Transfer complete!
+
+    ---
+
+    Alternative: One says NO
+
+    Phase 1: Prepare
+    Coordinator: "Can you transfer?"
+    ├─▶ Server 1: Deduct $100 from A → "YES, ready"
+    └─▶ Server 2: Add $100 to B → "NO, insufficient space"
+
+    One said NO → Abort
+
+    Phase 2: Abort
+    Coordinator: "ABORT"
+    ├─▶ Server 1: Rollback transaction ✅
+    └─▶ Server 2: Nothing to rollback ✅
+
+    Result: Transfer canceled
+    ```
+
+=== "Problems"
+    **Why 2PC is problematic:**
+
+    **Blocking Problem:**
+    ```
+    Phase 1: All participants vote YES
+    Phase 2: Coordinator crashes before sending COMMIT
+    
+    Result: Participants stuck waiting!
+           - Can't commit (didn't get command)
+           - Can't abort (voted YES, might commit)
+           - Locks held indefinitely ❌
+    ```
+
+    **Performance Issues:**
+    - Multiple round trips (high latency)
+    - Blocking nature (locks held during protocol)
+    - Single point of failure (coordinator)
+
+    **Why it's still used:**
+    - Simple to understand and implement
+    - Works well in reliable networks
+    - Good for small number of participants
+
+---
+
+## 3PC (Three-Phase Commit)
+
+=== "Overview"
+    **Non-blocking variant of 2PC**
+
+    **Phases:**
+    1. **CanCommit:** Ask if ready
+    2. **PreCommit:** Tell to prepare
+    3. **DoCommit:** Tell to commit
+
+    **Advantage:** Can make progress even if coordinator fails
+
+=== "How It Works"
+    ```
+    Phase 1: CanCommit
+    Coordinator → Participants: "Can you commit?"
+    Participants → Coordinator: "YES" or "NO"
+
+    Phase 2: PreCommit
+    Coordinator → Participants: "Prepare to commit"
+    Participants: Lock resources, write to log
+    Participants → Coordinator: "Ready"
+
+    Phase 3: DoCommit
+    Coordinator → Participants: "Commit!"
+    Participants: Commit and release locks
+    ```
+
+    **Key difference:** PreCommit phase allows timeout-based recovery
+
+=== "Limitations"
+    - ❌ Still has edge cases in network partitions
+    - ❌ More complex than 2PC
+    - ❌ Higher latency (three phases vs two)
+    - ✅ Rarely used in practice (Raft/Paxos preferred)
+
+---
+
+## Comparison Table
+
+| Algorithm | Year | Complexity | Fault Tolerance | Performance | Use Case |
+|-----------|------|------------|----------------|-------------|----------|
+| **Paxos** | 1989 | Very High | Excellent | Medium | Theoretical foundation |
+| **Raft** | 2014 | Medium | Excellent | Good | Production systems |
+| **2PC** | 1970s | Low | Poor (blocking) | Poor | Small, reliable networks |
+| **3PC** | 1980s | Medium | Better | Poor | Rarely used |
+
+---
+
+## Real-World Usage
+
+=== "Raft Deployments"
+    **etcd (Kubernetes):**
+    ```bash
+    # etcd cluster (Raft for consensus)
+    etcd --name node1 \
+         --initial-cluster node1=http://10.0.0.1:2380,node2=http://10.0.0.2:2380 \
+         --initial-cluster-state new
+    
+    # Kubernetes uses etcd for:
+    # - Pod configurations
+    # - Service discovery
+    # - Cluster state
+    ```
+
+    **Consul (Service Discovery):**
+    ```bash
+    # Consul servers use Raft
+    consul agent -server -bootstrap-expect=3 \
+         -data-dir=/tmp/consul
+    
+    # Leader election automatic
+    # Configuration changes replicated
+    ```
+
+=== "Paxos Deployments"
+    **Google Chubby:**
+    - Lock service for Google infrastructure
+    - Used by BigTable, GFS
+    - Multi-Paxos variant
+
+    **Apache Cassandra:**
+    - Lightweight transactions (LWT) use Paxos
+    - Opt-in for critical operations
+    - Most operations use eventual consistency
+
+=== "2PC Deployments"
+    **Traditional Databases:**
+    ```sql
+    -- PostgreSQL distributed transaction
+    BEGIN;
+    -- Operations on local DB
+    PREPARE TRANSACTION 'xact_1';
+
+    -- On remote DB
+    BEGIN;
+    -- Operations on remote DB
+    PREPARE TRANSACTION 'xact_1';
+
+    -- Commit both
+    COMMIT PREPARED 'xact_1';
+    ```
+
+    **Used by:** MySQL, PostgreSQL, Oracle (XA transactions)
+
+---
+
+## Interview Talking Points
+
+**Q: Explain the difference between Paxos and Raft.**
+
+✅ **Strong Answer:**
+> "Both Paxos and Raft solve consensus, but Raft was explicitly designed for understandability. Paxos is more general but harder to implement correctly - it doesn't prescribe a specific leader, leading to complex coordinator election logic. Raft simplifies this by always having a single leader who handles all client requests and log replication. This makes Raft easier to reason about and implement, which is why it's more popular in production systems like etcd and Consul. However, Paxos variants like Multi-Paxos can achieve similar performance."
+
+**Q: Why is 2PC blocking and how does Raft avoid this?**
+
+✅ **Strong Answer:**
+> "2PC is blocking because if the coordinator crashes after participants vote YES but before sending the commit decision, participants are stuck - they can't commit or abort without knowing the coordinator's decision, so they hold locks indefinitely. Raft avoids this through its log replication approach. Raft commits entries once a majority has them in their logs, so even if the leader fails, a new leader with the committed entries can be elected and operations continue. The key difference is Raft's leader election mechanism allows the system to recover automatically, while 2PC requires manual intervention or coordinator recovery."
+
+**Q: When would you use eventual consistency instead of consensus?**
+
+✅ **Strong Answer:**
+> "I'd use eventual consistency for non-critical operations where the cost of consensus (latency, complexity) isn't worth immediate consistency. For example, social media 'likes' counts don't need consensus - it's okay if different users see slightly different numbers for a few seconds. Similarly, analytics dashboards can tolerate stale data. However, I'd use consensus for critical operations like financial transactions, inventory management, or leader election where split-brain scenarios could cause serious issues. The trade-off is: consensus provides strong guarantees but adds latency and complexity."
+
+---
+
+## Related Topics
+
+- [Distributed Systems](index.md) - Overview of distributed challenges
+- [Consistent Hashing](consistent-hashing.md) - Distributed data partitioning
+- [Database Replication](../data/databases/replication.md) - Data consistency
+- [CAP Theorem](../fundamentals/cap-theorem.md) - Consistency trade-offs
+
+---
+
+**Consensus is hard, but necessary for building reliable distributed systems! 🤝**
