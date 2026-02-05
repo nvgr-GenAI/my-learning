@@ -2,7 +2,7 @@
 
 Master system design interviews with 50 real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
 
-**Status:** ✅ 55 Complete | 🚧 0 In Progress | 📋 37 Planned
+**Status:** ✅ 60 Complete | 🚧 0 In Progress | 📋 32 Planned
 
 ---
 
@@ -129,8 +129,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     | Problem | Difficulty | Frequency | Companies | Key Concepts |
     |---------|-----------|-----------|-----------|--------------|
-    | **Data Lake** | 🔴 Hard | ⭐⭐⭐⭐⭐ | AWS S3, Delta Lake, Apache Iceberg | Object storage, partitioning, metadata, ACID transactions |
-    | **ETL Pipeline** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Airflow, dbt, Fivetran | Orchestration, data transformation, scheduling, dependencies |
+    | [**Data Lake**](data-lake.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | AWS S3, Delta Lake, Apache Iceberg | Object storage, partitioning, metadata, ACID transactions |
+    | [**ETL Pipeline**](etl-pipeline.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Airflow, dbt, Fivetran | Orchestration, data transformation, scheduling, dependencies |
     | **Real-time Data Pipeline** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Kafka, Flink, Spark Streaming | Stream processing, exactly-once, windowing, state management |
     | **Data Warehouse** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Snowflake, BigQuery, Redshift | Columnar storage, MPP, query optimization, materialized views |
     | **Change Data Capture (CDC)** | 🔴 Hard | ⭐⭐⭐⭐ | Debezium, AWS DMS, Airbyte | Database logs, replication, event streaming, consistency |
@@ -145,8 +145,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | Problem | Difficulty | Frequency | Companies | Key Concepts |
     |---------|-----------|-----------|-----------|--------------|
     | **ML Training Pipeline** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Google Vertex AI, AWS SageMaker | Distributed training, hyperparameter tuning, checkpointing |
-    | **Feature Store** | 🔴 Hard | ⭐⭐⭐⭐ | Tecton, Feast, AWS Feature Store | Feature engineering, online/offline store, versioning, serving |
-    | **Model Serving Platform** | 🔴 Hard | ⭐⭐⭐⭐⭐ | TensorFlow Serving, Seldon, KServe | Model deployment, autoscaling, A/B testing, canary |
+    | [**Feature Store**](feature-store.md) | 🔴 Hard | ⭐⭐⭐⭐ | Tecton, Feast, AWS Feature Store | Feature engineering, online/offline store, versioning, serving |
+    | [**Model Serving Platform**](model-serving.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | TensorFlow Serving, Seldon, KServe | Model deployment, autoscaling, A/B testing, canary |
     | **ML Experiment Tracking** | 🟡 Medium | ⭐⭐⭐⭐ | MLflow, Weights & Biases, Neptune | Metrics logging, artifact storage, comparison, reproducibility |
     | **AutoML Platform** | 🔴 Hard | ⭐⭐⭐⭐ | Google AutoML, H2O.ai | Neural architecture search, automated feature engineering |
     | **A/B Testing Framework** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Optimizely, Google Optimize | Statistical significance, variant assignment, metrics calculation |
@@ -162,7 +162,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**ChatGPT-like System**](chatgpt-system.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | OpenAI, Anthropic | LLM serving, conversation state, streaming, rate limiting |
     | [**RAG System**](rag-system.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | OpenAI, Anthropic, Enterprise AI | Vector search, embeddings, retrieval, context injection |
     | **AI Agent Platform** | 🔴 Hard | ⭐⭐⭐⭐⭐ | LangChain, AutoGPT | Tool calling, memory, planning, multi-agent orchestration |
-    | **AI Code Assistant** | 🔴 Hard | ⭐⭐⭐⭐⭐ | GitHub Copilot, Cursor, Replit | Code completion, context window, latency, caching |
+    | [**AI Code Assistant**](ai-code-assistant.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | GitHub Copilot, Cursor, Replit | Code completion, context window, latency, caching |
     | **Text-to-Image Generator** | 🔴 Hard | ⭐⭐⭐⭐ | Midjourney, DALL-E, Stable Diffusion | Diffusion models, GPU queue, image storage, prompt engineering |
     | [**Vector Database**](vector-database.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Pinecone, Weaviate, Qdrant | HNSW/IVF, similarity search, sharding, hybrid search |
     | **Document Q&A System** | 🟡 Medium | ⭐⭐⭐⭐ | Enterprise AI | PDF parsing, chunking, embeddings, citation |
@@ -219,7 +219,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     ---
 
-    ## 🔴 Hard Problems (23 problems)
+    ## 🔴 Hard Problems (28 problems)
 
     **Perfect for:** Advanced prep, FAANG interviews, senior roles
 
@@ -256,6 +256,11 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**ChatGPT-like System**](chatgpt-system.md) | GenAI | ⭐⭐⭐⭐⭐ | LLM serving, streaming, conversation state |
     | [**RAG System**](rag-system.md) | GenAI | ⭐⭐⭐⭐⭐ | Vector search, retrieval, context injection |
     | [**Vector Database**](vector-database.md) | GenAI | ⭐⭐⭐⭐⭐ | HNSW, similarity search, sharding |
+    | [**Data Lake**](data-lake.md) | Data Eng | ⭐⭐⭐⭐⭐ | ACID transactions, partitioning, schema evolution |
+    | [**ETL Pipeline**](etl-pipeline.md) | Data Eng | ⭐⭐⭐⭐⭐ | DAG orchestration, incremental loading, lineage |
+    | [**Feature Store**](feature-store.md) | ML | ⭐⭐⭐⭐ | Online/offline serving, point-in-time joins |
+    | [**Model Serving Platform**](model-serving.md) | ML | ⭐⭐⭐⭐⭐ | Dynamic batching, A/B testing, canary deployment |
+    | [**AI Code Assistant**](ai-code-assistant.md) | GenAI | ⭐⭐⭐⭐⭐ | Code completion, context extraction, caching |
 
 === "🏢 By Company"
 

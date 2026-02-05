@@ -333,10 +333,17 @@ nav:
       - Internet of Things (IoT):
         - Smart Lock System: system-design/problems/smart-lock.md
         - Smart Meter: system-design/problems/smart-meter.md
+      - Data Engineering:
+        - Data Lake: system-design/problems/data-lake.md
+        - ETL Pipeline: system-design/problems/etl-pipeline.md
+      - Machine Learning:
+        - Feature Store: system-design/problems/feature-store.md
+        - Model Serving Platform: system-design/problems/model-serving.md
       - Generative AI & LLM:
         - ChatGPT-like System: system-design/problems/chatgpt-system.md
         - RAG System: system-design/problems/rag-system.md
         - Vector Database: system-design/problems/vector-database.md
+        - AI Code Assistant: system-design/problems/ai-code-assistant.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:
