@@ -2,7 +2,7 @@
 
 Master system design interviews with 50 real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
 
-**Status:** ✅ 60 Complete | 🚧 0 In Progress | 📋 32 Planned
+**Status:** ✅ 65 Complete | 🚧 0 In Progress | 📋 27 Planned
 
 ---
 
@@ -130,9 +130,9 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | Problem | Difficulty | Frequency | Companies | Key Concepts |
     |---------|-----------|-----------|-----------|--------------|
     | [**Data Lake**](data-lake.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | AWS S3, Delta Lake, Apache Iceberg | Object storage, partitioning, metadata, ACID transactions |
+    | [**Data Warehouse**](data-warehouse.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Snowflake, BigQuery, Redshift | Columnar storage, MPP, query optimization, materialized views |
     | [**ETL Pipeline**](etl-pipeline.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Airflow, dbt, Fivetran | Orchestration, data transformation, scheduling, dependencies |
-    | **Real-time Data Pipeline** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Kafka, Flink, Spark Streaming | Stream processing, exactly-once, windowing, state management |
-    | **Data Warehouse** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Snowflake, BigQuery, Redshift | Columnar storage, MPP, query optimization, materialized views |
+    | [**Real-time Data Pipeline**](realtime-data-pipeline.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Kafka, Flink, Spark Streaming | Stream processing, exactly-once, windowing, state management |
     | **Change Data Capture (CDC)** | 🔴 Hard | ⭐⭐⭐⭐ | Debezium, AWS DMS, Airbyte | Database logs, replication, event streaming, consistency |
     | **Data Quality Platform** | 🟡 Medium | ⭐⭐⭐⭐ | Great Expectations, Monte Carlo | Data validation, anomaly detection, SLAs, lineage |
     | **Data Catalog** | 🟡 Medium | ⭐⭐⭐⭐ | DataHub, Amundsen, Collibra | Metadata management, search, discovery, governance |
@@ -144,12 +144,12 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     | Problem | Difficulty | Frequency | Companies | Key Concepts |
     |---------|-----------|-----------|-----------|--------------|
-    | **ML Training Pipeline** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Google Vertex AI, AWS SageMaker | Distributed training, hyperparameter tuning, checkpointing |
+    | [**ML Training Pipeline**](ml-training-pipeline.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Google Vertex AI, AWS SageMaker | Distributed training, hyperparameter tuning, checkpointing |
     | [**Feature Store**](feature-store.md) | 🔴 Hard | ⭐⭐⭐⭐ | Tecton, Feast, AWS Feature Store | Feature engineering, online/offline store, versioning, serving |
     | [**Model Serving Platform**](model-serving.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | TensorFlow Serving, Seldon, KServe | Model deployment, autoscaling, A/B testing, canary |
     | **ML Experiment Tracking** | 🟡 Medium | ⭐⭐⭐⭐ | MLflow, Weights & Biases, Neptune | Metrics logging, artifact storage, comparison, reproducibility |
     | **AutoML Platform** | 🔴 Hard | ⭐⭐⭐⭐ | Google AutoML, H2O.ai | Neural architecture search, automated feature engineering |
-    | **A/B Testing Framework** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Optimizely, Google Optimize | Statistical significance, variant assignment, metrics calculation |
+    | [**A/B Testing Framework**](ab-testing-framework.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Optimizely, Google Optimize | Statistical significance, variant assignment, metrics calculation |
     | **Model Monitoring** | 🟡 Medium | ⭐⭐⭐⭐ | Arize, WhyLabs, Evidently | Drift detection, performance monitoring, bias detection |
     | **Real-time Prediction** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Amazon Personalize, Netflix | Low-latency inference, caching, feature computation |
     | **ML Model Registry** | 🟡 Medium | ⭐⭐⭐⭐ | MLflow Registry, Neptune | Model versioning, metadata, approval workflow, deployment |
@@ -161,7 +161,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     |---------|-----------|-----------|-----------|--------------|
     | [**ChatGPT-like System**](chatgpt-system.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | OpenAI, Anthropic | LLM serving, conversation state, streaming, rate limiting |
     | [**RAG System**](rag-system.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | OpenAI, Anthropic, Enterprise AI | Vector search, embeddings, retrieval, context injection |
-    | **AI Agent Platform** | 🔴 Hard | ⭐⭐⭐⭐⭐ | LangChain, AutoGPT | Tool calling, memory, planning, multi-agent orchestration |
+    | [**AI Agent Platform**](ai-agent-platform.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | LangChain, AutoGPT | Tool calling, memory, planning, multi-agent orchestration |
     | [**AI Code Assistant**](ai-code-assistant.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | GitHub Copilot, Cursor, Replit | Code completion, context window, latency, caching |
     | **Text-to-Image Generator** | 🔴 Hard | ⭐⭐⭐⭐ | Midjourney, DALL-E, Stable Diffusion | Diffusion models, GPU queue, image storage, prompt engineering |
     | [**Vector Database**](vector-database.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Pinecone, Weaviate, Qdrant | HNSW/IVF, similarity search, sharding, hybrid search |
@@ -219,7 +219,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     ---
 
-    ## 🔴 Hard Problems (28 problems)
+    ## 🔴 Hard Problems (33 problems)
 
     **Perfect for:** Advanced prep, FAANG interviews, senior roles
 
@@ -257,10 +257,15 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**RAG System**](rag-system.md) | GenAI | ⭐⭐⭐⭐⭐ | Vector search, retrieval, context injection |
     | [**Vector Database**](vector-database.md) | GenAI | ⭐⭐⭐⭐⭐ | HNSW, similarity search, sharding |
     | [**Data Lake**](data-lake.md) | Data Eng | ⭐⭐⭐⭐⭐ | ACID transactions, partitioning, schema evolution |
+    | [**Data Warehouse**](data-warehouse.md) | Data Eng | ⭐⭐⭐⭐⭐ | MPP, columnar storage, query optimization |
     | [**ETL Pipeline**](etl-pipeline.md) | Data Eng | ⭐⭐⭐⭐⭐ | DAG orchestration, incremental loading, lineage |
     | [**Feature Store**](feature-store.md) | ML | ⭐⭐⭐⭐ | Online/offline serving, point-in-time joins |
     | [**Model Serving Platform**](model-serving.md) | ML | ⭐⭐⭐⭐⭐ | Dynamic batching, A/B testing, canary deployment |
     | [**AI Code Assistant**](ai-code-assistant.md) | GenAI | ⭐⭐⭐⭐⭐ | Code completion, context extraction, caching |
+    | [**Real-time Data Pipeline**](realtime-data-pipeline.md) | Data Eng | ⭐⭐⭐⭐⭐ | Stream processing, exactly-once, windowing |
+    | [**ML Training Pipeline**](ml-training-pipeline.md) | ML | ⭐⭐⭐⭐⭐ | Distributed training, hyperparameter tuning, checkpointing |
+    | [**A/B Testing Framework**](ab-testing-framework.md) | ML | ⭐⭐⭐⭐⭐ | Statistical testing, variant assignment, multi-armed bandits |
+    | [**AI Agent Platform**](ai-agent-platform.md) | GenAI | ⭐⭐⭐⭐⭐ | ReAct prompting, tool calling, multi-agent orchestration |
 
 === "🏢 By Company"
 

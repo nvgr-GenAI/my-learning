@@ -335,10 +335,14 @@ nav:
         - Smart Meter: system-design/problems/smart-meter.md
       - Data Engineering:
         - Data Lake: system-design/problems/data-lake.md
+        - Data Warehouse: system-design/problems/data-warehouse.md
         - ETL Pipeline: system-design/problems/etl-pipeline.md
+        - Real-time Data Pipeline: system-design/problems/realtime-data-pipeline.md
       - Machine Learning:
         - Feature Store: system-design/problems/feature-store.md
         - Model Serving Platform: system-design/problems/model-serving.md
+        - ML Training Pipeline: system-design/problems/ml-training-pipeline.md
+        - A/B Testing Framework: system-design/problems/ab-testing-framework.md
       - Generative AI & LLM:
         - ChatGPT-like System: system-design/problems/chatgpt-system.md
         - RAG System: system-design/problems/rag-system.md
