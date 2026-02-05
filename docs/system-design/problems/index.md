@@ -2,7 +2,7 @@
 
 Master system design interviews with 50 real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
 
-**Status:** ✅ 33 Complete | 🚧 0 In Progress | 📋 17 Planned
+**Status:** ✅ 50 Complete | 🚧 0 In Progress | 📋 0 Planned
 
 ---
 
@@ -25,8 +25,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     |---------|-----------|-----------|-----------|--------------|
     | [**URL Shortener**](url-shortener.md) | 🟡 Medium | ⭐⭐⭐⭐⭐ | Amazon, Google, Meta, Microsoft, Uber | Short code generation, caching, analytics |
     | [**Pastebin**](pastebin.md) | 🟡 Medium | ⭐⭐⭐⭐ | Amazon, Microsoft, Twitter | Text storage, expiration, syntax highlighting |
-    | **File Upload Service** | 🟡 Medium | ⭐⭐⭐⭐ | Dropbox, Google, Microsoft | Chunking, resumable uploads, deduplication |
-    | **Image Hosting** | 🟡 Medium | ⭐⭐⭐⭐ | Instagram, Pinterest, Imgur | Image processing, CDN, thumbnails |
+    | [**File Upload Service**](file-upload-service.md) | 🟡 Medium | ⭐⭐⭐⭐ | Dropbox, Google, Microsoft | Chunking, resumable uploads, deduplication |
+    | [**Image Hosting**](image-hosting.md) | 🟡 Medium | ⭐⭐⭐⭐ | Instagram, Pinterest, Imgur | Image processing, CDN, thumbnails |
     | [**Cloud Storage (Dropbox)**](dropbox.md) | 🔴 Hard | ⭐⭐⭐⭐ | Dropbox, Google Drive, OneDrive | Sync, conflict resolution, versioning |
 
     ## Social & Communication
@@ -35,7 +35,9 @@ Master system design interviews with 50 real-world problems asked by top tech co
     |---------|-----------|-----------|-----------|--------------|
     | [**Twitter Feed**](twitter.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Twitter, Meta, LinkedIn | Fan-out, timelines, real-time updates |
     | [**Instagram**](instagram.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Meta, Instagram, TikTok | Photo storage, feeds, followers graph |
+    | [**LinkedIn**](linkedin.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | LinkedIn, Meta, Microsoft | Social graph, job matching, news feed |
     | [**WhatsApp/Chat**](whatsapp.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Meta, WhatsApp, Slack, Discord | Real-time messaging, presence, group chat |
+    | [**Slack**](slack.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Slack, Microsoft Teams, Discord | Team messaging, channels, WebSocket |
     | [**Notification System**](notification-system.md) | 🟡 Medium | ⭐⭐⭐⭐ | All companies | Push notifications, delivery guarantees |
     | [**News Feed**](news-feed.md) | 🔴 Hard | ⭐⭐⭐⭐ | Facebook, LinkedIn, Reddit | Ranking, personalization, real-time |
 
@@ -64,6 +66,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**E-Commerce Platform (Amazon)**](ecommerce.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Amazon, eBay, Shopify | Inventory, orders, payments, catalog |
     | [**Payment System (Stripe)**](payment-system.md) | 🔴 Hard | ⭐⭐⭐⭐ | Stripe, PayPal, Square | Transactions, idempotency, ledger |
     | [**Ticket Booking (BookMyShow)**](ticket-booking.md) | 🔴 Hard | ⭐⭐⭐⭐ | BookMyShow, Ticketmaster | Concurrency, seat locking, inventory |
+    | [**Airbnb**](airbnb.md) | 🔴 Hard | ⭐⭐⭐⭐ | Airbnb, Booking.com, Vrbo | Geospatial search, booking system, calendar |
     | [**Food Delivery (UberEats)**](food-delivery.md) | 🔴 Hard | ⭐⭐⭐⭐ | UberEats, DoorDash, GrubHub | Matching, routing, real-time tracking |
 
     ## Location-Based Services
@@ -73,12 +76,16 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Ride Sharing (Uber)**](uber.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Uber, Lyft | Geohashing, matching, ETA, surge pricing |
     | [**Yelp/Nearby Places**](yelp.md) | 🟡 Medium | ⭐⭐⭐⭐ | Yelp, Google Maps | Geospatial indexing, quadtree |
     | [**Google Maps**](google-maps.md) | 🔴 Hard | ⭐⭐⭐⭐ | Google, Apple | Routing, traffic, graph algorithms |
-    | **Location Tracking** | 🟡 Medium | ⭐⭐⭐ | Uber, DoorDash, Find My | GPS data, geofencing, privacy |
+    | [**Location Tracking**](location-tracking.md) | 🟡 Medium | ⭐⭐⭐ | Uber, DoorDash, Find My | GPS data, geofencing, privacy |
 
     ## Infrastructure & Developer Tools
 
     | Problem | Difficulty | Frequency | Companies | Key Concepts |
     |---------|-----------|-----------|-----------|--------------|
+    | [**Key-Value Store**](key-value-store.md) | 🟢 Easy | ⭐⭐⭐ | All companies | Hash map, LRU cache, TTL, eviction |
+    | [**URL Validator**](url-validator.md) | 🟢 Easy | ⭐⭐⭐ | All companies | Multi-layer validation, DNS lookup, security |
+    | [**Simple Cache**](simple-cache.md) | 🟢 Easy | ⭐⭐⭐⭐ | All companies | Cache-aside, write-through, cache warming |
+    | [**Health Checker**](health-checker.md) | 🟢 Easy | ⭐⭐⭐ | All companies | Health checks, alerting, SLA tracking |
     | [**Rate Limiter**](rate-limiter.md) | 🟡 Medium | ⭐⭐⭐⭐⭐ | All companies | Token bucket, sliding window, distributed |
     | [**API Gateway**](api-gateway.md) | 🟡 Medium | ⭐⭐⭐⭐ | Kong, AWS, Google | Routing, authentication, rate limiting |
     | [**Distributed Cache (Redis)**](distributed-cache.md) | 🔴 Hard | ⭐⭐⭐⭐ | Redis, Memcached | Consistent hashing, replication, eviction |
@@ -90,18 +97,18 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | Problem | Difficulty | Frequency | Companies | Key Concepts |
     |---------|-----------|-----------|-----------|--------------|
     | [**Google Docs**](google-docs.md) | 🔴 Hard | ⭐⭐⭐⭐ | Google, Microsoft, Notion | CRDT, OT, real-time collaboration |
-    | **Calendar System** | 🟡 Medium | ⭐⭐⭐ | Google, Microsoft, Apple | Availability, conflicts, recurring events |
-    | **Task Management** | 🟡 Medium | ⭐⭐⭐ | Asana, Jira, Trello | Projects, workflows, notifications |
-    | **Code Repository** | 🔴 Hard | ⭐⭐⭐ | GitHub, GitLab | Version control, merge, diff |
+    | [**GitHub**](github.md) | 🔴 Hard | ⭐⭐⭐⭐ | GitHub, GitLab, Bitbucket | Git protocol, code search, CI/CD, webhooks |
+    | [**Calendar System**](calendar-system.md) | 🟡 Medium | ⭐⭐⭐ | Google, Microsoft, Apple | Availability, conflicts, recurring events |
+    | [**Task Management**](task-management.md) | 🟡 Medium | ⭐⭐⭐ | Asana, Jira, Trello | Projects, workflows, notifications |
 
     ## Analytics & Monitoring
 
     | Problem | Difficulty | Frequency | Companies | Key Concepts |
     |---------|-----------|-----------|-----------|--------------|
     | [**Analytics Platform**](analytics-platform.md) | 🔴 Hard | ⭐⭐⭐⭐ | Google Analytics, Mixpanel | Event tracking, aggregation, dashboards |
-    | **Metrics Monitoring** | 🟡 Medium | ⭐⭐⭐⭐ | Datadog, Prometheus | Time-series DB, alerting, visualization |
-    | **Log Aggregation** | 🟡 Medium | ⭐⭐⭐ | Splunk, ELK Stack | Collection, indexing, search |
-    | **Distributed Tracing** | 🔴 Hard | ⭐⭐⭐ | Jaeger, Zipkin | Trace IDs, spans, correlation |
+    | [**Metrics Monitoring**](metrics-monitoring.md) | 🟡 Medium | ⭐⭐⭐⭐ | Datadog, Prometheus, Grafana, New Relic | Time-series DB, alerting, downsampling, aggregation |
+    | [**Log Aggregation**](log-aggregation.md) | 🟡 Medium | ⭐⭐⭐ | Splunk, ELK Stack | Collection, indexing, search |
+    | [**Distributed Tracing**](distributed-tracing.md) | 🔴 Hard | ⭐⭐⭐ | Jaeger, Zipkin | Trace IDs, spans, correlation |
 
 === "🎚️ By Difficulty"
 
@@ -113,11 +120,11 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     | Problem | Category | Frequency | Key Learning |
     |---------|----------|-----------|--------------|
-    | **Key-Value Store** | Infrastructure | ⭐⭐⭐ | Basic storage, CRUD operations |
-    | **URL Validator** | Tools | ⭐⭐⭐ | API design, validation logic |
-    | **Simple Cache** | Infrastructure | ⭐⭐⭐⭐ | LRU, eviction policies |
+    | [**Key-Value Store**](key-value-store.md) | Infrastructure | ⭐⭐⭐ | Hash map, LRU eviction, TTL |
+    | [**URL Validator**](url-validator.md) | Tools | ⭐⭐⭐ | Validation pipeline, DNS, security |
+    | [**Simple Cache**](simple-cache.md) | Infrastructure | ⭐⭐⭐⭐ | Cache-aside, eviction, invalidation |
     | [**Unique ID Generator**](unique-id-generator.md) | Infrastructure | ⭐⭐⭐⭐ | Distributed ID generation |
-    | **Health Checker** | Monitoring | ⭐⭐⭐ | Polling, alerting basics |
+    | [**Health Checker**](health-checker.md) | Monitoring | ⭐⭐⭐ | Health checks, alerting, SLA |
 
     ---
 
@@ -133,18 +140,18 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Pastebin**](pastebin.md) | Storage | ⭐⭐⭐⭐ | Text storage, expiration handling |
     | [**Rate Limiter**](rate-limiter.md) | Infrastructure | ⭐⭐⭐⭐⭐ | Token bucket, sliding window |
     | [**Autocomplete**](autocomplete.md) | Search | ⭐⭐⭐⭐⭐ | Trie, prefix matching, caching |
-    | **File Upload Service** | Storage | ⭐⭐⭐⭐ | Chunking, resumable uploads |
-    | **Image Hosting** | Storage | ⭐⭐⭐⭐ | CDN, image processing |
+    | [**File Upload Service**](file-upload-service.md) | Storage | ⭐⭐⭐⭐ | Chunking, resumable uploads, deduplication |
+    | [**Image Hosting**](image-hosting.md) | Storage | ⭐⭐⭐⭐ | CDN, image processing, thumbnails |
     | [**Notification System**](notification-system.md) | Social | ⭐⭐⭐⭐ | Fan-out, delivery guarantees |
     | [**Web Crawler**](web-crawler.md) | Search | ⭐⭐⭐⭐ | Queue, deduplication |
     | [**Yelp/Nearby**](yelp.md) | Location | ⭐⭐⭐⭐ | Geospatial indexing |
-    | **Calendar System** | Collaboration | ⭐⭐⭐ | Conflicts, availability |
-    | **Task Management** | Collaboration | ⭐⭐⭐ | Workflows, notifications |
+    | [**Calendar System**](calendar-system.md) | Collaboration | ⭐⭐⭐ | Recurring events, conflict detection |
+    | [**Task Management**](task-management.md) | Collaboration | ⭐⭐⭐ | Workflows, dependencies, notifications |
     | [**API Gateway**](api-gateway.md) | Infrastructure | ⭐⭐⭐⭐ | Routing, auth, rate limiting |
     | [**Load Balancer**](load-balancer.md) | Infrastructure | ⭐⭐⭐⭐ | Algorithms, health checks |
-    | **Metrics Monitoring** | Monitoring | ⭐⭐⭐⭐ | Time-series, aggregation |
-    | **Log Aggregation** | Monitoring | ⭐⭐⭐ | Collection, indexing |
-    | **Location Tracking** | Location | ⭐⭐⭐ | GPS, geofencing |
+    | [**Metrics Monitoring**](metrics-monitoring.md) | Monitoring | ⭐⭐⭐⭐ | Time-series DB, downsampling, alerting |
+    | [**Log Aggregation**](log-aggregation.md) | Monitoring | ⭐⭐⭐ | Collection, indexing, search |
+    | [**Location Tracking**](location-tracking.md) | Location | ⭐⭐⭐ | GPS, geofencing, privacy |
 
     ---
 
@@ -158,7 +165,9 @@ Master system design interviews with 50 real-world problems asked by top tech co
     |---------|----------|-----------|--------------|
     | [**Twitter Feed**](twitter.md) | Social | ⭐⭐⭐⭐⭐ | Fan-out, timeline generation |
     | [**Instagram**](instagram.md) | Social | ⭐⭐⭐⭐⭐ | Photo storage, social graph |
+    | [**LinkedIn**](linkedin.md) | Social | ⭐⭐⭐⭐⭐ | Social graph, job matching, Neo4j |
     | [**WhatsApp/Chat**](whatsapp.md) | Social | ⭐⭐⭐⭐⭐ | Real-time messaging, presence |
+    | [**Slack**](slack.md) | Social | ⭐⭐⭐⭐⭐ | WebSocket, channels, message ordering |
     | [**Video Streaming**](netflix.md) | Media | ⭐⭐⭐⭐⭐ | CDN, encoding, adaptive bitrate |
     | [**Search Engine**](search-engine.md) | Search | ⭐⭐⭐⭐⭐ | Crawling, indexing, ranking |
     | [**E-Commerce Platform**](ecommerce.md) | E-Commerce | ⭐⭐⭐⭐⭐ | Inventory, transactions, catalog |
@@ -171,14 +180,15 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Cloud Storage**](dropbox.md) | Storage | ⭐⭐⭐⭐ | Sync, conflict resolution |
     | [**Payment System**](payment-system.md) | E-Commerce | ⭐⭐⭐⭐ | Transactions, idempotency |
     | [**Ticket Booking**](ticket-booking.md) | E-Commerce | ⭐⭐⭐⭐ | Concurrency, locking |
+    | [**Airbnb**](airbnb.md) | E-Commerce | ⭐⭐⭐⭐ | Geospatial search, booking consistency |
     | [**Food Delivery**](food-delivery.md) | E-Commerce | ⭐⭐⭐⭐ | Matching, real-time tracking |
     | [**Google Maps**](google-maps.md) | Location | ⭐⭐⭐⭐ | Routing, traffic algorithms |
     | [**Google Docs**](google-docs.md) | Collaboration | ⭐⭐⭐⭐ | CRDT, real-time collaboration |
+    | [**GitHub**](github.md) | Collaboration | ⭐⭐⭐⭐ | Git storage, code search, CI/CD |
     | [**Distributed Cache**](distributed-cache.md) | Infrastructure | ⭐⭐⭐⭐ | Consistent hashing, replication |
     | [**Message Queue**](message-queue.md) | Infrastructure | ⭐⭐⭐⭐ | Partitioning, ordering |
-    | **Code Repository** | Collaboration | ⭐⭐⭐ | Version control, merge |
     | [**Analytics Platform**](analytics-platform.md) | Monitoring | ⭐⭐⭐⭐ | Event tracking, aggregation |
-    | **Distributed Tracing** | Monitoring | ⭐⭐⭐ | Trace IDs, correlation |
+    | [**Distributed Tracing**](distributed-tracing.md) | Monitoring | ⭐⭐⭐ | Trace IDs, spans, correlation |
 
 === "🏢 By Company"
 
@@ -261,11 +271,12 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     | Problem | Difficulty | Focus Area |
     |---------|-----------|------------|
-    | [**Teams**](video-conferencing.md) | 🔴 Hard | Chat, video conferencing |
+    | [**Teams/Slack**](slack.md) | 🔴 Hard | Chat, team collaboration |
     | [**OneDrive**](dropbox.md) | 🔴 Hard | Cloud storage, sync |
+    | [**GitHub**](github.md) | 🔴 Hard | Code hosting, CI/CD |
     | **Calendar System** | 🟡 Medium | Outlook calendar |
-    | **Code Repository** | 🔴 Hard | GitHub, Azure DevOps |
     | [**Video Conferencing**](video-conferencing.md) | 🔴 Hard | Teams meetings |
+    | [**LinkedIn**](linkedin.md) | 🔴 Hard | Professional network |
 
     ### Uber
 
@@ -282,6 +293,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     | Problem | Difficulty | Focus Area |
     |---------|-----------|------------|
+    | [**Airbnb**](airbnb.md) | 🔴 Hard | Core product, booking system |
     | [**Ticket Booking**](ticket-booking.md) | 🔴 Hard | Reservation system |
     | [**Search Engine**](search-engine.md) | 🔴 Hard | Property search |
     | [**Payment System**](payment-system.md) | 🔴 Hard | Booking payments |
@@ -292,6 +304,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     | Problem | Difficulty | Focus Area |
     |---------|-----------|------------|
+    | [**LinkedIn**](linkedin.md) | 🔴 Hard | Core product, social graph, job matching |
     | [**News Feed**](news-feed.md) | 🔴 Hard | Professional feed |
     | [**Twitter Feed**](twitter.md) | 🔴 Hard | Timeline generation |
     | [**Notification System**](notification-system.md) | 🟡 Medium | Job alerts, messages |
@@ -308,6 +321,26 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**URL Shortener**](url-shortener.md) | 🟡 Medium | t.co shortener |
     | [**Live Streaming**](live-streaming.md) | 🔴 Hard | Twitter Spaces |
 
+    ### Slack
+
+    | Problem | Difficulty | Focus Area |
+    |---------|-----------|------------|
+    | [**Slack**](slack.md) | 🔴 Hard | Core product, team messaging |
+    | [**WhatsApp**](whatsapp.md) | 🔴 Hard | Real-time messaging |
+    | [**Notification System**](notification-system.md) | 🟡 Medium | Channel notifications |
+    | [**Search Engine**](search-engine.md) | 🔴 Hard | Message search |
+    | [**File Upload Service**](whatsapp.md) | 🟡 Medium | File sharing |
+
+    ### GitHub
+
+    | Problem | Difficulty | Focus Area |
+    |---------|-----------|------------|
+    | [**GitHub**](github.md) | 🔴 Hard | Core product, code hosting |
+    | [**Distributed Cache**](distributed-cache.md) | 🔴 Hard | Git object caching |
+    | [**Search Engine**](search-engine.md) | 🔴 Hard | Code search |
+    | [**Notification System**](notification-system.md) | 🟡 Medium | Pull request notifications |
+    | [**Message Queue**](message-queue.md) | 🔴 Hard | Webhook delivery |
+
 === "🧩 By Concept"
 
     **Learn specific system design concepts through relevant problems**
@@ -316,6 +349,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     | Problem | What You'll Learn | Difficulty |
     |---------|-------------------|------------|
+    | [**Simple Cache**](simple-cache.md) | Cache-aside, write-through, TTL, eviction | 🟢 Easy |
     | [**URL Shortener**](url-shortener.md) | Multi-layer caching, cache invalidation | 🟡 Medium |
     | [**Rate Limiter**](rate-limiter.md) | Distributed cache, sliding window | 🟡 Medium |
     | [**Autocomplete**](autocomplete.md) | Cache warming, prefix caching | 🟡 Medium |
@@ -421,7 +455,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**URL Shortener**](url-shortener.md) | 1-2 | Code generation, caching basics, capacity estimation | 3h |
     | [**Rate Limiter**](rate-limiter.md) | 3-4 | Token bucket, sliding window, distributed systems | 2h |
     | [**Pastebin**](pastebin.md) | 5-6 | Text storage, expiration, similar to URL shortener | 2h |
-    | **Key-Value Store** | 7 | Basic CRUD, simple storage | 1h |
+    | [**Key-Value Store**](key-value-store.md) | 7 | Hash map, LRU cache, basic CRUD operations | 1h |
 
     **✅ Checkpoint:** Can you explain caching strategies and do capacity estimation?
 
@@ -451,7 +485,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Twitter Feed**](twitter.md) | 15-17 | Timeline generation, hybrid fan-out, massive scale | 4h |
     | [**Video Streaming**](netflix.md) | 18-20 | CDN, encoding, adaptive bitrate, global scale | 4h |
     | [**Ride Sharing**](uber.md) | 21-23 | Geohashing, matching algorithms, real-time | 4h |
-    | **Metrics Monitoring** | 24-25 | Time-series DB, aggregation | 2h |
+    | [**Metrics Monitoring**](metrics-monitoring.md) | 24-25 | Time-series DB, downsampling, alerting | 2h |
 
     **✅ Checkpoint:** Can you design systems with 100M+ users?
 

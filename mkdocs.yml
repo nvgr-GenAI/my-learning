@@ -273,6 +273,10 @@ nav:
       - system-design/problems/index.md
       - Easy Problems:
         - Unique ID Generator: system-design/problems/unique-id-generator.md
+        - Key-Value Store: system-design/problems/key-value-store.md
+        - URL Validator: system-design/problems/url-validator.md
+        - Simple Cache: system-design/problems/simple-cache.md
+        - Health Checker: system-design/problems/health-checker.md
       - Search & Discovery:
         - Search Engine (Google): system-design/problems/search-engine.md
         - Autocomplete/Typeahead: system-design/problems/autocomplete.md
@@ -281,7 +285,9 @@ nav:
       - Social & Communication:
         - Twitter: system-design/problems/twitter.md
         - Instagram: system-design/problems/instagram.md
+        - LinkedIn: system-design/problems/linkedin.md
         - WhatsApp: system-design/problems/whatsapp.md
+        - Slack: system-design/problems/slack.md
         - News Feed (Facebook): system-design/problems/news-feed.md
         - Notification System: system-design/problems/notification-system.md
       - Media & Entertainment:
@@ -295,15 +301,19 @@ nav:
         - E-Commerce (Amazon): system-design/problems/ecommerce.md
         - Payment System (Stripe): system-design/problems/payment-system.md
         - Ticket Booking: system-design/problems/ticket-booking.md
+        - Airbnb: system-design/problems/airbnb.md
         - Food Delivery (UberEats): system-design/problems/food-delivery.md
       - Location-Based:
         - Uber: system-design/problems/uber.md
         - Yelp/Nearby Places: system-design/problems/yelp.md
         - Google Maps: system-design/problems/google-maps.md
+        - Location Tracking: system-design/problems/location-tracking.md
       - Storage & Content:
         - URL Shortener: system-design/problems/url-shortener.md
         - Pastebin: system-design/problems/pastebin.md
         - Dropbox: system-design/problems/dropbox.md
+        - File Upload Service: system-design/problems/file-upload-service.md
+        - Image Hosting: system-design/problems/image-hosting.md
       - Infrastructure:
         - Rate Limiter: system-design/problems/rate-limiter.md
         - API Gateway: system-design/problems/api-gateway.md
@@ -312,8 +322,14 @@ nav:
         - Message Queue (Kafka): system-design/problems/message-queue.md
       - Collaboration:
         - Google Docs: system-design/problems/google-docs.md
+        - GitHub: system-design/problems/github.md
+        - Calendar System: system-design/problems/calendar-system.md
+        - Task Management: system-design/problems/task-management.md
       - Analytics & Monitoring:
         - Analytics Platform: system-design/problems/analytics-platform.md
+        - Metrics Monitoring: system-design/problems/metrics-monitoring.md
+        - Log Aggregation: system-design/problems/log-aggregation.md
+        - Distributed Tracing: system-design/problems/distributed-tracing.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:
