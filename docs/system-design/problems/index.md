@@ -2,7 +2,7 @@
 
 Master system design interviews with 50 real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
 
-**Status:** ✅ 50 Complete | 🚧 0 In Progress | 📋 0 Planned
+**Status:** ✅ 55 Complete | 🚧 0 In Progress | 📋 37 Planned
 
 ---
 
@@ -109,6 +109,68 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Metrics Monitoring**](metrics-monitoring.md) | 🟡 Medium | ⭐⭐⭐⭐ | Datadog, Prometheus, Grafana, New Relic | Time-series DB, alerting, downsampling, aggregation |
     | [**Log Aggregation**](log-aggregation.md) | 🟡 Medium | ⭐⭐⭐ | Splunk, ELK Stack | Collection, indexing, search |
     | [**Distributed Tracing**](distributed-tracing.md) | 🔴 Hard | ⭐⭐⭐ | Jaeger, Zipkin | Trace IDs, spans, correlation |
+
+    ## Internet of Things (IoT)
+
+    | Problem | Difficulty | Frequency | Companies | Key Concepts |
+    |---------|-----------|-----------|-----------|--------------|
+    | **Smart Home Hub** | 🔴 Hard | ⭐⭐⭐⭐ | Amazon Alexa, Google Home, Apple HomeKit | Device registry, MQTT, command routing, voice processing |
+    | [**Smart Lock System**](smart-lock.md) | 🟡 Medium | ⭐⭐⭐ | Amazon Key, August, Yale | Bluetooth/WiFi, access control, audit logs, battery optimization |
+    | **Smart Thermostat** | 🟡 Medium | ⭐⭐⭐ | Nest, Ecobee, Honeywell | Temperature control, learning algorithms, energy optimization |
+    | [**Smart Meter (Electricity)**](smart-meter.md) | 🟡 Medium | ⭐⭐⭐⭐ | Utility companies, Sense | Real-time consumption, time-series data, billing, anomaly detection |
+    | **Smart Doorbell** | 🟡 Medium | ⭐⭐⭐ | Ring, Nest Hello | Video streaming, motion detection, cloud recording, notifications |
+    | **Connected Car Platform** | 🔴 Hard | ⭐⭐⭐⭐ | Tesla, GM OnStar, BMW ConnectedDrive | OTA updates, telemetry, remote control, fleet management |
+    | **Fitness Tracker System** | 🟡 Medium | ⭐⭐⭐ | Fitbit, Apple Watch, Garmin | Activity tracking, heart rate monitoring, sync, battery life |
+    | **IoT Device Management** | 🔴 Hard | ⭐⭐⭐⭐ | AWS IoT, Azure IoT Hub, Google Cloud IoT | Device provisioning, shadow state, OTA, fleet monitoring |
+    | **Smart City Traffic** | 🔴 Hard | ⭐⭐⭐ | City governments, Siemens | Traffic sensors, signal optimization, congestion prediction |
+    | **Industrial IoT Monitor** | 🔴 Hard | ⭐⭐⭐ | GE Predix, Siemens MindSphere | Predictive maintenance, sensor data, edge computing |
+
+    ## Data Engineering
+
+    | Problem | Difficulty | Frequency | Companies | Key Concepts |
+    |---------|-----------|-----------|-----------|--------------|
+    | **Data Lake** | 🔴 Hard | ⭐⭐⭐⭐⭐ | AWS S3, Delta Lake, Apache Iceberg | Object storage, partitioning, metadata, ACID transactions |
+    | **ETL Pipeline** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Airflow, dbt, Fivetran | Orchestration, data transformation, scheduling, dependencies |
+    | **Real-time Data Pipeline** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Kafka, Flink, Spark Streaming | Stream processing, exactly-once, windowing, state management |
+    | **Data Warehouse** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Snowflake, BigQuery, Redshift | Columnar storage, MPP, query optimization, materialized views |
+    | **Change Data Capture (CDC)** | 🔴 Hard | ⭐⭐⭐⭐ | Debezium, AWS DMS, Airbyte | Database logs, replication, event streaming, consistency |
+    | **Data Quality Platform** | 🟡 Medium | ⭐⭐⭐⭐ | Great Expectations, Monte Carlo | Data validation, anomaly detection, SLAs, lineage |
+    | **Data Catalog** | 🟡 Medium | ⭐⭐⭐⭐ | DataHub, Amundsen, Collibra | Metadata management, search, discovery, governance |
+    | **Batch Processing System** | 🔴 Hard | ⭐⭐⭐⭐ | Apache Spark, Hadoop | Distributed computing, partitioning, shuffle, fault tolerance |
+    | **Data Lineage Tracker** | 🟡 Medium | ⭐⭐⭐ | OpenLineage, Marquez | Graph database, impact analysis, compliance, audit |
+    | **Data Mesh Platform** | 🔴 Hard | ⭐⭐⭐ | Modern data teams | Domain ownership, federated governance, self-serve |
+
+    ## Machine Learning Systems
+
+    | Problem | Difficulty | Frequency | Companies | Key Concepts |
+    |---------|-----------|-----------|-----------|--------------|
+    | **ML Training Pipeline** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Google Vertex AI, AWS SageMaker | Distributed training, hyperparameter tuning, checkpointing |
+    | **Feature Store** | 🔴 Hard | ⭐⭐⭐⭐ | Tecton, Feast, AWS Feature Store | Feature engineering, online/offline store, versioning, serving |
+    | **Model Serving Platform** | 🔴 Hard | ⭐⭐⭐⭐⭐ | TensorFlow Serving, Seldon, KServe | Model deployment, autoscaling, A/B testing, canary |
+    | **ML Experiment Tracking** | 🟡 Medium | ⭐⭐⭐⭐ | MLflow, Weights & Biases, Neptune | Metrics logging, artifact storage, comparison, reproducibility |
+    | **AutoML Platform** | 🔴 Hard | ⭐⭐⭐⭐ | Google AutoML, H2O.ai | Neural architecture search, automated feature engineering |
+    | **A/B Testing Framework** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Optimizely, Google Optimize | Statistical significance, variant assignment, metrics calculation |
+    | **Model Monitoring** | 🟡 Medium | ⭐⭐⭐⭐ | Arize, WhyLabs, Evidently | Drift detection, performance monitoring, bias detection |
+    | **Real-time Prediction** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Amazon Personalize, Netflix | Low-latency inference, caching, feature computation |
+    | **ML Model Registry** | 🟡 Medium | ⭐⭐⭐⭐ | MLflow Registry, Neptune | Model versioning, metadata, approval workflow, deployment |
+    | **ML Labeling Platform** | 🟡 Medium | ⭐⭐⭐ | Labelbox, Scale AI | Data annotation, quality control, workforce management |
+
+    ## Generative AI & LLM Systems
+
+    | Problem | Difficulty | Frequency | Companies | Key Concepts |
+    |---------|-----------|-----------|-----------|--------------|
+    | [**ChatGPT-like System**](chatgpt-system.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | OpenAI, Anthropic | LLM serving, conversation state, streaming, rate limiting |
+    | [**RAG System**](rag-system.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | OpenAI, Anthropic, Enterprise AI | Vector search, embeddings, retrieval, context injection |
+    | **AI Agent Platform** | 🔴 Hard | ⭐⭐⭐⭐⭐ | LangChain, AutoGPT | Tool calling, memory, planning, multi-agent orchestration |
+    | **AI Code Assistant** | 🔴 Hard | ⭐⭐⭐⭐⭐ | GitHub Copilot, Cursor, Replit | Code completion, context window, latency, caching |
+    | **Text-to-Image Generator** | 🔴 Hard | ⭐⭐⭐⭐ | Midjourney, DALL-E, Stable Diffusion | Diffusion models, GPU queue, image storage, prompt engineering |
+    | [**Vector Database**](vector-database.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Pinecone, Weaviate, Qdrant | HNSW/IVF, similarity search, sharding, hybrid search |
+    | **Document Q&A System** | 🟡 Medium | ⭐⭐⭐⭐ | Enterprise AI | PDF parsing, chunking, embeddings, citation |
+    | **AI Voice Assistant** | 🔴 Hard | ⭐⭐⭐⭐ | Siri, Google Assistant | Speech-to-text, NLU, TTS, wake word detection |
+    | **Prompt Management System** | 🟡 Medium | ⭐⭐⭐⭐ | PromptLayer, Helicone | Prompt versioning, A/B testing, caching, analytics |
+    | **AI Content Moderation** | 🟡 Medium | ⭐⭐⭐⭐ | OpenAI Moderation, Perspective API | Classification, toxicity detection, human-in-loop, appeals |
+    | **LLM Fine-tuning Platform** | 🔴 Hard | ⭐⭐⭐⭐ | OpenAI, Anthropic, Hugging Face | LoRA/QLoRA, dataset management, evaluation, deployment |
+    | **Multi-modal AI System** | 🔴 Hard | ⭐⭐⭐⭐ | GPT-4V, Gemini | Vision+Language, audio processing, unified embeddings |
 
 === "🎚️ By Difficulty"
 

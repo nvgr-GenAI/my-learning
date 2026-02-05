@@ -330,6 +330,13 @@ nav:
         - Metrics Monitoring: system-design/problems/metrics-monitoring.md
         - Log Aggregation: system-design/problems/log-aggregation.md
         - Distributed Tracing: system-design/problems/distributed-tracing.md
+      - Internet of Things (IoT):
+        - Smart Lock System: system-design/problems/smart-lock.md
+        - Smart Meter: system-design/problems/smart-meter.md
+      - Generative AI & LLM:
+        - ChatGPT-like System: system-design/problems/chatgpt-system.md
+        - RAG System: system-design/problems/rag-system.md
+        - Vector Database: system-design/problems/vector-database.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:
