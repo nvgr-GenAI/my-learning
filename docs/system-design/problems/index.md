@@ -214,10 +214,12 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Metrics Monitoring**](metrics-monitoring.md) | Monitoring | ⭐⭐⭐⭐ | Time-series DB, downsampling, alerting |
     | [**Log Aggregation**](log-aggregation.md) | Monitoring | ⭐⭐⭐ | Collection, indexing, search |
     | [**Location Tracking**](location-tracking.md) | Location | ⭐⭐⭐ | GPS, geofencing, privacy |
+    | [**Smart Lock System**](smart-lock.md) | IoT | ⭐⭐⭐ | Bluetooth/WiFi, access control, battery optimization |
+    | [**Smart Meter**](smart-meter.md) | IoT | ⭐⭐⭐⭐ | Time-series data, billing, anomaly detection |
 
     ---
 
-    ## 🔴 Hard Problems (20 problems)
+    ## 🔴 Hard Problems (23 problems)
 
     **Perfect for:** Advanced prep, FAANG interviews, senior roles
 
@@ -251,6 +253,9 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Message Queue**](message-queue.md) | Infrastructure | ⭐⭐⭐⭐ | Partitioning, ordering |
     | [**Analytics Platform**](analytics-platform.md) | Monitoring | ⭐⭐⭐⭐ | Event tracking, aggregation |
     | [**Distributed Tracing**](distributed-tracing.md) | Monitoring | ⭐⭐⭐ | Trace IDs, spans, correlation |
+    | [**ChatGPT-like System**](chatgpt-system.md) | GenAI | ⭐⭐⭐⭐⭐ | LLM serving, streaming, conversation state |
+    | [**RAG System**](rag-system.md) | GenAI | ⭐⭐⭐⭐⭐ | Vector search, retrieval, context injection |
+    | [**Vector Database**](vector-database.md) | GenAI | ⭐⭐⭐⭐⭐ | HNSW, similarity search, sharding |
 
 === "🏢 By Company"
 
