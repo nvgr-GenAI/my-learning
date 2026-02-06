@@ -2,7 +2,7 @@
 
 Master system design interviews with 50 real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
 
-**Status:** ✅ 80 Complete | 🚧 0 In Progress | 📋 12 Planned
+**Status:** ✅ 85 Complete | 🚧 0 In Progress | 📋 7 Planned
 
 ---
 
@@ -121,7 +121,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Smart Doorbell**](smart-doorbell.md) | 🟡 Medium | ⭐⭐⭐ | Ring, Nest Hello | Video streaming, motion detection, cloud recording, notifications |
     | [**Connected Car Platform**](connected-car.md) | 🔴 Hard | ⭐⭐⭐⭐ | Tesla, GM OnStar, BMW ConnectedDrive | OTA updates, telemetry, remote control, fleet management |
     | [**Fitness Tracker System**](fitness-tracker.md) | 🟡 Medium | ⭐⭐⭐ | Fitbit, Apple Watch, Garmin | Activity tracking, heart rate monitoring, sync, battery life |
-    | **IoT Device Management** | 🔴 Hard | ⭐⭐⭐⭐ | AWS IoT, Azure IoT Hub, Google Cloud IoT | Device provisioning, shadow state, OTA, fleet monitoring |
+    | [**IoT Device Management**](iot-device-management.md) | 🔴 Hard | ⭐⭐⭐⭐ | AWS IoT, Azure IoT Hub, Google Cloud IoT | Device provisioning, shadow state, OTA, fleet monitoring |
     | **Smart City Traffic** | 🔴 Hard | ⭐⭐⭐ | City governments, Siemens | Traffic sensors, signal optimization, congestion prediction |
     | **Industrial IoT Monitor** | 🔴 Hard | ⭐⭐⭐ | GE Predix, Siemens MindSphere | Predictive maintenance, sensor data, edge computing |
 
@@ -136,7 +136,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Change Data Capture (CDC)**](change-data-capture.md) | 🔴 Hard | ⭐⭐⭐⭐ | Debezium, AWS DMS, Airbyte | Database logs, replication, event streaming, consistency |
     | [**Data Quality Platform**](data-quality-platform.md) | 🟡 Medium | ⭐⭐⭐⭐ | Great Expectations, Monte Carlo | Data validation, anomaly detection, SLAs, lineage |
     | [**Data Catalog**](data-catalog.md) | 🟡 Medium | ⭐⭐⭐⭐ | DataHub, Amundsen, Collibra | Metadata management, search, discovery, governance |
-    | **Batch Processing System** | 🔴 Hard | ⭐⭐⭐⭐ | Apache Spark, Hadoop | Distributed computing, partitioning, shuffle, fault tolerance |
+    | [**Batch Processing System**](batch-processing.md) | 🔴 Hard | ⭐⭐⭐⭐ | Apache Spark, Hadoop | Distributed computing, partitioning, shuffle, fault tolerance |
     | **Data Lineage Tracker** | 🟡 Medium | ⭐⭐⭐ | OpenLineage, Marquez | Graph database, impact analysis, compliance, audit |
     | **Data Mesh Platform** | 🔴 Hard | ⭐⭐⭐ | Modern data teams | Domain ownership, federated governance, self-serve |
 
@@ -151,7 +151,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**AutoML Platform**](automl-platform.md) | 🔴 Hard | ⭐⭐⭐⭐ | Google AutoML, H2O.ai | Neural architecture search, automated feature engineering |
     | [**A/B Testing Framework**](ab-testing-framework.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Optimizely, Google Optimize | Statistical significance, variant assignment, metrics calculation |
     | [**Model Monitoring**](model-monitoring.md) | 🟡 Medium | ⭐⭐⭐⭐ | Arize, WhyLabs, Evidently | Drift detection, performance monitoring, bias detection |
-    | **Real-time Prediction** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Amazon Personalize, Netflix | Low-latency inference, caching, feature computation |
+    | [**Real-time Prediction**](realtime-prediction.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Amazon Personalize, Netflix | Low-latency inference, caching, feature computation |
     | **ML Model Registry** | 🟡 Medium | ⭐⭐⭐⭐ | MLflow Registry, Neptune | Model versioning, metadata, approval workflow, deployment |
     | **ML Labeling Platform** | 🟡 Medium | ⭐⭐⭐ | Labelbox, Scale AI | Data annotation, quality control, workforce management |
 
@@ -168,8 +168,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Document Q&A System**](document-qa.md) | 🟡 Medium | ⭐⭐⭐⭐ | Enterprise AI | PDF parsing, chunking, embeddings, citation |
     | [**AI Voice Assistant**](ai-voice-assistant.md) | 🔴 Hard | ⭐⭐⭐⭐ | Siri, Google Assistant | Speech-to-text, NLU, TTS, wake word detection |
     | [**Prompt Management System**](prompt-management.md) | 🟡 Medium | ⭐⭐⭐⭐ | PromptLayer, Helicone | Prompt versioning, A/B testing, caching, analytics |
-    | **AI Content Moderation** | 🟡 Medium | ⭐⭐⭐⭐ | OpenAI Moderation, Perspective API | Classification, toxicity detection, human-in-loop, appeals |
-    | **LLM Fine-tuning Platform** | 🔴 Hard | ⭐⭐⭐⭐ | OpenAI, Anthropic, Hugging Face | LoRA/QLoRA, dataset management, evaluation, deployment |
+    | [**AI Content Moderation**](ai-content-moderation.md) | 🟡 Medium | ⭐⭐⭐⭐ | OpenAI Moderation, Perspective API | Classification, toxicity detection, human-in-loop, appeals |
+    | [**LLM Fine-tuning Platform**](llm-finetuning.md) | 🔴 Hard | ⭐⭐⭐⭐ | OpenAI, Anthropic, Hugging Face | LoRA/QLoRA, dataset management, evaluation, deployment |
     | **Multi-modal AI System** | 🔴 Hard | ⭐⭐⭐⭐ | GPT-4V, Gemini | Vision+Language, audio processing, unified embeddings |
 
 === "🎚️ By Difficulty"

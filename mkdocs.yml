@@ -338,6 +338,7 @@ nav:
         - Smart Doorbell: system-design/problems/smart-doorbell.md
         - Connected Car Platform: system-design/problems/connected-car.md
         - Fitness Tracker System: system-design/problems/fitness-tracker.md
+        - IoT Device Management: system-design/problems/iot-device-management.md
       - Data Engineering:
         - Data Lake: system-design/problems/data-lake.md
         - Data Warehouse: system-design/problems/data-warehouse.md
@@ -346,6 +347,7 @@ nav:
         - Change Data Capture: system-design/problems/change-data-capture.md
         - Data Quality Platform: system-design/problems/data-quality-platform.md
         - Data Catalog: system-design/problems/data-catalog.md
+        - Batch Processing System: system-design/problems/batch-processing.md
       - Machine Learning:
         - Feature Store: system-design/problems/feature-store.md
         - Model Serving Platform: system-design/problems/model-serving.md
@@ -354,6 +356,7 @@ nav:
         - ML Experiment Tracking: system-design/problems/ml-experiment-tracking.md
         - AutoML Platform: system-design/problems/automl-platform.md
         - Model Monitoring: system-design/problems/model-monitoring.md
+        - Real-time Prediction: system-design/problems/realtime-prediction.md
       - Generative AI & LLM:
         - ChatGPT-like System: system-design/problems/chatgpt-system.md
         - RAG System: system-design/problems/rag-system.md
@@ -363,6 +366,8 @@ nav:
         - Document Q&A System: system-design/problems/document-qa.md
         - AI Voice Assistant: system-design/problems/ai-voice-assistant.md
         - Prompt Management System: system-design/problems/prompt-management.md
+        - AI Content Moderation: system-design/problems/ai-content-moderation.md
+        - LLM Fine-tuning Platform: system-design/problems/llm-finetuning.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:
