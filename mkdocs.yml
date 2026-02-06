@@ -333,21 +333,26 @@ nav:
       - Internet of Things (IoT):
         - Smart Lock System: system-design/problems/smart-lock.md
         - Smart Meter: system-design/problems/smart-meter.md
+        - Smart Home Hub: system-design/problems/smart-home-hub.md
+        - Smart Thermostat: system-design/problems/smart-thermostat.md
       - Data Engineering:
         - Data Lake: system-design/problems/data-lake.md
         - Data Warehouse: system-design/problems/data-warehouse.md
         - ETL Pipeline: system-design/problems/etl-pipeline.md
         - Real-time Data Pipeline: system-design/problems/realtime-data-pipeline.md
+        - Change Data Capture: system-design/problems/change-data-capture.md
       - Machine Learning:
         - Feature Store: system-design/problems/feature-store.md
         - Model Serving Platform: system-design/problems/model-serving.md
         - ML Training Pipeline: system-design/problems/ml-training-pipeline.md
         - A/B Testing Framework: system-design/problems/ab-testing-framework.md
+        - ML Experiment Tracking: system-design/problems/ml-experiment-tracking.md
       - Generative AI & LLM:
         - ChatGPT-like System: system-design/problems/chatgpt-system.md
         - RAG System: system-design/problems/rag-system.md
         - Vector Database: system-design/problems/vector-database.md
         - AI Code Assistant: system-design/problems/ai-code-assistant.md
+        - Text-to-Image Generator: system-design/problems/text-to-image.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:

@@ -2,7 +2,7 @@
 
 Master system design interviews with 50 real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
 
-**Status:** ✅ 65 Complete | 🚧 0 In Progress | 📋 27 Planned
+**Status:** ✅ 70 Complete | 🚧 0 In Progress | 📋 22 Planned
 
 ---
 
@@ -114,9 +114,9 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     | Problem | Difficulty | Frequency | Companies | Key Concepts |
     |---------|-----------|-----------|-----------|--------------|
-    | **Smart Home Hub** | 🔴 Hard | ⭐⭐⭐⭐ | Amazon Alexa, Google Home, Apple HomeKit | Device registry, MQTT, command routing, voice processing |
+    | [**Smart Home Hub**](smart-home-hub.md) | 🔴 Hard | ⭐⭐⭐⭐ | Amazon Alexa, Google Home, Apple HomeKit | Device registry, MQTT, command routing, voice processing |
     | [**Smart Lock System**](smart-lock.md) | 🟡 Medium | ⭐⭐⭐ | Amazon Key, August, Yale | Bluetooth/WiFi, access control, audit logs, battery optimization |
-    | **Smart Thermostat** | 🟡 Medium | ⭐⭐⭐ | Nest, Ecobee, Honeywell | Temperature control, learning algorithms, energy optimization |
+    | [**Smart Thermostat**](smart-thermostat.md) | 🟡 Medium | ⭐⭐⭐ | Nest, Ecobee, Honeywell | Temperature control, learning algorithms, energy optimization |
     | [**Smart Meter (Electricity)**](smart-meter.md) | 🟡 Medium | ⭐⭐⭐⭐ | Utility companies, Sense | Real-time consumption, time-series data, billing, anomaly detection |
     | **Smart Doorbell** | 🟡 Medium | ⭐⭐⭐ | Ring, Nest Hello | Video streaming, motion detection, cloud recording, notifications |
     | **Connected Car Platform** | 🔴 Hard | ⭐⭐⭐⭐ | Tesla, GM OnStar, BMW ConnectedDrive | OTA updates, telemetry, remote control, fleet management |
@@ -133,7 +133,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Data Warehouse**](data-warehouse.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Snowflake, BigQuery, Redshift | Columnar storage, MPP, query optimization, materialized views |
     | [**ETL Pipeline**](etl-pipeline.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Airflow, dbt, Fivetran | Orchestration, data transformation, scheduling, dependencies |
     | [**Real-time Data Pipeline**](realtime-data-pipeline.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Kafka, Flink, Spark Streaming | Stream processing, exactly-once, windowing, state management |
-    | **Change Data Capture (CDC)** | 🔴 Hard | ⭐⭐⭐⭐ | Debezium, AWS DMS, Airbyte | Database logs, replication, event streaming, consistency |
+    | [**Change Data Capture (CDC)**](change-data-capture.md) | 🔴 Hard | ⭐⭐⭐⭐ | Debezium, AWS DMS, Airbyte | Database logs, replication, event streaming, consistency |
     | **Data Quality Platform** | 🟡 Medium | ⭐⭐⭐⭐ | Great Expectations, Monte Carlo | Data validation, anomaly detection, SLAs, lineage |
     | **Data Catalog** | 🟡 Medium | ⭐⭐⭐⭐ | DataHub, Amundsen, Collibra | Metadata management, search, discovery, governance |
     | **Batch Processing System** | 🔴 Hard | ⭐⭐⭐⭐ | Apache Spark, Hadoop | Distributed computing, partitioning, shuffle, fault tolerance |
@@ -147,7 +147,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**ML Training Pipeline**](ml-training-pipeline.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Google Vertex AI, AWS SageMaker | Distributed training, hyperparameter tuning, checkpointing |
     | [**Feature Store**](feature-store.md) | 🔴 Hard | ⭐⭐⭐⭐ | Tecton, Feast, AWS Feature Store | Feature engineering, online/offline store, versioning, serving |
     | [**Model Serving Platform**](model-serving.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | TensorFlow Serving, Seldon, KServe | Model deployment, autoscaling, A/B testing, canary |
-    | **ML Experiment Tracking** | 🟡 Medium | ⭐⭐⭐⭐ | MLflow, Weights & Biases, Neptune | Metrics logging, artifact storage, comparison, reproducibility |
+    | [**ML Experiment Tracking**](ml-experiment-tracking.md) | 🟡 Medium | ⭐⭐⭐⭐ | MLflow, Weights & Biases, Neptune | Metrics logging, artifact storage, comparison, reproducibility |
     | **AutoML Platform** | 🔴 Hard | ⭐⭐⭐⭐ | Google AutoML, H2O.ai | Neural architecture search, automated feature engineering |
     | [**A/B Testing Framework**](ab-testing-framework.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Optimizely, Google Optimize | Statistical significance, variant assignment, metrics calculation |
     | **Model Monitoring** | 🟡 Medium | ⭐⭐⭐⭐ | Arize, WhyLabs, Evidently | Drift detection, performance monitoring, bias detection |
@@ -163,7 +163,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**RAG System**](rag-system.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | OpenAI, Anthropic, Enterprise AI | Vector search, embeddings, retrieval, context injection |
     | [**AI Agent Platform**](ai-agent-platform.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | LangChain, AutoGPT | Tool calling, memory, planning, multi-agent orchestration |
     | [**AI Code Assistant**](ai-code-assistant.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | GitHub Copilot, Cursor, Replit | Code completion, context window, latency, caching |
-    | **Text-to-Image Generator** | 🔴 Hard | ⭐⭐⭐⭐ | Midjourney, DALL-E, Stable Diffusion | Diffusion models, GPU queue, image storage, prompt engineering |
+    | [**Text-to-Image Generator**](text-to-image.md) | 🔴 Hard | ⭐⭐⭐⭐ | Midjourney, DALL-E, Stable Diffusion | Diffusion models, GPU queue, image storage, prompt engineering |
     | [**Vector Database**](vector-database.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Pinecone, Weaviate, Qdrant | HNSW/IVF, similarity search, sharding, hybrid search |
     | **Document Q&A System** | 🟡 Medium | ⭐⭐⭐⭐ | Enterprise AI | PDF parsing, chunking, embeddings, citation |
     | **AI Voice Assistant** | 🔴 Hard | ⭐⭐⭐⭐ | Siri, Google Assistant | Speech-to-text, NLU, TTS, wake word detection |
@@ -190,7 +190,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     ---
 
-    ## 🟡 Medium Problems (25 problems)
+    ## 🟡 Medium Problems (27 problems)
 
     **Perfect for:** Intermediate prep, common interview questions, building fundamentals
 
@@ -216,10 +216,12 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Location Tracking**](location-tracking.md) | Location | ⭐⭐⭐ | GPS, geofencing, privacy |
     | [**Smart Lock System**](smart-lock.md) | IoT | ⭐⭐⭐ | Bluetooth/WiFi, access control, battery optimization |
     | [**Smart Meter**](smart-meter.md) | IoT | ⭐⭐⭐⭐ | Time-series data, billing, anomaly detection |
+    | [**Smart Thermostat**](smart-thermostat.md) | IoT | ⭐⭐⭐ | Temperature control, learning algorithms, energy optimization |
+    | [**ML Experiment Tracking**](ml-experiment-tracking.md) | ML | ⭐⭐⭐⭐ | Metrics logging, artifact storage, comparison |
 
     ---
 
-    ## 🔴 Hard Problems (33 problems)
+    ## 🔴 Hard Problems (36 problems)
 
     **Perfect for:** Advanced prep, FAANG interviews, senior roles
 
@@ -266,6 +268,9 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**ML Training Pipeline**](ml-training-pipeline.md) | ML | ⭐⭐⭐⭐⭐ | Distributed training, hyperparameter tuning, checkpointing |
     | [**A/B Testing Framework**](ab-testing-framework.md) | ML | ⭐⭐⭐⭐⭐ | Statistical testing, variant assignment, multi-armed bandits |
     | [**AI Agent Platform**](ai-agent-platform.md) | GenAI | ⭐⭐⭐⭐⭐ | ReAct prompting, tool calling, multi-agent orchestration |
+    | [**Smart Home Hub**](smart-home-hub.md) | IoT | ⭐⭐⭐⭐ | Device registry, MQTT, command routing, voice processing |
+    | [**Change Data Capture**](change-data-capture.md) | Data Eng | ⭐⭐⭐⭐ | Database logs, replication, event streaming |
+    | [**Text-to-Image Generator**](text-to-image.md) | GenAI | ⭐⭐⭐⭐ | Diffusion models, GPU queue, image storage |
 
 === "🏢 By Company"
 
