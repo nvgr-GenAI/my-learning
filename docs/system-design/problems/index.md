@@ -2,7 +2,7 @@
 
 Master system design interviews with 50 real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
 
-**Status:** ✅ 70 Complete | 🚧 0 In Progress | 📋 22 Planned
+**Status:** ✅ 75 Complete | 🚧 0 In Progress | 📋 17 Planned
 
 ---
 
@@ -118,8 +118,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Smart Lock System**](smart-lock.md) | 🟡 Medium | ⭐⭐⭐ | Amazon Key, August, Yale | Bluetooth/WiFi, access control, audit logs, battery optimization |
     | [**Smart Thermostat**](smart-thermostat.md) | 🟡 Medium | ⭐⭐⭐ | Nest, Ecobee, Honeywell | Temperature control, learning algorithms, energy optimization |
     | [**Smart Meter (Electricity)**](smart-meter.md) | 🟡 Medium | ⭐⭐⭐⭐ | Utility companies, Sense | Real-time consumption, time-series data, billing, anomaly detection |
-    | **Smart Doorbell** | 🟡 Medium | ⭐⭐⭐ | Ring, Nest Hello | Video streaming, motion detection, cloud recording, notifications |
-    | **Connected Car Platform** | 🔴 Hard | ⭐⭐⭐⭐ | Tesla, GM OnStar, BMW ConnectedDrive | OTA updates, telemetry, remote control, fleet management |
+    | [**Smart Doorbell**](smart-doorbell.md) | 🟡 Medium | ⭐⭐⭐ | Ring, Nest Hello | Video streaming, motion detection, cloud recording, notifications |
+    | [**Connected Car Platform**](connected-car.md) | 🔴 Hard | ⭐⭐⭐⭐ | Tesla, GM OnStar, BMW ConnectedDrive | OTA updates, telemetry, remote control, fleet management |
     | **Fitness Tracker System** | 🟡 Medium | ⭐⭐⭐ | Fitbit, Apple Watch, Garmin | Activity tracking, heart rate monitoring, sync, battery life |
     | **IoT Device Management** | 🔴 Hard | ⭐⭐⭐⭐ | AWS IoT, Azure IoT Hub, Google Cloud IoT | Device provisioning, shadow state, OTA, fleet monitoring |
     | **Smart City Traffic** | 🔴 Hard | ⭐⭐⭐ | City governments, Siemens | Traffic sensors, signal optimization, congestion prediction |
@@ -134,7 +134,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**ETL Pipeline**](etl-pipeline.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Airflow, dbt, Fivetran | Orchestration, data transformation, scheduling, dependencies |
     | [**Real-time Data Pipeline**](realtime-data-pipeline.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Kafka, Flink, Spark Streaming | Stream processing, exactly-once, windowing, state management |
     | [**Change Data Capture (CDC)**](change-data-capture.md) | 🔴 Hard | ⭐⭐⭐⭐ | Debezium, AWS DMS, Airbyte | Database logs, replication, event streaming, consistency |
-    | **Data Quality Platform** | 🟡 Medium | ⭐⭐⭐⭐ | Great Expectations, Monte Carlo | Data validation, anomaly detection, SLAs, lineage |
+    | [**Data Quality Platform**](data-quality-platform.md) | 🟡 Medium | ⭐⭐⭐⭐ | Great Expectations, Monte Carlo | Data validation, anomaly detection, SLAs, lineage |
     | **Data Catalog** | 🟡 Medium | ⭐⭐⭐⭐ | DataHub, Amundsen, Collibra | Metadata management, search, discovery, governance |
     | **Batch Processing System** | 🔴 Hard | ⭐⭐⭐⭐ | Apache Spark, Hadoop | Distributed computing, partitioning, shuffle, fault tolerance |
     | **Data Lineage Tracker** | 🟡 Medium | ⭐⭐⭐ | OpenLineage, Marquez | Graph database, impact analysis, compliance, audit |
@@ -148,7 +148,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Feature Store**](feature-store.md) | 🔴 Hard | ⭐⭐⭐⭐ | Tecton, Feast, AWS Feature Store | Feature engineering, online/offline store, versioning, serving |
     | [**Model Serving Platform**](model-serving.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | TensorFlow Serving, Seldon, KServe | Model deployment, autoscaling, A/B testing, canary |
     | [**ML Experiment Tracking**](ml-experiment-tracking.md) | 🟡 Medium | ⭐⭐⭐⭐ | MLflow, Weights & Biases, Neptune | Metrics logging, artifact storage, comparison, reproducibility |
-    | **AutoML Platform** | 🔴 Hard | ⭐⭐⭐⭐ | Google AutoML, H2O.ai | Neural architecture search, automated feature engineering |
+    | [**AutoML Platform**](automl-platform.md) | 🔴 Hard | ⭐⭐⭐⭐ | Google AutoML, H2O.ai | Neural architecture search, automated feature engineering |
     | [**A/B Testing Framework**](ab-testing-framework.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Optimizely, Google Optimize | Statistical significance, variant assignment, metrics calculation |
     | **Model Monitoring** | 🟡 Medium | ⭐⭐⭐⭐ | Arize, WhyLabs, Evidently | Drift detection, performance monitoring, bias detection |
     | **Real-time Prediction** | 🔴 Hard | ⭐⭐⭐⭐⭐ | Amazon Personalize, Netflix | Low-latency inference, caching, feature computation |
@@ -165,7 +165,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**AI Code Assistant**](ai-code-assistant.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | GitHub Copilot, Cursor, Replit | Code completion, context window, latency, caching |
     | [**Text-to-Image Generator**](text-to-image.md) | 🔴 Hard | ⭐⭐⭐⭐ | Midjourney, DALL-E, Stable Diffusion | Diffusion models, GPU queue, image storage, prompt engineering |
     | [**Vector Database**](vector-database.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Pinecone, Weaviate, Qdrant | HNSW/IVF, similarity search, sharding, hybrid search |
-    | **Document Q&A System** | 🟡 Medium | ⭐⭐⭐⭐ | Enterprise AI | PDF parsing, chunking, embeddings, citation |
+    | [**Document Q&A System**](document-qa.md) | 🟡 Medium | ⭐⭐⭐⭐ | Enterprise AI | PDF parsing, chunking, embeddings, citation |
     | **AI Voice Assistant** | 🔴 Hard | ⭐⭐⭐⭐ | Siri, Google Assistant | Speech-to-text, NLU, TTS, wake word detection |
     | **Prompt Management System** | 🟡 Medium | ⭐⭐⭐⭐ | PromptLayer, Helicone | Prompt versioning, A/B testing, caching, analytics |
     | **AI Content Moderation** | 🟡 Medium | ⭐⭐⭐⭐ | OpenAI Moderation, Perspective API | Classification, toxicity detection, human-in-loop, appeals |
@@ -217,11 +217,14 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Smart Lock System**](smart-lock.md) | IoT | ⭐⭐⭐ | Bluetooth/WiFi, access control, battery optimization |
     | [**Smart Meter**](smart-meter.md) | IoT | ⭐⭐⭐⭐ | Time-series data, billing, anomaly detection |
     | [**Smart Thermostat**](smart-thermostat.md) | IoT | ⭐⭐⭐ | Temperature control, learning algorithms, energy optimization |
+    | [**Smart Doorbell**](smart-doorbell.md) | IoT | ⭐⭐⭐ | Video streaming, motion detection, cloud recording |
+    | [**Data Quality Platform**](data-quality-platform.md) | Data Eng | ⭐⭐⭐⭐ | Validation, anomaly detection, profiling |
     | [**ML Experiment Tracking**](ml-experiment-tracking.md) | ML | ⭐⭐⭐⭐ | Metrics logging, artifact storage, comparison |
+    | [**Document Q&A System**](document-qa.md) | GenAI | ⭐⭐⭐⭐ | PDF parsing, chunking, embeddings, RAG |
 
     ---
 
-    ## 🔴 Hard Problems (36 problems)
+    ## 🔴 Hard Problems (38 problems)
 
     **Perfect for:** Advanced prep, FAANG interviews, senior roles
 
@@ -271,6 +274,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Smart Home Hub**](smart-home-hub.md) | IoT | ⭐⭐⭐⭐ | Device registry, MQTT, command routing, voice processing |
     | [**Change Data Capture**](change-data-capture.md) | Data Eng | ⭐⭐⭐⭐ | Database logs, replication, event streaming |
     | [**Text-to-Image Generator**](text-to-image.md) | GenAI | ⭐⭐⭐⭐ | Diffusion models, GPU queue, image storage |
+    | [**Connected Car Platform**](connected-car.md) | IoT | ⭐⭐⭐⭐ | OTA updates, telemetry, remote control, fleet management |
+    | [**AutoML Platform**](automl-platform.md) | ML | ⭐⭐⭐⭐ | Neural architecture search, hyperparameter optimization |
 
 === "🏢 By Company"
 
