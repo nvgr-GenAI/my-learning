@@ -337,6 +337,7 @@ nav:
         - Smart Thermostat: system-design/problems/smart-thermostat.md
         - Smart Doorbell: system-design/problems/smart-doorbell.md
         - Connected Car Platform: system-design/problems/connected-car.md
+        - Fitness Tracker System: system-design/problems/fitness-tracker.md
       - Data Engineering:
         - Data Lake: system-design/problems/data-lake.md
         - Data Warehouse: system-design/problems/data-warehouse.md
@@ -344,6 +345,7 @@ nav:
         - Real-time Data Pipeline: system-design/problems/realtime-data-pipeline.md
         - Change Data Capture: system-design/problems/change-data-capture.md
         - Data Quality Platform: system-design/problems/data-quality-platform.md
+        - Data Catalog: system-design/problems/data-catalog.md
       - Machine Learning:
         - Feature Store: system-design/problems/feature-store.md
         - Model Serving Platform: system-design/problems/model-serving.md
@@ -351,6 +353,7 @@ nav:
         - A/B Testing Framework: system-design/problems/ab-testing-framework.md
         - ML Experiment Tracking: system-design/problems/ml-experiment-tracking.md
         - AutoML Platform: system-design/problems/automl-platform.md
+        - Model Monitoring: system-design/problems/model-monitoring.md
       - Generative AI & LLM:
         - ChatGPT-like System: system-design/problems/chatgpt-system.md
         - RAG System: system-design/problems/rag-system.md
@@ -358,6 +361,8 @@ nav:
         - AI Code Assistant: system-design/problems/ai-code-assistant.md
         - Text-to-Image Generator: system-design/problems/text-to-image.md
         - Document Q&A System: system-design/problems/document-qa.md
+        - AI Voice Assistant: system-design/problems/ai-voice-assistant.md
+        - Prompt Management System: system-design/problems/prompt-management.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:
