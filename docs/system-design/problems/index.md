@@ -1,8 +1,8 @@
 # System Design Problems
 
-Master system design interviews with 50 real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
+Master system design interviews with real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
 
-**Status:** ✅ 92 Complete | 🚧 0 In Progress | 📋 0 Planned
+**Status:** ✅ 91 Complete | 🚧 0 In Progress | 📋 0 Planned
 
 ---
 
@@ -46,6 +46,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | Problem | Difficulty | Frequency | Companies | Key Concepts |
     |---------|-----------|-----------|-----------|--------------|
     | [**Video Streaming (Netflix)**](netflix.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Netflix, YouTube, Amazon | Adaptive bitrate, CDN, encoding |
+    | [**YouTube**](youtube.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Google, Netflix, Amazon Prime | Video upload, encoding, recommendations, CDN |
+    | [**TikTok**](tiktok.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | TikTok, Instagram Reels, YouTube Shorts | Short-form video, ML recommendations, For You feed |
     | [**Music Streaming (Spotify)**](spotify.md) | 🔴 Hard | ⭐⭐⭐⭐ | Spotify, Apple Music | Audio delivery, playlists, recommendations |
     | [**Live Streaming (Twitch)**](live-streaming.md) | 🔴 Hard | ⭐⭐⭐⭐ | Twitch, YouTube Live | Low latency, chat, transcoding |
     | [**Video Conferencing (Zoom)**](video-conferencing.md) | 🔴 Hard | ⭐⭐⭐⭐ | Zoom, Google Meet, Teams | WebRTC, signaling, mixing |
@@ -185,12 +187,12 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Key-Value Store**](key-value-store.md) | Infrastructure | ⭐⭐⭐ | Hash map, LRU eviction, TTL |
     | [**URL Validator**](url-validator.md) | Tools | ⭐⭐⭐ | Validation pipeline, DNS, security |
     | [**Simple Cache**](simple-cache.md) | Infrastructure | ⭐⭐⭐⭐ | Cache-aside, eviction, invalidation |
-    | [**Unique ID Generator**](unique-id-generator.md) | Infrastructure | ⭐⭐⭐⭐ | Distributed ID generation |
     | [**Health Checker**](health-checker.md) | Monitoring | ⭐⭐⭐ | Health checks, alerting, SLA |
+    | [**Unique ID Generator**](unique-id-generator.md) | Infrastructure | ⭐⭐⭐⭐ | Distributed ID generation |
 
     ---
 
-    ## 🟡 Medium Problems (38 problems)
+    ## 🟡 Medium Problems (31 problems)
 
     **Perfect for:** Intermediate prep, common interview questions, building fundamentals
 
@@ -232,7 +234,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     ---
 
-    ## 🔴 Hard Problems (49 problems)
+    ## 🔴 Hard Problems (55 problems)
 
     **Perfect for:** Advanced prep, FAANG interviews, senior roles
 
@@ -246,6 +248,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**WhatsApp/Chat**](whatsapp.md) | Social | ⭐⭐⭐⭐⭐ | Real-time messaging, presence |
     | [**Slack**](slack.md) | Social | ⭐⭐⭐⭐⭐ | WebSocket, channels, message ordering |
     | [**Video Streaming**](netflix.md) | Media | ⭐⭐⭐⭐⭐ | CDN, encoding, adaptive bitrate |
+    | [**YouTube**](youtube.md) | Media | ⭐⭐⭐⭐⭐ | Video upload, encoding, recommendations |
+    | [**TikTok**](tiktok.md) | Media | ⭐⭐⭐⭐⭐ | Short-form video, ML recommendations |
     | [**Search Engine**](search-engine.md) | Search | ⭐⭐⭐⭐⭐ | Crawling, indexing, ranking |
     | [**E-Commerce Platform**](ecommerce.md) | E-Commerce | ⭐⭐⭐⭐⭐ | Inventory, transactions, catalog |
     | [**Ride Sharing**](uber.md) | Location | ⭐⭐⭐⭐⭐ | Geohashing, matching, routing |
@@ -334,9 +338,9 @@ Master system design interviews with 50 real-world problems asked by top tech co
     |---------|-----------|--------------|
     | [**iMessage**](whatsapp.md) | 🔴 Hard | Real-time messaging, encryption |
     | [**iCloud Storage**](dropbox.md) | 🔴 Hard | Sync across devices |
-    | **Calendar System** | 🟡 Medium | Sync, conflict resolution |
+    | [**Calendar System**](calendar-system.md) | 🟡 Medium | Sync, conflict resolution |
     | [**Music Streaming**](spotify.md) | 🔴 Hard | Apple Music architecture |
-    | **Location Tracking** | 🟡 Medium | Find My, privacy |
+    | [**Location Tracking**](location-tracking.md) | 🟡 Medium | Find My, privacy |
     | [**Notification System**](notification-system.md) | 🟡 Medium | APNs architecture |
 
     ### Netflix
@@ -378,7 +382,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Teams/Slack**](slack.md) | 🔴 Hard | Chat, team collaboration |
     | [**OneDrive**](dropbox.md) | 🔴 Hard | Cloud storage, sync |
     | [**GitHub**](github.md) | 🔴 Hard | Code hosting, CI/CD |
-    | **Calendar System** | 🟡 Medium | Outlook calendar |
+    | [**Calendar System**](calendar-system.md) | 🟡 Medium | Outlook calendar |
     | [**Video Conferencing**](video-conferencing.md) | 🔴 Hard | Teams meetings |
     | [**LinkedIn**](linkedin.md) | 🔴 Hard | Professional network |
 
@@ -389,7 +393,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Ride Sharing**](uber.md) | 🔴 Hard | Core product, matching |
     | [**Food Delivery**](food-delivery.md) | 🔴 Hard | UberEats, routing |
     | [**Google Maps**](google-maps.md) | 🔴 Hard | Navigation, ETA |
-    | **Location Tracking** | 🟡 Medium | Real-time tracking |
+    | [**Location Tracking**](location-tracking.md) | 🟡 Medium | Real-time tracking |
     | [**Notification System**](notification-system.md) | 🟡 Medium | Driver/rider notifications |
     | [**Payment System**](payment-system.md) | 🔴 Hard | Payment processing |
 
@@ -401,7 +405,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Ticket Booking**](ticket-booking.md) | 🔴 Hard | Reservation system |
     | [**Search Engine**](search-engine.md) | 🔴 Hard | Property search |
     | [**Payment System**](payment-system.md) | 🔴 Hard | Booking payments |
-    | **Calendar System** | 🟡 Medium | Availability calendar |
+    | [**Calendar System**](calendar-system.md) | 🟡 Medium | Availability calendar |
     | [**Recommendation System**](recommendation-system.md) | 🔴 Hard | Property recommendations |
 
     ### LinkedIn
@@ -497,7 +501,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Live Streaming**](live-streaming.md) | Low latency, buffering | 🔴 Hard |
     | [**Video Conferencing**](video-conferencing.md) | WebRTC, peer connections | 🔴 Hard |
     | [**Google Docs**](google-docs.md) | OT/CRDT, conflict resolution | 🔴 Hard |
-    | **Location Tracking** | GPS updates, real-time | 🟡 Medium |
+    | [**Location Tracking**](location-tracking.md) | GPS updates, real-time | 🟡 Medium |
 
     ## Geospatial Systems
 
@@ -513,7 +517,9 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | Problem | What You'll Learn | Difficulty |
     |---------|-------------------|------------|
     | [**Video Streaming**](netflix.md) | CDN strategy, edge servers | 🔴 Hard |
-    | **Image Hosting** | Image CDN, transformations | 🟡 Medium |
+    | [**YouTube**](youtube.md) | Video CDN, global distribution | 🔴 Hard |
+    | [**TikTok**](tiktok.md) | Short-form video delivery, edge caching | 🔴 Hard |
+    | [**Image Hosting**](image-hosting.md) | Image CDN, transformations | 🟡 Medium |
     | [**Music Streaming**](spotify.md) | Audio delivery | 🔴 Hard |
     | [**Cloud Storage**](dropbox.md) | File distribution | 🔴 Hard |
 
@@ -542,6 +548,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Search Engine**](search-engine.md) | Inverted index, TF-IDF, PageRank | 🔴 Hard |
     | [**Autocomplete**](autocomplete.md) | Trie, prefix search | 🟡 Medium |
     | [**Recommendation System**](recommendation-system.md) | Collaborative filtering, ML | 🔴 Hard |
+    | [**YouTube**](youtube.md) | Video recommendations, personalization | 🔴 Hard |
+    | [**TikTok**](tiktok.md) | For You feed, ML-driven recommendations | 🔴 Hard |
     | [**E-Commerce**](ecommerce.md) | Product ranking | 🔴 Hard |
 
 === "📅 Learning Path"
@@ -636,6 +644,42 @@ Master system design interviews with 50 real-world problems asked by top tech co
         | [**Message Queue**](message-queue.md) | Partitioning, ordering |
         | [**API Gateway**](api-gateway.md) | Routing, auth |
         | [**Load Balancer**](load-balancer.md) | Algorithms |
+
+    === "IoT Track"
+
+        | Problem | Focus |
+        |---------|-------|
+        | [**Smart Home Hub**](smart-home-hub.md) | Device registry, MQTT, voice processing |
+        | [**IoT Device Management**](iot-device-management.md) | Provisioning, OTA updates, fleet monitoring |
+        | [**Connected Car Platform**](connected-car.md) | Telemetry, remote control, fleet management |
+        | [**Smart City Traffic**](smart-city-traffic.md) | Signal optimization, congestion prediction |
+
+    === "Data Engineering Track"
+
+        | Problem | Focus |
+        |---------|-------|
+        | [**Data Lake**](data-lake.md) | ACID transactions, partitioning, schema evolution |
+        | [**Data Warehouse**](data-warehouse.md) | MPP, columnar storage, query optimization |
+        | [**ETL Pipeline**](etl-pipeline.md) | DAG orchestration, incremental loading |
+        | [**Real-time Data Pipeline**](realtime-data-pipeline.md) | Stream processing, exactly-once semantics |
+
+    === "Machine Learning Track"
+
+        | Problem | Focus |
+        |---------|-------|
+        | [**ML Training Pipeline**](ml-training-pipeline.md) | Distributed training, hyperparameter tuning |
+        | [**Feature Store**](feature-store.md) | Online/offline serving, point-in-time joins |
+        | [**Model Serving Platform**](model-serving.md) | Dynamic batching, A/B testing, canary |
+        | [**A/B Testing Framework**](ab-testing-framework.md) | Statistical testing, variant assignment |
+
+    === "GenAI/LLM Track"
+
+        | Problem | Focus |
+        |---------|-------|
+        | [**ChatGPT-like System**](chatgpt-system.md) | LLM serving, streaming, conversation state |
+        | [**RAG System**](rag-system.md) | Vector search, retrieval, context injection |
+        | [**Vector Database**](vector-database.md) | HNSW, similarity search, sharding |
+        | [**AI Agent Platform**](ai-agent-platform.md) | ReAct prompting, tool calling, multi-agent |
 
     **✅ Final Checkpoint:** Ready for interviews! Practice explaining designs out loud.
 
@@ -742,8 +786,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
 ### Difficulty Legend:
 - 🟢 **Easy:** Single-server, simple CRUD, basic caching (5 problems)
-- 🟡 **Medium:** Distribution, sharding, moderate scale (25 problems)
-- 🔴 **Hard:** Massive scale, complex trade-offs, real-time (20 problems)
+- 🟡 **Medium:** Distribution, sharding, moderate scale (31 problems)
+- 🔴 **Hard:** Massive scale, complex trade-offs, real-time (55 problems)
 
 ### Frequency Legend:
 - ⭐⭐⭐⭐⭐ Very High (asked by 5+ companies regularly)
