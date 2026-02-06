@@ -339,6 +339,8 @@ nav:
         - Connected Car Platform: system-design/problems/connected-car.md
         - Fitness Tracker System: system-design/problems/fitness-tracker.md
         - IoT Device Management: system-design/problems/iot-device-management.md
+        - Smart City Traffic: system-design/problems/smart-city-traffic.md
+        - Industrial IoT Monitor: system-design/problems/industrial-iot.md
       - Data Engineering:
         - Data Lake: system-design/problems/data-lake.md
         - Data Warehouse: system-design/problems/data-warehouse.md
@@ -348,6 +350,8 @@ nav:
         - Data Quality Platform: system-design/problems/data-quality-platform.md
         - Data Catalog: system-design/problems/data-catalog.md
         - Batch Processing System: system-design/problems/batch-processing.md
+        - Data Lineage Tracker: system-design/problems/data-lineage.md
+        - Data Mesh Platform: system-design/problems/data-mesh.md
       - Machine Learning:
         - Feature Store: system-design/problems/feature-store.md
         - Model Serving Platform: system-design/problems/model-serving.md
@@ -357,6 +361,8 @@ nav:
         - AutoML Platform: system-design/problems/automl-platform.md
         - Model Monitoring: system-design/problems/model-monitoring.md
         - Real-time Prediction: system-design/problems/realtime-prediction.md
+        - ML Model Registry: system-design/problems/ml-model-registry.md
+        - ML Labeling Platform: system-design/problems/ml-labeling.md
       - Generative AI & LLM:
         - ChatGPT-like System: system-design/problems/chatgpt-system.md
         - RAG System: system-design/problems/rag-system.md
@@ -368,6 +374,7 @@ nav:
         - Prompt Management System: system-design/problems/prompt-management.md
         - AI Content Moderation: system-design/problems/ai-content-moderation.md
         - LLM Fine-tuning Platform: system-design/problems/llm-finetuning.md
+        - Multi-modal AI System: system-design/problems/multimodal-ai.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:

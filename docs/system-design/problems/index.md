@@ -2,7 +2,7 @@
 
 Master system design interviews with 50 real-world problems asked by top tech companies. Each problem follows the 4-step framework with architectural diagrams, capacity planning, and optimization strategies.
 
-**Status:** ✅ 85 Complete | 🚧 0 In Progress | 📋 7 Planned
+**Status:** ✅ 92 Complete | 🚧 0 In Progress | 📋 0 Planned
 
 ---
 
@@ -122,8 +122,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Connected Car Platform**](connected-car.md) | 🔴 Hard | ⭐⭐⭐⭐ | Tesla, GM OnStar, BMW ConnectedDrive | OTA updates, telemetry, remote control, fleet management |
     | [**Fitness Tracker System**](fitness-tracker.md) | 🟡 Medium | ⭐⭐⭐ | Fitbit, Apple Watch, Garmin | Activity tracking, heart rate monitoring, sync, battery life |
     | [**IoT Device Management**](iot-device-management.md) | 🔴 Hard | ⭐⭐⭐⭐ | AWS IoT, Azure IoT Hub, Google Cloud IoT | Device provisioning, shadow state, OTA, fleet monitoring |
-    | **Smart City Traffic** | 🔴 Hard | ⭐⭐⭐ | City governments, Siemens | Traffic sensors, signal optimization, congestion prediction |
-    | **Industrial IoT Monitor** | 🔴 Hard | ⭐⭐⭐ | GE Predix, Siemens MindSphere | Predictive maintenance, sensor data, edge computing |
+    | [**Smart City Traffic**](smart-city-traffic.md) | 🔴 Hard | ⭐⭐⭐ | City governments, Siemens | Traffic sensors, signal optimization, congestion prediction |
+    | [**Industrial IoT Monitor**](industrial-iot.md) | 🔴 Hard | ⭐⭐⭐ | GE Predix, Siemens MindSphere | Predictive maintenance, sensor data, edge computing |
 
     ## Data Engineering
 
@@ -137,8 +137,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Data Quality Platform**](data-quality-platform.md) | 🟡 Medium | ⭐⭐⭐⭐ | Great Expectations, Monte Carlo | Data validation, anomaly detection, SLAs, lineage |
     | [**Data Catalog**](data-catalog.md) | 🟡 Medium | ⭐⭐⭐⭐ | DataHub, Amundsen, Collibra | Metadata management, search, discovery, governance |
     | [**Batch Processing System**](batch-processing.md) | 🔴 Hard | ⭐⭐⭐⭐ | Apache Spark, Hadoop | Distributed computing, partitioning, shuffle, fault tolerance |
-    | **Data Lineage Tracker** | 🟡 Medium | ⭐⭐⭐ | OpenLineage, Marquez | Graph database, impact analysis, compliance, audit |
-    | **Data Mesh Platform** | 🔴 Hard | ⭐⭐⭐ | Modern data teams | Domain ownership, federated governance, self-serve |
+    | [**Data Lineage Tracker**](data-lineage.md) | 🟡 Medium | ⭐⭐⭐ | OpenLineage, Marquez | Graph database, impact analysis, compliance, audit |
+    | [**Data Mesh Platform**](data-mesh.md) | 🔴 Hard | ⭐⭐⭐ | Modern data teams | Domain ownership, federated governance, self-serve |
 
     ## Machine Learning Systems
 
@@ -152,8 +152,8 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**A/B Testing Framework**](ab-testing-framework.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Optimizely, Google Optimize | Statistical significance, variant assignment, metrics calculation |
     | [**Model Monitoring**](model-monitoring.md) | 🟡 Medium | ⭐⭐⭐⭐ | Arize, WhyLabs, Evidently | Drift detection, performance monitoring, bias detection |
     | [**Real-time Prediction**](realtime-prediction.md) | 🔴 Hard | ⭐⭐⭐⭐⭐ | Amazon Personalize, Netflix | Low-latency inference, caching, feature computation |
-    | **ML Model Registry** | 🟡 Medium | ⭐⭐⭐⭐ | MLflow Registry, Neptune | Model versioning, metadata, approval workflow, deployment |
-    | **ML Labeling Platform** | 🟡 Medium | ⭐⭐⭐ | Labelbox, Scale AI | Data annotation, quality control, workforce management |
+    | [**ML Model Registry**](ml-model-registry.md) | 🟡 Medium | ⭐⭐⭐⭐ | MLflow Registry, Neptune | Model versioning, metadata, approval workflow, deployment |
+    | [**ML Labeling Platform**](ml-labeling.md) | 🟡 Medium | ⭐⭐⭐ | Labelbox, Scale AI | Data annotation, quality control, workforce management |
 
     ## Generative AI & LLM Systems
 
@@ -170,7 +170,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Prompt Management System**](prompt-management.md) | 🟡 Medium | ⭐⭐⭐⭐ | PromptLayer, Helicone | Prompt versioning, A/B testing, caching, analytics |
     | [**AI Content Moderation**](ai-content-moderation.md) | 🟡 Medium | ⭐⭐⭐⭐ | OpenAI Moderation, Perspective API | Classification, toxicity detection, human-in-loop, appeals |
     | [**LLM Fine-tuning Platform**](llm-finetuning.md) | 🔴 Hard | ⭐⭐⭐⭐ | OpenAI, Anthropic, Hugging Face | LoRA/QLoRA, dataset management, evaluation, deployment |
-    | **Multi-modal AI System** | 🔴 Hard | ⭐⭐⭐⭐ | GPT-4V, Gemini | Vision+Language, audio processing, unified embeddings |
+    | [**Multi-modal AI System**](multimodal-ai.md) | 🔴 Hard | ⭐⭐⭐⭐ | GPT-4V, Gemini | Vision+Language, audio processing, unified embeddings |
 
 === "🎚️ By Difficulty"
 
@@ -190,7 +190,7 @@ Master system design interviews with 50 real-world problems asked by top tech co
 
     ---
 
-    ## 🟡 Medium Problems (34 problems)
+    ## 🟡 Medium Problems (38 problems)
 
     **Perfect for:** Intermediate prep, common interview questions, building fundamentals
 
@@ -225,10 +225,14 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Model Monitoring**](model-monitoring.md) | ML | ⭐⭐⭐⭐ | Drift detection, performance monitoring, bias |
     | [**Document Q&A System**](document-qa.md) | GenAI | ⭐⭐⭐⭐ | PDF parsing, chunking, embeddings, RAG |
     | [**Prompt Management System**](prompt-management.md) | GenAI | ⭐⭐⭐⭐ | Versioning, A/B testing, caching, analytics |
+    | [**AI Content Moderation**](ai-content-moderation.md) | GenAI | ⭐⭐⭐⭐ | Multi-modal classification, toxicity, NSFW, human review |
+    | [**Data Lineage Tracker**](data-lineage.md) | Data Eng | ⭐⭐⭐ | Column-level lineage, impact analysis, compliance |
+    | [**ML Model Registry**](ml-model-registry.md) | ML | ⭐⭐⭐⭐ | Versioning, approval workflows, staging, deployment tracking |
+    | [**ML Labeling Platform**](ml-labeling.md) | ML | ⭐⭐⭐ | Consensus, quality control, active learning, IAA |
 
     ---
 
-    ## 🔴 Hard Problems (39 problems)
+    ## 🔴 Hard Problems (49 problems)
 
     **Perfect for:** Advanced prep, FAANG interviews, senior roles
 
@@ -281,6 +285,14 @@ Master system design interviews with 50 real-world problems asked by top tech co
     | [**Connected Car Platform**](connected-car.md) | IoT | ⭐⭐⭐⭐ | OTA updates, telemetry, remote control, fleet management |
     | [**AutoML Platform**](automl-platform.md) | ML | ⭐⭐⭐⭐ | Neural architecture search, hyperparameter optimization |
     | [**AI Voice Assistant**](ai-voice-assistant.md) | GenAI | ⭐⭐⭐⭐ | Wake word, STT, NLU, TTS, multi-turn dialogue |
+    | [**IoT Device Management**](iot-device-management.md) | IoT | ⭐⭐⭐⭐ | Device provisioning, shadow state, OTA updates |
+    | [**Batch Processing System**](batch-processing.md) | Data Eng | ⭐⭐⭐⭐ | Spark/Hadoop, distributed computing, shuffle |
+    | [**Real-time Prediction**](realtime-prediction.md) | ML | ⭐⭐⭐⭐⭐ | Low-latency inference, online features, caching |
+    | [**LLM Fine-tuning Platform**](llm-finetuning.md) | GenAI | ⭐⭐⭐⭐ | LoRA/QLoRA, FSDP, instruction tuning, RLHF |
+    | [**Smart City Traffic**](smart-city-traffic.md) | IoT | ⭐⭐⭐ | Signal optimization, congestion prediction, RL |
+    | [**Industrial IoT Monitor**](industrial-iot.md) | IoT | ⭐⭐⭐ | Predictive maintenance, OPC UA, edge computing, RUL |
+    | [**Data Mesh Platform**](data-mesh.md) | Data Eng | ⭐⭐⭐ | Domain ownership, data products, federated governance |
+    | [**Multi-modal AI System**](multimodal-ai.md) | GenAI | ⭐⭐⭐⭐ | Vision-language, unified embeddings, cross-modal attention |
 
 === "🏢 By Company"
 
