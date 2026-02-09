@@ -89,10 +89,103 @@ nav:
     - math/index.md
   - Machine Learning:
     - ml/index.md
-    - Fundamentals: ml/fundamentals/index.md
-    - Algorithms: ml/algorithms/index.md
-    - Deep Learning: ml/deep-learning/index.md
-    - MLOps: ml/mlops/index.md
+    - Learning Path: ml/learning-path.md
+    - Interview Prep: ml/interview-prep.md
+    - Fundamentals:
+      - ml/fundamentals/index.md
+      - What is ML?: ml/fundamentals/what-is-ml.md
+      - Types of ML: ml/fundamentals/types-of-ml.md
+      - Bias-Variance Tradeoff: ml/fundamentals/bias-variance-tradeoff.md
+      - Overfitting & Underfitting: ml/fundamentals/overfitting-underfitting.md
+      - Train/Test Split: ml/fundamentals/train-test-split.md
+      - Mathematics: ml/fundamentals/mathematics.md
+    - Supervised Learning:
+      - ml/supervised-learning/index.md
+      - Regression:
+        - ml/supervised-learning/regression/index.md
+        - Linear Regression: ml/supervised-learning/regression/linear-regression.md
+        - Polynomial Regression: ml/supervised-learning/regression/polynomial-regression.md
+        - Ridge Regression: ml/supervised-learning/regression/ridge-regression.md
+        - Lasso Regression: ml/supervised-learning/regression/lasso-regression.md
+      - Classification:
+        - ml/supervised-learning/classification/index.md
+        - Logistic Regression: ml/supervised-learning/classification/logistic-regression.md
+        - Naive Bayes: ml/supervised-learning/classification/naive-bayes.md
+        - Decision Trees: ml/supervised-learning/classification/decision-trees.md
+        - K-Nearest Neighbors: ml/supervised-learning/classification/knn.md
+        - Support Vector Machines: ml/supervised-learning/classification/svm.md
+        - Random Forest: ml/supervised-learning/classification/random-forest.md
+        - Gradient Boosting: ml/supervised-learning/classification/gradient-boosting.md
+      - Ensemble Methods:
+        - ml/supervised-learning/ensemble-methods/index.md
+        - Bagging: ml/supervised-learning/ensemble-methods/bagging.md
+        - Boosting: ml/supervised-learning/ensemble-methods/boosting.md
+        - Stacking: ml/supervised-learning/ensemble-methods/stacking.md
+    - Unsupervised Learning:
+      - ml/unsupervised-learning/index.md
+      - Clustering:
+        - ml/unsupervised-learning/clustering/index.md
+        - K-Means: ml/unsupervised-learning/clustering/kmeans.md
+        - Hierarchical Clustering: ml/unsupervised-learning/clustering/hierarchical.md
+        - DBSCAN: ml/unsupervised-learning/clustering/dbscan.md
+        - Gaussian Mixture: ml/unsupervised-learning/clustering/gaussian-mixture.md
+      - Dimensionality Reduction:
+        - ml/unsupervised-learning/dimensionality-reduction/index.md
+        - PCA: ml/unsupervised-learning/dimensionality-reduction/pca.md
+        - t-SNE: ml/unsupervised-learning/dimensionality-reduction/tsne.md
+        - UMAP: ml/unsupervised-learning/dimensionality-reduction/umap.md
+        - Autoencoders: ml/unsupervised-learning/dimensionality-reduction/autoencoders.md
+      - Anomaly Detection:
+        - ml/unsupervised-learning/anomaly-detection/index.md
+        - Isolation Forest: ml/unsupervised-learning/anomaly-detection/isolation-forest.md
+        - One-Class SVM: ml/unsupervised-learning/anomaly-detection/one-class-svm.md
+    - Deep Learning:
+      - ml/deep-learning/index.md
+      - Neural Networks Basics: ml/deep-learning/neural-networks-basics.md
+      - Activation Functions: ml/deep-learning/activation-functions.md
+      - Backpropagation: ml/deep-learning/backpropagation.md
+      - CNN: ml/deep-learning/cnn.md
+      - RNN: ml/deep-learning/rnn.md
+      - LSTM & GRU: ml/deep-learning/lstm-gru.md
+      - Transformers: ml/deep-learning/transformers.md
+      - Attention Mechanisms: ml/deep-learning/attention-mechanisms.md
+      - Transfer Learning: ml/deep-learning/transfer-learning.md
+      - GANs: ml/deep-learning/gan.md
+    - Feature Engineering:
+      - ml/feature-engineering/index.md
+      - Data Cleaning: ml/feature-engineering/data-cleaning.md
+      - Missing Values: ml/feature-engineering/missing-values.md
+      - Outlier Detection: ml/feature-engineering/outlier-detection.md
+      - Feature Scaling: ml/feature-engineering/feature-scaling.md
+      - Encoding Categorical: ml/feature-engineering/encoding-categorical.md
+      - Feature Creation: ml/feature-engineering/feature-creation.md
+      - Feature Selection: ml/feature-engineering/feature-selection.md
+      - Imbalanced Data: ml/feature-engineering/imbalanced-data.md
+    - Model Evaluation:
+      - ml/evaluation/index.md
+      - Classification Metrics: ml/evaluation/classification-metrics.md
+      - Regression Metrics: ml/evaluation/regression-metrics.md
+      - Cross-Validation: ml/evaluation/cross-validation.md
+      - Confusion Matrix: ml/evaluation/confusion-matrix.md
+      - ROC-AUC: ml/evaluation/roc-auc.md
+      - Model Selection: ml/evaluation/model-selection.md
+    - Optimization:
+      - ml/optimization/index.md
+      - Gradient Descent: ml/optimization/gradient-descent.md
+      - Optimizers: ml/optimization/optimizers.md
+      - Regularization: ml/optimization/regularization.md
+      - Dropout: ml/optimization/dropout.md
+      - Batch Normalization: ml/optimization/batch-normalization.md
+      - Hyperparameter Tuning: ml/optimization/hyperparameter-tuning.md
+      - Learning Rate Scheduling: ml/optimization/learning-rate-scheduling.md
+    - MLOps:
+      - ml/mlops/index.md
+      - Experiment Tracking: ml/mlops/experiment-tracking.md
+      - Model Deployment: ml/mlops/model-deployment.md
+      - Model Serving: ml/mlops/model-serving.md
+      - Monitoring: ml/mlops/monitoring.md
+      - CI/CD: ml/mlops/ci-cd.md
+      - Best Practices: ml/mlops/best-practices.md
   - GenAI:
     - genai/index.md
     - Fundamentals:
