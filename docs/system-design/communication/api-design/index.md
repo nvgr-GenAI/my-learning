@@ -678,7 +678,7 @@ APIs are the contracts between services. Good API design makes systems easier to
 ## Related Topics
 
 - [Microservices Architecture](../../architecture/microservices.md) - Service communication
-- [API Gateway](../../../networking/index.md) - API routing
+- [API Gateway](../../networking/index.md) - API routing
 - [Rate Limiting](../../security/api-security.md) - Protect APIs
 - [Caching](../../data/caching/index.md) - Cache API responses
 

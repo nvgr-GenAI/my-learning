@@ -79,24 +79,24 @@ Choose your learning path:
     Start with fundamentals and build a strong foundation:
     
     1. [Algorithm Fundamentals](algorithms/index.md)
-    2. [System Design Basics](system-design/fundamentals.md)
-    3. [ML Fundamentals](ml/fundamentals.md)
+    2. [System Design Basics](system-design/fundamentals/index.md)
+    3. [ML Fundamentals](ml/fundamentals/index.md)
 
 === "Intermediate"
 
     Dive deeper into specific domains:
-    
-    1. [Advanced ML Algorithms](ml/algorithms.md)
-    2. [System Architecture](system-design/scalability.md)
-    3. [GenAI Applications](genai/llms.md)
+
+    1. [Supervised Learning](ml/supervised-learning/index.md)
+    2. [System Architecture](system-design/scalability/index.md)
+    3. [GenAI Applications](genai/llms/index.md)
 
 === "Advanced"
 
     Explore cutting-edge topics:
-    
-    1. [MLOps & Production](ml/mlops.md)
-    2. [Advanced GenAI](genai/fine-tuning.md)
-    3. [Distributed Systems](system-design/microservices.md)
+
+    1. [MLOps & Production](ml/mlops/index.md)
+    2. [Advanced GenAI](genai/fine-tuning/index.md)
+    3. [Distributed Systems](system-design/distributed-systems/index.md)
 
 ---
 

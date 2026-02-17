@@ -31,8 +31,6 @@ Architectural patterns define the high-level structure of your system. The right
 | [Microservices Architecture](microservices.md) | 📝 Planned | Independent services, complex coordination |
 | [Event-Driven Architecture](event-driven.md) | 📝 Planned | Async communication via events |
 | [Serverless Architecture](serverless.md) | 📝 Planned | Function-as-a-Service, pay-per-use |
-| [Service-Oriented Architecture](soa.md) | 📝 Planned | Enterprise service bus, SOAP/ESB |
-| [Layered Architecture](layered.md) | 📝 Planned | N-tier, presentation/business/data layers |
 
 ---
 
@@ -174,7 +172,7 @@ Ask these questions to choose the right architecture:
 **Related Topics:**
 - [Scalability Patterns](../scalability/index.md) - How to scale your architecture
 - [Distributed Systems](../distributed-systems/index.md) - Concepts for microservices
-- [Communication Patterns](../communication/index.md) - How services communicate
+- [API Design](../communication/api-design/index.md) - How services communicate
 - [Deployment Strategies](../deployment/index.md) - How to deploy different architectures
 
 **Practice:**

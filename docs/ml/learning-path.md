@@ -36,11 +36,11 @@ gantt
 
 ### Week 1: ML Concepts
 **Topics:**
-- [ ] [What is Machine Learning?](fundamentals/what-is-ml.md)
-- [ ] [Types of ML](fundamentals/types-of-ml.md) (Supervised, Unsupervised, Reinforcement)
-- [ ] [Bias-Variance Tradeoff](fundamentals/bias-variance-tradeoff.md)
-- [ ] [Overfitting & Underfitting](fundamentals/overfitting-underfitting.md)
-- [ ] [Train/Test Split](fundamentals/train-test-split.md)
+- [ ] [The Learning Problem](fundamentals/01-learning-problem.md)
+- [ ] [Data - The Source of Intelligence](fundamentals/02-data-source.md)
+- [ ] [Making Data Machine-Readable](fundamentals/03-numerical-representation.md)
+- [ ] [Models as Functions](fundamentals/04-models-as-functions.md)
+- [ ] [Types of ML](fundamentals/07-types-of-ml.md) (Supervised, Unsupervised, Reinforcement)
 
 **Hands-on:**
 - Set up Python environment (Jupyter, NumPy, Pandas, Scikit-learn)
@@ -53,9 +53,9 @@ gantt
 
 ### Week 2: Mathematics for ML
 **Topics:**
-- [ ] [Linear Algebra](fundamentals/mathematics.md#linear-algebra) (Vectors, Matrices)
-- [ ] [Calculus](fundamentals/mathematics.md#calculus) (Derivatives, Gradients)
-- [ ] [Probability & Statistics](fundamentals/mathematics.md#probability) (Distributions, Bayes)
+- [ ] [Linear Algebra](fundamentals/08-mathematics.md#linear-algebra) (Vectors, Matrices)
+- [ ] [Calculus](fundamentals/08-mathematics.md#calculus) (Derivatives, Gradients)
+- [ ] [Probability & Statistics](fundamentals/08-mathematics.md#probability) (Distributions, Bayes)
 - [ ] Cost functions and optimization basics
 
 **Hands-on:**

@@ -1,585 +1,364 @@
 # Consensus Algorithms
 
-**Reaching agreement in distributed systems** | 🤝 Agreement | 🔄 Replication | 💪 Fault Tolerance
+Getting multiple machines to agree on something sounds simple until you realize that
+networks drop messages, clocks drift, and servers crash at the worst possible moment.
+Consensus is the foundational problem of distributed systems: how do N nodes agree on
+a single value when any of them might fail, and the network between them is unreliable?
+
+Every time Kubernetes schedules a pod, every time a distributed database commits a
+transaction, and every time a service registry updates its membership, consensus is
+happening behind the scenes. The algorithms discussed here -- Raft, Paxos, ZAB, and
+others -- are the machinery that makes modern cloud infrastructure possible.
 
 ---
 
-## Overview
+=== "The Problem"
 
-Consensus algorithms allow multiple nodes in a distributed system to agree on a single value, even when some nodes fail or the network is unreliable.
+    ## Why Consensus Is Hard
 
-**The Problem:** How do distributed nodes agree on state when they can't all communicate reliably?
+    Imagine a database cluster of five nodes. The leader accepts a write, but before it
+    can replicate to all followers, the network partitions into two groups: {A, B} and
+    {C, D, E}. Both groups believe they might be authoritative. If both sides start
+    accepting writes independently, you get **split brain** -- conflicting state that may
+    be impossible to reconcile after the partition heals.
+
+    ```
+    SPLIT-BRAIN SCENARIO
+
+    Before partition:
+    ┌─────────────────────────────────────────────┐
+    │  A(leader)  B  C  D  E                      │
+    │  All nodes agree: x = 42                    │
+    └─────────────────────────────────────────────┘
+
+    Network partition occurs:
+    ┌──────────────┐     ┌────────────────────────┐
+    │  A(leader) B │     │  C   D   E             │
+    │  x = 42      │ ╳╳╳ │  x = 42               │
+    └──────────────┘     └────────────────────────┘
+
+    Without consensus, both sides accept writes:
+    ┌──────────────┐     ┌────────────────────────┐
+    │  A(leader) B │     │  C(new leader?) D  E   │
+    │  x = 100     │ ╳╳╳ │  x = 200              │
+    └──────────────┘     └────────────────────────┘
+
+    Partition heals -- which value of x is correct?
+    Neither side knows. Data is corrupted.
+    ```
+
+    Consensus algorithms solve this by requiring a **majority quorum** (more than half
+    the nodes) to agree before any decision is final. In a five-node cluster, that means
+    three nodes. Since any two majorities must overlap by at least one node, it is
+    impossible for two conflicting decisions to both achieve quorum. The side with only
+    two nodes ({A, B}) cannot form a majority and must stop accepting writes, while the
+    side with three nodes ({C, D, E}) can safely elect a new leader and continue.
+
+    ### The FLP Impossibility Result
+
+    In 1985, Fischer, Lynch, and Paterson proved that no deterministic consensus
+    algorithm can guarantee termination in an asynchronous system where even a single
+    node may crash. This sounds devastating, but practical systems work around it using
+    randomized timeouts (Raft uses election timeouts between 150-300ms) and partial
+    synchrony assumptions. The result does not say consensus is impossible -- it says you
+    cannot guarantee it completes in bounded time in the worst case.
+
+    ### Byzantine vs Crash Failures
+
+    Most consensus algorithms in mainstream infrastructure (Raft, Paxos, ZAB) handle
+    **crash failures** -- a node either works correctly or stops entirely. **Byzantine
+    failures**, where a node actively sends wrong or malicious data, require far more
+    complex protocols like PBFT (Practical Byzantine Fault Tolerance), which needs 3f+1
+    nodes to tolerate f failures compared to 2f+1 for crash failures. Byzantine
+    consensus is mainly used in blockchain systems and high-security environments. For
+    typical data center deployments, crash-fault-tolerant algorithms are sufficient.
+
+    | Failure Type | Tolerance Formula | Nodes for f=1 | Primary Use |
+    |---|---|---|---|
+    | Crash failure | 2f + 1 | 3 | Databases, service discovery |
+    | Byzantine failure | 3f + 1 | 4 | Blockchains, adversarial environments |
+
+=== "Raft"
+
+    ## Raft: Consensus Made Understandable
+
+    Raft was designed in 2014 by Diego Ongaro and John Ousterhout at Stanford with a
+    single explicit goal: be as easy to understand as possible while providing the same
+    guarantees as Paxos. Their user study showed that students learning Raft scored
+    significantly higher on comprehension tests than those learning Paxos. This
+    understandability is not just an academic nicety -- it directly translates to fewer
+    bugs in production implementations.
+
+    Raft decomposes consensus into three relatively independent subproblems: leader
+    election, log replication, and safety.
+
+    ### Leader Election
+
+    Every Raft node starts as a **follower**. Followers listen for heartbeats from a
+    leader. If no heartbeat arrives within a randomized timeout (typically 150-300ms),
+    the follower becomes a **candidate**, increments its term number, votes for itself,
+    and asks other nodes for votes. A candidate that receives votes from a majority
+    becomes the **leader**. The randomized timeout is the key to avoiding split votes --
+    nodes will not all time out simultaneously.
+
+    ```
+    RAFT NODE STATE TRANSITIONS
+
+    ┌──────────┐  election timeout  ┌──────────┐  wins majority  ┌──────────┐
+    │ Follower ├───────────────────>│Candidate ├────────────────>│  Leader  │
+    └────┬─────┘                    └────┬─────┘                 └────┬─────┘
+         ^                               │                            │
+         │      discovers higher term    │     discovers higher term  │
+         └───────────────────────────────┴────────────────────────────┘
+    ```
+
+    A critical rule: each node votes for at most one candidate per term, and it only
+    votes for a candidate whose log is at least as up-to-date as its own. This prevents
+    a node with a stale log from becoming leader and overwriting committed entries.
+
+    ```
+    LEADER ELECTION EXAMPLE (5-node cluster, term 4)
+
+    Time 0: Leader (Node 1) crashes
+    ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐
+    │  XX  │ │  F   │ │  F   │ │  F   │ │  F   │
+    │crash │ │ t=3  │ │ t=3  │ │ t=3  │ │ t=3  │
+    └──────┘ └──────┘ └──────┘ └──────┘ └──────┘
+
+    Time 1: Node 3 times out first (randomized), becomes candidate
+    ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐
+    │  XX  │ │  F   │ │  C   │ │  F   │ │  F   │
+    │      │ │ t=3  │ │ t=4  │ │ t=3  │ │ t=3  │
+    └──────┘ └──────┘ └──┬───┘ └──────┘ └──────┘
+                         │ RequestVote(term=4)
+                    ┌────┼─────┬─────────┐
+                    v    v     v         v
+                   Yes  self  Yes       Yes
+                        vote
+    Result: Node 3 gets 4 votes (majority=3), becomes leader for term 4
+    ```
+
+    ### Log Replication
+
+    Once elected, the leader handles all client requests. For each request, it appends
+    an entry to its local log, then sends AppendEntries RPCs to every follower. When a
+    majority of nodes have written the entry to their logs, the leader considers it
+    **committed** and applies it to the state machine. The leader then notifies followers
+    that the entry is committed on the next heartbeat.
+
+    ```
+    LOG REPLICATION FLOW
+
+    Client: "SET x = 7"
+         │
+         v
+    ┌─────────┐  AppendEntries   ┌──────────┐
+    │ Leader  ├─────────────────>│Follower 1│ ACK
+    │ log:[7] ├─────────────────>│Follower 2│ ACK
+    │         ├──────── X ──────>│Follower 3│ (network drop)
+    │         ├─────────────────>│Follower 4│ ACK
+    └─────────┘                  └──────────┘
+
+    3 ACKs + leader = 4 out of 5 --> majority reached
+    Leader commits entry, applies SET x = 7
+    Responds success to client
+    Follower 3 catches up on next heartbeat
+    ```
+
+    This mechanism means committed entries survive leader failures. Any node elected as
+    the new leader is guaranteed to have all committed entries in its log, because it
+    needed a majority vote, and a majority of nodes have the committed entry.
+
+    ### Who Uses Raft
+
+    Raft powers some of the most critical infrastructure in modern systems. **etcd**, the
+    configuration store behind every Kubernetes cluster, uses Raft to replicate cluster
+    state across typically 3 or 5 nodes. At scale, a Kubernetes deployment at companies
+    like Shopify (6,000+ nodes) depends on etcd's Raft consensus for every pod
+    scheduling decision and config change.
+
+    **HashiCorp Consul** uses Raft for service discovery and health checking across data
+    centers. Consul deployments at companies like Stripe manage thousands of services
+    across multiple availability zones. **CockroachDB**, used by companies like Netflix
+    and Bose, employs Raft at the range level -- each range (typically 512 MB of data)
+    has its own Raft group, meaning a large cluster runs thousands of concurrent Raft
+    instances. **TiKV**, the storage layer behind TiDB, uses the same approach to support
+    multi-terabyte transactional workloads at companies like PingCAP and Zhihu.
+
+=== "Paxos and Others"
+
+    ## Paxos: The Original Consensus Algorithm
+
+    Leslie Lamport published Paxos in 1989 (though it was not widely understood until
+    its re-publication in 1998 and a follow-up "Paxos Made Simple" paper in 2001). The
+    core idea is elegant: a proposer sends a numbered proposal to acceptors, who promise
+    not to accept lower-numbered proposals. If a majority of acceptors promise, the
+    proposer can ask them to accept the value. Once a majority accepts, consensus is
+    reached.
+
+    ```
+    BASIC PAXOS (single-decree)
+
+    Proposer               Acceptors (5 nodes)
+       │                   │  │  │  │  │
+       │──Prepare(n=1)────>│  │  │  │  │
+       │<──Promise(n=1)────│  │  │  │  │
+       │──Prepare(n=1)──────->│  │  │  │
+       │<──Promise(n=1)───────│  │  │  │
+       │──Prepare(n=1)────────-->│  │  │
+       │<──Promise(n=1)─────────│  │  │
+       │                   3 promises = majority
+       │──Accept(n=1,v=X)─>│  │  │  │  │
+       │<──Accepted────────│  │  │  │  │
+       │──Accept(n=1,v=X)────>│  │  │  │
+       │<──Accepted───────────│  │  │  │
+       │──Accept(n=1,v=X)────────>│  │  │
+       │<──Accepted───────────────│  │  │
+       │                   3 accepts = consensus on value X
+    ```
+
+    The fundamental challenge with basic Paxos is that it decides a single value. Real
+    systems need to decide a sequence of values (a replicated log), which requires
+    **Multi-Paxos**. Multi-Paxos elects a distinguished proposer (effectively a leader)
+    who can skip the Prepare phase for subsequent proposals, reducing each decision to a
+    single round trip. However, Lamport's paper left many practical details unspecified,
+    leading to widely varying implementations that are difficult to compare or verify.
+
+    Lamport famously claimed Paxos is simple. The distributed systems community
+    overwhelmingly disagrees -- Google's Chubby team reported that "there are significant
+    gaps between the description of the Paxos algorithm and the needs of a real-world
+    system" and that their implementation required substantial engineering beyond the
+    paper.
+
+    ### ZAB: ZooKeeper Atomic Broadcast
+
+    Apache ZooKeeper uses ZAB (ZooKeeper Atomic Broadcast) rather than Paxos or Raft.
+    ZAB is optimized for the primary-backup pattern: all writes go through a single
+    leader, and state changes are broadcast to followers in strict order. Unlike Paxos,
+    ZAB guarantees that if a leader proposes changes A then B, every node processes them
+    in that order.
+
+    ZooKeeper is used at enormous scale. LinkedIn runs ZooKeeper ensembles managing
+    configuration for over 1,000 microservices. Yahoo (where ZooKeeper originated)
+    deployed it across thousands of machines. Kafka relied on ZooKeeper for broker
+    coordination and partition leader election through version 3.x (KRaft, based on Raft,
+    replaces it in Kafka 4.0+).
+
+    ### Viewstamped Replication
+
+    Viewstamped Replication (VR), designed by Brian Oki and Barbara Liskov in 1988,
+    predates both Paxos's publication and Raft. It uses a leader-based approach with
+    "view changes" when the leader fails -- conceptually similar to Raft's term changes.
+    VR is not widely deployed in modern systems but is historically significant as one of
+    the first practical consensus protocols.
+
+    ### When to Use Which
+
+    | Algorithm | Best For | Real-World Systems | Key Trade-Off |
+    |---|---|---|---|
+    | Raft | New projects needing consensus | etcd, Consul, CockroachDB, TiKV | Understandable but leader bottleneck |
+    | Multi-Paxos | Custom high-performance systems | Google Chubby, Spanner | Flexible but hard to implement |
+    | ZAB | Ordered broadcast, config mgmt | Apache ZooKeeper, Kafka (pre-4.0) | Strong ordering but ZK-specific |
+    | PBFT | Byzantine fault tolerance | Hyperledger Fabric | Secure but O(n^2) message cost |
+
+=== "Practical Usage"
+
+    ## How Consensus Shows Up in Production
+
+    Most engineers never implement a consensus algorithm directly. Instead, they use
+    systems built on top of one. Understanding what these systems provide -- and their
+    limits -- is more practically useful than knowing the algorithm internals.
+
+    ### Leader Election
+
+    When you have a distributed service where only one instance should perform a task
+    (e.g., cron-job scheduling, queue processing), you need leader election. The typical
+    pattern is to use a consensus-backed store to create an ephemeral, time-limited key.
+    The node that successfully creates it is the leader. If the leader crashes, its
+    session expires, and another node claims leadership.
+
+    ```
+    LEADER ELECTION VIA etcd (conceptual)
+
+    Node A: PUT /leader = "node-a" (with lease TTL=10s)   --> SUCCESS (leader)
+    Node B: PUT /leader = "node-b" (with lease TTL=10s)   --> FAIL (key exists)
+    Node C: PUT /leader = "node-c" (with lease TTL=10s)   --> FAIL (key exists)
+
+    Node A must renew lease every ~5s to stay leader.
+    If Node A crashes, lease expires after 10s.
+    Node B or C retry and one becomes the new leader.
+    ```
+
+    **Google Chubby** is the canonical example. Chubby is a distributed lock service
+    built on Multi-Paxos, used internally at Google for leader election in GFS (choosing
+    a master), BigTable (tablet server coordination), and MapReduce (master election).
+    Chubby typically runs as a five-node cell and handles thousands of clients per cell.
+    It was so critical that a Chubby outage at Google could cascade into failures across
+    dozens of dependent services.
+
+    ### Distributed Locks
+
+    Distributed locks extend the leader election pattern. A service acquires a lock by
+    writing a key with a fence token (monotonically increasing number). Any downstream
+    service checks that the fence token is higher than the last one it saw, preventing
+    stale lock holders from making changes after their lock has expired and been
+    re-acquired. ZooKeeper's sequential ephemeral znodes provide this natively.
+
+    ### Configuration Management and Service Discovery
+
+    Consul, backed by Raft, stores service definitions and health check results. When a
+    service instance registers or deregisters, the change is replicated through Raft
+    consensus, ensuring all Consul agents have a consistent view. At HashiCorp's reported
+    scale, Consul clusters manage tens of thousands of service instances with sub-second
+    convergence on membership changes.
+
+    etcd serves a similar role for Kubernetes. Every API object (pods, services,
+    deployments) is stored in etcd. The Kubernetes API server is essentially a frontend
+    for etcd's consensus-replicated key-value store. Production clusters typically run
+    etcd with 3 or 5 nodes, and etcd recommends keeping the data size under 8 GB for
+    optimal performance.
+
+    ### Comparison of Consensus-Backed Systems
+
+    | System | Algorithm | Typical Cluster Size | Max Recommended Data | Notable Users |
+    |---|---|---|---|---|
+    | etcd | Raft | 3-5 nodes | 8 GB | Kubernetes, CoreDNS |
+    | ZooKeeper | ZAB | 3-5 nodes | Hundreds of MB | Kafka, Hadoop, HBase |
+    | Consul | Raft | 3-5 nodes | Varies | Stripe, Twitch |
+    | Google Chubby | Multi-Paxos | 5 nodes per cell | Small (lock service) | GFS, BigTable, Spanner |
+
+    A common pattern across all these systems: consensus clusters are kept small (3-5
+    nodes) because every write must reach a majority. Adding more nodes increases
+    durability but also increases write latency. For read-heavy workloads, systems like
+    etcd support linearizable reads from the leader or serializable (stale) reads from
+    any node.
 
 ---
 
-## Why Consensus Matters
-
-=== "Use Cases"
-    **Critical distributed system problems:**
-
-    | Problem | Solution | Example |
-    |---------|----------|---------|
-    | **Leader Election** | Choose one node as leader | Elect primary database |
-    | **Distributed Locks** | Coordinate access to resource | Prevent double-booking |
-    | **Configuration Management** | Agree on system config | Service discovery (Consul) |
-    | **Database Replication** | Keep replicas consistent | MySQL with Galera |
-    | **Distributed Transactions** | Commit or abort together | 2PC in databases |
-
-=== "The Challenge"
-    **What makes consensus hard:**
-
-    ```
-    Perfect Network (doesn't exist):
-    Node A ──────────▶ Node B
-              1ms
-              100% reliable
-
-    Real Network (what we have):
-    Node A ─ ─ ─ ─ ─ ▶ Node B
-              100ms
-              Messages lost
-              Messages reordered
-              Nodes crash
-              Network partitions
-    ```
-
-    **CAP Theorem:**
-    - **C**onsistency: All nodes see same data
-    - **A**vailability: Every request gets response
-    - **P**artition tolerance: Works despite network splits
-
-    **Pick 2 out of 3** (must always have P in distributed systems)
-
----
-
-## Paxos
-
-=== "Overview"
-    **The original consensus algorithm (1989)**
-
-    **Key Idea:** Use majority voting with proposals and promises
-
-    **Roles:**
-    - **Proposer:** Proposes values
-    - **Acceptor:** Votes on proposals
-    - **Learner:** Learns chosen value
-
-    ```
-    Phase 1 (Prepare):
-    Proposer → All Acceptors: "Can I propose value X?"
-    Acceptors → Proposer: "Yes" or "No, someone else already proposed"
-
-    Phase 2 (Accept):
-    Proposer → Majority: "Please accept value X"
-    Acceptors → Proposer: "Accepted!"
-
-    Result: Value X is chosen (permanent)
-    ```
-
-=== "How It Works"
-    **Two-phase commit process:**
-
-    ```
-    Scenario: 5 nodes need to agree on a value
-
-    Node 1 (Proposer):
-      Prepare(proposal #10, value="foo")
-      ↓
-    Nodes 2, 3, 4, 5 (Acceptors):
-      "OK, I promise not to accept proposals < #10"
-      (3 out of 4 responded - majority!)
-      ↓
-    Node 1:
-      Accept(proposal #10, value="foo")
-      ↓
-    Nodes 2, 3, 4:
-      "Accepted!"
-      (3 out of 4 accepted - value chosen!)
-    ```
-
-    **Guarantees:**
-    - ✅ Only one value chosen
-    - ✅ Survives minority node failures
-    - ✅ Progress with majority
-
-=== "Example"
-    **Real-world scenario:**
-
-    ```python
-    class PaxosNode:
-        def __init__(self, node_id):
-            self.node_id = node_id
-            self.promised_proposal = None
-            self.accepted_proposal = None
-            self.accepted_value = None
-
-        def prepare(self, proposal_number):
-            """Phase 1: Prepare request"""
-            if self.promised_proposal is None or \
-               proposal_number > self.promised_proposal:
-                self.promised_proposal = proposal_number
-                return {
-                    'promise': True,
-                    'accepted_proposal': self.accepted_proposal,
-                    'accepted_value': self.accepted_value
-                }
-            return {'promise': False}
-
-        def accept(self, proposal_number, value):
-            """Phase 2: Accept request"""
-            if proposal_number >= self.promised_proposal:
-                self.accepted_proposal = proposal_number
-                self.accepted_value = value
-                return {'accepted': True}
-            return {'accepted': False}
-
-    # Usage
-    nodes = [PaxosNode(i) for i in range(5)]
-
-    # Phase 1: Prepare
-    proposal_num = 10
-    promises = []
-    for node in nodes:
-        response = node.prepare(proposal_num)
-        if response['promise']:
-            promises.append(response)
-
-    # Need majority (3 out of 5)
-    if len(promises) >= 3:
-        # Phase 2: Accept
-        value = "leader_node_3"
-        accepts = []
-        for node in nodes:
-            response = node.accept(proposal_num, value)
-            if response['accepted']:
-                accepts.append(response)
-
-        if len(accepts) >= 3:
-            print(f"Consensus reached: {value}")
-    ```
-
-=== "Challenges"
-    **Why Paxos is hard:**
-
-    - ❌ Complex to understand and implement
-    - ❌ Doesn't handle membership changes well
-    - ❌ Livelock possible (competing proposers)
-    - ❌ Performance issues under contention
-
-    **Quote from Leslie Lamport (creator):**
-    > "The Paxos algorithm, when presented in plain English, is very simple."
-
-    **Reality:** Most engineers disagree! 😅
-
----
-
-## Raft
-
-=== "Overview"
-    **Designed for understandability (2014)**
-
-    **Key Innovation:** Decompose consensus into:
-    1. **Leader Election:** Choose one leader
-    2. **Log Replication:** Leader replicates log to followers
-    3. **Safety:** Ensure chosen values never change
-
-    ```
-    Normal Operation:
-    
-    Leader (Node 1):
-      Receives client requests
-      Appends to local log
-      Replicates to followers
-      Commits when majority confirm
-    
-    Followers (Nodes 2, 3, 4, 5):
-      Accept log entries from leader
-      Respond with confirmation
-      Apply committed entries
-    ```
-
-=== "Leader Election"
-    **How leaders are elected:**
-
-    ```
-    State Machine (each node):
-    
-    Follower ────timeout────▶ Candidate ────wins election────▶ Leader
-       ▲                           │                              │
-       │                           │ loses/new term               │
-       └───────────────────────────┴──────────────────────────────┘
-    
-    Process:
-    1. Follower times out (150-300ms, no heartbeat from leader)
-    2. Becomes Candidate, increments term, votes for self
-    3. Requests votes from other nodes
-    4. If gets majority: becomes Leader
-    5. If another leader elected: becomes Follower
-    6. If timeout: starts new election
-    ```
-
-    **Election Example:**
-    ```
-    Initial: All followers
-    ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐
-    │  F  │ │  F  │ │  F  │ │  F  │ │  F  │
-    └─────┘ └─────┘ └─────┘ └─────┘ └─────┘
-
-    Node 3 times out:
-    ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐
-    │  F  │ │  F  │ │  C  │ │  F  │ │  F  │
-    └─────┘ └─────┘ └──┬──┘ └─────┘ └─────┘
-                       │
-                  Vote for me!
-                       │
-    ┌─────────────┬────┴────┬─────────────┐
-    ▼             ▼          ▼             ▼
-    Yes          Yes        No            Yes
-    
-    3 votes (majority) → Node 3 becomes Leader
-    ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐
-    │  F  │ │  F  │ │  L  │ │  F  │ │  F  │
-    └─────┘ └─────┘ └─────┘ └─────┘ └─────┘
-    ```
-
-=== "Log Replication"
-    **Replicating state changes:**
-
-    ```
-    Client Request: SET x = 5
-    
-    Leader Log:
-    [SET x=5] ← New entry (uncommitted)
-        ↓
-    Send to Followers:
-    AppendEntries(entry: "SET x=5", index: 10)
-        ↓
-    Followers append to log:
-    Follower 1: [... SET x=5] ✅
-    Follower 2: [... SET x=5] ✅
-    Follower 3: [... SET x=5] ✅
-        ↓
-    Majority confirmed (3/5)
-        ↓
-    Leader commits entry:
-    [SET x=5] ✓ Committed
-        ↓
-    Leader applies to state machine:
-    x = 5 (visible to clients)
-        ↓
-    Next heartbeat tells followers to commit
-    ```
-
-=== "Implementation"
-    **Raft implementation example:**
-
-    ```python
-    class RaftNode:
-        def __init__(self, node_id, peers):
-            self.node_id = node_id
-            self.peers = peers
-            self.state = 'follower'  # follower, candidate, or leader
-            self.current_term = 0
-            self.voted_for = None
-            self.log = []
-            self.commit_index = 0
-            
-        def start_election(self):
-            """Start election when timeout occurs"""
-            self.state = 'candidate'
-            self.current_term += 1
-            self.voted_for = self.node_id
-            votes_received = 1  # Vote for self
-            
-            # Request votes from peers
-            for peer in self.peers:
-                response = peer.request_vote(
-                    term=self.current_term,
-                    candidate_id=self.node_id,
-                    last_log_index=len(self.log) - 1,
-                    last_log_term=self.log[-1]['term'] if self.log else 0
-                )
-                if response['vote_granted']:
-                    votes_received += 1
-            
-            # Check if won election
-            if votes_received > len(self.peers) // 2:
-                self.become_leader()
-        
-        def become_leader(self):
-            """Transition to leader state"""
-            self.state = 'leader'
-            print(f"Node {self.node_id} became leader for term {self.current_term}")
-            
-            # Start sending heartbeats
-            self.send_heartbeats()
-        
-        def send_heartbeats(self):
-            """Send periodic heartbeats to maintain leadership"""
-            for peer in self.peers:
-                peer.append_entries(
-                    term=self.current_term,
-                    leader_id=self.node_id,
-                    entries=[]  # Empty for heartbeat
-                )
-        
-        def replicate_log(self, entry):
-            """Replicate log entry to followers"""
-            # Append to leader's log
-            entry['term'] = self.current_term
-            self.log.append(entry)
-            
-            # Replicate to followers
-            acks = 1  # Leader counts as ack
-            for peer in self.peers:
-                response = peer.append_entries(
-                    term=self.current_term,
-                    leader_id=self.node_id,
-                    entries=[entry]
-                )
-                if response['success']:
-                    acks += 1
-            
-            # Commit if majority acknowledged
-            if acks > len(self.peers) // 2:
-                self.commit_index = len(self.log) - 1
-                return True
-            return False
-    ```
-
-=== "Advantages"
-    **Why Raft is popular:**
-
-    - ✅ Easier to understand than Paxos
-    - ✅ Clear leader makes operations simpler
-    - ✅ Handles membership changes cleanly
-    - ✅ Strong guarantees (linearizability)
-    - ✅ Many production implementations
-
-    **Used by:**
-    - **etcd:** Kubernetes configuration
-    - **Consul:** Service discovery
-    - **CockroachDB:** Distributed SQL
-    - **TiDB:** Distributed database
-
----
-
-## 2PC (Two-Phase Commit)
-
-=== "Overview"
-    **Atomic commit protocol for distributed transactions**
-
-    **Goal:** Either all nodes commit or all abort
-
-    ```
-    Coordinator:
-      Prepare Phase → Ask all: "Can you commit?"
-      Commit Phase → Tell all: "Commit" or "Abort"
-    
-    Participants:
-      Prepare → Vote Yes/No
-      Commit → Execute commit or abort
-    ```
-
-=== "How It Works"
-    **Two phases:**
-
-    ```
-    Example: Transfer $100 from Account A to Account B
-             (A on Server 1, B on Server 2)
-
-    Phase 1: Prepare
-    Coordinator: "Can you transfer?"
-    ├─▶ Server 1: Deduct $100 from A → "YES, ready"
-    └─▶ Server 2: Add $100 to B → "YES, ready"
-
-    Both said YES → Proceed to Phase 2
-
-    Phase 2: Commit
-    Coordinator: "COMMIT"
-    ├─▶ Server 1: Commit transaction ✅
-    └─▶ Server 2: Commit transaction ✅
-
-    Result: Transfer complete!
-
-    ---
-
-    Alternative: One says NO
-
-    Phase 1: Prepare
-    Coordinator: "Can you transfer?"
-    ├─▶ Server 1: Deduct $100 from A → "YES, ready"
-    └─▶ Server 2: Add $100 to B → "NO, insufficient space"
-
-    One said NO → Abort
-
-    Phase 2: Abort
-    Coordinator: "ABORT"
-    ├─▶ Server 1: Rollback transaction ✅
-    └─▶ Server 2: Nothing to rollback ✅
-
-    Result: Transfer canceled
-    ```
-
-=== "Problems"
-    **Why 2PC is problematic:**
-
-    **Blocking Problem:**
-    ```
-    Phase 1: All participants vote YES
-    Phase 2: Coordinator crashes before sending COMMIT
-    
-    Result: Participants stuck waiting!
-           - Can't commit (didn't get command)
-           - Can't abort (voted YES, might commit)
-           - Locks held indefinitely ❌
-    ```
-
-    **Performance Issues:**
-    - Multiple round trips (high latency)
-    - Blocking nature (locks held during protocol)
-    - Single point of failure (coordinator)
-
-    **Why it's still used:**
-    - Simple to understand and implement
-    - Works well in reliable networks
-    - Good for small number of participants
-
----
-
-## 3PC (Three-Phase Commit)
-
-=== "Overview"
-    **Non-blocking variant of 2PC**
-
-    **Phases:**
-    1. **CanCommit:** Ask if ready
-    2. **PreCommit:** Tell to prepare
-    3. **DoCommit:** Tell to commit
-
-    **Advantage:** Can make progress even if coordinator fails
-
-=== "How It Works"
-    ```
-    Phase 1: CanCommit
-    Coordinator → Participants: "Can you commit?"
-    Participants → Coordinator: "YES" or "NO"
-
-    Phase 2: PreCommit
-    Coordinator → Participants: "Prepare to commit"
-    Participants: Lock resources, write to log
-    Participants → Coordinator: "Ready"
-
-    Phase 3: DoCommit
-    Coordinator → Participants: "Commit!"
-    Participants: Commit and release locks
-    ```
-
-    **Key difference:** PreCommit phase allows timeout-based recovery
-
-=== "Limitations"
-    - ❌ Still has edge cases in network partitions
-    - ❌ More complex than 2PC
-    - ❌ Higher latency (three phases vs two)
-    - ✅ Rarely used in practice (Raft/Paxos preferred)
-
----
-
-## Comparison Table
-
-| Algorithm | Year | Complexity | Fault Tolerance | Performance | Use Case |
-|-----------|------|------------|----------------|-------------|----------|
-| **Paxos** | 1989 | Very High | Excellent | Medium | Theoretical foundation |
-| **Raft** | 2014 | Medium | Excellent | Good | Production systems |
-| **2PC** | 1970s | Low | Poor (blocking) | Poor | Small, reliable networks |
-| **3PC** | 1980s | Medium | Better | Poor | Rarely used |
-
----
-
-## Real-World Usage
-
-=== "Raft Deployments"
-    **etcd (Kubernetes):**
-    ```bash
-    # etcd cluster (Raft for consensus)
-    etcd --name node1 \
-         --initial-cluster node1=http://10.0.0.1:2380,node2=http://10.0.0.2:2380 \
-         --initial-cluster-state new
-    
-    # Kubernetes uses etcd for:
-    # - Pod configurations
-    # - Service discovery
-    # - Cluster state
-    ```
-
-    **Consul (Service Discovery):**
-    ```bash
-    # Consul servers use Raft
-    consul agent -server -bootstrap-expect=3 \
-         -data-dir=/tmp/consul
-    
-    # Leader election automatic
-    # Configuration changes replicated
-    ```
-
-=== "Paxos Deployments"
-    **Google Chubby:**
-    - Lock service for Google infrastructure
-    - Used by BigTable, GFS
-    - Multi-Paxos variant
-
-    **Apache Cassandra:**
-    - Lightweight transactions (LWT) use Paxos
-    - Opt-in for critical operations
-    - Most operations use eventual consistency
-
-=== "2PC Deployments"
-    **Traditional Databases:**
-    ```sql
-    -- PostgreSQL distributed transaction
-    BEGIN;
-    -- Operations on local DB
-    PREPARE TRANSACTION 'xact_1';
-
-    -- On remote DB
-    BEGIN;
-    -- Operations on remote DB
-    PREPARE TRANSACTION 'xact_1';
-
-    -- Commit both
-    COMMIT PREPARED 'xact_1';
-    ```
-
-    **Used by:** MySQL, PostgreSQL, Oracle (XA transactions)
-
----
-
-## Interview Talking Points
-
-**Q: Explain the difference between Paxos and Raft.**
-
-✅ **Strong Answer:**
-> "Both Paxos and Raft solve consensus, but Raft was explicitly designed for understandability. Paxos is more general but harder to implement correctly - it doesn't prescribe a specific leader, leading to complex coordinator election logic. Raft simplifies this by always having a single leader who handles all client requests and log replication. This makes Raft easier to reason about and implement, which is why it's more popular in production systems like etcd and Consul. However, Paxos variants like Multi-Paxos can achieve similar performance."
-
-**Q: Why is 2PC blocking and how does Raft avoid this?**
-
-✅ **Strong Answer:**
-> "2PC is blocking because if the coordinator crashes after participants vote YES but before sending the commit decision, participants are stuck - they can't commit or abort without knowing the coordinator's decision, so they hold locks indefinitely. Raft avoids this through its log replication approach. Raft commits entries once a majority has them in their logs, so even if the leader fails, a new leader with the committed entries can be elected and operations continue. The key difference is Raft's leader election mechanism allows the system to recover automatically, while 2PC requires manual intervention or coordinator recovery."
-
-**Q: When would you use eventual consistency instead of consensus?**
-
-✅ **Strong Answer:**
-> "I'd use eventual consistency for non-critical operations where the cost of consensus (latency, complexity) isn't worth immediate consistency. For example, social media 'likes' counts don't need consensus - it's okay if different users see slightly different numbers for a few seconds. Similarly, analytics dashboards can tolerate stale data. However, I'd use consensus for critical operations like financial transactions, inventory management, or leader election where split-brain scenarios could cause serious issues. The trade-off is: consensus provides strong guarantees but adds latency and complexity."
+## Key Takeaways
+
+Consensus solves the fundamental problem of getting distributed nodes to agree on
+state despite crashes and network partitions. The majority quorum requirement (needing
+more than half the nodes) is the core mechanism that prevents split brain.
+
+Raft is the default choice for new systems because it was explicitly designed for
+understandability and has battle-tested implementations in etcd, Consul, and
+CockroachDB. Paxos is theoretically important and powers some of the largest systems at
+Google, but its implementation complexity makes it impractical for most teams. ZAB
+serves ZooKeeper well for ordered broadcast but is not a general-purpose consensus
+library.
+
+In practice, most engineers interact with consensus indirectly through systems like
+etcd, ZooKeeper, or Consul. The practical skill is knowing when you need strong
+consensus (leader election, distributed locks, configuration that must be consistent)
+versus when eventual consistency is acceptable (analytics, caching, social media
+counters).
 
 ---
 
 ## Related Topics
 
-- [Distributed Systems](index.md) - Overview of distributed challenges
-- [Consistent Hashing](consistent-hashing.md) - Distributed data partitioning
-- [Database Replication](../data/databases/replication.md) - Data consistency
-- [CAP Theorem](../fundamentals/cap-theorem.md) - Consistency trade-offs
-
----
-
-**Consensus is hard, but necessary for building reliable distributed systems! 🤝**
+- [Distributed Systems Overview](index.md) - Broader distributed systems challenges
+- [Consistent Hashing](consistent-hashing.md) - Data partitioning across nodes
+- [Database Replication](../data/databases/replication.md) - Replication strategies and consistency
+- [CAP Theorem](../fundamentals/cap-theorem.md) - Consistency and availability trade-offs

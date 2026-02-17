@@ -25,12 +25,10 @@ Database design is crucial for system scalability, reliability, and performance.
 
 | Topic | Status | Description |
 |-------|--------|-------------|
-| [SQL vs NoSQL](sql-vs-nosql.md) | 📝 Planned | When to use each type |
+| [Database Types](database-types.md) | ✅ Complete | When to use each database type |
 | [Replication](replication.md) | 📝 Planned | Master-slave, multi-master |
 | [Sharding](sharding.md) | 📝 Planned | Horizontal partitioning |
 | [Indexing](indexing.md) | 📝 Planned | B-tree, hash, composite indexes |
-| [Transactions](transactions.md) | 📝 Planned | ACID, isolation levels |
-| [Query Optimization](query-optimization.md) | 📝 Planned | EXPLAIN, query plans |
 
 ---
 

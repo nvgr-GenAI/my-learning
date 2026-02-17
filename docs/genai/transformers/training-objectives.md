@@ -521,9 +521,8 @@ How do we know if training is working?
 
 Now you understand how transformers learn their foundational skills! This knowledge prepares you for:
 
-- **[Fine-tuning Guide](fine-tuning.md)** - Adapt pre-trained models to specific tasks
-- **[Model Zoo](model-zoo.md)** - Explore different pre-trained models
-- **[Applications](applications.md)** - See training objectives in action
+- **[Implementation Guide](implementation-guide.md)** - Build transformers from scratch
+- **[Optimization](optimization.md)** - Make transformers faster and more efficient
 
 ---
 

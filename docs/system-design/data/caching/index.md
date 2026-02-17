@@ -25,9 +25,6 @@ Caching is the easiest way to improve performance. Store frequently accessed dat
 | Topic | Status | Description |
 |-------|--------|-------------|
 | [Caching Strategies](strategies.md) | 📝 Planned | Cache-aside, write-through, write-behind |
-| [Distributed Cache](distributed.md) | 📝 Planned | Redis, Memcached setup |
-| [Cache Invalidation](invalidation.md) | 📝 Planned | TTL, manual invalidation patterns |
-| [Cache Warming](cache-warming.md) | 📝 Planned | Preload cache strategies |
 
 ---
 

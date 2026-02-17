@@ -1,9 +1,36 @@
 installation:
-  version: 6.0.0-alpha.23
-  installDate: 2026-01-28T21:50:22.159Z
-  lastUpdated: 2026-01-28T21:50:22.159Z
+  version: 6.0.0-Beta.2
+  installDate: 2026-02-17T22:22:38.666Z
+  lastUpdated: 2026-02-17T22:22:38.666Z
 modules:
-  - core
-  - bmm
+  - name: core
+    version: 6.0.0-Beta.2
+    installDate: 2026-02-17T22:22:38.664Z
+    lastUpdated: 2026-02-17T22:22:38.664Z
+    source: built-in
+    npmPackage: null
+    repoUrl: null
+  - name: bmm
+    version: 6.0.0-Beta.2
+    installDate: 2026-02-17T22:22:32.984Z
+    lastUpdated: 2026-02-17T22:22:38.664Z
+    source: built-in
+    npmPackage: null
+    repoUrl: null
+  - name: cai-standards
+    version: null
+    installDate: 2026-02-17T22:22:33.127Z
+    lastUpdated: 2026-02-17T22:22:38.666Z
+    source: unknown
+    npmPackage: null
+    repoUrl: null
+  - name: cai-spec-kit
+    version: null
+    installDate: 2026-02-17T22:22:38.600Z
+    lastUpdated: 2026-02-17T22:22:38.666Z
+    source: unknown
+    npmPackage: null
+    repoUrl: null
 ides:
   - claude-code
+  - github-copilot

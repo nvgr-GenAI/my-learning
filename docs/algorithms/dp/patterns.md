@@ -1440,8 +1440,8 @@ def minimax_game(values):
 
 State machine patterns model problems as a set of distinct states with transitions between them. These patterns are particularly useful for problems where the system moves through different configurations over time or through a sequence of decisions.
 
-- [State Transition](state-transition.md) - Model problems with discrete states and transitions
-- [Finite State Machine (FSM)](fsm.md) - Solve problems using formal state machines
+- **State Transition** - Model problems with discrete states and transitions
+- **Finite State Machine (FSM)** - Solve problems using formal state machines
 
 **Core Idea**: Model problems as states and transitions with specific rules governing moves between states.
 
@@ -1555,9 +1555,9 @@ def paint_house_optimized(costs):
 
 Bitmasking DP is a powerful technique that uses binary representation to efficiently track subsets of elements. This is particularly useful for problems involving small sets where you need to consider all possible subsets.
 
-- [Subset State](subset-state.md) - Represent and solve problems involving all possible subsets
-- [State Compression](state-compression.md) - Use bit manipulation for efficient state representation
-- [Submask Enumeration](submask-enumeration.md) - Process all subsets of a given set efficiently
+- **Subset State** - Represent and solve problems involving all possible subsets
+- **State Compression** - Use bit manipulation for efficient state representation
+- **Submask Enumeration** - Process all subsets of a given set efficiently
 
 **Core Idea**: Use bitmasks to represent subsets of elements and track state, with each bit indicating whether an element is included or excluded.
 
@@ -1747,8 +1747,8 @@ def process_all_submasks(n):
 
 Probability DP patterns deal with problems involving chance, expected values, and stochastic processes. These patterns are particularly useful in modeling uncertain outcomes and analyzing probabilistic systems.
 
-- [Expected Value](expected-value.md) - Calculate expected outcomes in probabilistic scenarios
-- [Markov Chain](markov-chain.md) - Use transition probabilities between states
+- **Expected Value** - Calculate expected outcomes in probabilistic scenarios
+- **Markov Chain** - Use transition probabilities between states
 
 **Core Idea**: Calculate expected values or probabilities based on probabilistic transitions between states.
 
@@ -1891,9 +1891,9 @@ def random_walk_probability(n, steps, start):
 
 String DP patterns focus on problems involving strings, substrings, and character sequences. These patterns are essential for text processing, bioinformatics, and many other applications involving sequence data.
 
-- [Palindrome Problems](palindrome.md) - Find or construct palindromes in strings
-- [String Matching](string-matching.md) - Find patterns or subsequences in strings
-- [String Transformation](string-transformation.md) - Convert one string to another efficiently
+- **Palindrome Problems** - Find or construct palindromes in strings
+- **String Matching** - Find patterns or subsequences in strings
+- **String Transformation** - Convert one string to another efficiently
 
 ## Learning Strategy
 

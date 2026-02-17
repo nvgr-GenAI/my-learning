@@ -1,814 +1,226 @@
 # Logging
 
-**Track application behavior** | 📝 Structured | 📚 Centralized | 🔍 Searchable
+Metrics tell you *that* something is wrong. Logs tell you *why*. A monitoring dashboard shows the error rate spiked to 5% — but it's the logs that reveal "payment service returning 503 because Stripe API key expired." Logs capture discrete events with full context, making them essential for debugging, auditing, and understanding system behavior.
+
+The challenge with logging isn't generating logs — every system generates plenty. The challenge is making them **useful**: structured so they're searchable, centralized so you can find them, and correlated so you can trace a problem across services.
 
 ---
 
-## Overview
+=== "Structured Logging"
 
-Logging captures discrete events that occur in your system, providing context for debugging, auditing, and understanding system behavior.
+    ## Structured vs Unstructured Logging
 
-**Why Structured Logging?**
+    The difference between debugging in minutes and debugging in hours:
 
-- Machine-parseable
-- Searchable and filterable
-- Correlation across services
-- Better observability
-
----
-
-## Log Levels
-
-=== "Standard Levels"
     ```
-    Log Level Hierarchy (most to least severe):
+    Unstructured (hard to search, hard to parse):
+      2024-01-15 10:30:45 ERROR Payment failed for user 12345, order 67890, amount $99.99
 
-    FATAL/CRITICAL - System is unusable
-    ├─ Database connection lost
-    ├─ Out of memory
-    └─ Cannot start application
-
-    ERROR - Something failed
-    ├─ Payment processing failed
-    ├─ External API returned 500
-    └─ Failed to save to database
-
-    WARN - Potential problem
-    ├─ Deprecated API usage
-    ├─ Slow query (> 1s)
-    └─ Retry attempt
-
-    INFO - Normal operation
-    ├─ Request started/completed
-    ├─ User logged in
-    └─ Service started
-
-    DEBUG - Detailed diagnostic info
-    ├─ Variable values
-    ├─ Function entry/exit
-    └─ Configuration values
-
-    TRACE - Very detailed info
-    ├─ SQL queries with parameters
-    ├─ Full request/response bodies
-    └─ Step-by-step execution flow
-    ```
-
-=== "Best Practices"
-    ```
-    ✅ DO:
-    - Use ERROR for failures requiring attention
-    - Use WARN for degraded but functional state
-    - Use INFO for business events (signup, purchase)
-    - Use DEBUG for development troubleshooting
-    - Log errors with stack traces
-
-    ❌ DON'T:
-    - Log sensitive data (passwords, credit cards)
-    - Log at TRACE in production (too verbose)
-    - Use ERROR for expected conditions
-    - Log every single database query
-    - Mix log levels inconsistently
-    ```
-
----
-
-## Structured Logging
-
-=== "Winston (Node.js)"
-    ```javascript
-    const winston = require('winston');
-
-    // Create logger
-    const logger = winston.createLogger({
-      level: process.env.LOG_LEVEL || 'info',
-      format: winston.format.combine(
-        winston.format.timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss'
-        }),
-        winston.format.errors({ stack: true }),
-        winston.format.splat(),
-        winston.format.json()
-      ),
-      defaultMeta: {
-        service: 'api-service',
-        environment: process.env.NODE_ENV,
-        version: process.env.APP_VERSION
-      },
-      transports: [
-        // Write errors to error.log
-        new winston.transports.File({
-          filename: 'logs/error.log',
-          level: 'error',
-          maxsize: 10485760, // 10MB
-          maxFiles: 5
-        }),
-        // Write all logs to combined.log
-        new winston.transports.File({
-          filename: 'logs/combined.log',
-          maxsize: 10485760,
-          maxFiles: 10
-        })
-      ]
-    });
-
-    // Console transport for development
-    if (process.env.NODE_ENV !== 'production') {
-      logger.add(new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.colorize(),
-          winston.format.simple()
-        )
-      }));
-    }
-
-    // Request logging middleware
-    function requestLogger(req, res, next) {
-      const start = Date.now();
-
-      res.on('finish', () => {
-        const duration = Date.now() - start;
-
-        logger.info('HTTP Request', {
-          method: req.method,
-          url: req.url,
-          status: res.statusCode,
-          duration,
-          ip: req.ip,
-          userAgent: req.get('user-agent'),
-          userId: req.user?.id,
-          requestId: req.id
-        });
-      });
-
-      next();
-    }
-
-    // Business event logging
-    logger.info('User registered', {
-      userId: user.id,
-      email: user.email,
-      registrationMethod: 'email',
-      referralSource: req.query.ref
-    });
-
-    // Error logging with context
-    try {
-      await processPayment(order);
-    } catch (error) {
-      logger.error('Payment processing failed', {
-        error: error.message,
-        stack: error.stack,
-        orderId: order.id,
-        userId: order.userId,
-        amount: order.amount,
-        paymentMethod: order.paymentMethod
-      });
-      throw error;
-    }
-
-    // Performance logging
-    const timer = logger.startTimer();
-    await heavyOperation();
-    timer.done({ message: 'Operation completed', operationType: 'batch-import' });
-    ```
-
-=== "Logrus (Go)"
-    ```go
-    package main
-
-    import (
-        "github.com/sirupsen/logrus"
-        "os"
-    )
-
-    var log = logrus.New()
-
-    func initLogger() {
-        // JSON formatter for production
-        log.SetFormatter(&logrus.JSONFormatter{
-            TimestampFormat: "2006-01-02 15:04:05",
-            FieldMap: logrus.FieldMap{
-                logrus.FieldKeyTime: "timestamp",
-                logrus.FieldKeyLevel: "level",
-                logrus.FieldKeyMsg: "message",
-            },
-        })
-
-        // Output to stdout
-        log.SetOutput(os.Stdout)
-
-        // Log level from environment
-        level, err := logrus.ParseLevel(os.Getenv("LOG_LEVEL"))
-        if err != nil {
-            level = logrus.InfoLevel
-        }
-        log.SetLevel(level)
-
-        // Add default fields
-        log.WithFields(logrus.Fields{
-            "service":     "api-service",
-            "environment": os.Getenv("ENV"),
-            "version":     os.Getenv("VERSION"),
-        })
-    }
-
-    // HTTP request logging
-    func LogRequest(r *http.Request, statusCode int, duration time.Duration) {
-        log.WithFields(logrus.Fields{
-            "method":     r.Method,
-            "url":        r.URL.Path,
-            "status":     statusCode,
-            "duration":   duration.Milliseconds(),
-            "ip":         r.RemoteAddr,
-            "user_agent": r.UserAgent(),
-            "request_id": r.Header.Get("X-Request-ID"),
-        }).Info("HTTP Request")
-    }
-
-    // Error logging
-    func ProcessOrder(order Order) error {
-        logger := log.WithFields(logrus.Fields{
-            "order_id": order.ID,
-            "user_id":  order.UserID,
-            "amount":   order.Amount,
-        })
-
-        logger.Info("Processing order")
-
-        if err := validateOrder(order); err != nil {
-            logger.WithError(err).Error("Order validation failed")
-            return err
-        }
-
-        if err := chargePayment(order); err != nil {
-            logger.WithFields(logrus.Fields{
-                "payment_method": order.PaymentMethod,
-                "error_code":     err.Code,
-            }).Error("Payment failed")
-            return err
-        }
-
-        logger.Info("Order processed successfully")
-        return nil
-    }
-    ```
-
-=== "Python Logging"
-    ```python
-    import logging
-    import json
-    from datetime import datetime
-
-    # Custom JSON formatter
-    class JSONFormatter(logging.Formatter):
-        def format(self, record):
-            log_record = {
-                'timestamp': datetime.utcnow().isoformat(),
-                'level': record.levelname,
-                'message': record.getMessage(),
-                'logger': record.name,
-                'module': record.module,
-                'function': record.funcName,
-                'line': record.lineno
-            }
-
-            # Add extra fields
-            if hasattr(record, 'extra'):
-                log_record.update(record.extra)
-
-            # Add exception info
-            if record.exc_info:
-                log_record['exception'] = self.formatException(record.exc_info)
-
-            return json.dumps(log_record)
-
-    # Configure logger
-    def setup_logger(name):
-        logger = logging.getLogger(name)
-        logger.setLevel(logging.INFO)
-
-        # Console handler with JSON formatter
-        handler = logging.StreamHandler()
-        handler.setFormatter(JSONFormatter())
-        logger.addHandler(handler)
-
-        return logger
-
-    logger = setup_logger(__name__)
-
-    # Usage
-    logger.info('User logged in', extra={
-        'user_id': user.id,
-        'ip': request.remote_addr,
-        'session_id': session.id
-    })
-
-    try:
-        result = process_payment(order)
-        logger.info('Payment processed', extra={
-            'order_id': order.id,
-            'amount': order.amount,
-            'transaction_id': result.transaction_id
-        })
-    except PaymentError as e:
-        logger.error('Payment failed', extra={
-            'order_id': order.id,
-            'error_code': e.code,
-            'error_message': str(e)
-        }, exc_info=True)
-    ```
-
----
-
-## Centralized Logging
-
-=== "ELK Stack"
-    ```yaml
-    # docker-compose.yml
-    version: '3.8'
-
-    services:
-      elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-        environment:
-          - discovery.type=single-node
-          - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-          - xpack.security.enabled=false
-        ports:
-          - "9200:9200"
-        volumes:
-          - es-data:/usr/share/elasticsearch/data
-
-      logstash:
-        image: docker.elastic.co/logstash/logstash:8.11.0
-        volumes:
-          - ./logstash/pipeline:/usr/share/logstash/pipeline
-        ports:
-          - "5044:5044"
-          - "9600:9600"
-        depends_on:
-          - elasticsearch
-
-      kibana:
-        image: docker.elastic.co/kibana/kibana:8.11.0
-        ports:
-          - "5601:5601"
-        environment:
-          - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-        depends_on:
-          - elasticsearch
-
-      filebeat:
-        image: docker.elastic.co/beats/filebeat:8.11.0
-        user: root
-        volumes:
-          - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-          - /var/lib/docker/containers:/var/lib/docker/containers:ro
-          - /var/run/docker.sock:/var/run/docker.sock:ro
-        command: filebeat -e -strict.perms=false
-        depends_on:
-          - logstash
-
-    volumes:
-      es-data:
-    ```
-
-    ```yaml
-    # filebeat/filebeat.yml
-    filebeat.inputs:
-      - type: container
-        paths:
-          - '/var/lib/docker/containers/*/*.log'
-        processors:
-          - add_docker_metadata:
-              host: "unix:///var/run/docker.sock"
-          - decode_json_fields:
-              fields: ["message"]
-              target: ""
-              overwrite_keys: true
-
-    output.logstash:
-      hosts: ["logstash:5044"]
-    ```
-
-    ```ruby
-    # logstash/pipeline/logstash.conf
-    input {
-      beats {
-        port => 5044
+    Structured (machine-parseable, searchable, filterable):
+      {
+        "timestamp": "2024-01-15T10:30:45.123Z",
+        "level": "ERROR",
+        "message": "Payment failed",
+        "service": "order-service",
+        "userId": "12345",
+        "orderId": "67890",
+        "amount": 99.99,
+        "error": "Stripe API key expired",
+        "requestId": "abc-123-def"
       }
-    }
-
-    filter {
-      # Parse JSON logs
-      json {
-        source => "message"
-      }
-
-      # Add timestamp
-      date {
-        match => ["timestamp", "ISO8601"]
-        target => "@timestamp"
-      }
-
-      # Grok for non-JSON logs
-      if ![level] {
-        grok {
-          match => { "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{GREEDYDATA:message}" }
-        }
-      }
-
-      # Classify log levels
-      if [level] == "ERROR" or [level] == "FATAL" {
-        mutate {
-          add_tag => ["error"]
-        }
-      }
-    }
-
-    output {
-      elasticsearch {
-        hosts => ["elasticsearch:9200"]
-        index => "logs-%{+YYYY.MM.dd}"
-      }
-
-      # Debug output
-      stdout {
-        codec => rubydebug
-      }
-    }
     ```
 
-=== "CloudWatch Logs"
-    ```javascript
-    const AWS = require('aws-sdk');
-    const cloudwatchlogs = new AWS.CloudWatchLogs();
+    With structured logs, you can query: "show all ERROR logs where service=order-service and amount>50 in the last hour." With unstructured logs, you're grep-ing through text files hoping your regex matches.
 
-    class CloudWatchTransport {
-      constructor(options) {
-        this.logGroupName = options.logGroupName;
-        this.logStreamName = options.logStreamName;
-        this.sequenceToken = null;
-      }
+    **Every production system should use structured (JSON) logging.** All modern logging libraries support it: Winston (Node.js), Logrus/Zap (Go), structlog (Python), Serilog (.NET).
 
-      async log(info) {
-        const params = {
-          logGroupName: this.logGroupName,
-          logStreamName: this.logStreamName,
-          logEvents: [
-            {
-              message: JSON.stringify(info),
-              timestamp: Date.now()
-            }
-          ]
-        };
+    ---
 
-        if (this.sequenceToken) {
-          params.sequenceToken = this.sequenceToken;
-        }
+    ## Log Levels
 
-        try {
-          const response = await cloudwatchlogs.putLogEvents(params).promise();
-          this.sequenceToken = response.nextSequenceToken;
-        } catch (error) {
-          console.error('Failed to send logs to CloudWatch:', error);
-        }
-      }
-    }
+    Log levels indicate severity. Getting them right prevents noise (too many INFO logs) and blind spots (missing ERROR logs).
 
-    // Add to Winston
-    const winston = require('winston');
-    const logger = winston.createLogger({
-      transports: [
-        new CloudWatchTransport({
-          logGroupName: '/aws/application/my-app',
-          logStreamName: `${process.env.HOSTNAME}-${Date.now()}`
-        })
-      ]
-    });
+    ```
+    FATAL    System is unusable. Database gone. Out of memory. Application can't start.
+      │      Action: Page on-call immediately.
+      │
+    ERROR    Something failed that shouldn't have. Payment declined. API returned 500.
+      │      Action: Investigate. May need immediate fix.
+      │
+    WARN     Something concerning but not broken. Slow query. Retry needed. Deprecation.
+      │      Action: Monitor. Fix in normal development cycle.
+      │
+    INFO     Normal business events. User logged in. Order created. Service started.
+      │      Action: None. Reference during debugging.
+      │
+    DEBUG    Detailed diagnostic info. Variable values. Function entry/exit.
+      │      Action: None. Typically disabled in production.
+      │
+    TRACE    Very detailed. Full request/response bodies. SQL with parameters.
+             Action: None. Never enable in production (too verbose).
     ```
 
-=== "Fluentd"
-    ```ruby
-    # fluent.conf
-    <source>
-      @type forward
-      port 24224
-      bind 0.0.0.0
-    </source>
+    **Production should run at INFO level.** Drop to DEBUG temporarily for specific services when investigating issues. ERROR and WARN should always be logged — if they're too noisy, fix the underlying issue rather than silencing the logs.
 
-    # Parse JSON logs
-    <filter app.**>
-      @type parser
-      key_name log
-      <parse>
-        @type json
-        time_key timestamp
-        time_format %Y-%m-%dT%H:%M:%S.%L%z
-      </parse>
-    </filter>
+    ---
 
-    # Add metadata
-    <filter app.**>
-      @type record_transformer
-      <record>
-        hostname ${hostname}
-        environment ${ENV["ENVIRONMENT"]}
-      </record>
-    </filter>
+    ## What to Log (and What Not To)
 
-    # Route by log level
-    <match app.**>
-      @type rewrite_tag_filter
-      <rule>
-        key level
-        pattern /^(ERROR|FATAL)$/
-        tag error.${tag}
-      </rule>
-      <rule>
-        key level
-        pattern /.*/
-        tag normal.${tag}
-      </rule>
-    </match>
-
-    # Send errors to separate index
-    <match error.**>
-      @type elasticsearch
-      host elasticsearch
-      port 9200
-      index_name errors-%Y.%m.%d
-      type_name _doc
-      <buffer>
-        flush_interval 5s
-      </buffer>
-    </match>
-
-    # Send normal logs
-    <match normal.**>
-      @type elasticsearch
-      host elasticsearch
-      port 9200
-      index_name logs-%Y.%m.%d
-      type_name _doc
-      <buffer>
-        flush_interval 10s
-      </buffer>
-    </match>
+    ```
+    DO Log:                                     DON'T Log:
+    ────────                                    ──────────
+    ✓ HTTP requests (method, URL, status,       ✗ Passwords or password hashes
+      duration, request ID)                     ✗ Credit card numbers
+    ✓ Authentication events (login,             ✗ Social Security Numbers
+      logout, failed attempts)                  ✗ API keys or tokens
+    ✓ Business events (order created,           ✗ Personal health information
+      payment processed, user registered)       ✗ Encryption keys
+    ✓ Errors with full context and              ✗ Every database query (too verbose)
+      stack traces                              ✗ User-generated content
+    ✓ External API calls (URL, duration,          without sanitization
+      status code)
+    ✓ Background job start/completion
+    ✓ Configuration changes
     ```
 
----
+    The "don't log" list isn't optional — logging PII or credentials violates regulations (GDPR, HIPAA, PCI-DSS) and creates security vulnerabilities. If an attacker accesses your log storage, leaked credentials become a breach.
 
-## Log Correlation
+=== "Centralized Logging"
 
-=== "Request ID"
-    ```javascript
-    const { v4: uuidv4 } = require('uuid');
+    ## Centralized Logging
 
-    // Middleware to add request ID
-    function requestIdMiddleware(req, res, next) {
-      req.id = req.get('X-Request-ID') || uuidv4();
-      res.set('X-Request-ID', req.id);
-      next();
-    }
+    In a distributed system, logs from dozens of services are useless if they're scattered across individual servers. Centralized logging collects all logs into a single, searchable system.
 
-    // Child logger with request ID
-    function loggerMiddleware(req, res, next) {
-      req.logger = logger.child({
-        requestId: req.id,
-        userId: req.user?.id
-      });
-      next();
-    }
-
-    app.use(requestIdMiddleware);
-    app.use(loggerMiddleware);
-
-    // All logs automatically include request ID
-    app.get('/api/users/:id', async (req, res) => {
-      req.logger.info('Fetching user');
-      const user = await db.users.findById(req.params.id);
-      req.logger.info('User fetched', { userId: user.id });
-      res.json(user);
-    });
+    ```
+    ┌──────────────┐
+    │ Service A     │──→ stdout (JSON)
+    └──────────────┘          │
+    ┌──────────────┐          ▼
+    │ Service B     │──→ ┌──────────┐     ┌────────────────┐     ┌──────────┐
+    └──────────────┘    │ Log      │──→  │ Log Processing │──→  │ Search   │
+    ┌──────────────┐    │ Shipper  │     │ (parse, enrich,│     │ & Store  │
+    │ Service C     │──→ │ (Filebeat│     │  transform)    │     │ (Elastic │
+    └──────────────┘    │  Fluentd)│     │ (Logstash)     │     │  search) │
+                        └──────────┘     └────────────────┘     └────┬─────┘
+                                                                      │
+                                                                ┌─────▼─────┐
+                                                                │ Kibana /  │
+                                                                │ Grafana   │
+                                                                │ (search,  │
+                                                                │  visualize)│
+                                                                └───────────┘
     ```
 
-=== "Trace Context"
-    ```javascript
-    // OpenTelemetry integration
-    const { trace } = require('@opentelemetry/api');
+    ### The ELK Stack
 
-    function correlateWithTrace(logger) {
-      return logger.child({
-        traceId: trace.getActiveSpan()?.spanContext().traceId,
-        spanId: trace.getActiveSpan()?.spanContext().spanId
-      });
-    }
+    **Elasticsearch + Logstash + Kibana** is the most common open-source logging stack:
 
-    // Usage
-    app.get('/api/orders/:id', async (req, res) => {
-      const logger = correlateWithTrace(req.logger);
+    - **Elasticsearch** stores and indexes logs for fast full-text search
+    - **Logstash** (or **Fluentd**) processes and transforms logs — parsing JSON, adding metadata, routing by level
+    - **Kibana** provides search UI and visualization dashboards
+    - **Filebeat** ships logs from servers to the processing pipeline
 
-      logger.info('Processing order request');
-      const order = await getOrder(req.params.id);
-      logger.info('Order retrieved', { orderId: order.id });
+    **Wikipedia**, **LinkedIn**, and **Netflix** all use Elasticsearch for log search. The stack handles millions of log events per second at scale.
 
-      res.json(order);
-    });
+    ### Cloud-Native Alternatives
+
+    **AWS CloudWatch Logs** — native to AWS, integrates with Lambda and other services. CloudWatch Logs Insights provides a SQL-like query language for searching logs.
+
+    **Google Cloud Logging** — automatic ingestion from GCP services, integrates with BigQuery for analysis.
+
+    **Datadog Logs** — SaaS solution that unifies logs with metrics and traces. Automatic parsing of common log formats. **Airbnb** and **Samsung** use Datadog for centralized logging.
+
+    **Splunk** — enterprise-focused, handles massive log volumes. Widely used in security operations (SIEM).
+
+=== "Correlation & Operations"
+
+    ## Log Correlation
+
+    In a microservices architecture, a single user request might touch 5-10 services. Without correlation, you have 10 separate sets of logs with no way to connect them.
+
+    ### Request IDs
+
+    The simplest and most important correlation mechanism: generate a unique ID when a request enters your system, propagate it through every service, and include it in every log line.
+
+    ```
+    Request enters API Gateway:
+      → generates requestId: "abc-123"
+      → passes it to downstream services via X-Request-ID header
+
+    Service A logs: {"requestId": "abc-123", "message": "Validating order"}
+    Service B logs: {"requestId": "abc-123", "message": "Charging payment"}
+    Service C logs: {"requestId": "abc-123", "message": "Sending confirmation"}
+
+    Debugging: search for requestId="abc-123" → see entire request journey
     ```
 
----
+    ### Trace ID Correlation
 
-## Log Search Queries
+    When using distributed tracing (see [Tracing](tracing.md)), include the trace ID in log entries. This lets you jump from a log line directly to the full trace visualization, and vice versa.
 
-=== "Kibana/Elasticsearch"
     ```
-    # Find errors in last hour
-    level:"ERROR" AND @timestamp:[now-1h TO now]
-
-    # Find slow requests
-    duration:>1000 AND method:"GET"
-
-    # Find user activity
-    userId:"12345" AND (action:"login" OR action:"purchase")
-
-    # Find errors for specific endpoint
-    url:"/api/payments" AND status:>499
-
-    # Aggregate errors by service
     {
-      "aggs": {
-        "errors_by_service": {
-          "terms": {
-            "field": "service.keyword"
-          }
-        }
-      }
-    }
-
-    # Find error spike
-    {
-      "query": {
-        "bool": {
-          "must": [
-            { "match": { "level": "ERROR" }},
-            { "range": { "@timestamp": { "gte": "now-15m" }}}
-          ]
-        }
-      }
+      "timestamp": "2024-01-15T10:30:45Z",
+      "level": "ERROR",
+      "message": "Payment failed",
+      "requestId": "abc-123",
+      "traceId": "4bf92f3577b34da6",     ← click to see full trace
+      "spanId": "00f067aa0ba902b7",
+      "service": "payment-service"
     }
     ```
 
-=== "CloudWatch Logs Insights"
-    ```
-    # Find errors in last hour
-    fields @timestamp, level, message, error
-    | filter level = "ERROR"
-    | sort @timestamp desc
-    | limit 100
+    **Datadog**, **New Relic**, and **Grafana Cloud** all support clicking from a log entry to its trace — and this correlation is one of the most powerful debugging tools in a microservices environment.
 
-    # Latency percentiles
-    fields @timestamp, duration
-    | filter method = "GET"
-    | stats avg(duration), pct(duration, 50), pct(duration, 95), pct(duration, 99)
+    ---
 
-    # Error rate over time
-    fields @timestamp, level
-    | stats count(*) as total, count(level = "ERROR") as errors by bin(5m)
-    | fields bin(5m), (errors / total * 100) as error_rate
+    ## Log Retention and Storage
 
-    # Top error messages
-    fields @timestamp, message
-    | filter level = "ERROR"
-    | stats count(*) as count by message
-    | sort count desc
-    | limit 10
-    ```
+    Different environments need different retention policies:
+
+    | Environment | Retention | Storage Tier | Rationale |
+    |---|---|---|---|
+    | **Production** | 30-90 days | Hot (Elasticsearch, S3) | Active debugging, compliance |
+    | **Archived** | 1-7 years | Cold (S3 Glacier, GCS Coldline) | Legal, audit requirements |
+    | **Staging** | 7-14 days | Standard | Testing, shorter lifecycle |
+    | **Development** | 1-3 days | Local/ephemeral | Debugging only |
+
+    **Cost optimization:** Logs are expensive to store and index. Move logs older than 30 days to cold storage. Downsample verbose logs (keep 10% of DEBUG logs). Drop known-noisy log patterns. **Uber** processes over 100TB of logs per day — aggressive retention policies and sampling are essential at that scale.
+
+    ---
+
+    ## Performance Considerations
+
+    Logging should never be the bottleneck. Key principles:
+
+    **Write to stdout, not files.** Let the container orchestrator (Kubernetes) or log shipper handle collection. Writing to files adds I/O overhead and requires log rotation management.
+
+    **Buffer and batch.** Don't send each log line individually to the centralized system. Buffer locally and send in batches — typically every 1-5 seconds or when the buffer reaches a size threshold.
+
+    **Sample verbose logs.** Always log errors and warnings. For DEBUG and INFO logs at high volume, consider sampling — log 10% of routine requests but 100% of slow or failed requests.
+
+    **Async logging.** Log emission should never block request processing. Use async transports that queue log entries and write them in the background.
 
 ---
 
-## Best Practices
+## Key Takeaways
 
-=== "What to Log"
-    ```
-    ✅ DO LOG:
-    - HTTP requests (method, URL, status, duration)
-    - Authentication events (login, logout, failed attempts)
-    - Business events (order created, payment processed)
-    - Errors with full context and stack traces
-    - External API calls (URL, duration, status)
-    - Background job start/completion
-    - Configuration changes
-    - Database query slow logs
+1. **Always use structured logging.** JSON-formatted logs with consistent field names are the foundation of searchable, analyzable logging. No exceptions in production.
 
-    ❌ DON'T LOG:
-    - Passwords or API keys
-    - Credit card numbers
-    - Social Security Numbers
-    - Personal health information
-    - Authentication tokens
-    - Encryption keys
-    - Every single database query (too verbose)
-    - User-generated content without sanitization
-    ```
+2. **Centralize everything.** Logs scattered across servers are nearly useless. Ship all logs to a central system (ELK, CloudWatch, Datadog) where they can be searched and correlated.
 
-=== "Log Format"
-    ```json
-    {
-      "timestamp": "2024-01-15T10:30:45.123Z",
-      "level": "INFO",
-      "message": "Order processed successfully",
-      "service": "order-service",
-      "environment": "production",
-      "version": "1.2.3",
-      "requestId": "abc123",
-      "traceId": "def456",
-      "userId": "user789",
-      "orderId": "order101",
-      "amount": 99.99,
-      "duration": 234,
-      "host": "server-01",
-      "pid": 1234
-    }
-    ```
+3. **Correlate with request IDs.** Generate a unique ID at the edge and propagate it through every service. This single practice transforms debugging in distributed systems.
 
-=== "Performance"
-    ```javascript
-    // Sampling for verbose logs
-    function shouldLog(level, sampleRate = 1.0) {
-      if (level === 'ERROR' || level === 'WARN') {
-        return true; // Always log errors/warnings
-      }
-      return Math.random() < sampleRate;
-    }
+4. **Never log secrets.** Passwords, API keys, tokens, credit card numbers, and PII must never appear in logs. Sanitize or mask before logging.
 
-    if (shouldLog('DEBUG', 0.1)) {
-      logger.debug('Verbose debug info', { data });
-    }
+5. **Log at the right level.** INFO for business events, ERROR for failures, WARN for degradation. If your logs are too noisy, the problem is the log level assignment, not logging itself.
 
-    // Async logging
-    class AsyncLogger {
-      constructor() {
-        this.queue = [];
-        this.flushInterval = setInterval(() => this.flush(), 1000);
-      }
-
-      log(entry) {
-        this.queue.push(entry);
-        if (this.queue.length >= 100) {
-          this.flush();
-        }
-      }
-
-      async flush() {
-        if (this.queue.length === 0) return;
-
-        const batch = this.queue.splice(0, this.queue.length);
-        await sendLogsToRemote(batch);
-      }
-    }
-
-    // Lazy evaluation for expensive operations
-    logger.info(() => {
-      const expensiveData = computeExpensiveDebugInfo();
-      return `Debug info: ${JSON.stringify(expensiveData)}`;
-    });
-    ```
-
----
-
-## Log Retention
-
-| Environment | Retention | Storage | Why |
-|-------------|-----------|---------|-----|
-| **Production** | 30-90 days | Hot storage (S3, EBS) | Troubleshooting, compliance |
-| **Archived** | 1-7 years | Cold storage (Glacier) | Legal, audit requirements |
-| **Staging** | 7-14 days | Standard storage | Testing, shorter retention needed |
-| **Development** | 1-3 days | Local/ephemeral | Debugging only |
-
----
-
-## Interview Talking Points
-
-**Q: What's the difference between structured and unstructured logging?**
-
-✅ **Strong Answer:**
-> "Unstructured logs are plain text strings like 'User logged in', which are human-readable but hard to parse and search. Structured logs use key-value pairs in JSON format like `{\"event\": \"login\", \"userId\": 123, \"timestamp\": \"2024-01-15T10:30:45Z\"}`, making them machine-parseable and searchable. With structured logging, I can easily query 'show all failed logins from user 123' or 'calculate P95 latency for API calls'. It's essential for modern observability stacks like ELK or DataDog because you can aggregate, filter, and analyze logs at scale. I always use structured logging in production with consistent field names across services."
-
-**Q: How do you handle logging in microservices?**
-
-✅ **Strong Answer:**
-> "I'd use centralized logging with correlation IDs to track requests across services. Each service logs to stdout in JSON format, and a log aggregator like Fluentd or Filebeat ships logs to Elasticsearch. Every request gets a unique ID propagated through HTTP headers, so I can trace a single request's path through multiple services. I'd include consistent metadata in every log: service name, version, environment, and trace ID. For log levels, I follow INFO for business events, ERROR for failures, and DEBUG for troubleshooting. I'd set up alerts on error rate spikes and use Kibana dashboards to visualize errors by service. Log retention depends on compliance needs - typically 30 days in hot storage and longer in cold storage."
+6. **Mind the cost.** Logs at scale are expensive. Set retention policies, archive to cold storage, and sample verbose log categories.
 
 ---
 
 ## Related Topics
 
-- [Monitoring](monitoring.md) - Metrics and dashboards
-- [Tracing](tracing.md) - Distributed tracing
-- [Alerting](alerting.md) - Log-based alerts
-
----
-
-**Log everything important, search anything! 📝**
+- **[Monitoring](monitoring.md)** — metrics complement logs for system health
+- **[Tracing](tracing.md)** — correlate logs with distributed traces
+- **[Alerting](alerting.md)** — trigger alerts from log patterns

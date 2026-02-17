@@ -16,9 +16,7 @@
 
 | Topic | Status |
 |-------|--------|
-| [Message Queues](message-queues.md) | 📝 Planned |
-| [Event Streaming](event-streaming.md) | 📝 Planned |
-| [Pub/Sub](pub-sub.md) | 📝 Planned |
+| [Messaging Patterns](patterns.md) | 📝 Planned |
 
 ---
 

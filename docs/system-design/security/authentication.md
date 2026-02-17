@@ -1,528 +1,240 @@
 # Authentication
 
-**Verify user identity** | 🔑 Session | 🎟️ Token | 🔐 OAuth | 🌐 SSO
+Authentication answers the question: **who are you?** Before a system can decide what you're allowed to do, it must verify your identity. This seems simple — enter a username and password, and you're in — but the challenge is maintaining that identity across subsequent requests without asking users to log in every time they click a link.
+
+The fundamental tension in authentication design is between security and convenience. More secure methods add friction; more convenient methods expand the attack surface. Every authentication system navigates this trade-off.
 
 ---
 
-## Overview
+## How Authentication Works Across Requests
 
-Authentication is the process of verifying that users are who they claim to be. It's the first line of defense in application security.
+HTTP is stateless — each request is independent, with no memory of previous ones. Authentication systems must bolt identity onto this stateless protocol. There are two fundamentally different approaches.
 
-**Key Question:** How do we securely identify users across requests?
+```
+Session-Based (stateful):
 
----
+Client ──→ Login ──→ Server creates session, stores in Redis
+  │                        │
+  │←── Set-Cookie: sid=abc123
+  │
+  │──→ GET /profile (Cookie: sid=abc123)
+  │                        │
+  │                   Server looks up sid=abc123 in Redis
+  │                   → finds {userId: 42, role: "admin"}
+  │←── 200 OK
 
-## Authentication Methods Comparison
 
-| Method | Storage | Scalability | Security | Use Case |
-|--------|---------|-------------|----------|----------|
-| **Session-based** | Server memory/DB | Medium | Good | Traditional web apps |
-| **Token-based (JWT)** | Client-side | Excellent | Good | APIs, microservices |
-| **OAuth 2.0** | Third-party | Excellent | Excellent | Social login |
-| **SSO** | Centralized | Excellent | Excellent | Enterprise apps |
+Token-Based (stateless):
 
----
+Client ──→ Login ──→ Server creates signed JWT
+  │                        │
+  │←── {token: "eyJhbG..."}
+  │
+  │──→ GET /profile (Authorization: Bearer eyJhbG...)
+  │                        │
+  │                   Server verifies JWT signature
+  │                   → extracts {userId: 42, role: "admin"}
+  │←── 200 OK
+```
 
-## Session-Based Authentication
-
-=== "How It Works"
-    **Server stores session state**
-
-    ```
-    1. User logs in with credentials
-       ↓
-    2. Server validates credentials
-       ↓
-    3. Server creates session, stores in memory/Redis
-       ↓
-    4. Server sends session ID in cookie
-       ↓
-    5. Client includes cookie in subsequent requests
-       ↓
-    6. Server looks up session to verify user
-    ```
-
-=== "Implementation"
-    ```javascript
-    const express = require('express');
-    const session = require('express-session');
-    const RedisStore = require('connect-redis')(session);
-    const redis = require('redis');
-
-    const app = express();
-    const redisClient = redis.createClient();
-
-    // Configure session middleware
-    app.use(session({
-        store: new RedisStore({ client: redisClient }),
-        secret: 'your-secret-key',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            secure: true,      // HTTPS only
-            httpOnly: true,    // No JavaScript access
-            maxAge: 24 * 60 * 60 * 1000  // 24 hours
-        }
-    }));
-
-    // Login endpoint
-    app.post('/login', async (req, res) => {
-        const { username, password } = req.body;
-        
-        // Validate credentials
-        const user = await db.users.findOne({ username });
-        if (!user || !await bcrypt.compare(password, user.passwordHash)) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        // Create session
-        req.session.userId = user.id;
-        req.session.username = user.username;
-        
-        res.json({ message: 'Logged in successfully' });
-    });
-
-    // Protected route
-    app.get('/profile', (req, res) => {
-        if (!req.session.userId) {
-            return res.status(401).json({ error: 'Not authenticated' });
-        }
-        
-        res.json({
-            userId: req.session.userId,
-            username: req.session.username
-        });
-    });
-
-    // Logout
-    app.post('/logout', (req, res) => {
-        req.session.destroy((err) => {
-            if (err) {
-                return res.status(500).json({ error: 'Logout failed' });
-            }
-            res.clearCookie('connect.sid');
-            res.json({ message: 'Logged out successfully' });
-        });
-    });
-    ```
-
-=== "Advantages"
-    - ✅ Server has full control (can revoke sessions)
-    - ✅ Smaller cookie size (just session ID)
-    - ✅ Easy to implement
-    - ✅ Stateful (server knows active users)
-
-=== "Disadvantages"
-    - ❌ Scaling challenges (session stored on server)
-    - ❌ Requires shared session store (Redis) for multiple servers
-    - ❌ CSRF vulnerability (needs CSRF tokens)
-    - ❌ Not ideal for APIs (stateful)
+The key difference: with sessions, the server **remembers** who you are. With tokens, the server **recalculates** who you are from the token itself.
 
 ---
 
-## Token-Based (JWT)
+=== "Session-Based"
 
-=== "How It Works"
-    **Stateless authentication with signed tokens**
+    ## Session-Based Authentication
 
-    ```
-    1. User logs in with credentials
-       ↓
-    2. Server validates credentials
-       ↓
-    3. Server creates JWT with user claims
-       ↓
-    4. Server signs JWT with secret key
-       ↓
-    5. Client stores JWT (localStorage/cookie)
-       ↓
-    6. Client includes JWT in Authorization header
-       ↓
-    7. Server verifies signature and extracts claims
-    ```
+    The server stores session data (user ID, role, preferences) in a session store — typically Redis or a database — and gives the client a session ID in a cookie. Each subsequent request includes this cookie, and the server looks up the session.
 
-    **JWT Structure:**
+    **How it works:**
+    1. User submits credentials
+    2. Server validates against stored password hash (bcrypt, argon2)
+    3. Server creates a session object in Redis with a random ID
+    4. Session ID sent to client as an httpOnly, secure cookie
+    5. Client automatically includes cookie on every request
+    6. Server looks up session by ID to identify the user
+
+    **Strengths:**
+
+    - **Instant revocation.** Delete the session from Redis and the user is immediately logged out. No waiting for token expiration.
+    - **Small cookie size.** The cookie contains only a session ID (32-64 bytes), not the actual user data.
+    - **Server control.** The server can track active sessions, force logout across all devices, and implement "log out everywhere."
+
+    **Weaknesses:**
+
+    - **Scaling requires shared state.** With multiple servers, they all need access to the same session store. This is why Redis is almost universal — **Instagram**, **GitHub**, and **Shopify** all use Redis for session storage.
+    - **CSRF vulnerability.** Browsers automatically attach cookies to requests, so a malicious site can trigger authenticated requests on behalf of the user. Mitigation: CSRF tokens.
+    - **Not ideal for mobile/API.** Cookie-based auth works naturally in browsers but is awkward for mobile apps and third-party API consumers.
+
+=== "Token-Based (JWT)"
+
+    ## Token-Based Authentication (JWT)
+
+    Instead of storing session data on the server, the server encodes user information into a signed token that the client stores and sends with each request. The server verifies the token's signature to confirm it hasn't been tampered with.
+
+    A JWT (JSON Web Token) has three parts:
+
     ```
     header.payload.signature
 
-    Header:
-    {
-        "alg": "HS256",
-        "typ": "JWT"
-    }
-
-    Payload:
-    {
-        "userId": 123,
-        "username": "alice",
-        "exp": 1735689600  // Expiration time
-    }
-
-    Signature:
-    HMACSHA256(
-        base64UrlEncode(header) + "." + base64UrlEncode(payload),
-        secret
-    )
+    Header:  {"alg": "HS256", "typ": "JWT"}
+    Payload: {"userId": 42, "role": "admin", "exp": 1735689600}
+    Signature: HMAC-SHA256(header + "." + payload, secret_key)
     ```
 
-=== "Implementation"
-    ```javascript
-    const jwt = require('jsonwebtoken');
-    const bcrypt = require('bcrypt');
+    The payload is **not encrypted** — anyone can decode it. The signature only proves the server created it and nobody modified it.
 
-    const SECRET_KEY = process.env.JWT_SECRET;
+    **Strengths:**
 
-    // Login endpoint
-    app.post('/login', async (req, res) => {
-        const { username, password } = req.body;
-        
-        // Validate credentials
-        const user = await db.users.findOne({ username });
-        if (!user || !await bcrypt.compare(password, user.passwordHash)) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
+    - **Stateless.** No server-side storage needed. Any server with the signing key can verify the token. This is why JWTs are the default for microservices architectures.
+    - **Cross-domain.** Tokens can be sent to any domain in an Authorization header, unlike cookies which are domain-scoped.
+    - **Scalable.** No shared session store means no scaling bottleneck. **Uber**, **Spotify**, and most modern APIs use JWTs.
 
-        // Create JWT
-        const token = jwt.sign(
-            {
-                userId: user.id,
-                username: user.username,
-                role: user.role
-            },
-            SECRET_KEY,
-            { expiresIn: '24h' }
-        );
-        
-        res.json({ token });
-    });
+    **Weaknesses:**
 
-    // Authentication middleware
-    function authenticateToken(req, res, next) {
-        const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    - **No instant revocation.** Once issued, a JWT is valid until it expires. If a user's account is compromised, you can't invalidate the stolen token without maintaining a blocklist — which defeats the stateless benefit.
+    - **Token size.** A JWT with typical claims is 500-1000 bytes, sent with every request.
+    - **Storage risk.** If stored in localStorage, any XSS attack can steal the token.
 
-        if (!token) {
-            return res.status(401).json({ error: 'No token provided' });
-        }
+    ### The Refresh Token Pattern
 
-        jwt.verify(token, SECRET_KEY, (err, user) => {
-            if (err) {
-                return res.status(403).json({ error: 'Invalid token' });
-            }
-            req.user = user;
-            next();
-        });
-    }
-
-    // Protected route
-    app.get('/profile', authenticateToken, (req, res) => {
-        res.json({
-            userId: req.user.userId,
-            username: req.user.username,
-            role: req.user.role
-        });
-    });
-
-    // Refresh token
-    app.post('/refresh', authenticateToken, (req, res) => {
-        const newToken = jwt.sign(
-            {
-                userId: req.user.userId,
-                username: req.user.username,
-                role: req.user.role
-            },
-            SECRET_KEY,
-            { expiresIn: '24h' }
-        );
-        
-        res.json({ token: newToken });
-    });
-    ```
-
-=== "Refresh Tokens"
-    **Handle token expiration gracefully:**
-
-    ```javascript
-    // Two token strategy
-    function generateTokens(user) {
-        // Short-lived access token (15 minutes)
-        const accessToken = jwt.sign(
-            { userId: user.id, username: user.username },
-            ACCESS_SECRET,
-            { expiresIn: '15m' }
-        );
-
-        // Long-lived refresh token (7 days)
-        const refreshToken = jwt.sign(
-            { userId: user.id },
-            REFRESH_SECRET,
-            { expiresIn: '7d' }
-        );
-
-        // Store refresh token in database
-        await db.refreshTokens.create({
-            userId: user.id,
-            token: refreshToken,
-            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-        });
-
-        return { accessToken, refreshToken };
-    }
-
-    // Refresh endpoint
-    app.post('/refresh', async (req, res) => {
-        const { refreshToken } = req.body;
-
-        // Verify refresh token
-        let payload;
-        try {
-            payload = jwt.verify(refreshToken, REFRESH_SECRET);
-        } catch (err) {
-            return res.status(401).json({ error: 'Invalid refresh token' });
-        }
-
-        // Check if token exists in database
-        const tokenExists = await db.refreshTokens.findOne({
-            userId: payload.userId,
-            token: refreshToken
-        });
-
-        if (!tokenExists) {
-            return res.status(401).json({ error: 'Token revoked' });
-        }
-
-        // Generate new access token
-        const user = await db.users.findById(payload.userId);
-        const accessToken = jwt.sign(
-            { userId: user.id, username: user.username },
-            ACCESS_SECRET,
-            { expiresIn: '15m' }
-        );
-
-        res.json({ accessToken });
-    });
-    ```
-
-=== "Advantages"
-    - ✅ Stateless (no server-side storage)
-    - ✅ Perfect for APIs and microservices
-    - ✅ Works across domains
-    - ✅ Scalable (no shared session store needed)
-
-=== "Disadvantages"
-    - ❌ Larger payload (token can be 500+ bytes)
-    - ❌ Can't revoke tokens easily (until expiration)
-    - ❌ Token stored in localStorage (XSS risk)
-    - ❌ Need refresh token strategy
-
----
-
-## OAuth 2.0
-
-=== "What is OAuth?"
-    **Delegated authorization protocol**
-
-    **Use Case:** "Login with Google/Facebook/GitHub"
+    Short-lived access tokens (15 minutes) paired with long-lived refresh tokens (7 days) balance security and convenience:
 
     ```
-    Flow:
+    Login → receive access token (15min) + refresh token (7 days)
+
+    Normal requests: send access token in Authorization header
+
+    When access token expires:
+      Client ──→ POST /refresh (refresh token)
+      Server ──→ verify refresh token in database
+      Server ──→ issue new access token
+      Client ──→ continue with new access token
+    ```
+
+    The refresh token is stored server-side (in a database), so it can be revoked. The access token remains stateless for performance. This is the pattern used by **Google**, **Auth0**, and most production JWT implementations.
+
+=== "OAuth 2.0"
+
+    ## OAuth 2.0
+
+    OAuth 2.0 is a **delegated authorization** protocol — it lets users grant third-party applications limited access to their accounts on another service, without sharing their password. "Login with Google" is the most visible example, but OAuth also powers API integrations between services.
+
+    ### Authorization Code Flow
+
+    The most secure OAuth flow, used by server-side applications:
+
+    ```
     1. User clicks "Login with Google"
-       ↓
-    2. Redirect to Google's authorization page
-       ↓
-    3. User approves access
-       ↓
-    4. Google redirects back with authorization code
-       ↓
-    5. Exchange code for access token
-       ↓
-    6. Use token to access user's Google data
+                │
+    2. App redirects to Google's authorization page
+                │
+    3. User logs in to Google and approves requested scopes
+                │
+    4. Google redirects back to app with authorization code
+                │
+    5. App's backend exchanges code for access token (server-to-server)
+                │
+    6. App uses access token to fetch user profile from Google
+                │
+    7. App creates its own session/JWT for the user
     ```
 
-=== "Implementation"
-    ```javascript
-    const passport = require('passport');
-    const GoogleStrategy = require('passport-google-oauth20').Strategy;
+    The critical security feature: the access token is exchanged server-to-server in step 5, never exposed to the browser. The browser only sees the authorization code, which is single-use and short-lived.
 
-    // Configure Google OAuth
-    passport.use(new GoogleStrategy({
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'http://localhost:3000/auth/google/callback'
-    },
-    async (accessToken, refreshToken, profile, done) => {
-        // Find or create user
-        let user = await db.users.findOne({ googleId: profile.id });
-        
-        if (!user) {
-            user = await db.users.create({
-                googleId: profile.id,
-                email: profile.emails[0].value,
-                name: profile.displayName,
-                avatar: profile.photos[0].value
-            });
-        }
-        
-        return done(null, user);
-    }));
+    ### OAuth Roles
 
-    // Login route
-    app.get('/auth/google',
-        passport.authenticate('google', {
-            scope: ['profile', 'email']
-        })
-    );
+    | Role | Who | Example |
+    |---|---|---|
+    | **Resource Owner** | The user | You, the person logging in |
+    | **Client** | The application requesting access | A third-party app |
+    | **Authorization Server** | Issues tokens after authentication | Google's auth server |
+    | **Resource Server** | Hosts the protected data | Google's user info API |
 
-    // Callback route
-    app.get('/auth/google/callback',
-        passport.authenticate('google', { failureRedirect: '/login' }),
-        (req, res) => {
-            // Create JWT for our app
-            const token = jwt.sign(
-                { userId: req.user.id },
-                SECRET_KEY,
-                { expiresIn: '24h' }
-            );
-            res.redirect(`/dashboard?token=${token}`);
-        }
-    );
+    ### When to Use OAuth
+
+    - **Social login.** Let users sign in with existing Google/GitHub/Apple accounts. Reduces friction (no new password to create) and shifts password security to providers who invest heavily in it.
+    - **Third-party API access.** Let users grant your app access to their data on other platforms — GitHub repos, Google Calendar, Stripe accounts.
+    - **Not for internal authentication.** If you control both the frontend and backend, OAuth adds unnecessary complexity. Use sessions or JWTs directly.
+
+=== "SSO"
+
+    ## SSO (Single Sign-On)
+
+    SSO allows users to log in once and access multiple applications without re-authenticating. This is an enterprise staple — employees at large companies access dozens of internal tools (email, HR portal, project management, code repositories) with a single login.
+
+    ```
+    User → SSO Provider (Okta, Auth0, Azure AD)
+                  │
+             Login once
+                  │
+             ┌────┼────┬────────┐
+             │    │    │        │
+             ▼    ▼    ▼        ▼
+           Email  HR  Jira    GitHub
+           (no additional login needed)
     ```
 
-=== "Advantages"
-    - ✅ No password management (delegated to provider)
-    - ✅ Better UX (one-click login)
-    - ✅ Access to user's data (with permission)
-    - ✅ Trusted providers (Google, GitHub, etc.)
+    ### SAML Flow
 
-=== "Disadvantages"
-    - ❌ Dependency on third-party
-    - ❌ Privacy concerns (data sharing)
-    - ❌ Complex implementation
-    - ❌ Provider outage affects your app
+    SAML (Security Assertion Markup Language) is the dominant SSO protocol in enterprise environments:
+
+    1. User accesses App A
+    2. App A redirects to the SSO identity provider (IdP)
+    3. User authenticates at the IdP (if not already authenticated)
+    4. IdP generates a SAML assertion (signed XML document with user identity and attributes)
+    5. User is redirected back to App A with the assertion
+    6. App A validates the assertion's signature and logs the user in
+    7. When user accesses App B, the IdP sees the existing session and immediately issues an assertion — no second login
+
+    **Okta** processes over 1 billion authentications per month. **Microsoft Azure AD** provides SSO for over 500,000 organizations. **Google Workspace** uses SSO to connect Gmail, Drive, Calendar, and dozens of other services.
 
 ---
 
-## SSO (Single Sign-On)
+## Choosing an Authentication Method
 
-=== "What is SSO?"
-    **One login for multiple applications**
+| Scenario | Best Choice | Why |
+|---|---|---|
+| Traditional web app, single server | **Sessions** | Simple, full server control |
+| API consumed by mobile + web + third parties | **JWT** | Stateless, cross-platform |
+| "Login with Google/GitHub" needed | **OAuth 2.0** | Delegated auth, no password management |
+| Enterprise with many internal apps | **SSO (SAML/OIDC)** | One login for everything |
+| Microservices architecture | **JWT + OAuth** | Stateless verification across services |
 
-    ```
-    Enterprise Scenario:
-    Login once → Access all apps
-
-    User → SSO Provider (Okta/Auth0) → App1, App2, App3
-    ```
-
-=== "SAML Flow"
-    ```
-    1. User accesses App1
-       ↓
-    2. App1 redirects to SSO provider
-       ↓
-    3. User logs in at SSO provider (once)
-       ↓
-    4. SSO provider generates SAML assertion
-       ↓
-    5. User redirected back to App1 with assertion
-       ↓
-    6. App1 validates assertion and logs user in
-       ↓
-    7. User accesses App2
-       ↓
-    8. App2 redirects to SSO provider
-       ↓
-    9. SSO provider sees existing session
-       ↓
-    10. Immediately redirects back to App2 (no login needed!)
-    ```
-
-=== "Advantages"
-    - ✅ Single login for all apps
-    - ✅ Centralized user management
-    - ✅ Better security (one strong password)
-    - ✅ Improved UX
-
-=== "Disadvantages"
-    - ❌ Complex to set up
-    - ❌ Single point of failure
-    - ❌ Vendor lock-in
+Most production systems combine methods. A common pattern: OAuth for initial login, JWT for API authentication, sessions for the web frontend.
 
 ---
 
-## Best Practices
+## Security Best Practices
 
-### Password Security
-```javascript
-const bcrypt = require('bcrypt');
+**Password storage.** Never store plaintext passwords. Use bcrypt or argon2 with a cost factor that takes ~250ms to hash. This makes brute-force attacks computationally expensive.
 
-// Hash password (during registration)
-const saltRounds = 10;
-const passwordHash = await bcrypt.hash(password, saltRounds);
+**Multi-factor authentication (MFA).** Something you know (password) + something you have (phone/hardware key). **Duo** processes billions of MFA requests per year. Google found that security keys (like YubiKey) prevent 100% of phishing attacks, compared to 76% for SMS-based MFA.
 
-// Verify password (during login)
-const isValid = await bcrypt.compare(password, user.passwordHash);
+**Token storage.** Store JWTs in httpOnly cookies (immune to XSS) rather than localStorage. If you must use localStorage, keep access tokens short-lived (15 minutes) and refresh tokens in httpOnly cookies.
 
-// Password requirements
-function validatePassword(password) {
-    return password.length >= 12 &&
-           /[a-z]/.test(password) &&
-           /[A-Z]/.test(password) &&
-           /[0-9]/.test(password) &&
-           /[^a-zA-Z0-9]/.test(password);
-}
-```
-
-### Multi-Factor Authentication (MFA)
-```javascript
-const speakeasy = require('speakeasy');
-
-// Generate secret for user
-const secret = speakeasy.generateSecret({ name: 'MyApp' });
-
-// User scans QR code and enters first code
-const verified = speakeasy.totp.verify({
-    secret: secret.base32,
-    encoding: 'base32',
-    token: userEnteredCode
-});
-
-if (verified) {
-    // Save secret to user's account
-    await db.users.update(userId, { mfaSecret: secret.base32 });
-}
-
-// During login
-const isValid = speakeasy.totp.verify({
-    secret: user.mfaSecret,
-    encoding: 'base32',
-    token: req.body.mfaCode
-});
-```
+**Rate limiting on auth endpoints.** Login endpoints should have strict rate limits — 5-10 attempts per 15 minutes per IP — to prevent brute-force attacks. See [API Security](api-security.md).
 
 ---
 
-## Interview Talking Points
+## Key Takeaways
 
-**Q: Session-based vs Token-based authentication - when to use each?**
+1. **Sessions for simplicity, JWTs for scalability.** Use sessions when you need server-side control and instant revocation. Use JWTs when you need stateless authentication across multiple services.
 
-✅ **Strong Answer:**
-> "I'd use session-based authentication for traditional server-rendered web apps where the same server handles both rendering and API requests. It's simpler to implement and gives the server full control to revoke sessions. However, for APIs, mobile apps, or microservices, I'd use token-based (JWT) authentication because it's stateless and scales better - you don't need a shared session store like Redis. The trade-off is you can't easily revoke JWTs before they expire, so I'd implement a refresh token strategy with short-lived access tokens (15 minutes) and longer refresh tokens stored in the database that can be revoked."
+2. **OAuth is for delegation, not internal auth.** Use OAuth when you need "Login with X" or third-party API access. Use sessions or JWTs for your own authentication.
 
-**Q: How do you securely store JWT tokens on the client?**
+3. **SSO is essential at enterprise scale.** When users access more than 3-4 applications, SSO pays for itself in reduced password fatigue and centralized access control.
 
-✅ **Strong Answer:**
-> "The most secure approach is to store JWTs in httpOnly cookies, which prevents XSS attacks since JavaScript can't access them. However, this requires CSRF protection. Alternatively, storing in localStorage is convenient but vulnerable to XSS - any malicious script can steal the token. A hybrid approach I use is: store short-lived access tokens in memory (lost on refresh), and refresh tokens in httpOnly cookies. On page load, use the refresh token to get a new access token. This limits the XSS exposure window while maintaining UX."
+4. **Combine the refresh token pattern with JWTs.** Short-lived access tokens (15min) + revocable refresh tokens (7 days) give you both stateless performance and the ability to revoke access.
+
+5. **MFA is the single most impactful security improvement.** It stops the vast majority of account takeover attacks, regardless of which authentication method you use.
 
 ---
 
 ## Related Topics
 
-- [Authorization](authorization.md) - Access control
-- [API Security](api-security.md) - Protect APIs
-- [Encryption](encryption.md) - Secure data transmission
-- [Common Attacks](common-attacks.md) - Security vulnerabilities
-
----
-
-**Authentication is the foundation of security! 🔑**
+- **[Authorization](authorization.md)** — what authenticated users are allowed to do
+- **[API Security](api-security.md)** — rate limiting, API keys, and input validation
+- **[Encryption](encryption.md)** — protecting data in transit and at rest
+- **[Common Attacks](common-attacks.md)** — XSS, CSRF, and how they target authentication

@@ -45,12 +45,12 @@ Choose what best describes your goal:
 
     | System Type | Key Resources |
     |-------------|---------------|
-    | **Web Application** | [Fundamentals](fundamentals/index.md) · [Databases](databases/index.md) · [Caching](caching/index.md) · [Load Balancing](load-balancing/index.md) |
-    | **Real-Time App** | [Messaging](messaging/index.md) · [WebSockets](networking/index.md) · [Distributed Systems](distributed-systems/index.md) |
-    | **Data Pipeline** | [Databases](databases/index.md) · [Messaging](messaging/index.md) · [Scalability](scalability/index.md) |
-    | **API Service** | [Load Balancing](load-balancing/index.md) · [Caching](caching/index.md) · [Reliability](reliability-security/index.md) |
+    | **Web Application** | [Fundamentals](fundamentals/index.md) · [Databases](data/databases/index.md) · [Caching](data/caching/index.md) · [Load Balancing](networking/load-balancers.md) |
+    | **Real-Time App** | [Messaging](communication/messaging/index.md) · [WebSockets](networking/index.md) · [Distributed Systems](distributed-systems/index.md) |
+    | **Data Pipeline** | [Databases](data/databases/index.md) · [Messaging](communication/messaging/index.md) · [Scalability](scalability/index.md) |
+    | **API Service** | [Load Balancing](networking/load-balancers.md) · [Caching](data/caching/index.md) · [Reliability](reliability/index.md) |
 
-    Then check: [Case Studies](case-studies/index.md) for real-world examples
+    Then check: [Interview Preparation](interviews/index.md) for practice problems
 
 === "🎯 Study a Specific Topic"
 
@@ -66,13 +66,13 @@ If preparing for interviews, prioritize these:
 
 | Priority | Topic | Why Important | Time to Learn |
 |----------|-------|---------------|---------------|
-| 🔴 Critical | [Databases](databases/index.md) | 80% of systems need data storage | 1 week |
-| 🔴 Critical | [Caching](caching/index.md) | First optimization technique | 3 days |
+| 🔴 Critical | [Databases](data/databases/index.md) | 80% of systems need data storage | 1 week |
+| 🔴 Critical | [Caching](data/caching/index.md) | First optimization technique | 3 days |
 | 🔴 Critical | [Scalability](scalability/index.md) | Core interview concept | 1 week |
-| 🟡 Important | [Load Balancing](load-balancing/index.md) | Common scaling strategy | 2 days |
+| 🟡 Important | [Load Balancing](networking/load-balancers.md) | Common scaling strategy | 2 days |
 | 🟡 Important | [Distributed Systems](distributed-systems/index.md) | Advanced problems | 1 week |
-| 🟢 Useful | [Messaging](messaging/index.md) | Async architectures | 3 days |
-| 🟢 Useful | [Consistent Hashing](consistent-hashing/index.md) | Data distribution | 2 days |
+| 🟢 Useful | [Messaging](communication/messaging/index.md) | Async architectures | 3 days |
+| 🟢 Useful | [Consistent Hashing](distributed-systems/consistent-hashing.md) | Data distribution | 2 days |
 
 **Full interview guide:** [Interview Preparation](interviews/index.md)
 
@@ -86,33 +86,37 @@ Start here if you're new to system design.
 - **[Fundamentals](fundamentals/index.md)** - Core concepts, trade-offs, design principles
 - **[Scalability](scalability/index.md)** - Grow from 10 to 10 million users
 - **[Performance](performance/index.md)** - Latency, throughput, optimization
-- **[Reliability & Security](reliability-security/index.md)** - Build systems that don't fail
+- **[Reliability](reliability/index.md)** - Build systems that don't fail
+- **[Security](security/authentication.md)** - Authentication, authorization, encryption
 
 ### Data & Storage
+
 How to store and retrieve data efficiently.
 
-- **[Databases](databases/index.md)** - SQL vs NoSQL, choosing the right database
-- **[Caching](caching/index.md)** - Redis, Memcached, CDN strategies
-- **[Consistent Hashing](consistent-hashing/index.md)** - Distribute data across servers
+- **[Databases](data/databases/index.md)** - SQL vs NoSQL, choosing the right database
+- **[Caching](data/caching/index.md)** - Redis, Memcached, CDN strategies
+- **[Consistent Hashing](distributed-systems/consistent-hashing.md)** - Distribute data across servers
 
 ### Communication
+
 How components talk to each other.
 
 - **[Networking](networking/index.md)** - HTTP, TCP/IP, DNS, protocols
-- **[Load Balancing](load-balancing/index.md)** - Distribute traffic across servers
-- **[Messaging](messaging/index.md)** - Queues, pub/sub, event streaming
-- **[Proxy](proxy/index.md)** - Forward and reverse proxies
+- **[Load Balancing](networking/load-balancers.md)** - Distribute traffic across servers
+- **[Messaging](communication/messaging/index.md)** - Queues, pub/sub, event streaming
+- **[Proxies](networking/proxies.md)** - Forward and reverse proxies
 
 ### Advanced
+
 Complex distributed system concepts.
 
 - **[Distributed Systems](distributed-systems/index.md)** - CAP theorem, consistency, consensus
-- **[Sessions](sessions/index.md)** - Stateful vs stateless, session management
+- **[Sessions](communication/session-management/index.md)** - Stateful vs stateless, session management
 
 ### Practice & Application
+
 Learn from real systems and prepare for interviews.
 
-- **[Case Studies](case-studies/index.md)** - How Netflix, Uber, Twitter built their systems
 - **[Interview Preparation](interviews/index.md)** - Framework, problems, tips
 
 ---
@@ -163,7 +167,7 @@ Every system design decision involves trade-offs. You typically optimize for 2 o
 |----------|----------|
 | [Structured Learning Path](learning-path.md) | Follow week-by-week program (8-12 weeks) |
 | [Interview Guide](interviews/index.md) | Prepare for tech interviews (4-8 weeks) |
-| [Case Studies](case-studies/index.md) | Learn from real-world systems |
+| [Problems](problems/index.md) | Practice with real-world systems |
 | [Fundamentals](fundamentals/index.md) | Start with core concepts |
 
 ---

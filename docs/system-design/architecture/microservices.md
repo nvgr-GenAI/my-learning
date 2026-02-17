@@ -1,727 +1,379 @@
 # Microservices Architecture
 
-**Independently deployable services** | 🔧 Modular | 🚀 Scalable | 🎯 Distributed
+Microservices architecture structures an application as a collection of small, autonomous services organized around business capabilities. Each service owns its own data, runs in its own process, and communicates with other services through well-defined APIs. The approach trades the simplicity of a single deployable unit for the ability to scale, deploy, and evolve parts of a system independently. Netflix runs over 800 microservices handling millions of requests per second; Amazon decomposes its retail platform into hundreds of services, each owned by a small team. But microservices are not a starting point -- they are a response to organizational and technical scaling pressures that monoliths struggle to absorb.
 
 ---
 
-## Overview
+=== "Core Concepts"
 
-Microservices architecture structures an application as a collection of small, autonomous services that are independently deployable and organized around business capabilities.
+    ## Service Boundaries and Bounded Contexts
 
-**Key Principle:** Each service is a separate unit that can be developed, deployed, and scaled independently.
+    The hardest part of microservices is deciding where one service ends and another begins. Domain-Driven Design provides the concept of a bounded context: a boundary within which a particular domain model applies consistently. A "customer" in the billing context (payment methods, invoices, credit limits) is not the same as a "customer" in the shipping context (addresses, delivery preferences, tracking history). Forcing both into a single shared model creates coupling that undermines the independence microservices promise.
+
+    Good service boundaries align with business capabilities, not technical layers. A service should encapsulate a complete business function -- the data it needs, the logic it applies, and the API it exposes. When two services need to change together for most features, they probably belong as one service.
+
+    | Service | Owns | Does NOT Own |
+    |---------|------|--------------|
+    | User Service | Authentication, profiles, preferences | Product catalog |
+    | Product Service | Catalog, search, pricing | Order lifecycle |
+    | Order Service | Order creation, status, history | Payment processing |
+    | Payment Service | Charge, refund, ledger | Shipping logistics |
+
+    ## Independent Deployment
+
+    Each service can be built, tested, and deployed on its own schedule without coordinating with other teams. This is the single most valuable property of microservices. When the payments team fixes a bug, they ship it in minutes without waiting for the catalog team to finish their sprint. When a deployment fails, only that service rolls back -- the rest of the system continues operating.
+
+    Independent deployment requires strict API contracts between services. A new version of the product service must not break the order service. This is typically enforced through contract testing and backward-compatible API evolution (adding fields rather than removing them, versioning endpoints when breaking changes are unavoidable).
+
+    ## Technology Diversity
+
+    Because services communicate only through APIs, each team can choose the technology that best fits their problem. A recommendation engine might use Python for its machine learning ecosystem while the payment service runs on Java for its mature financial libraries. The search service might store data in Elasticsearch while the user service uses PostgreSQL.
+
+    | Service | Language | Database | Why |
+    |---------|----------|----------|-----|
+    | Search | Python | Elasticsearch | Full-text search, ML ranking |
+    | Users | Java | PostgreSQL | Relational data, ACID guarantees |
+    | Analytics | Go | Cassandra | High write throughput, time-series |
+    | Sessions | Node.js | Redis | In-memory speed, low latency |
+
+    This freedom comes with a cost: the organization must support multiple technology stacks, build pipelines, and on-call expertise. Most companies limit diversity to a handful of approved stacks rather than allowing unlimited choice.
+
+    ## Netflix: Microservices at Scale
+
+    Netflix is the canonical example of microservices done well. Their architecture handles over 200 million subscribers across 190 countries, serving personalized content through 800+ microservices.
+
+    ```
+    Netflix Microservices Architecture (simplified)
+    ================================================
+
+    Mobile/TV/Browser Clients
+              |
+              v
+    +-------------------+
+    |    API Gateway     |  (Zuul - handles 50B+ requests/day)
+    |  Auth / Routing /  |
+    |  Rate Limiting     |
+    +--------+----------+
+             |
+      +------+------+------+------+--------+
+      |      |      |      |      |        |
+      v      v      v      v      v        v
+    +----+ +----+ +----+ +----+ +------+ +------+
+    |User| |Cat-| |Play| |Rec-| |Search| |Bill- |
+    |Svc | |alog| |back| |omm.| | Svc  | |ing   |
+    +----+ +----+ +----+ +----+ +------+ +------+
+      |      |      |      |      |        |
+      v      v      v      v      v        v
+    [Cass] [Cass] [Cass] [Cass] [Elastic] [MySQL]
+    ```
+
+    Key architectural decisions at Netflix include Chaos Monkey (randomly killing service instances in production to ensure resilience), Hystrix for circuit breaking, and a strong culture of "you build it, you run it" where each team operates their own services. Their investment in tooling -- including Eureka for service discovery, Ribbon for client-side load balancing, and Zuul for API gateway -- was so significant that they open-sourced the entire Netflix OSS stack.
+
+=== "Communication"
+
+    ## Synchronous vs Asynchronous Communication
+
+    Services must talk to each other, and the choice between synchronous and asynchronous communication shapes the entire system's behavior. Synchronous calls (REST, gRPC) are simpler to reason about: service A calls service B, waits for a response, and continues. Asynchronous communication (events, messages) decouples services in time: service A publishes an event and moves on without waiting.
+
+    Neither approach is universally better. Most real systems use both -- synchronous for queries where a user is waiting for a response, asynchronous for workflows where multiple services need to react to a change.
+
+    | Aspect | Synchronous (REST/gRPC) | Asynchronous (Events) |
+    |--------|-------------------------|----------------------|
+    | Coupling | Temporal -- caller waits | Decoupled -- fire and forget |
+    | Latency | Additive across call chain | Independent per consumer |
+    | Failure | Cascading (A down = B stuck) | Isolated (retry from queue) |
+    | Debugging | Direct stack trace | Requires distributed tracing |
+    | Best for | User-facing queries | Background workflows, fan-out |
+
+    ## REST and gRPC
+
+    REST over HTTP is the default choice for synchronous communication. It is universally understood, easy to debug with standard tools (curl, browser), and works across any language. The trade-off is performance: JSON serialization, HTTP overhead, and text-based parsing add latency.
+
+    gRPC uses Protocol Buffers for binary serialization and HTTP/2 for transport, delivering roughly 7-10x better throughput than REST for internal service calls. It also provides strong typing through `.proto` definitions and supports bidirectional streaming. The trade-off is debuggability -- binary payloads are opaque without tooling, and browser support requires a proxy layer.
+
+    ```
+    REST vs gRPC decision
+    =====================
+    External API (browser/mobile clients) --> REST (broad compatibility)
+    Internal service-to-service            --> gRPC (performance, typing)
+    Streaming data (real-time feeds)       --> gRPC streaming
+    Simple CRUD with low traffic           --> REST (simpler tooling)
+    ```
+
+    At Google, gRPC handles billions of internal RPCs per second across their infrastructure. Internally, most large-scale companies (Uber, Square, Netflix) use gRPC between services while exposing REST to external clients.
+
+    ## Service Discovery
+
+    In a dynamic environment where services scale up and down, hardcoding addresses is not viable. Service discovery solves this by maintaining a registry of available service instances. When service A needs to call service B, it queries the registry to find a healthy instance.
+
+    Client-side discovery (using tools like Netflix Eureka or HashiCorp Consul) has the client query the registry directly and choose an instance. Server-side discovery (the Kubernetes approach) uses DNS or a load balancer so the client simply calls a stable hostname and the platform routes to a healthy instance.
+
+    ```
+    Server-Side Discovery (Kubernetes Model)
+    =========================================
+
+    Order Service                    Kubernetes DNS
+         |                                |
+         |-- GET product-service/api ---->|
+         |                                |
+         |                     +----------+----------+
+         |                     |    kube-proxy /     |
+         |                     |    service mesh     |
+         |                     +---+-----+-----+----+
+         |                         |     |     |
+         |                         v     v     v
+         |                       [P1]  [P2]  [P3]
+         |                       Product Service Pods
+         |<--- response ---------|
+    ```
+
+    ## API Gateway Pattern
+
+    An API gateway sits between clients and the microservices, providing a single entry point that handles cross-cutting concerns: authentication, rate limiting, request routing, response aggregation, and protocol translation.
+
+    Without a gateway, each client must know about every service, handle authentication separately with each one, and make multiple round trips for a single page load. A mobile app displaying an order summary might need data from the user service, order service, and product service -- the gateway aggregates these into a single response.
+
+    ```
+    Request Flow Through API Gateway
+    =================================
+
+    Mobile App
+       |
+       |  POST /api/orders  (single request)
+       v
+    +---------------------------+
+    |       API Gateway         |
+    |  1. Validate JWT token    |
+    |  2. Check rate limit      |
+    |  3. Route to service      |
+    |  4. Aggregate responses   |
+    +--+--------+--------+-----+
+       |        |        |
+       v        v        v
+    +------+ +------+ +------+
+    | User | |Order | | Prod |
+    | Svc  | | Svc  | | Svc  |
+    +------+ +------+ +------+
+       |        |        |
+       v        v        v
+    [Users] [Orders] [Products]
+       DB       DB       DB
+    ```
+
+    Popular API gateway implementations include Kong, AWS API Gateway, and Envoy (often paired with Istio). Netflix's Zuul gateway handles over 50 billion requests per day, performing dynamic routing, monitoring, and security filtering.
+
+    ## Events Between Microservices
+
+    When a state change in one service is relevant to others, events provide loose coupling. The order service publishes an "OrderCreated" event; the inventory, payment, email, and analytics services each consume it independently. Adding a new consumer (say, a loyalty points service) requires zero changes to the order service.
+
+    Event-driven communication between microservices is covered briefly here since it is a communication mechanism. For deeper coverage of event patterns (event sourcing, CQRS, event notification vs event-carried state transfer), see the dedicated [Event-Driven Architecture](event-driven.md) page.
+
+    ```python
+    # Publisher: Order Service emits an event after creating an order
+    event_bus.publish("OrderCreated", {
+        "order_id": "ord-789",
+        "user_id": "usr-456",
+        "total": 149.99
+    })
+    ```
+
+=== "Data Management"
+
+    ## Database Per Service
+
+    The database-per-service pattern gives each microservice exclusive ownership of its data store. No other service may read from or write to another service's database directly -- all access goes through the owning service's API. This rule feels restrictive, but it is the foundation that makes independent deployment possible. If two services share a database, a schema change in one can break the other, recreating the coupling that microservices exist to eliminate.
+
+    ```
+    Shared Database (anti-pattern)        Database Per Service
+    =============================         ====================
+
+    +------+ +------+ +------+            +------+ +------+ +------+
+    | User | | Prod | |Order |            | User | | Prod | |Order |
+    | Svc  | | Svc  | | Svc  |            | Svc  | | Svc  | | Svc  |
+    +--+---+ +--+---+ +--+---+            +--+---+ +--+---+ +--+---+
+       |        |        |                    |        |        |
+       +--------+--------+                    v        v        v
+                |                          [Users] [Products] [Orders]
+                v                            DB       DB        DB
+           [Shared DB]
+           (coupled!)
+    ```
+
+    Each service can choose the database technology that fits its workload. The product search service might use Elasticsearch for full-text queries while the order service uses PostgreSQL for transactional guarantees. This is only possible when databases are isolated.
+
+    The cost is that data that was once a simple JOIN across tables now requires API calls between services or denormalized copies maintained through events. This trade-off is worthwhile at scale but painful for small teams.
+
+    ## Saga Pattern for Distributed Transactions
+
+    In a monolith, placing an order might wrap inventory reservation, payment processing, and order creation in a single ACID transaction. In microservices, each step lives in a different service with its own database -- there is no shared transaction manager.
+
+    The saga pattern solves this by breaking a distributed transaction into a sequence of local transactions, each followed by an event that triggers the next step. If any step fails, compensating transactions undo the previous steps in reverse order.
+
+    ```
+    Order Saga: Happy Path
+    ======================
+    Order Svc          Inventory Svc       Payment Svc
+        |                   |                   |
+        |-- Create Order -->|                   |
+        |   (PENDING)       |                   |
+        |                   |-- Reserve Stock -->|
+        |                   |   (RESERVED)      |
+        |                   |                   |-- Charge Card
+        |                   |                   |   (PAID)
+        |<-------- OrderConfirmed --------------|
+
+    Order Saga: Payment Fails (Compensation)
+    =========================================
+    Order Svc          Inventory Svc       Payment Svc
+        |                   |                   |
+        |-- Create Order -->|                   |
+        |   (PENDING)       |                   |
+        |                   |-- Reserve Stock -->|
+        |                   |   (RESERVED)      |
+        |                   |                   |-- Charge Card
+        |                   |                   |   FAILED!
+        |                   |<-- Release Stock --|
+        |<-- Cancel Order --|   (compensate)    |
+        |   (CANCELLED)     |                   |
+    ```
+
+    There are two saga coordination styles. In choreography, each service listens for events and decides what to do next -- simple but hard to track across many services. In orchestration, a central saga coordinator directs each step -- easier to understand but introduces a single point of coordination.
+
+    ## Uber's Saga Implementation
+
+    Uber processes millions of rides daily, each involving driver matching, fare calculation, payment processing, and receipt generation across separate services. Their CADENCE workflow engine (now open-sourced as Temporal) orchestrates these sagas. When a payment fails after a ride completes, the system automatically triggers fare adjustment, driver compensation recalculation, and rider notification -- all as compensating actions within the saga. At Uber's scale (25 million rides per day at peak), choreography-based sagas became unmanageable, which drove their investment in orchestration tooling.
+
+    ## Event-Driven Consistency
+
+    When services own separate databases, the system cannot provide strong consistency across service boundaries. Instead, microservices embrace eventual consistency: after a state change in one service, other services will eventually reflect that change, but not instantaneously.
+
+    Consider a product price update. The product service changes the price in its database and publishes a "PriceChanged" event. The order service, which caches product prices for display, receives the event and updates its local copy. During the propagation delay (typically milliseconds to seconds), a customer might see the old price on the order page. The system must be designed to handle this window gracefully -- for example, by validating the price at checkout time against the source of truth.
+
+    ```
+    Eventual Consistency Timeline
+    =============================
+    T=0ms   Product Svc updates price to $79.99
+    T=5ms   "PriceChanged" event published to broker
+    T=15ms  Order Svc receives event, updates local cache
+    T=15ms+ All services consistent
+
+    During T=0 to T=15ms, Order Svc still shows old price.
+    Design for this: validate at checkout, not at browse time.
+    ```
+
+    The key insight is to identify which operations require strong consistency (keep them within a single service) and which can tolerate eventual consistency (spread them across services). Payment charging and order creation should happen in a saga with compensation logic. Updating a recommendation feed or analytics dashboard can lag by seconds without harm.
+
+=== "Operational Complexity"
+
+    ## Service Mesh
+
+    As the number of microservices grows, each service needs retry logic, circuit breaking, mutual TLS, and traffic management. Implementing these in every service's application code leads to duplication and inconsistency. A service mesh moves this logic into a sidecar proxy (like Envoy) deployed alongside each service instance.
+
+    ```
+    Service Mesh Architecture (Istio)
+    ==================================
+
+    +------+  +-------+      +-------+  +------+
+    | User |  | Envoy |<---->| Envoy |  | Prod |
+    | Svc  |--| proxy |      | proxy |--| Svc  |
+    +------+  +-------+      +-------+  +------+
+                  ^               ^
+                  |               |
+              +---+---------------+---+
+              |    Control Plane      |
+              |  (Istio / Linkerd)    |
+              |  - mTLS certificates  |
+              |  - Traffic rules      |
+              |  - Retry policies     |
+              +-----------------------+
+    ```
+
+    The sidecar proxy intercepts all network traffic to and from the service, applying policies defined centrally in the control plane. This means a new service automatically gets mTLS encryption, circuit breaking, and observability without writing a single line of infrastructure code. Istio and Linkerd are the most widely adopted service mesh implementations. At Lyft, Envoy (which they created) handles all inter-service traffic for hundreds of services.
+
+    ## Distributed Tracing
+
+    When a single user request flows through five or more services, debugging a slow response or an error requires visibility across the entire call chain. Distributed tracing solves this by assigning a unique trace ID at the entry point and propagating it through every service call.
+
+    ```
+    Distributed Trace: GET /api/order/789
+    =======================================
+    Trace ID: abc-123
+
+    API Gateway       |====|                          45ms
+      User Svc          |==|                          20ms
+      Order Svc            |========|                 80ms
+        Product Svc           |====|                  40ms
+        Payment Svc              |==|                 15ms
+                     0   20  40  60  80  100  120ms
+
+    Total: 120ms
+    Bottleneck: Order Svc (80ms) --> investigate DB query
+    ```
+
+    Tools like Jaeger, Zipkin, and AWS X-Ray collect and visualize these traces. Combined with centralized logging (ELK stack, Datadog) and metrics (Prometheus, Grafana), they form the "three pillars of observability" that are non-negotiable for running microservices in production. Google's Dapper paper, which described their internal distributed tracing system, inspired most of these open-source tools.
+
+    ## Deployment and Orchestration
+
+    Microservices multiply the operational surface area. Instead of deploying one application, you deploy tens or hundreds. Container orchestration platforms like Kubernetes have become the standard solution, providing automated deployment, scaling, self-healing, and service discovery.
+
+    A typical deployment pipeline for a microservice includes: build the container image, run unit and integration tests, push to a container registry, deploy to a staging environment, run end-to-end tests against other services, then gradually roll out to production using canary or blue-green deployment. Kubernetes handles the rollout, monitoring health checks and automatically rolling back if the new version fails.
+
+    ```
+    Deployment Pipeline
+    ===================
+    Code Push --> Build Image --> Unit Tests --> Push to Registry
+                                                      |
+                    Production  <-- Canary (5%)  <-- Staging
+                    (if healthy)    (monitor)        (e2e tests)
+    ```
+
+    At Spotify, each of their 800+ microservices deploys independently through automated pipelines, with teams shipping multiple times per day. Their Backstage platform (now open-sourced) provides a service catalog so teams can discover, understand, and manage the growing number of services.
+
+    ## When Microservices Are Wrong
+
+    Microservices introduce distributed systems complexity: network failures, data consistency challenges, operational overhead, and debugging difficulty. This complexity is only justified when the benefits -- independent scaling, autonomous teams, fault isolation -- outweigh the costs.
+
+    For teams smaller than about 10 people, a well-structured monolith (or modular monolith) is almost always the better choice. The coordination overhead that microservices solve simply does not exist in a small team. Shopify ran a monolithic Ruby on Rails application serving billions of dollars in transactions before selectively extracting services. Basecamp deliberately stays monolithic, arguing that their team size does not justify the distributed systems tax.
+
+    The typical progression looks like this:
+
+    ```
+    Monolith-to-Microservices Evolution
+    ====================================
+    Year 1-2:  Monolith
+               - Learn the domain, iterate fast
+               - 5-15 developers, single deploy
+
+    Year 2-3:  Modular Monolith
+               - Clear module boundaries internally
+               - Separate databases per module
+               - 15-30 developers
+
+    Year 3+:   Selective Microservice Extraction
+               - Extract modules that need independent scaling
+               - Extract when team ownership boundaries are clear
+               - 30+ developers across multiple teams
+    ```
+
+    ## Amazon's Two-Pizza Teams
+
+    Amazon pioneered the organizational model that makes microservices work. Jeff Bezos mandated in 2002 that all teams must communicate through service interfaces -- no direct database access, no shared memory, no backdoors. Each service is owned by a team small enough to be fed by two pizzas (typically 6-8 people).
+
+    This organizational rule drove architectural decisions. A two-pizza team owns everything about their service: development, testing, deployment, monitoring, and on-call support. The team has full autonomy over technology choices within their service boundary. This model scaled Amazon from a single monolithic bookstore application to hundreds of services -- and eventually led to AWS, when they realized their internal infrastructure services could be offered externally.
+
+    The lesson is that microservices are as much an organizational pattern as a technical one. Conway's Law states that system architecture mirrors team communication structures. If you want independent services, you need independent teams.
 
 ---
 
-## Architecture Diagram
+## Key Takeaways
 
-```
-                    ┌─────────────────┐
-                    │  API Gateway    │
-                    └────────┬────────┘
-                             │
-            ┌────────────────┼────────────────┐
-            │                │                │
-            ↓                ↓                ↓
-    ┌───────────────┐ ┌───────────────┐ ┌───────────────┐
-    │   User        │ │   Product     │ │   Order       │
-    │   Service     │ │   Service     │ │   Service     │
-    │               │ │               │ │               │
-    │ ┌──────────┐  │ │ ┌──────────┐  │ │ ┌──────────┐  │
-    │ │   API    │  │ │ │   API    │  │ │ │   API    │  │
-    │ ├──────────┤  │ │ ├──────────┤  │ │ ├──────────┤  │
-    │ │ Business │  │ │ │ Business │  │ │ │ Business │  │
-    │ │  Logic   │  │ │ │  Logic   │  │ │ │  Logic   │  │
-    │ ├──────────┤  │ │ ├──────────┤  │ │ ├──────────┤  │
-    │ │   DB     │  │ │ │   DB     │  │ │ │   DB     │  │
-    │ └──────────┘  │ │ └──────────┘  │ │ └──────────┘  │
-    └───────────────┘ └───────────────┘ └───────────────┘
-         Users DB         Products DB        Orders DB
-```
-
----
-
-## Core Principles
-
-=== "Single Responsibility"
-    **Each service owns one business capability**
-
-    | Service | Responsibility | NOT Responsible For |
-    |---------|---------------|---------------------|
-    | User Service | User authentication, profiles | Product catalog |
-    | Product Service | Product catalog, search | Order processing |
-    | Order Service | Order management, checkout | Inventory count |
-    | Payment Service | Payment processing | Shipping rates |
-
-    ```
-    ✅ Good: Each service has clear boundaries
-    ❌ Bad:  "Shared Service" that handles everything
-    ```
-
-=== "Independent Deployment"
-    **Deploy services without affecting others**
-
-    ```bash
-    # Deploy only payment service
-    kubectl apply -f payment-service-v2.yaml
-
-    # Other services remain unchanged
-    User Service:    v1.2.3 ✅ Running
-    Product Service: v2.0.1 ✅ Running
-    Payment Service: v1.5.0 → v1.5.1 🚀 Deploying
-    Order Service:   v3.1.0 ✅ Running
-    ```
-
-    **Benefits:**
-    - Faster deployments (minutes, not hours)
-    - Reduced deployment risk
-    - Independent release cycles
-    - No "big bang" releases
-
-=== "Own Database"
-    **Each service manages its own data**
-
-    ```
-    ❌ Shared Database (Monolith)
-    ┌────────┐  ┌────────┐  ┌────────┐
-    │  User  │  │Product │  │ Order  │
-    │Service │  │Service │  │Service │
-    └───┬────┘  └───┬────┘  └───┬────┘
-        └───────────┼───────────┘
-                    ↓
-            ┌──────────────┐
-            │   Database   │
-            │  (Coupled!)  │
-            └──────────────┘
-
-    ✅ Database Per Service
-    ┌────────┐      ┌────────┐      ┌────────┐
-    │  User  │      │Product │      │ Order  │
-    │Service │      │Service │      │Service │
-    └───┬────┘      └───┬────┘      └───┬────┘
-        ↓               ↓               ↓
-    ┌───────┐      ┌───────┐      ┌───────┐
-    │User DB│      │Prod DB│      │Order  │
-    └───────┘      └───────┘      │  DB   │
-                                  └───────┘
-    ```
-
-    **Why?**
-    - Service can change schema independently
-    - No accidental coupling through database
-    - Choose best database for each service
-
-=== "API Communication"
-    **Services communicate via well-defined APIs**
-
-    **Synchronous (REST/gRPC):**
-    ```javascript
-    // Order Service calls Product Service
-    async function createOrder(userId, productId) {
-        // HTTP call to Product Service
-        const product = await fetch(
-            `http://product-service/api/products/${productId}`
-        ).then(r => r.json());
-
-        // HTTP call to Inventory Service
-        const available = await fetch(
-            `http://inventory-service/api/check/${productId}`
-        ).then(r => r.json());
-
-        if (!available) throw new Error('Out of stock');
-
-        // Create order in local database
-        return await Order.create({
-            userId, productId, price: product.price
-        });
-    }
-    ```
-
-    **Asynchronous (Events):**
-    ```javascript
-    // Order Service publishes event
-    await eventBus.publish('order.created', {
-        orderId: '12345',
-        userId: 'user-1',
-        productId: 'prod-100',
-        timestamp: Date.now()
-    });
-
-    // Payment Service listens to event
-    eventBus.subscribe('order.created', async (event) => {
-        await processPayment(event.orderId);
-    });
-
-    // Inventory Service listens to same event
-    eventBus.subscribe('order.created', async (event) => {
-        await reserveInventory(event.productId);
-    });
-    ```
-
----
-
-## When to Use Microservices
-
-| Factor | Monolith Better | Microservices Better |
-|--------|----------------|---------------------|
-| **Team Size** | < 15 developers | > 20 developers |
-| **Domain Complexity** | Simple, unclear boundaries | Complex, clear domains |
-| **Scale Requirements** | Uniform scaling | Selective scaling (e.g., only search) |
-| **Release Frequency** | Weekly/monthly | Multiple times per day |
-| **Fault Isolation** | Not critical | Critical (one failure ≠ total outage) |
-| **Technology Diversity** | Single stack preferred | Different tech per service |
-| **Organizational** | Single team | Multiple autonomous teams |
-
----
-
-## Advantages
-
-### ✅ **Independent Scalability**
-
-**Scale only what needs scaling:**
-
-```
-Normal Load:
-┌─────────┐ ┌─────────┐ ┌─────────┐
-│ User x1 │ │Product  │ │ Order   │
-│         │ │  x1     │ │  x1     │
-└─────────┘ └─────────┘ └─────────┘
-
-Black Friday (search traffic spike):
-┌─────────┐ ┌─────────┐ ┌─────────┐
-│ User x1 │ │Product  │ │ Order   │
-│         │ │  x10    │ │  x3     │
-└─────────┘ └─────────┘ └─────────┘
-            Scale up     Scale up
-            search       checkout
-```
-
-**Cost Savings:** Only pay for resources you need
-
-### ✅ **Team Autonomy**
-
-Each team owns a service end-to-end:
-
-```
-Team Payments:
-├── Owns: Payment Service
-├── Technology: Node.js, PostgreSQL
-├── Deploys: When ready (no coordination)
-└── On-call: For their service only
-
-Team Catalog:
-├── Owns: Product Service
-├── Technology: Python, MongoDB
-├── Deploys: Independently
-└── On-call: For their service only
-```
-
-**Benefits:**
-- Faster feature delivery
-- No cross-team bottlenecks
-- Clear ownership and accountability
-
-### ✅ **Fault Isolation**
-
-**Failure in one service doesn't crash entire system:**
-
-```
-Scenario: Payment Service is down
-
-❌ Monolith: Entire website down
-
-✅ Microservices:
-   - Browsing products: ✅ Works
-   - Adding to cart: ✅ Works
-   - Checking out: ❌ Shows error but site remains up
-   - User profile: ✅ Works
-```
-
-Implement circuit breakers to gracefully degrade.
-
-### ✅ **Technology Flexibility**
-
-**Choose the right tool for each job:**
-
-| Service | Technology | Why? |
-|---------|-----------|------|
-| Product Search | Elasticsearch | Full-text search |
-| User Service | PostgreSQL | Relational data, ACID |
-| Analytics | Cassandra | Time-series, high writes |
-| Cache Service | Redis | In-memory speed |
-| ML Recommendations | Python | ML libraries |
-
----
-
-## Disadvantages
-
-### ❌ **Complexity**
-
-**Distributed systems are inherently complex:**
-
-```
-Monolith (1 thing to debug):
-┌──────────────┐
-│     App      │
-└──────────────┘
-
-Microservices (10+ things to debug):
-┌────┐ ┌────┐ ┌────┐ ┌────┐
-│ S1 │→│ S2 │→│ S3 │→│ S4 │
-└────┘ └────┘ └────┘ └────┘
-  ↓      ↓      ↓      ↓
- DB1    DB2    DB3    DB4
-  ↓      ↓      ↓      ↓
-Queue  Cache  Log    Trace
-```
-
-**Must handle:**
-- Network failures
-- Service discovery
-- Load balancing
-- Distributed tracing
-- Monitoring across services
-
-### ❌ **Data Consistency Challenges**
-
-**No ACID transactions across services:**
-
-```javascript
-// Monolith: ACID transaction (easy)
-await database.transaction(async (tx) => {
-    await tx.orders.create(order);
-    await tx.inventory.decrement(productId);
-    await tx.payments.charge(userId, amount);
-});
-// Either all succeed or all rollback
-
-// Microservices: Distributed transaction (hard)
-try {
-    await orderService.create(order);      // ✅ Success
-    await inventoryService.reserve(productId); // ✅ Success
-    await paymentService.charge(userId, amount); // ❌ Fails!
-    // Now order is created but payment failed!
-    // Need compensation logic...
-} catch (error) {
-    // Rollback order
-    // Rollback inventory reservation
-}
-```
-
-**Solutions:**
-- Eventual consistency
-- Saga pattern
-- Event sourcing
-
-### ❌ **Testing Difficulty**
-
-**Must test interactions between services:**
-
-```
-Unit Test:     ✅ Test individual service
-Integration:   ⚠️ Test service + database
-E2E Test:      ❌ Test 10 services + infrastructure
-               Very slow, flaky, hard to maintain
-```
-
-### ❌ **Operational Overhead**
-
-| Task | Monolith | Microservices |
-|------|----------|---------------|
-| **Deploy** | 1 deployment | 10-100 deployments |
-| **Monitor** | 1 dashboard | 10-100 dashboards |
-| **Logs** | 1 log file | Distributed logging needed |
-| **Debug** | 1 stack trace | Distributed tracing needed |
-| **Versions** | 1 version | Version matrix (v1.2 + v2.1 + v3.0...) |
-
-**Requires:**
-- Kubernetes/orchestration
-- Service mesh (Istio, Linkerd)
-- Centralized logging (ELK)
-- Distributed tracing (Jaeger)
-- Monitoring (Prometheus, Grafana)
-
----
-
-## Communication Patterns
-
-=== "Synchronous (REST)"
-    **Request-response pattern**
-
-    ```javascript
-    // Order Service → Product Service
-    const response = await axios.get(
-        'http://product-service/api/products/123'
-    );
-    const product = response.data;
-    ```
-
-    **Pros:**
-    - Simple to understand
-    - Immediate response
-    - Easy to debug
-
-    **Cons:**
-    - Tight coupling
-    - Cascading failures
-    - Higher latency
-
-    **Use when:** Need immediate response, synchronous flow
-
-=== "Synchronous (gRPC)"
-    **Binary protocol, faster than REST**
-
-    ```protobuf
-    // product.proto
-    service ProductService {
-        rpc GetProduct (ProductRequest) returns (ProductResponse);
-    }
-
-    message ProductRequest {
-        string product_id = 1;
-    }
-
-    message ProductResponse {
-        string id = 1;
-        string name = 2;
-        double price = 3;
-    }
-    ```
-
-    ```javascript
-    // Client code
-    const client = new ProductServiceClient('product-service:50051');
-    const product = await client.GetProduct({ product_id: '123' });
-    ```
-
-    **Pros:**
-    - 7x faster than REST
-    - Strong typing with protobuf
-    - Bi-directional streaming
-
-    **Cons:**
-    - Harder to debug (binary)
-    - Browser support limited
-
-    **Use when:** High performance needed, internal services
-
-=== "Asynchronous (Events)"
-    **Publish-subscribe pattern**
-
-    ```javascript
-    // Publisher: Order Service
-    await messageBroker.publish('OrderCreated', {
-        orderId: '123',
-        userId: 'user-1',
-        amount: 99.99
-    });
-
-    // Subscriber: Email Service
-    messageBroker.subscribe('OrderCreated', async (event) => {
-        await sendEmail(event.userId, 'Order confirmed!');
-    });
-
-    // Subscriber: Analytics Service
-    messageBroker.subscribe('OrderCreated', async (event) => {
-        await trackRevenue(event.amount);
-    });
-    ```
-
-    **Pros:**
-    - Loose coupling
-    - Services don't need to know about each other
-    - Easy to add new subscribers
-    - Resilient (retry on failure)
-
-    **Cons:**
-    - Eventual consistency
-    - Harder to debug
-    - Message broker is single point of failure
-
-    **Use when:** Don't need immediate response, multiple services interested in same event
-
----
-
-## Data Management Patterns
-
-### 1. **Database Per Service**
-
-Each service owns its data:
-
-```
-✅ Correct:
-User Service    → Users DB
-Product Service → Products DB
-Order Service   → Orders DB
-
-❌ Wrong:
-User Service    ↘
-Product Service → Shared DB (creates coupling!)
-Order Service   ↗
-```
-
-### 2. **Saga Pattern**
-
-Manage distributed transactions across services:
-
-```javascript
-// Saga: Create Order
-async function createOrderSaga(order) {
-    try {
-        // Step 1: Create order
-        const orderId = await orderService.create(order);
-
-        // Step 2: Reserve inventory
-        await inventoryService.reserve(order.productId);
-
-        // Step 3: Process payment
-        await paymentService.charge(order.userId, order.amount);
-
-        // Step 4: Confirm order
-        await orderService.confirm(orderId);
-
-    } catch (error) {
-        // Compensation: Rollback in reverse order
-        await paymentService.refund(order.userId);
-        await inventoryService.release(order.productId);
-        await orderService.cancel(orderId);
-    }
-}
-```
-
-### 3. **CQRS (Command Query Responsibility Segregation)**
-
-Separate read and write models:
-
-```
-Write Side (Commands):
-┌─────────────┐
-│   Command   │
-│   Service   │
-└──────┬──────┘
-       ↓
-  ┌─────────┐
-  │Write DB │
-  └────┬────┘
-       ↓
-    Events
-
-Read Side (Queries):
-  Events
-    ↓
-┌──────────┐
-│ Read DB  │ (Denormalized, optimized for queries)
-│(Redis)   │
-└─────┬────┘
-      ↓
-┌──────────┐
-│  Query   │
-│ Service  │
-└──────────┘
-```
-
----
-
-## Service Discovery
-
-**Services need to find each other dynamically:**
-
-=== "Client-Side Discovery"
-    ```javascript
-    // Service Registry (e.g., Consul, Eureka)
-    const serviceRegistry = new ServiceRegistry();
-
-    // Product Service registers itself
-    serviceRegistry.register('product-service', {
-        host: '10.0.1.23',
-        port: 8080
-    });
-
-    // Order Service discovers Product Service
-    const productService = await serviceRegistry.lookup('product-service');
-    const response = await fetch(`http://${productService.host}:${productService.port}/api/products`);
-    ```
-
-=== "Server-Side Discovery"
-    ```
-    Kubernetes Service Discovery:
-
-    Order Service → kubernetes.default.svc.cluster.local
-                    ↓
-                    DNS lookup
-                    ↓
-                    "product-service" → 10.0.1.23:8080
-    ```
-
-    ```yaml
-    # Kubernetes Service
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: product-service
-    spec:
-      selector:
-        app: product
-      ports:
-        - port: 80
-          targetPort: 8080
-    ```
-
----
-
-## Best Practices
-
-### ✅ **Start with Monolith**
-
-Don't build microservices from day one:
-
-```
-Phase 1: Monolith (Year 1)
-- Learn domain
-- Fast development
-- Validate business model
-
-Phase 2: Modular Monolith (Year 2)
-- Clear module boundaries
-- Separate databases internally
-- Prepare for extraction
-
-Phase 3: Microservices (Year 3+)
-- Extract high-value services
-- Extract when team grows > 20
-- Extract when independent scaling needed
-```
-
-### ✅ **Design for Failure**
-
-Assume services will fail:
-
-```javascript
-// Circuit Breaker Pattern
-const circuitBreaker = new CircuitBreaker(productService.get, {
-    timeout: 3000,        // Fail after 3s
-    errorThreshold: 50,   // Open circuit if 50% fail
-    resetTimeout: 30000   // Try again after 30s
-});
-
-try {
-    const product = await circuitBreaker.fire(productId);
-} catch (error) {
-    // Fallback: Return cached data or default
-    return getCachedProduct(productId) || DEFAULT_PRODUCT;
-}
-```
-
-### ✅ **API Gateway**
-
-Single entry point for clients:
-
-```
-           ┌─────────────┐
-           │ API Gateway │
-           │  - Auth     │
-           │  - Routing  │
-           │  - Rate     │
-           │    Limiting │
-           └──────┬──────┘
-                  │
-     ┌────────────┼────────────┐
-     ↓            ↓            ↓
-┌─────────┐ ┌─────────┐ ┌─────────┐
-│  User   │ │ Product │ │  Order  │
-│ Service │ │ Service │ │ Service │
-└─────────┘ └─────────┘ └─────────┘
-```
-
-**Benefits:**
-- Client doesn't need to know about all services
-- Centralized authentication
-- Response aggregation
-- Rate limiting
-
-### ✅ **Observability**
-
-Must have end-to-end visibility:
-
-```
-Request Flow with Trace ID:
-
-Client
-  ↓ trace-id: abc123
-API Gateway
-  ↓ trace-id: abc123
-User Service (logs: abc123, took 50ms)
-  ↓ trace-id: abc123
-Product Service (logs: abc123, took 120ms)
-  ↓ trace-id: abc123
-Order Service (logs: abc123, took 200ms)
-
-Total latency: 370ms (easy to debug!)
-```
-
----
-
-## Real-World Examples
-
-=== "Netflix"
-    **Scale:**
-    - 800+ microservices
-    - Millions of requests/second
-    - Global deployment
-
-    **Key Decisions:**
-    - Async communication (event-driven)
-    - Chaos engineering (Chaos Monkey)
-    - Hystrix for circuit breaking
-    - Service mesh for observability
-
-=== "Uber"
-    **Evolution:**
-    ```
-    2012: Python monolith
-    2014: Started microservices migration
-    2016: 1000+ microservices
-    2020: 4000+ microservices
-    ```
-
-    **Challenges:**
-    - Distributed tracing essential
-    - Service mesh for traffic management
-    - Strong API contracts (gRPC)
-
-=== "Amazon"
-    **Two-Pizza Team Rule:**
-    - Each service owned by small team (< 10 people)
-    - Team can sustain on 2 pizzas
-    - Full autonomy: build, deploy, operate
-
-    **API-First:**
-    - All teams expose APIs
-    - Internal services communicate only via APIs
-    - Led to AWS (internal services → external products)
-
----
-
-## Interview Talking Points
-
-**Q: When would you choose microservices over a monolith?**
-
-✅ **Strong Answer:**
-> "I'd choose microservices when we have clear business domain boundaries, a team larger than 20 developers, and a need for independent scaling or deployment. For example, if our search traffic spikes 10x during sales but checkout traffic only doubles, microservices let us scale them independently. However, I'd start with a well-structured monolith first - companies like Shopify scaled to billions in revenue before moving to microservices. The complexity of distributed systems isn't worth it until the coordination cost of a monolith becomes the bottleneck."
-
-**Q: How do you handle data consistency across microservices?**
-
-✅ **Strong Answer:**
-> "I'd use the Saga pattern for distributed transactions. For example, in an order workflow: (1) create order, (2) reserve inventory, (3) process payment. If payment fails, we execute compensating transactions in reverse - refund payment, release inventory, cancel order. I'd also embrace eventual consistency where appropriate - it's okay if the analytics dashboard shows yesterday's numbers. For critical consistency needs, I'd consider keeping that functionality within a single service rather than splitting it."
+Microservices decompose an application along business capability boundaries, giving each service its own database, deployment pipeline, and owning team. The architecture enables independent scaling (Netflix scales its recommendation engine separately from its streaming pipeline), fault isolation (a payment outage does not take down product browsing), and team autonomy (Amazon's two-pizza teams ship independently). The costs are substantial: distributed data consistency requires saga patterns, debugging requires distributed tracing, and operational overhead requires container orchestration and service mesh infrastructure. Start with a monolith, extract services when team coordination becomes the bottleneck, and invest heavily in observability from day one.
 
 ---
 
 ## Related Topics
 
-- [Monolithic Architecture](monolithic.md) - When to avoid microservices
-- [Event-Driven Architecture](event-driven.md) - Async communication pattern
-- [API Design](../communication/api-design/index.md) - Design service APIs
-- [Distributed Systems](../distributed-systems/index.md) - Challenges and solutions
-
----
-
-**Microservices aren't a goal, they're a consequence of scaling teams! 🚀**
+- [Monolithic Architecture](monolithic.md) -- when and why to avoid microservices
+- [Event-Driven Architecture](event-driven.md) -- asynchronous communication patterns in depth
+- [API Design](../communication/api-design/index.md) -- designing service interfaces
+- [Distributed Systems](../distributed-systems/index.md) -- consistency, failure, and coordination challenges

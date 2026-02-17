@@ -471,9 +471,8 @@ Congratulations! You've just built a complete transformer model that includes:
 Now that you've built a transformer, you can:
 
 1. **[Train Your Model](training-objectives.md)** - Learn how to actually train it
-2. **[Fine-tune for Tasks](fine-tuning.md)** - Adapt it for specific applications  
-3. **[Optimize Performance](optimization.md)** - Make it faster and more efficient
-4. **[Explore Applications](applications.md)** - See what you can build with it
+2. **[Optimize Performance](optimization.md)** - Make it faster and more efficient
+3. **[Training Objectives](training-objectives.md)** - Learn how models are trained
 
 ---
 

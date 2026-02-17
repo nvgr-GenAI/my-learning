@@ -9,11 +9,11 @@ Master algorithms and data structures from fundamentals to advanced concepts - y
 === "Data Structures"
     **Linear:** [Arrays](data-structures/arrays/index.md) • [Linked Lists](data-structures/linked-lists/index.md) • [Stacks](data-structures/stacks/index.md) • [Queues](data-structures/queues/index.md)
 
-    **Hierarchical:** [Trees](trees/index.md) • [Heaps](data-structures/heaps/index.md) • [Tries](trees/trie/index.md) • [Segment Trees](trees/segment-tree/index.md)
+    **Hierarchical:** [Trees](trees/index.md) • [Heaps](trees/heaps.md) • [Tries](trees/tries.md) • [Segment Trees](trees/segment-trees.md)
 
-    **Graph-Based:** [Graphs](graphs/index.md) • [Adjacency Lists](graphs/representation.md) • [Weighted Graphs](graphs/weighted-graphs.md)
+    **Graph-Based:** [Graphs](graphs/index.md) • [Adjacency Lists](graphs/adjacency-list.md) • [Weighted Graphs](graphs/weighted-graphs.md)
 
-    **Hash-Based:** [Hash Tables](data-structures/hash-tables/index.md) • [Hash Maps](data-structures/hash-tables/hash-map.md) • [Hash Sets](data-structures/sets/index.md)
+    **Hash-Based:** [Hash Tables](data-structures/hash-tables/index.md) • [Hash Functions](data-structures/hash-tables/hash-functions.md) • [Hash Sets](data-structures/sets/index.md)
 
 === "Algorithms"
     **Searching:** [Linear Search](searching/linear-search.md) • [Binary Search](searching/binary-search.md) • [Advanced Search](searching/index.md)
@@ -22,7 +22,7 @@ Master algorithms and data structures from fundamentals to advanced concepts - y
 
     **Graph Algorithms:** [BFS](graphs/bfs.md) • [DFS](graphs/dfs.md) • [Dijkstra](graphs/dijkstra.md) • [MST](graphs/mst.md) • [More](graphs/index.md)
 
-    **Dynamic Programming:** [Patterns](dp/patterns.md) • [Memoization](dp/techniques.md) • [Problems](dp/index.md)
+    **Dynamic Programming:** [Patterns](dp/patterns.md) • [Fundamentals](dp/fundamentals.md) • [Problems](dp/index.md)
 
     **Greedy:** [Fundamentals](greedy/index.md) • [Problems](greedy/easy-problems.md)
 
@@ -49,30 +49,30 @@ Master algorithms and data structures from fundamentals to advanced concepts - y
     | O(n²) | Quadratic | Nested loops | Small datasets |
     | O(2ⁿ) | Exponential | Subsets, backtracking | Brute force (small inputs) |
 
-    **📚 Learn More:** [Complete Time & Space Complexity Guide](fundamentals/time-complexity.md)
+    **📚 Learn More:** [Complete Time & Space Complexity Guide](fundamentals/complexity-analysis.md)
 
 ---
 
 ## 🎯 Study & Preparation
 
 === "Learning Paths"
-    **Beginner (2-3 months):** [Time Complexity](fundamentals/time-complexity.md) → [Arrays & Strings](data-structures/arrays/index.md) → [Linked Lists](data-structures/linked-lists/index.md) → [Stacks & Queues](data-structures/stacks/index.md) → [Basic Sorting](sorting/index.md) → [Binary Search](searching/binary-search.md)
+    **Beginner (2-3 months):** [Time Complexity](fundamentals/complexity-analysis.md) → [Arrays & Strings](data-structures/arrays/index.md) → [Linked Lists](data-structures/linked-lists/index.md) → [Stacks & Queues](data-structures/stacks/index.md) → [Basic Sorting](sorting/index.md) → [Binary Search](searching/binary-search.md)
 
-    **Intermediate (3-4 months):** [Trees](trees/index.md) → [Graphs](graphs/index.md) → [Heaps](data-structures/heaps/index.md) → [Hash Tables](data-structures/hash-tables/index.md) → [Dynamic Programming](dp/index.md) → [Greedy Algorithms](greedy/index.md)
+    **Intermediate (3-4 months):** [Trees](trees/index.md) → [Graphs](graphs/index.md) → [Heaps](trees/heaps.md) → [Hash Tables](data-structures/hash-tables/index.md) → [Dynamic Programming](dp/index.md) → [Greedy Algorithms](greedy/index.md)
 
     **Advanced (2-3 months):** [Advanced Trees](trees/index.md) → [Graph Algorithms](graphs/index.md) → [Advanced DP](dp/patterns.md) → [String Algorithms](strings/index.md) → [Backtracking](backtracking/index.md) → [Divide & Conquer](divide-conquer/index.md)
 
 === "Interview Prep"
-    **Problem-Solving Framework:** [Complete Guide](fundamentals/interview-strategy.md) • [Approach Strategies](fundamentals/problem-solving-patterns.md) • [Pattern Recognition](fundamentals/problem-solving-patterns.md#common-patterns)
+    **Problem-Solving Framework:** [Complete Guide](fundamentals/interview-preparation.md) • [Approach Strategies](fundamentals/problem-solving-patterns.md) • [Pattern Recognition](fundamentals/problem-solving-patterns.md#common-patterns)
 
-    **Strategy & Planning:** [Interview Approach](fundamentals/interview-strategy.md) • [Common Problems](fundamentals/interview-strategy.md#common-problems) • [Mock Interviews](fundamentals/interview-strategy.md#practice-techniques)
+    **Strategy & Planning:** [Interview Approach](fundamentals/interview-preparation.md) • [Common Problems](fundamentals/interview-preparation.md#common-problems) • [Mock Interviews](fundamentals/interview-preparation.md#practice-techniques)
 
     **Practice Platforms:** [LeetCode](https://leetcode.com/) • [HackerRank](https://www.hackerrank.com/) • [CodeForces](https://codeforces.com/)
 
     **💡 Interview Tip:** Always discuss your approach BEFORE coding. Clarify requirements, explain your strategy, and get confirmation before implementation.
 
 === "Preparation Planning"
-    **Study Plans:** [Structured Learning Paths](fundamentals/preparation-planning.md) • [Timeline-based Plans](fundamentals/preparation-planning.md#study-timelines) • [Topic Sequencing](fundamentals/preparation-planning.md#recommended-order)
+    **Study Plans:** [Structured Learning Paths](fundamentals/learning-paths.md) • [Timeline-based Plans](fundamentals/learning-paths.md#study-timelines) • [Topic Sequencing](fundamentals/learning-paths.md#recommended-order)
 
     **Daily Practice (1-2 hours):** Solve 1-2 new problems (40-60 min) • Review 2-3 previous problems (20-30 min) • Study 1 new concept (20-30 min)
 

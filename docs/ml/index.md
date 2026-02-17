@@ -62,16 +62,44 @@ graph TB
     ### 1. Fundamentals
     **Start here if you're new to ML**
 
-    Learn the foundation of machine learning, key concepts, and mathematical prerequisites.
+    Learn machine learning from first principles with a complete textbook-style guide covering 8 chapters.
 
-    - [What is Machine Learning?](fundamentals/what-is-ml.md)
-    - [Types of ML](fundamentals/types-of-ml.md)
-    - [Bias-Variance Tradeoff](fundamentals/bias-variance-tradeoff.md)
-    - [Overfitting & Underfitting](fundamentals/overfitting-underfitting.md)
-    - [Train/Test Split](fundamentals/train-test-split.md)
-    - [Mathematics for ML](fundamentals/mathematics.md)
+    **Part I: Foundation**
 
-    [→ Explore Fundamentals](fundamentals/index.md){ .md-button }
+    - [Chapter 1: The Learning Problem](fundamentals/01-learning-problem.md)
+    - [Chapter 2: Data - The Source of Intelligence](fundamentals/02-data-source.md)
+    - [Chapter 3: Making Data Machine-Readable](fundamentals/03-numerical-representation.md)
+
+    **Part II: Core Theory**
+
+    - [Chapter 4: Models as Functions](fundamentals/04-models-as-functions.md)
+    - [Chapter 5: Learning Through Optimization](fundamentals/05-optimization.md)
+    - [Chapter 6: The Generalization Challenge](fundamentals/06-generalization.md)
+
+    **Part III: Application**
+
+    - [Chapter 7: Types of Machine Learning](fundamentals/07-types-of-ml.md)
+    - [Chapter 8: Mathematical Foundation](fundamentals/08-mathematics.md)
+
+    [→ Start Learning](fundamentals/index.md){ .md-button }
+
+    ---
+
+    ### 📖 Quick Reference
+    **Fast lookup for ML terminology**
+
+    Comprehensive reference with 97+ terms across 6 categories, each with detailed explanations, examples, and practical insights.
+
+    **Browse by Category:**
+
+    - [Learning Concepts](quick-reference/learning-concepts.md) - 14 core ML concepts
+    - [Data](quick-reference/data.md) - 26 data-related terms
+    - [Features & Representation](quick-reference/features-representation.md) - 17 feature engineering terms
+    - [Model & Learning](quick-reference/model-learning.md) - 10 modeling concepts
+    - [Training & Optimization](quick-reference/training-optimization.md) - 8 training terms
+    - [Evaluation](quick-reference/evaluation.md) - 22 metrics and techniques
+
+    [→ Browse Quick Reference](quick-reference/index.md){ .md-button }
 
     ---
 
@@ -181,11 +209,11 @@ graph TB
 
     Leverage large amounts of unlabeled data with few labels.
 
-    - [Self-Training](semi-supervised/self-training.md) 🟡
-    - [Co-Training](semi-supervised/co-training.md) 🔴
-    - [Pseudo-Labeling](semi-supervised/pseudo-labeling.md) 🟡
+    - [Self-Training](semi-supervised-learning/self-training.md) 🟡
+    - [Co-Training](semi-supervised-learning/co-training.md) 🔴
+    - [Pseudo-Labeling](semi-supervised-learning/pseudo-labeling.md) 🟡
 
-    [→ Explore Semi-Supervised Learning](semi-supervised/index.md){ .md-button }
+    [→ Explore Semi-Supervised Learning](semi-supervised-learning/index.md){ .md-button }
 
 === "🛠️ Essential Skills"
 

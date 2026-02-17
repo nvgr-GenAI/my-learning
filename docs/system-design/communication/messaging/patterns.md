@@ -1,938 +1,310 @@
-# Message Patterns & Event-Driven Architecture 📬
+# Messaging Patterns
 
-Master advanced messaging patterns and event-driven architecture for building scalable, decoupled systems. This comprehensive guide covers messaging strategies, event sourcing, and asynchronous communication patterns.
+Modern distributed systems rarely communicate through synchronous request-response alone. As services scale independently, they need a way to exchange information without requiring both sides to be available at the same instant. Messaging patterns solve this by introducing an intermediary -- a broker or queue -- that decouples producers from consumers in both time and space. A producer can fire off a message and move on; the consumer processes it whenever it is ready.
 
-## 🎯 Core Messaging Patterns
+This decoupling buys three things. First, temporal decoupling: the producer and consumer do not need to be running at the same time. Second, load leveling: a queue absorbs traffic spikes so consumers can process at a steady rate. Third, failure isolation: if a consumer crashes, messages wait in the queue rather than being lost. These properties are the foundation of resilient, scalable architectures, and they explain why virtually every large-scale system -- from ride-hailing to payment processing to social media feeds -- relies on messaging infrastructure.
 
-### **1. Producer-Consumer Pattern**
-
-**Basic Implementation**:
-
-```python
-import asyncio
-import json
-from typing import Dict, Any, Callable
-from dataclasses import dataclass
-from enum import Enum
-import time
-
-class MessageStatus(Enum):
-    PENDING = "pending"
-    PROCESSING = "processing"
-    COMPLETED = "completed"
-    FAILED = "failed"
-
-@dataclass
-class Message:
-    id: str
-    payload: Dict[str, Any]
-    timestamp: float
-    status: MessageStatus = MessageStatus.PENDING
-    retry_count: int = 0
-    max_retries: int = 3
-
-class MessageQueue:
-    def __init__(self, max_size: int = 1000):
-        self.queue = asyncio.Queue(maxsize=max_size)
-        self.dead_letter_queue = asyncio.Queue()
-        self.processing_messages = {}
-    
-    async def produce(self, message: Message):
-        """Add message to queue"""
-        await self.queue.put(message)
-    
-    async def consume(self) -> Message:
-        """Get message from queue"""
-        message = await self.queue.get()
-        message.status = MessageStatus.PROCESSING
-        self.processing_messages[message.id] = message
-        return message
-    
-    async def ack(self, message_id: str):
-        """Acknowledge message processing"""
-        if message_id in self.processing_messages:
-            message = self.processing_messages.pop(message_id)
-            message.status = MessageStatus.COMPLETED
-    
-    async def nack(self, message_id: str):
-        """Negative acknowledge - retry or dead letter"""
-        if message_id in self.processing_messages:
-            message = self.processing_messages.pop(message_id)
-            message.retry_count += 1
-            
-            if message.retry_count <= message.max_retries:
-                message.status = MessageStatus.PENDING
-                await self.queue.put(message)
-            else:
-                message.status = MessageStatus.FAILED
-                await self.dead_letter_queue.put(message)
-
-class AsyncConsumer:
-    def __init__(self, queue: MessageQueue, processor: Callable):
-        self.queue = queue
-        self.processor = processor
-        self.is_running = False
-    
-    async def start(self):
-        """Start consuming messages"""
-        self.is_running = True
-        while self.is_running:
-            try:
-                message = await self.queue.consume()
-                
-                # Process message
-                try:
-                    await self.processor(message)
-                    await self.queue.ack(message.id)
-                except Exception as e:
-                    print(f"Failed to process message {message.id}: {e}")
-                    await self.queue.nack(message.id)
-                    
-            except asyncio.CancelledError:
-                break
-    
-    def stop(self):
-        """Stop consuming messages"""
-        self.is_running = False
-
-# Usage example
-async def order_processor(message: Message):
-    """Process order message"""
-    order_data = message.payload
-    print(f"Processing order: {order_data}")
-    
-    # Simulate processing time
-    await asyncio.sleep(0.1)
-    
-    # Simulate potential failure
-    if order_data.get('amount', 0) < 0:
-        raise ValueError("Invalid order amount")
-
-async def main():
-    # Create queue and consumer
-    queue = MessageQueue()
-    consumer = AsyncConsumer(queue, order_processor)
-    
-    # Start consumer
-    consumer_task = asyncio.create_task(consumer.start())
-    
-    # Produce messages
-    for i in range(10):
-        message = Message(
-            id=f"order_{i}",
-            payload={
-                'order_id': f"order_{i}",
-                'amount': 100 if i % 2 == 0 else -50,  # Some invalid orders
-                'customer': f"customer_{i}"
-            },
-            timestamp=time.time()
-        )
-        await queue.produce(message)
-    
-    # Let consumer process for a bit
-    await asyncio.sleep(2)
-    
-    # Stop consumer
-    consumer.stop()
-    await consumer_task
-```
-
-### **2. Request-Reply Pattern**
-
-**Asynchronous Request-Reply**:
-
-```python
-import asyncio
-import uuid
-from typing import Dict, Any, Optional
-import json
-
-class RequestReplyManager:
-    def __init__(self):
-        self.pending_requests: Dict[str, asyncio.Future] = {}
-        self.timeout_default = 30  # seconds
-    
-    async def send_request(self, 
-                          request_data: Dict[str, Any], 
-                          timeout: float = None) -> Dict[str, Any]:
-        """Send request and wait for reply"""
-        request_id = str(uuid.uuid4())
-        timeout = timeout or self.timeout_default
-        
-        # Create future for this request
-        future = asyncio.Future()
-        self.pending_requests[request_id] = future
-        
-        # Send request with correlation ID
-        message = {
-            'id': request_id,
-            'data': request_data,
-            'timestamp': time.time()
-        }
-        
-        # In real implementation, send to message broker
-        await self._send_to_broker(message)
-        
-        try:
-            # Wait for reply with timeout
-            reply = await asyncio.wait_for(future, timeout=timeout)
-            return reply
-        except asyncio.TimeoutError:
-            # Cleanup on timeout
-            if request_id in self.pending_requests:
-                del self.pending_requests[request_id]
-            raise TimeoutError(f"Request {request_id} timed out")
-    
-    async def handle_reply(self, reply_data: Dict[str, Any]):
-        """Handle incoming reply"""
-        request_id = reply_data.get('correlation_id')
-        
-        if request_id in self.pending_requests:
-            future = self.pending_requests.pop(request_id)
-            if not future.done():
-                future.set_result(reply_data)
-    
-    async def _send_to_broker(self, message: Dict[str, Any]):
-        """Send message to broker (mock implementation)"""
-        # In real implementation, this would send to Kafka, RabbitMQ, etc.
-        print(f"Sending request: {message}")
-        
-        # Simulate async processing and reply
-        asyncio.create_task(self._simulate_reply(message))
-    
-    async def _simulate_reply(self, request: Dict[str, Any]):
-        """Simulate service processing and reply"""
-        await asyncio.sleep(0.5)  # Simulate processing time
-        
-        reply = {
-            'correlation_id': request['id'],
-            'result': f"Processed: {request['data']}",
-            'timestamp': time.time()
-        }
-        
-        await self.handle_reply(reply)
-
-# Usage
-async def example_request_reply():
-    manager = RequestReplyManager()
-    
-    try:
-        reply = await manager.send_request({
-            'operation': 'get_user',
-            'user_id': 'user123'
-        })
-        print(f"Got reply: {reply}")
-    except TimeoutError as e:
-        print(f"Request timed out: {e}")
-```
-
-### **3. Publish-Subscribe Pattern**
-
-**Topic-Based Pub/Sub**:
-
-```python
-import asyncio
-from typing import Dict, List, Callable, Any
-from dataclasses import dataclass
-import weakref
-
-@dataclass
-class Topic:
-    name: str
-    subscribers: List[Callable] = None
-    
-    def __post_init__(self):
-        if self.subscribers is None:
-            self.subscribers = []
-
-class PubSubBroker:
-    def __init__(self):
-        self.topics: Dict[str, Topic] = {}
-        self.subscriber_registry: Dict[str, List[Callable]] = {}
-    
-    def create_topic(self, topic_name: str) -> Topic:
-        """Create a new topic"""
-        if topic_name not in self.topics:
-            self.topics[topic_name] = Topic(name=topic_name)
-        return self.topics[topic_name]
-    
-    def subscribe(self, topic_name: str, callback: Callable):
-        """Subscribe to a topic"""
-        if topic_name not in self.topics:
-            self.create_topic(topic_name)
-        
-        topic = self.topics[topic_name]
-        if callback not in topic.subscribers:
-            topic.subscribers.append(callback)
-    
-    def unsubscribe(self, topic_name: str, callback: Callable):
-        """Unsubscribe from a topic"""
-        if topic_name in self.topics:
-            topic = self.topics[topic_name]
-            if callback in topic.subscribers:
-                topic.subscribers.remove(callback)
-    
-    async def publish(self, topic_name: str, message: Dict[str, Any]):
-        """Publish message to topic"""
-        if topic_name not in self.topics:
-            return
-        
-        topic = self.topics[topic_name]
-        
-        # Send to all subscribers
-        tasks = []
-        for subscriber in topic.subscribers:
-            if asyncio.iscoroutinefunction(subscriber):
-                tasks.append(subscriber(message))
-            else:
-                # Run sync function in thread pool
-                tasks.append(asyncio.get_event_loop().run_in_executor(
-                    None, subscriber, message
-                ))
-        
-        # Wait for all subscribers to process
-        if tasks:
-            await asyncio.gather(*tasks, return_exceptions=True)
-
-class EventBus:
-    """High-level event bus built on pub/sub"""
-    
-    def __init__(self):
-        self.broker = PubSubBroker()
-        self.middleware: List[Callable] = []
-    
-    def add_middleware(self, middleware: Callable):
-        """Add middleware for processing events"""
-        self.middleware.append(middleware)
-    
-    async def emit(self, event_name: str, data: Dict[str, Any]):
-        """Emit an event"""
-        event = {
-            'name': event_name,
-            'data': data,
-            'timestamp': time.time()
-        }
-        
-        # Apply middleware
-        for middleware in self.middleware:
-            event = await middleware(event) if asyncio.iscoroutinefunction(middleware) else middleware(event)
-        
-        # Publish to broker
-        await self.broker.publish(event_name, event)
-    
-    def on(self, event_name: str, handler: Callable):
-        """Register event handler"""
-        self.broker.subscribe(event_name, handler)
-    
-    def off(self, event_name: str, handler: Callable):
-        """Unregister event handler"""
-        self.broker.unsubscribe(event_name, handler)
-
-# Usage example
-async def example_pubsub():
-    bus = EventBus()
-    
-    # Add logging middleware
-    async def logging_middleware(event):
-        print(f"Event: {event['name']} at {event['timestamp']}")
-        return event
-    
-    bus.add_middleware(logging_middleware)
-    
-    # Register handlers
-    async def user_created_handler(event):
-        print(f"User created: {event['data']}")
-        # Send welcome email
-        await send_welcome_email(event['data']['email'])
-    
-    async def audit_handler(event):
-        print(f"Audit: {event}")
-        # Log to audit system
-    
-    bus.on('user.created', user_created_handler)
-    bus.on('user.created', audit_handler)
-    
-    # Emit events
-    await bus.emit('user.created', {
-        'user_id': 'user123',
-        'email': 'user@example.com',
-        'name': 'John Doe'
-    })
-
-async def send_welcome_email(email: str):
-    """Mock email sending"""
-    await asyncio.sleep(0.1)
-    print(f"Welcome email sent to {email}")
-```
-
-## 🔄 Event Sourcing Pattern
-
-### **Event Store Implementation**
-
-```python
-import json
-import uuid
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, asdict
-from datetime import datetime
-import asyncio
-
-@dataclass
-class Event:
-    id: str
-    aggregate_id: str
-    event_type: str
-    data: Dict[str, Any]
-    timestamp: datetime
-    version: int
-    metadata: Dict[str, Any] = None
-    
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            'id': self.id,
-            'aggregate_id': self.aggregate_id,
-            'event_type': self.event_type,
-            'data': self.data,
-            'timestamp': self.timestamp.isoformat(),
-            'version': self.version,
-            'metadata': self.metadata or {}
-        }
-
-class EventStore:
-    def __init__(self):
-        self.events: Dict[str, List[Event]] = {}
-        self.snapshots: Dict[str, Dict[str, Any]] = {}
-    
-    async def append_events(self, 
-                           aggregate_id: str, 
-                           events: List[Event], 
-                           expected_version: int) -> bool:
-        """Append events to stream with optimistic concurrency control"""
-        if aggregate_id not in self.events:
-            self.events[aggregate_id] = []
-        
-        stream = self.events[aggregate_id]
-        
-        # Check for concurrency conflicts
-        current_version = len(stream)
-        if current_version != expected_version:
-            raise ConcurrencyError(
-                f"Expected version {expected_version}, but current version is {current_version}"
-            )
-        
-        # Append events
-        for event in events:
-            stream.append(event)
-        
-        return True
-    
-    async def get_events(self, 
-                        aggregate_id: str, 
-                        from_version: int = 0) -> List[Event]:
-        """Get events for aggregate from specific version"""
-        if aggregate_id not in self.events:
-            return []
-        
-        stream = self.events[aggregate_id]
-        return stream[from_version:]
-    
-    async def get_all_events(self, 
-                           from_timestamp: Optional[datetime] = None) -> List[Event]:
-        """Get all events from all streams"""
-        all_events = []
-        
-        for stream in self.events.values():
-            for event in stream:
-                if from_timestamp is None or event.timestamp >= from_timestamp:
-                    all_events.append(event)
-        
-        # Sort by timestamp
-        all_events.sort(key=lambda e: e.timestamp)
-        return all_events
-    
-    async def save_snapshot(self, 
-                           aggregate_id: str, 
-                           snapshot_data: Dict[str, Any], 
-                           version: int):
-        """Save aggregate snapshot"""
-        self.snapshots[aggregate_id] = {
-            'data': snapshot_data,
-            'version': version,
-            'timestamp': datetime.utcnow()
-        }
-    
-    async def get_snapshot(self, aggregate_id: str) -> Optional[Dict[str, Any]]:
-        """Get latest snapshot for aggregate"""
-        return self.snapshots.get(aggregate_id)
-
-class ConcurrencyError(Exception):
-    pass
-
-class AggregateRoot:
-    """Base class for event-sourced aggregates"""
-    
-    def __init__(self, aggregate_id: str):
-        self.id = aggregate_id
-        self.version = 0
-        self.uncommitted_events: List[Event] = []
-    
-    def apply_event(self, event: Event):
-        """Apply event to aggregate state"""
-        method_name = f"apply_{event.event_type}"
-        if hasattr(self, method_name):
-            method = getattr(self, method_name)
-            method(event)
-        self.version += 1
-    
-    def raise_event(self, event_type: str, data: Dict[str, Any]):
-        """Raise new event"""
-        event = Event(
-            id=str(uuid.uuid4()),
-            aggregate_id=self.id,
-            event_type=event_type,
-            data=data,
-            timestamp=datetime.utcnow(),
-            version=self.version + 1
-        )
-        
-        self.uncommitted_events.append(event)
-        self.apply_event(event)
-    
-    def get_uncommitted_events(self) -> List[Event]:
-        """Get events that haven't been persisted"""
-        return self.uncommitted_events.copy()
-    
-    def mark_events_as_committed(self):
-        """Mark all uncommitted events as committed"""
-        self.uncommitted_events.clear()
-
-# Example: User aggregate
-class User(AggregateRoot):
-    def __init__(self, user_id: str):
-        super().__init__(user_id)
-        self.email = None
-        self.name = None
-        self.is_active = True
-    
-    def create_user(self, email: str, name: str):
-        """Create new user"""
-        self.raise_event('user_created', {
-            'email': email,
-            'name': name
-        })
-    
-    def change_email(self, new_email: str):
-        """Change user email"""
-        if self.email != new_email:
-            self.raise_event('email_changed', {
-                'old_email': self.email,
-                'new_email': new_email
-            })
-    
-    def deactivate(self):
-        """Deactivate user"""
-        if self.is_active:
-            self.raise_event('user_deactivated', {})
-    
-    # Event handlers
-    def apply_user_created(self, event: Event):
-        self.email = event.data['email']
-        self.name = event.data['name']
-        self.is_active = True
-    
-    def apply_email_changed(self, event: Event):
-        self.email = event.data['new_email']
-    
-    def apply_user_deactivated(self, event: Event):
-        self.is_active = False
-
-class Repository:
-    """Repository for event-sourced aggregates"""
-    
-    def __init__(self, event_store: EventStore):
-        self.event_store = event_store
-    
-    async def save(self, aggregate: AggregateRoot):
-        """Save aggregate to event store"""
-        uncommitted_events = aggregate.get_uncommitted_events()
-        
-        if uncommitted_events:
-            expected_version = aggregate.version - len(uncommitted_events)
-            
-            await self.event_store.append_events(
-                aggregate.id,
-                uncommitted_events,
-                expected_version
-            )
-            
-            aggregate.mark_events_as_committed()
-    
-    async def get_by_id(self, aggregate_id: str, aggregate_class: type) -> Optional[AggregateRoot]:
-        """Load aggregate from event store"""
-        # Try to load from snapshot first
-        snapshot = await self.event_store.get_snapshot(aggregate_id)
-        
-        if snapshot:
-            # Load from snapshot
-            aggregate = aggregate_class(aggregate_id)
-            # Restore state from snapshot
-            for key, value in snapshot['data'].items():
-                setattr(aggregate, key, value)
-            aggregate.version = snapshot['version']
-            
-            # Apply events since snapshot
-            events = await self.event_store.get_events(aggregate_id, snapshot['version'])
-        else:
-            # Load from beginning
-            aggregate = aggregate_class(aggregate_id)
-            events = await self.event_store.get_events(aggregate_id)
-        
-        # Apply events to rebuild state
-        for event in events:
-            aggregate.apply_event(event)
-        
-        return aggregate
-
-# Usage example
-async def example_event_sourcing():
-    # Create event store and repository
-    event_store = EventStore()
-    repo = Repository(event_store)
-    
-    # Create user
-    user = User('user123')
-    user.create_user('john@example.com', 'John Doe')
-    
-    # Save user
-    await repo.save(user)
-    
-    # Load user from event store
-    loaded_user = await repo.get_by_id('user123', User)
-    print(f"Loaded user: {loaded_user.name}, {loaded_user.email}")
-    
-    # Make changes
-    loaded_user.change_email('john.doe@example.com')
-    loaded_user.deactivate()
-    
-    # Save changes
-    await repo.save(loaded_user)
-    
-    # Get all events for audit
-    all_events = await event_store.get_all_events()
-    for event in all_events:
-        print(f"Event: {event.event_type} - {event.data}")
-```
-
-## 📊 Message Broker Integration
-
-### **Kafka Integration**
-
-```python
-from kafka import KafkaProducer, KafkaConsumer
-import json
-import asyncio
-from typing import Dict, Any, Callable
-
-class KafkaEventBus:
-    def __init__(self, bootstrap_servers: List[str]):
-        self.bootstrap_servers = bootstrap_servers
-        self.producer = KafkaProducer(
-            bootstrap_servers=bootstrap_servers,
-            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-            key_serializer=lambda k: k.encode('utf-8') if k else None
-        )
-        self.consumers: Dict[str, KafkaConsumer] = {}
-        self.handlers: Dict[str, List[Callable]] = {}
-    
-    async def publish(self, topic: str, message: Dict[str, Any], key: str = None):
-        """Publish message to Kafka topic"""
-        try:
-            future = self.producer.send(topic, value=message, key=key)
-            record_metadata = future.get(timeout=10)
-            
-            return {
-                'topic': record_metadata.topic,
-                'partition': record_metadata.partition,
-                'offset': record_metadata.offset
-            }
-        except Exception as e:
-            raise Exception(f"Failed to publish message: {e}")
-    
-    def subscribe(self, topic: str, handler: Callable):
-        """Subscribe to Kafka topic"""
-        if topic not in self.handlers:
-            self.handlers[topic] = []
-        
-        self.handlers[topic].append(handler)
-        
-        # Create consumer if not exists
-        if topic not in self.consumers:
-            self.consumers[topic] = KafkaConsumer(
-                topic,
-                bootstrap_servers=self.bootstrap_servers,
-                value_deserializer=lambda m: json.loads(m.decode('utf-8')),
-                group_id=f'consumer_group_{topic}'
-            )
-    
-    async def start_consuming(self):
-        """Start consuming messages from all subscribed topics"""
-        tasks = []
-        
-        for topic, consumer in self.consumers.items():
-            task = asyncio.create_task(self._consume_topic(topic, consumer))
-            tasks.append(task)
-        
-        await asyncio.gather(*tasks)
-    
-    async def _consume_topic(self, topic: str, consumer: KafkaConsumer):
-        """Consume messages from specific topic"""
-        for message in consumer:
-            # Process message with all handlers
-            for handler in self.handlers.get(topic, []):
-                try:
-                    if asyncio.iscoroutinefunction(handler):
-                        await handler(message.value)
-                    else:
-                        handler(message.value)
-                except Exception as e:
-                    print(f"Error processing message in {topic}: {e}")
-    
-    def close(self):
-        """Close producer and consumers"""
-        self.producer.close()
-        for consumer in self.consumers.values():
-            consumer.close()
-```
-
-## 🔄 Saga Pattern
-
-### **Orchestration-Based Saga**
-
-```python
-from enum import Enum
-from typing import Dict, List, Any, Optional
-import asyncio
-import uuid
-
-class SagaStatus(Enum):
-    STARTED = "started"
-    COMPLETED = "completed"
-    FAILED = "failed"
-    COMPENSATING = "compensating"
-
-class StepStatus(Enum):
-    PENDING = "pending"
-    COMPLETED = "completed"
-    FAILED = "failed"
-    COMPENSATED = "compensated"
-
-@dataclass
-class SagaStep:
-    name: str
-    action: Callable
-    compensation: Callable
-    status: StepStatus = StepStatus.PENDING
-    result: Any = None
-    error: str = None
-
-class Saga:
-    def __init__(self, saga_id: str, name: str):
-        self.id = saga_id
-        self.name = name
-        self.steps: List[SagaStep] = []
-        self.status = SagaStatus.STARTED
-        self.context: Dict[str, Any] = {}
-    
-    def add_step(self, name: str, action: Callable, compensation: Callable):
-        """Add step to saga"""
-        step = SagaStep(name, action, compensation)
-        self.steps.append(step)
-    
-    async def execute(self) -> bool:
-        """Execute saga steps"""
-        try:
-            # Execute all steps
-            for i, step in enumerate(self.steps):
-                try:
-                    result = await step.action(self.context)
-                    step.result = result
-                    step.status = StepStatus.COMPLETED
-                    
-                    # Update context with result
-                    self.context[f"{step.name}_result"] = result
-                    
-                except Exception as e:
-                    step.error = str(e)
-                    step.status = StepStatus.FAILED
-                    
-                    # Start compensation
-                    await self._compensate(i - 1)
-                    self.status = SagaStatus.FAILED
-                    return False
-            
-            self.status = SagaStatus.COMPLETED
-            return True
-            
-        except Exception as e:
-            self.status = SagaStatus.FAILED
-            return False
-    
-    async def _compensate(self, from_step: int):
-        """Compensate failed saga by undoing completed steps"""
-        self.status = SagaStatus.COMPENSATING
-        
-        # Compensate in reverse order
-        for i in range(from_step, -1, -1):
-            step = self.steps[i]
-            
-            if step.status == StepStatus.COMPLETED:
-                try:
-                    await step.compensation(self.context)
-                    step.status = StepStatus.COMPENSATED
-                except Exception as e:
-                    # Compensation failed - log and continue
-                    print(f"Compensation failed for step {step.name}: {e}")
-
-# Example: Order processing saga
-class OrderSaga:
-    def __init__(self, order_id: str):
-        self.order_id = order_id
-        self.saga = Saga(f"order_{order_id}", "Order Processing")
-        self._setup_steps()
-    
-    def _setup_steps(self):
-        """Setup saga steps"""
-        self.saga.add_step(
-            "validate_order",
-            self._validate_order,
-            self._cancel_validation
-        )
-        
-        self.saga.add_step(
-            "reserve_inventory",
-            self._reserve_inventory,
-            self._release_inventory
-        )
-        
-        self.saga.add_step(
-            "process_payment",
-            self._process_payment,
-            self._refund_payment
-        )
-        
-        self.saga.add_step(
-            "ship_order",
-            self._ship_order,
-            self._cancel_shipment
-        )
-        
-        self.saga.add_step(
-            "send_confirmation",
-            self._send_confirmation,
-            self._send_cancellation
-        )
-    
-    async def process_order(self) -> bool:
-        """Process order using saga"""
-        return await self.saga.execute()
-    
-    # Step implementations
-    async def _validate_order(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        # Validate order logic
-        await asyncio.sleep(0.1)  # Simulate API call
-        return {"valid": True, "order_id": self.order_id}
-    
-    async def _cancel_validation(self, context: Dict[str, Any]):
-        # Cancel validation
-        print(f"Canceling validation for order {self.order_id}")
-    
-    async def _reserve_inventory(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        # Reserve inventory
-        await asyncio.sleep(0.1)
-        return {"reserved": True, "reservation_id": f"res_{self.order_id}"}
-    
-    async def _release_inventory(self, context: Dict[str, Any]):
-        # Release inventory
-        reservation_id = context.get("reserve_inventory_result", {}).get("reservation_id")
-        print(f"Releasing inventory reservation {reservation_id}")
-    
-    async def _process_payment(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        # Process payment
-        await asyncio.sleep(0.1)
-        
-        # Simulate payment failure
-        if self.order_id == "failed_order":
-            raise Exception("Payment failed")
-        
-        return {"payment_id": f"pay_{self.order_id}", "amount": 100.0}
-    
-    async def _refund_payment(self, context: Dict[str, Any]):
-        # Refund payment
-        payment_id = context.get("process_payment_result", {}).get("payment_id")
-        print(f"Refunding payment {payment_id}")
-    
-    async def _ship_order(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        # Ship order
-        await asyncio.sleep(0.1)
-        return {"shipment_id": f"ship_{self.order_id}"}
-    
-    async def _cancel_shipment(self, context: Dict[str, Any]):
-        # Cancel shipment
-        shipment_id = context.get("ship_order_result", {}).get("shipment_id")
-        print(f"Canceling shipment {shipment_id}")
-    
-    async def _send_confirmation(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        # Send confirmation
-        await asyncio.sleep(0.1)
-        return {"confirmation_sent": True}
-    
-    async def _send_cancellation(self, context: Dict[str, Any]):
-        # Send cancellation notice
-        print(f"Sending cancellation notice for order {self.order_id}")
-
-# Usage
-async def example_saga():
-    # Successful order
-    order_saga = OrderSaga("order_123")
-    success = await order_saga.process_order()
-    print(f"Order processing success: {success}")
-    
-    # Failed order
-    failed_saga = OrderSaga("failed_order")
-    success = await failed_saga.process_order()
-    print(f"Failed order processing: {success}")
-```
-
-## 🎯 Best Practices
-
-### **Message Design**
-
-1. **Immutable Events**: Events should be immutable once created
-2. **Idempotency**: Ensure message processing is idempotent
-3. **Schema Evolution**: Design for backward compatibility
-4. **Metadata**: Include correlation IDs and timestamps
-
-### **Error Handling**
-
-1. **Dead Letter Queues**: Handle failed messages
-2. **Circuit Breakers**: Prevent cascade failures
-3. **Retry Policies**: Implement exponential backoff
-4. **Monitoring**: Track message flow and failures
-
-### **Performance**
-
-1. **Batch Processing**: Process messages in batches
-2. **Async Processing**: Use async/await for I/O operations
-3. **Partitioning**: Distribute load across partitions
-4. **Compression**: Compress large messages
-
-### **Security**
-
-1. **Authentication**: Secure message broker access
-2. **Authorization**: Control topic access
-3. **Encryption**: Encrypt sensitive data
-4. **Audit Logging**: Track message access
+The patterns on this page cover the infrastructure layer: how messages travel from point A to point B, what delivery guarantees they carry, and which broker technology fits which workload. For higher-level architectural patterns like event sourcing, CQRS, and choreography vs orchestration, see the Event-Driven Architecture page linked at the bottom.
 
 ---
 
-*"Event-driven architecture is not just about messaging—it's about building systems that can evolve, scale, and remain resilient through the power of decoupled, asynchronous communication."*
+=== "Message Queues"
+
+    ## Point-to-Point vs Publish-Subscribe
+
+    The two fundamental messaging models differ in who receives each message. In a point-to-point queue, every message is delivered to exactly one consumer. In publish-subscribe, every message is broadcast to all subscribers on that topic. Understanding this distinction is the first step in designing any messaging system.
+
+    **Point-to-Point (Competing Consumers)**
+
+    ```
+    Producer ---> [ Queue ] ---> Consumer A
+                            \--> Consumer B  (only one receives each message)
+                            \--> Consumer C
+    ```
+
+    In this model, the queue acts as a load balancer. When a producer enqueues a message, only one consumer from the pool dequeues and processes it. This is ideal for work distribution -- tasks like sending emails, processing orders, or resizing images where each job should be done exactly once. Adding more consumers increases throughput linearly, and the broker handles the distribution automatically.
+
+    The competing consumers pattern also provides natural backpressure. When the queue fills up, producers can be throttled or messages can be rejected, preventing the system from being overwhelmed. The queue depth itself becomes a useful metric -- a growing queue signals that consumers cannot keep up, and more instances need to be added.
+
+    **Publish-Subscribe (Fan-Out)**
+
+    ```
+    Publisher ---> [ Topic: order.placed ] ---> Subscriber: Billing Service
+                                           \--> Subscriber: Inventory Service
+                                           \--> Subscriber: Analytics Service
+    ```
+
+    In pub/sub, every subscriber receives a copy of every message. When an order is placed, billing charges the card, inventory reserves stock, and analytics records the event -- all independently, all from the same message. This is the pattern behind event notification: one event, many reactions. Adding a new subscriber requires no changes to the publisher or existing subscribers, making the system highly extensible.
+
+    The choice between the two often depends on intent. If you are asking "please do this work," use a queue. If you are announcing "this thing happened," use a topic. Many systems use both: an order service publishes an "order.placed" event to a topic (pub/sub), and one of the subscribers enqueues individual fulfillment tasks into a work queue (point-to-point).
+
+    ## The Producer-Consumer Model
+
+    Regardless of point-to-point or pub/sub, all messaging follows the same lifecycle. A producer creates a message and sends it to the broker. The broker persists the message (in memory or on disk, depending on configuration) until a consumer retrieves it. The consumer processes the message and sends an acknowledgment back to the broker. Only after acknowledgment does the broker remove the message or mark it consumed.
+
+    ```
+    Producer           Broker              Consumer
+       |                  |                    |
+       |--- send msg ---->|                    |
+       |                  |  (persist to disk) |
+       |                  |--- deliver msg --->|
+       |                  |                    |-- process
+       |                  |<--- ack -----------|
+       |                  |                    |
+       |                  | (msg removed)      |
+    ```
+
+    This acknowledgment step is critical. If the consumer crashes before sending the ack, the broker redelivers the message to another consumer. This is how at-least-once delivery works in practice, and it is why consumers must be designed to handle duplicate messages gracefully (see the Patterns tab for idempotent consumer design).
+
+    The visibility timeout is an important detail in this model. When a consumer receives a message, the broker hides it from other consumers for a configurable period. If the consumer does not acknowledge within that window, the broker assumes the consumer failed and makes the message visible again for redelivery. Setting this timeout correctly matters: too short, and a slow consumer causes duplicate processing; too long, and a crashed consumer delays reprocessing.
+
+    ## When to Use Each Model
+
+    Point-to-point queues shine for task distribution: background jobs, order processing, file uploads, and any workflow where each unit of work should be processed once. Uber uses point-to-point queuing for ride matching -- when a rider requests a ride, the system enqueues the request, and exactly one matching worker picks it up, evaluates nearby drivers, and assigns the ride. At peak, Uber processes millions of ride requests per day through this pipeline. The queue absorbs the burst of requests during rush hour while the matching workers process them at a sustainable rate.
+
+    Pub/sub topics are the right fit for event notification: audit logging, real-time dashboards, cross-service coordination, and any scenario where multiple independent systems need to react to the same event. Netflix uses pub/sub extensively -- when a user starts streaming, a single event fans out to the recommendation engine (to update viewing history), the CDN prefetch system (to cache the next episode), the billing tracker (to log usage), and the quality-of-experience monitor (to detect buffering). Each system reacts independently without knowing about the others, and Netflix can add new subscribers (say, a parental controls service) without modifying any existing code.
+
+    ## RabbitMQ vs Amazon SQS
+
+    | Aspect | RabbitMQ | Amazon SQS |
+    |---|---|---|
+    | Model | Both point-to-point and pub/sub (exchanges) | Point-to-point (with SNS for pub/sub) |
+    | Delivery | Push-based to consumers | Pull-based (long polling) |
+    | Ordering | Guarantees FIFO per queue | Best-effort (FIFO queues available at extra cost) |
+    | Throughput | ~50K msgs/sec per node | Virtually unlimited (managed) |
+    | Latency | Sub-millisecond | 1-10ms typical |
+    | Operations | Self-managed (clustering, monitoring) | Fully managed by AWS |
+    | Protocol | AMQP, MQTT, STOMP | HTTP/HTTPS (AWS SDK) |
+    | Best for | Complex routing, low latency, on-prem | Serverless workloads, AWS-native apps |
+
+    RabbitMQ offers fine-grained routing through exchanges (direct, topic, fanout, headers) and supports multiple wire protocols. A single RabbitMQ cluster can implement sophisticated routing rules -- for example, routing messages to different queues based on message attributes, geographic region, or priority level. SQS trades that flexibility for zero operational overhead -- no clusters to manage, no disks to monitor, automatic scaling. For teams running on AWS who need simple queuing without operational burden, SQS is the default choice. For teams who need sub-millisecond latency, complex routing, or on-premise deployment, RabbitMQ is the better fit.
+
+=== "Event Streaming"
+
+    ## Kafka Architecture
+
+    Apache Kafka is not a traditional message queue -- it is a distributed commit log. Messages are appended to an immutable, ordered log and retained for a configurable period (often days or weeks), regardless of whether any consumer has read them. This fundamental difference enables capabilities that queues cannot offer: replay, time-travel debugging, and multiple independent consumer groups reading the same data at different speeds.
+
+    ```
+    Producers          Kafka Cluster                         Consumers
+                   +--------------------------------+
+    Producer A --> | Topic: payments                |  --> Consumer Group: billing
+                   |   Partition 0: [0][1][2][3]    |  --> Consumer Group: analytics
+    Producer B --> |   Partition 1: [0][1][2]       |  --> Consumer Group: fraud
+                   |   Partition 2: [0][1][2][3][4] |
+    Producer C --> |                                |
+                   +--------------------------------+
+                     (each partition replicated 3x
+                      across different brokers)
+    ```
+
+    A Kafka **topic** is a named stream of records, analogous to a database table. Each topic is divided into **partitions** -- ordered, immutable sequences of records, each identified by a sequential offset number. Partitions are the unit of parallelism: within a single partition, messages are strictly ordered by offset, but across partitions, there is no global order. Producers choose which partition receives a message, typically by hashing a message key (such as a user ID or order ID), ensuring all messages with the same key land in the same partition and maintain their relative order.
+
+    Each partition is replicated across multiple brokers for fault tolerance. One replica is the leader (handles all reads and writes), and the others are followers that replicate the data. If a broker hosting a leader partition fails, one of the followers is promoted automatically. The replication factor (typically 3) determines how many broker failures the system can tolerate.
+
+    **Consumer groups** are Kafka's mechanism for parallel consumption. Each partition is assigned to exactly one consumer within a group, so the maximum parallelism equals the number of partitions. Different consumer groups read the same topic independently -- billing can process payments at its own pace while fraud detection reads the same stream separately. If a consumer in a group fails, Kafka rebalances the partitions among the remaining consumers automatically. This rebalancing is one of Kafka's most operationally sensitive behaviors -- during rebalance, consumption pauses briefly, which is why partition assignment strategies (range, round-robin, sticky) matter at scale.
+
+    ## How Streaming Differs from Traditional Queues
+
+    The most important distinction is retention. A traditional queue deletes messages after consumption. Kafka retains them. This means a new consumer group can start reading from the beginning of a topic and replay the entire history -- useful for rebuilding state, backfilling a new service, or reprocessing after a bug fix. It also means consumers manage their own position (offset) in the log rather than the broker tracking delivery state per consumer.
+
+    This design also changes the scaling model. Traditional queues scale by adding consumers that compete for messages. Kafka scales by adding partitions, and each partition can be consumed by only one member of a consumer group. Adding more consumers than partitions means some consumers sit idle. The result is more predictable performance but requires upfront thought about partition count -- and changing partition count on a live topic is operationally disruptive because it changes key-to-partition mappings.
+
+    Another key difference is consumption semantics. With a traditional queue, reading a message removes it. With Kafka, reading is non-destructive -- consumers simply advance their offset. This means a slow consumer does not block other consumer groups, and a consumer can "rewind" to reprocess messages by resetting its offset. This property makes Kafka especially valuable for data pipelines where the same events feed multiple downstream systems at different processing speeds.
+
+    ## LinkedIn: Event Streaming at Scale
+
+    Kafka was born at LinkedIn to solve a specific problem: connecting dozens of backend systems that all needed access to the same streams of data -- user activity, system metrics, log events. Today, LinkedIn's Kafka clusters handle over 7 trillion messages per day across more than 100,000 topics. Every profile view, connection request, job application, and feed impression flows through Kafka before reaching its destination systems -- search indexes, recommendation engines, analytics pipelines, and notification services.
+
+    The key design decision was treating Kafka as the central nervous system rather than point-to-point connections between services. Instead of N services each maintaining M connections (an N*M problem), every service publishes to Kafka and consumes from Kafka, reducing the integration complexity to N+M. This hub-and-spoke model also means adding a new service requires only subscribing to the relevant topics, with zero changes to existing producers.
+
+    LinkedIn also pioneered the concept of compacted topics -- topics where Kafka retains only the latest value for each key rather than the full history. This is used for maintaining the current state of entities (like user profiles) as a stream, enabling new services to bootstrap their state by reading the compacted topic from the beginning.
+
+    ## Queues vs Streams Comparison
+
+    | Characteristic | Message Queue (RabbitMQ, SQS) | Event Stream (Kafka, Kinesis) |
+    |---|---|---|
+    | Message lifecycle | Deleted after consumption | Retained for configured period |
+    | Consumer model | Competing consumers (one gets it) | Consumer groups (each group gets all) |
+    | Replay | Not possible after ack | Replay by resetting offset |
+    | Ordering | Per-queue FIFO | Per-partition ordering |
+    | Throughput | Thousands to tens of thousands/sec | Millions/sec (partitioned) |
+    | Latency | Sub-ms to low ms | Low ms (batched writes) |
+    | Best for | Task queues, work distribution | Data pipelines, log aggregation, CDC |
+    | Scaling | Add consumers | Add partitions |
+    | Backpressure | Queue depth / rejection | Consumer lag (offset behind) |
+
+    Choose a queue when messages represent work to be done and can be discarded after processing. Choose a stream when messages represent facts that happened and may be needed by multiple consumers now or in the future. When in doubt, consider whether you would ever want to replay the data -- if yes, you want a stream.
+
+=== "Patterns"
+
+    ## Dead Letter Queues
+
+    Not every message can be processed successfully. A dead letter queue (DLQ) is a holding area for messages that have failed processing after all retry attempts are exhausted. Without a DLQ, poison messages -- messages that consistently cause processing failures -- can block an entire queue, creating a head-of-line blocking problem that stalls all downstream work.
+
+    ```
+    Main Queue          Consumer              Dead Letter Queue
+        |                  |                        |
+        |--- message A --->|                        |
+        |                  |-- fail (attempt 1)     |
+        |--- message A --->|                        |
+        |                  |-- fail (attempt 2)     |
+        |--- message A --->|                        |
+        |                  |-- fail (attempt 3)     |
+        |                  |--- move to DLQ ------->|
+        |                  |                        |
+        |--- message B --->|                        |
+        |                  |-- success              |  (DLQ reviewed by ops)
+    ```
+
+    In practice, teams set up alerts on DLQ depth and periodically review failed messages. Some are genuine bugs (fix the consumer and replay), some are malformed data (fix the producer), and some are transient failures that resolve on manual retry. Amazon SQS has built-in DLQ support through redrive policies, where you configure the maximum receive count before automatic transfer. RabbitMQ supports DLQs through dead-letter exchanges, which can route failed messages based on rejection reason.
+
+    A well-designed DLQ workflow includes metadata about why the message failed: the exception type, the consumer that processed it, the number of attempts, and the timestamp of the last failure. This metadata makes triage dramatically faster when you are staring at thousands of failed messages trying to identify the root cause.
+
+    ## Retry with Exponential Backoff
+
+    When a message fails, retrying immediately is usually counterproductive -- the same transient condition (a database timeout, a downstream service restart) is likely still present. Exponential backoff spaces retries apart with increasing delays, giving the system time to recover.
+
+    ```python
+    # Retry delay calculation with jitter
+    def retry_delay(attempt, base=1, max_delay=60):
+        delay = min(base * (2 ** attempt), max_delay)
+        jitter = random.uniform(0, delay * 0.1)
+        return delay + jitter
+    # attempt 0: ~1s, attempt 1: ~2s, attempt 2: ~4s, attempt 3: ~8s
+    ```
+
+    The jitter component is essential. Without it, if a downstream service goes down and 10,000 messages all fail at once, they will all retry at exactly the same intervals, creating a "thundering herd" that hammers the recovering service. Adding randomized jitter spreads retries across the time window and gives the system a chance to recover gradually. AWS recommends "full jitter" (randomizing the entire delay, not just a small fraction) for the best distribution of retries.
+
+    Stripe uses this pattern for webhook delivery. When a merchant's endpoint is unreachable, Stripe retries with exponential backoff over 72 hours, attempting delivery up to 30 times before giving up and marking the webhook as failed. This approach balances persistence (the merchant eventually gets their data) with courtesy (not overwhelming their recovering server).
+
+    Some systems implement tiered retry queues as an alternative to delayed redelivery. Instead of one queue with configurable delays, they use separate queues for each retry tier (retry-1min, retry-5min, retry-30min), with consumers on each queue moving failed messages to the next tier. This approach works well when the broker does not natively support delayed messages.
+
+    ## Ordering Guarantees
+
+    Global ordering across a distributed system is expensive and often unnecessary. Most systems only need ordering within a logical grouping -- all events for a specific user, or all updates to a specific account. Understanding the ordering requirements upfront prevents over-engineering.
+
+    Kafka solves this with partition-level ordering. By hashing the message key to determine the partition, all messages with the same key are guaranteed to arrive in order. A banking system can hash on account ID, ensuring that deposits and withdrawals for account 12345 are always processed in sequence, even though events for different accounts may interleave freely across partitions.
+
+    ```
+    Messages: [A:user1] [B:user2] [C:user1] [D:user3] [E:user2]
+
+    Partition 0 (user1): [A] [C]         <-- ordered
+    Partition 1 (user2): [B] [E]         <-- ordered
+    Partition 2 (user3): [D]             <-- ordered
+
+    Cross-partition order: undefined (B might process before A)
+    ```
+
+    The trade-off is clear: more partitions mean more parallelism but weaker global ordering. Fewer partitions mean stronger ordering but lower throughput. Most production systems find the sweet spot by partitioning on a natural business key and accepting that cross-key ordering is undefined. SQS FIFO queues offer a similar concept through message group IDs, where messages within the same group are processed in order while different groups can be processed in parallel.
+
+    ## Exactly-Once Semantics
+
+    Exactly-once delivery is the holy grail of messaging, and it is notoriously difficult to achieve in a distributed system. The fundamental problem is that the network can fail between the broker confirming receipt of a message and the producer receiving that confirmation. Did the message make it or not? The producer cannot know, so it retries -- and now there might be a duplicate.
+
+    Most brokers provide one of two weaker guarantees. At-most-once means fire and forget: the producer sends the message once and never retries, accepting the possibility of loss. At-least-once means the producer retries on failure, accepting the possibility of duplicates. True exactly-once requires coordination between the broker and the consumer's storage, typically through transactions or deduplication.
+
+    Kafka achieves exactly-once within its own ecosystem through two mechanisms: idempotent producers (each message carries a producer ID and sequence number, allowing the broker to detect and discard duplicates) and transactional writes (a producer can atomically write to multiple partitions and commit consumer offsets in a single transaction). But this only works end-to-end when the consumer's side effects stay within Kafka -- for example, reading from one topic, transforming the data, and writing to another topic. The moment a consumer writes to an external database, you are back to needing application-level idempotency.
+
+    ## Idempotent Consumers
+
+    Since most systems operate with at-least-once delivery, consumers must be prepared to handle duplicates gracefully. An idempotent consumer produces the same result whether it processes a message once or ten times. This is the practical solution to the exactly-once problem.
+
+    ```python
+    # Idempotent consumer: check-then-process in one transaction
+    def process_payment(message):
+        idempotency_key = message["payment_id"]
+        if db.exists("processed_payments", idempotency_key):
+            return  # Already processed, skip
+        db.execute_transaction(
+            insert("processed_payments", idempotency_key),
+            update("accounts", balance=balance - message["amount"])
+        )
+    ```
+
+    The pattern is straightforward: store a unique identifier for each processed message and check it before processing. The critical detail is that the deduplication check and the business logic must execute within the same transaction -- otherwise a crash between the two could leave the system in an inconsistent state where the payment was processed but the idempotency key was never stored, leading to a duplicate charge on retry.
+
+    Shopify processes millions of payment events daily using this pattern, storing idempotency keys alongside the payment records to ensure no customer is charged twice even when messages are redelivered. They retain idempotency keys for 24 to 48 hours, long enough to cover any realistic redelivery window, then expire them to keep the deduplication table from growing without bound.
+
+    Natural idempotency is even better than explicit deduplication. Operations like "set balance to $100" are inherently idempotent -- doing it twice has the same effect as doing it once. Operations like "add $50 to balance" are not -- doing it twice doubles the effect. Where possible, design messages as absolute state rather than relative changes.
+
+=== "Choosing a System"
+
+    ## Decision Tree
+
+    Selecting a messaging system starts with understanding the workload characteristics. The following decision tree covers the most common scenarios, though many production systems end up running multiple messaging technologies to handle different workloads.
+
+    ```
+    What is your primary need?
+    |
+    +-- Task distribution (background jobs, work queues)
+    |   |
+    |   +-- Running on AWS? --------------------> Amazon SQS
+    |   +-- Need complex routing / priorities? --> RabbitMQ
+    |   +-- Simple, ultra-low latency? ---------> Redis Streams
+    |
+    +-- Event streaming (data pipelines, log aggregation)
+    |   |
+    |   +-- Self-managed is OK? --------> Apache Kafka
+    |   +-- Managed on AWS? ------------> Amazon Kinesis
+    |   +-- Managed on GCP? ------------> Google Pub/Sub
+    |   +-- Managed, multi-cloud? ------> Confluent Cloud
+    |
+    +-- Real-time pub/sub (notifications, chat, IoT)
+    |   |
+    |   +-- Need persistence + replay? -> Google Pub/Sub
+    |   +-- Ephemeral fan-out is OK? ---> Redis Pub/Sub
+    |
+    +-- Exactly-once processing (financial, transactional)
+        |
+        +-- Within Kafka ecosystem? ----> Kafka Transactions
+        +-- Cross-system? --------------> Idempotent consumers + dedup
+    ```
+
+    ## Comparison Table
+
+    | Feature | Kafka | RabbitMQ | SQS | Redis Streams | Google Pub/Sub |
+    |---|---|---|---|---|---|
+    | Throughput | Millions/sec | ~50K/sec | Unlimited (managed) | ~100K/sec | Millions/sec |
+    | Latency (p99) | 5-15ms | <1ms | 10-50ms | <1ms | 10-50ms |
+    | Ordering | Per-partition | Per-queue | FIFO queues available | Per-stream | Per-key (ordering key) |
+    | Retention | Days to forever | Until consumed | 4-14 days | Configurable | 7-31 days |
+    | Replay | Yes (offset reset) | No | No | Yes (ID-based) | Yes (seek to timestamp) |
+    | Delivery | At-least-once, exactly-once | At-least-once, at-most-once | At-least-once | At-least-once | At-least-once |
+    | Ops burden | High (ZooKeeper/KRaft, brokers) | Medium (clustering, Erlang) | None (managed) | Low (part of Redis) | None (managed) |
+    | Cost model | Infrastructure | Infrastructure | Per-request | Infrastructure | Per-message + storage |
+    | DLQ support | Manual (separate topic) | Built-in (dead-letter exchange) | Built-in (redrive policy) | Manual | Built-in (dead-letter topic) |
+
+    ## Company Examples at Scale
+
+    **Uber -- RabbitMQ to Kafka Migration.** Uber initially used RabbitMQ for inter-service messaging but hit scaling limits around 2016 when they reached hundreds of microservices. RabbitMQ struggled with the fan-out pattern: multiple services needed the same event data, requiring either message duplication or complex exchange topologies. They migrated their core event pipeline to Kafka, which now handles over 1 trillion messages per day across more than 1,000 topics. The key driver was Kafka's native support for multiple consumer groups reading the same data without duplication of the underlying stream.
+
+    **Slack -- Job Queues with Redis and Kafka.** Slack uses Redis-based queues for latency-sensitive operations like message delivery (where sub-millisecond dequeue time matters for real-time chat) and Kafka for the durable event pipeline that feeds search indexing, analytics, and compliance archival. This dual-system approach uses each technology where it excels rather than forcing one tool to handle both real-time delivery and durable event processing. The Redis queues handle transient work that can be retried if lost, while Kafka provides the durability and replay guarantees needed for data pipelines.
+
+    **Airbnb -- SQS for Decoupled Workflows.** Airbnb uses Amazon SQS extensively for asynchronous workflows: booking confirmations, host notifications, price calculations, and search index updates. At their scale of over 7 million active listings and 150 million users, SQS handles the variable load without any queue infrastructure management, letting teams focus on business logic rather than broker operations. The per-request pricing model means they pay nothing during quiet periods and scale seamlessly during peak booking seasons.
+
+    **Spotify -- Google Pub/Sub for Event Delivery.** Spotify migrated from self-managed Kafka to Google Pub/Sub for a large portion of their event pipeline, processing billions of events per day (play events, ad impressions, user interactions). The managed nature of Pub/Sub eliminated the operational overhead of maintaining Kafka clusters across multiple regions while still providing the at-least-once delivery guarantees and multi-subscriber semantics they needed. They still use Kafka for workloads requiring exact offset control and long retention, demonstrating that the choice is often "both" rather than "either/or."
+
+---
+
+## Key Takeaways
+
+1. **Point-to-point queues** distribute work across competing consumers where each message should be processed once. **Pub/sub topics** broadcast events to all interested subscribers. Choose based on whether you are assigning work or announcing facts.
+
+2. **Kafka is a commit log, not a queue.** Messages are retained and replayable, consumer groups track their own offsets, and partitions are the unit of parallelism and ordering. This makes it ideal for event pipelines but overkill for simple task queues.
+
+3. **Dead letter queues are not optional** in production systems. Without them, poison messages can block entire processing pipelines. Monitor DLQ depth, enrich failed messages with failure metadata, and review them regularly.
+
+4. **Exactly-once delivery is a coordination problem**, not a transport guarantee. Most systems achieve effective exactly-once through at-least-once delivery combined with idempotent consumers that deduplicate on the receiving side.
+
+5. **Exponential backoff with jitter** is the standard retry strategy. Without jitter, synchronized retries from many consumers can overwhelm a recovering service -- the thundering herd problem.
+
+6. **No single messaging system fits every workload.** Companies like Uber, Slack, and Spotify run multiple systems in parallel -- low-latency queues for real-time work, Kafka for durable event streaming, managed services for operational simplicity. Choose based on your ordering, retention, throughput, and operational requirements.
+
+---
+
+## Related Topics
+
+- [Event-Driven Architecture](../../architecture/event-driven.md) -- event sourcing, CQRS, choreography vs orchestration
+- [Session Management](../session-management/sessions.md) -- managing state in asynchronous systems
+- [API Design](../api-design/index.md) -- synchronous communication patterns that messaging complements

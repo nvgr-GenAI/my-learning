@@ -332,7 +332,7 @@ Now that you understand how attention works, you're ready to see it in action!
 
 **Next steps:**
 
-- **[Implementation Guide](implementation.md)** - Build attention mechanisms from scratch
+- **[Implementation Guide](implementation-guide.md)** - Build attention mechanisms from scratch
 - **[Architecture Deep Dive](architecture.md)** - See how attention fits in the full transformer
 - **[Optimization Techniques](optimization.md)** - Make attention faster and more efficient
 

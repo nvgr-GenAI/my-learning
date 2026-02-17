@@ -143,5 +143,7 @@ tramp
 
 # Claude Code and BMAD
 .claude/
+.specify/
+.github/agents/
 _bmad/
-_bmad-output/
+

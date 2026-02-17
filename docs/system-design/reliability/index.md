@@ -13,7 +13,6 @@ Reliability is your system's ability to keep working when things fail. Master re
 | Topic | Status | Description |
 |-------|--------|-------------|
 | [Fault Tolerance](fault-tolerance.md) | ✅ Complete | Circuit breakers, retries, bulkheads |
-| [High Availability](high-availability.md) | 📝 Planned | 99.99% uptime strategies |
 | [Disaster Recovery](disaster-recovery.md) | 📝 Planned | Backup, restore, failover |
 | [Chaos Engineering](chaos-engineering.md) | 📝 Planned | Test failures proactively |
 

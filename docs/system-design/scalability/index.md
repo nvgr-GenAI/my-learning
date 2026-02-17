@@ -12,10 +12,9 @@ Scalability is your system's ability to handle growth. Master horizontal and ver
 
 | Topic | Status | Description |
 |-------|--------|-------------|
-| [Horizontal vs Vertical Scaling](horizontal-vs-vertical.md) | 📝 Planned | Scale out vs scale up |
+| [Horizontal Scaling](horizontal-scaling.md) | 📝 Planned | Scale out strategies |
 | [Scalability Patterns](patterns.md) | ✅ Complete | Core scaling patterns |
 | [Load Balancing](load-balancing.md) | 📝 Planned | Distribute traffic |
-| [Auto-Scaling](auto-scaling.md) | 📝 Planned | Dynamic scaling |
 
 ---
 

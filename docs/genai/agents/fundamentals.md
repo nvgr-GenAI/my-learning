@@ -421,6 +421,6 @@ class AgentEvaluator:
 
 ## Next Steps
 
-- [Agent Frameworks](../frameworks.md)
-- [Agent Tools](../tools.md)
-- [Multi-Agent Systems](../multi-agent.md)
+- [Agent Frameworks](frameworks.md)
+- [Agent Tools](tools.md)
+- [Multi-Agent Systems](multi-agent.md)

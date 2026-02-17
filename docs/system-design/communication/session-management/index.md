@@ -13,9 +13,6 @@ Session management is critical for user authentication and maintaining state acr
 | Topic | Status | Description |
 |-------|--------|-------------|
 | [Session Handling](sessions.md) | 📝 Planned | Sticky sessions, session stores |
-| [Authentication Strategies](authentication.md) | 📝 Planned | Session-based, token-based |
-| [JWT Tokens](jwt.md) | 📝 Planned | Stateless authentication |
-| [OAuth & SSO](oauth.md) | 📝 Planned | Third-party authentication |
 
 ---
 

@@ -87,18 +87,105 @@ nav:
   - Home: index.md
   - Mathematics:
     - math/index.md
+    - Foundations:
+      - math/foundations/index.md
+      - Sets & Logic: math/foundations/sets-and-logic.md
+      - Number Systems: math/foundations/number-systems.md
+      - Functions & Relations: math/foundations/functions-and-relations.md
+      - Mathematical Notation: math/foundations/mathematical-notation.md
+      - Complex Numbers: math/foundations/complex-numbers.md
+      - Trigonometry: math/foundations/trigonometry.md
+    - Linear Algebra:
+      - math/linear-algebra/index.md
+      - Vectors: math/linear-algebra/vectors.md
+      - Matrices: math/linear-algebra/matrices.md
+      - Systems of Equations: math/linear-algebra/systems-of-equations.md
+      - Vector Spaces: math/linear-algebra/vector-spaces.md
+      - Linear Transformations: math/linear-algebra/linear-transformations.md
+      - Determinants: math/linear-algebra/determinants.md
+      - Eigenvalues & Eigenvectors: math/linear-algebra/eigenvalues.md
+      - Inner Product Spaces: math/linear-algebra/inner-product-spaces.md
+      - Matrix Decompositions: math/linear-algebra/matrix-decompositions.md
+      - Tensors: math/linear-algebra/tensors.md
+    - Calculus:
+      - math/calculus/index.md
+      - Limits & Continuity: math/calculus/limits-and-continuity.md
+      - Differentiation: math/calculus/differentiation.md
+      - Integration: math/calculus/integration.md
+      - Multivariable Calculus: math/calculus/multivariable-calculus.md
+      - Vector Calculus: math/calculus/vector-calculus.md
+      - Taylor Series: math/calculus/taylor-series.md
+      - Calculus of Variations: math/calculus/calculus-of-variations.md
+      - Differential Equations: math/calculus/differential-equations.md
+    - Probability & Statistics:
+      - math/probability/index.md
+      - Probability Foundations: math/probability/probability-foundations.md
+      - Conditional Probability: math/probability/conditional-probability.md
+      - Random Variables: math/probability/random-variables.md
+      - Distributions: math/probability/distributions.md
+      - Expectation & Moments: math/probability/expectation-and-moments.md
+      - Joint Distributions: math/probability/joint-distributions.md
+      - Limit Theorems: math/probability/limit-theorems.md
+      - Bayesian Inference: math/probability/bayesian-inference.md
+      - Maximum Likelihood: math/probability/maximum-likelihood.md
+      - Stochastic Processes: math/probability/stochastic-processes.md
+      - Descriptive Statistics: math/probability/descriptive-statistics.md
+      - Hypothesis Testing: math/probability/hypothesis-testing.md
+    - Optimization:
+      - math/optimization/index.md
+      - Convexity: math/optimization/convexity.md
+      - Unconstrained Optimization: math/optimization/unconstrained.md
+      - Constrained Optimization: math/optimization/constrained.md
+      - Stochastic Optimization: math/optimization/stochastic-optimization.md
+      - Variational Methods: math/optimization/variational-methods.md
+    - Information Theory:
+      - math/information-theory/index.md
+      - Entropy: math/information-theory/entropy.md
+      - Divergence Measures: math/information-theory/divergence-measures.md
+      - Cross-Entropy & Loss: math/information-theory/cross-entropy-and-loss.md
+      - Information Geometry: math/information-theory/information-geometry.md
+    - Advanced Topics:
+      - math/advanced/index.md
+      - Graph Theory: math/advanced/graph-theory.md
+    - Quantum Computing:
+      - math/quantum/index.md
+      - Complex Vector Spaces: math/quantum/complex-vector-spaces.md
+      - Quantum States: math/quantum/quantum-states.md
+      - Quantum Gates: math/quantum/quantum-gates.md
+      - Entanglement: math/quantum/entanglement.md
+      - Measurement: math/quantum/measurement.md
+      - Density Matrices: math/quantum/density-matrices.md
+      - Quantum Algorithms: math/quantum/quantum-algorithms.md
+      - Quantum Error Correction: math/quantum/quantum-error-correction.md
+      - Quantum Information: math/quantum/quantum-information.md
+      - Quantum Machine Learning: math/quantum/quantum-machine-learning.md
+    - Quick Reference:
+      - "Formula Cheat Sheet": math/quick-reference/index.md
   - Machine Learning:
     - ml/index.md
     - Learning Path: ml/learning-path.md
     - Interview Prep: ml/interview-prep.md
     - Fundamentals:
       - ml/fundamentals/index.md
-      - What is ML?: ml/fundamentals/what-is-ml.md
-      - Types of ML: ml/fundamentals/types-of-ml.md
-      - Bias-Variance Tradeoff: ml/fundamentals/bias-variance-tradeoff.md
-      - Overfitting & Underfitting: ml/fundamentals/overfitting-underfitting.md
-      - Train/Test Split: ml/fundamentals/train-test-split.md
-      - Mathematics: ml/fundamentals/mathematics.md
+      - "Ch 1: The Learning Problem": ml/fundamentals/01-learning-problem.md
+      - "Ch 2: Data - Source of Intelligence": ml/fundamentals/02-data-source.md
+      - "Ch 3: Machine-Readable Data": ml/fundamentals/03-numerical-representation.md
+      - "Ch 4: Models as Functions": ml/fundamentals/04-models-as-functions.md
+      - "Ch 5: Learning Through Optimization": ml/fundamentals/05-optimization.md
+      - "Ch 6: The Generalization Challenge": ml/fundamentals/06-generalization.md
+      - "Ch 7: Types of Machine Learning": ml/fundamentals/07-types-of-ml.md
+      - "Ch 8: Mathematical Foundation": ml/fundamentals/08-mathematics.md
+    - Quick Reference:
+      - ml/quick-reference/index.md
+      - Learning Concepts: ml/quick-reference/learning-concepts.md
+      - Data: ml/quick-reference/data.md
+      - Features & Representation: ml/quick-reference/features-representation.md
+      - Model & Learning: ml/quick-reference/model-learning.md
+      - Training & Optimization: ml/quick-reference/training-optimization.md
+      - Evaluation: ml/quick-reference/evaluation.md
+      - Types & Methods: ml/quick-reference/types-methods.md
+      - Mathematical Concepts: ml/quick-reference/mathematical-concepts.md
+      - MLOps & Production: ml/quick-reference/mlops-concepts.md
     - Supervised Learning:
       - ml/supervised-learning/index.md
       - Regression:
@@ -125,20 +212,22 @@ nav:
       - ml/unsupervised-learning/index.md
       - Clustering:
         - ml/unsupervised-learning/clustering/index.md
-        - K-Means: ml/unsupervised-learning/clustering/kmeans.md
-        - Hierarchical Clustering: ml/unsupervised-learning/clustering/hierarchical.md
-        - DBSCAN: ml/unsupervised-learning/clustering/dbscan.md
-        - Gaussian Mixture: ml/unsupervised-learning/clustering/gaussian-mixture.md
       - Dimensionality Reduction:
         - ml/unsupervised-learning/dimensionality-reduction/index.md
-        - PCA: ml/unsupervised-learning/dimensionality-reduction/pca.md
-        - t-SNE: ml/unsupervised-learning/dimensionality-reduction/tsne.md
-        - UMAP: ml/unsupervised-learning/dimensionality-reduction/umap.md
-        - Autoencoders: ml/unsupervised-learning/dimensionality-reduction/autoencoders.md
       - Anomaly Detection:
         - ml/unsupervised-learning/anomaly-detection/index.md
-        - Isolation Forest: ml/unsupervised-learning/anomaly-detection/isolation-forest.md
-        - One-Class SVM: ml/unsupervised-learning/anomaly-detection/one-class-svm.md
+    - Reinforcement Learning:
+      - ml/reinforcement-learning/index.md
+      - Fundamentals: ml/reinforcement-learning/fundamentals.md
+      - Q-Learning: ml/reinforcement-learning/q-learning.md
+      - Deep Q-Networks: ml/reinforcement-learning/deep-q-networks.md
+      - Policy Gradient: ml/reinforcement-learning/policy-gradient.md
+      - Actor-Critic: ml/reinforcement-learning/actor-critic.md
+    - Semi-Supervised Learning:
+      - ml/semi-supervised-learning/index.md
+      - Self-Training: ml/semi-supervised-learning/self-training.md
+      - Co-Training: ml/semi-supervised-learning/co-training.md
+      - Pseudo-Labeling: ml/semi-supervised-learning/pseudo-labeling.md
     - Deep Learning:
       - ml/deep-learning/index.md
       - Neural Networks Basics: ml/deep-learning/neural-networks-basics.md
@@ -290,6 +379,7 @@ nav:
       - Core Principles: system-design/fundamentals/principles.md
       - CAP Theorem: system-design/fundamentals/cap-theorem.md
       - Data Consistency: system-design/fundamentals/data-consistency.md
+      - Networking Fundamentals: system-design/fundamentals/networking-fundamentals.md
     - Architecture:
       - system-design/architecture/index.md
       - Monolithic: system-design/architecture/monolithic.md
@@ -298,13 +388,15 @@ nav:
       - Serverless: system-design/architecture/serverless.md
     - Networking:
       - system-design/networking/index.md
+      - DNS: system-design/networking/dns.md
+      - Protocols: system-design/networking/protocols.md
       - Load Balancers: system-design/networking/load-balancers.md
       - Proxies: system-design/networking/proxies.md
       - CDN: system-design/networking/cdn.md
     - Data:
       - Databases:
         - system-design/data/databases/index.md
-        - SQL vs NoSQL: system-design/data/databases/sql-vs-nosql.md
+        - Database Types: system-design/data/databases/database-types.md
         - Indexing: system-design/data/databases/indexing.md
         - Replication: system-design/data/databases/replication.md
         - Sharding: system-design/data/databases/sharding.md
@@ -318,7 +410,10 @@ nav:
       - system-design/distributed-systems/index.md
       - Consistent Hashing: system-design/distributed-systems/consistent-hashing.md
       - Consensus Algorithms: system-design/distributed-systems/consensus.md
+      - Distributed Transactions: system-design/distributed-systems/distributed-transactions.md
+      - Distributed Locks: system-design/distributed-systems/distributed-locks.md
     - Communication:
+      - API Gateway: system-design/communication/api-gateway.md
       - API Design:
         - system-design/communication/api-design/index.md
       - Messaging:
@@ -330,12 +425,16 @@ nav:
     - Scalability:
       - system-design/scalability/index.md
       - Patterns: system-design/scalability/patterns.md
+      - Horizontal Scaling: system-design/scalability/horizontal-scaling.md
+      - Load Balancing: system-design/scalability/load-balancing.md
     - Performance:
       - system-design/performance/index.md
       - Fundamentals: system-design/performance/fundamentals.md
     - Reliability:
       - system-design/reliability/index.md
       - Fault Tolerance: system-design/reliability/fault-tolerance.md
+      - Chaos Engineering: system-design/reliability/chaos-engineering.md
+      - Disaster Recovery: system-design/reliability/disaster-recovery.md
     - Security:
       - system-design/security/index.md
       - Authentication: system-design/security/authentication.md
@@ -757,8 +856,6 @@ nav:
         - Karatsuba Algorithm: algorithms/divide-conquer/karatsuba.md
       - Applications:
         - Fast Fourier Transform: algorithms/divide-conquer/fft.md
-        - Convex Hull: algorithms/divide-conquer/convex-hull.md
-        - Order Statistics: algorithms/divide-conquer/order-statistics.md
       - Problem Sets:
         - Easy Problems: algorithms/divide-conquer/easy-problems.md
         - Medium Problems: algorithms/divide-conquer/medium-problems.md
@@ -772,13 +869,6 @@ nav:
         - Huffman Coding: algorithms/greedy/huffman-coding.md
       - Graph Greedy Algorithms:
         - Minimum Spanning Tree: algorithms/greedy/minimum-spanning-tree.md
-        - Dijkstra's Algorithm: algorithms/greedy/dijkstra.md
-        - Prim's Algorithm: algorithms/greedy/prims-algorithm.md
-        - Kruskal's Algorithm: algorithms/greedy/kruskals-algorithm.md
-      - Approximation Algorithms:
-        - Set Cover: algorithms/greedy/set-cover.md
-        - Traveling Salesman: algorithms/greedy/traveling-salesman.md
-        - Job Scheduling: algorithms/greedy/job-scheduling.md
       - Problem Sets:
         - Easy Problems: algorithms/greedy/easy-problems.md
         - Medium Problems: algorithms/greedy/medium-problems.md
@@ -822,18 +912,11 @@ nav:
         - String Searching:
           - Knuth-Morris-Pratt (KMP): algorithms/strings/kmp.md
           - Rabin-Karp: algorithms/strings/rabin-karp.md
-          - Boyer-Moore: algorithms/strings/boyer-moore.md
-          - Z Algorithm: algorithms/strings/z-algorithm.md
-          - Aho-Corasick: algorithms/strings/aho-corasick.md
         - String Processing:
-          - Longest Common Substring: algorithms/strings/lcs.md
           - Longest Palindromic Substring: algorithms/strings/longest-palindrome.md
-          - String Compression: algorithms/strings/compression.md
-          - String Rotation: algorithms/strings/rotation.md
           - Edit Distance: algorithms/strings/edit-distance.md
       - Advanced String Data Structures:
         - Suffix Arrays: algorithms/strings/suffix-arrays.md
-        - Suffix Trees: algorithms/strings/suffix-trees.md
         - Tries: algorithms/strings/tries.md
       - Problem Sets:
         - Easy Problems: algorithms/strings/easy-problems.md
@@ -911,7 +994,6 @@ extra_css:
 
 extra_javascript:
   - javascripts/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   - https://unpkg.com/mermaid@10/dist/mermaid.min.js
 

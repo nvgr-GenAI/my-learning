@@ -152,7 +152,7 @@ Now that you understand the "why" behind transformers, you're ready to dive deep
 1. **[Core Concepts](core-concepts.md)** - The fundamental building blocks
 2. **[Architecture](architecture.md)** - How all the pieces fit together
 3. **[Attention Mechanisms](attention.md)** - The heart of transformers
-4. **[Implementation](implementation.md)** - Build your own transformer
+4. **[Implementation](implementation-guide.md)** - Build your own transformer
 
 ---
 

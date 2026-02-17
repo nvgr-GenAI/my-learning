@@ -1,783 +1,210 @@
 # Monitoring
 
-**Know what's happening in your system** | 📊 Metrics | 📈 Dashboards | 🔔 Alerts
+Monitoring is how you answer the question: "is the system healthy right now?" Without monitoring, you're flying blind — discovering problems only when users complain. With good monitoring, you can detect issues before users notice, understand trends for capacity planning, and diagnose problems quickly when they occur.
+
+The core of monitoring is **metrics** — numerical measurements collected over time. CPU usage, request rate, error percentage, queue depth. These numbers, tracked continuously and displayed on dashboards, give you a real-time picture of system health.
 
 ---
 
-## Overview
+=== "Golden Signals"
 
-Monitoring provides visibility into system health through metrics collection, visualization, and alerting. Effective monitoring helps detect issues before they impact users.
+    ## The Four Golden Signals
 
-**Why Monitor?**
+    Google's Site Reliability Engineering book defines four signals that matter most for any user-facing system:
 
-- Early problem detection
-- Performance optimization
-- Capacity planning
-- SLA compliance
-- Root cause analysis
-
----
-
-## The Four Golden Signals
-
-=== "Overview"
     ```
-    Google's Four Golden Signals:
-
-    1. Latency
-       - Time to serve requests
-       - Distinguish success vs error latency
-       - Track P50, P95, P99
-
-    2. Traffic
-       - Demand on the system
-       - Requests per second
-       - Transactions per second
-
-    3. Errors
-       - Rate of failed requests
-       - Explicit (500s, 400s)
-       - Implicit (wrong content)
-
-    4. Saturation
-       - How "full" the system is
-       - CPU, memory, disk, network
-       - Queue depth, thread pool usage
+    ┌─────────────────────────────────────────────────────────────┐
+    │                    Four Golden Signals                        │
+    ├──────────────┬──────────────┬──────────────┬────────────────┤
+    │   Latency    │   Traffic    │    Errors    │   Saturation   │
+    │              │              │              │                │
+    │ How long do  │ How much     │ How many     │ How "full" is  │
+    │ requests     │ demand is    │ requests     │ the system?    │
+    │ take?        │ on the       │ fail?        │                │
+    │              │ system?      │              │                │
+    │ P50: 50ms    │ 2,500 QPS    │ 0.1% error   │ CPU: 65%       │
+    │ P95: 200ms   │              │ rate         │ Memory: 78%    │
+    │ P99: 800ms   │              │              │ Disk: 45%      │
+    └──────────────┴──────────────┴──────────────┴────────────────┘
     ```
 
-=== "RED Method"
+    **Latency.** How long requests take to serve. Always track percentiles (P50, P95, P99), not averages — an average of 100ms hides the fact that 1% of users experience 5-second delays. Separate successful request latency from error latency, since errors often return fast (a 500 response takes milliseconds) and can skew the average downward.
+
+    **Traffic.** The demand on your system — requests per second for a web service, transactions per second for a database, messages per second for a queue. This tells you how much load the system is under and whether traffic patterns are normal.
+
+    **Errors.** The rate of failed requests. This includes explicit errors (HTTP 5xx), implicit errors (200 response with wrong content), and policy errors (responses slower than an SLA threshold). **Netflix** alerts when error rates exceed 0.01% of their millions-per-second request volume.
+
+    **Saturation.** How close resources are to their limits. CPU at 90%, memory at 95%, disk 85% full. Saturation predicts future problems — a system at 95% memory utilization isn't broken yet, but it will be soon.
+
+    ### RED and USE Methods
+
+    Two complementary frameworks for deciding what to monitor:
+
+    | Method | Focus | Metrics | Best For |
+    |---|---|---|---|
+    | **RED** | Services | Rate, Errors, Duration | APIs, web services, microservices |
+    | **USE** | Resources | Utilization, Saturation, Errors | CPU, memory, disk, network |
+
+    Use RED for your application services (what your users experience) and USE for your infrastructure (what your services run on). Together, they cover the full picture.
+
+=== "Metrics & Architecture"
+
+    ## Metric Types
+
+    Monitoring systems support four fundamental metric types:
+
+    | Type | Behavior | Use Case | Example |
+    |---|---|---|---|
+    | **Counter** | Only increases (resets on restart) | Count events | `http_requests_total`, `errors_total` |
+    | **Gauge** | Goes up and down | Current state | `active_connections`, `queue_size` |
+    | **Histogram** | Distribution in buckets | Latency, sizes | `request_duration_seconds` |
+    | **Summary** | Pre-calculated percentiles | Latency | `job_duration_seconds` |
+
+    **Counters** track cumulative totals. You query the *rate* of change: "how many requests per second?" not "how many requests total?"
+
+    **Gauges** track current values. CPU usage, memory consumption, number of active connections — things that go up and down.
+
+    **Histograms** track distributions. Instead of a single "average latency," they count how many requests fell into each bucket (0-10ms, 10-50ms, 50-100ms, etc.), enabling accurate percentile calculations.
+
+    ---
+
+    ## Monitoring Architecture
+
     ```
-    RED Method (for services):
-
-    Rate     - Requests per second
-    Errors   - Failed requests per second
-    Duration - Time per request (latency)
-
-    Best for: Request-driven services (APIs, web apps)
-    ```
-
-=== "USE Method"
-    ```
-    USE Method (for resources):
-
-    Utilization - % time resource is busy
-    Saturation  - Amount of queued work
-    Errors      - Error count
-
-    Best for: Infrastructure (CPU, disk, network)
-    ```
-
----
-
-## Prometheus
-
-=== "Setup"
-    ```yaml
-    # prometheus.yml
-    global:
-      scrape_interval: 15s
-      evaluation_interval: 15s
-      external_labels:
-        cluster: 'production'
-        region: 'us-east-1'
-
-    # Alertmanager configuration
-    alerting:
-      alertmanagers:
-        - static_configs:
-            - targets:
-                - alertmanager:9093
-
-    # Load rules
-    rule_files:
-      - "alerts/*.yml"
-      - "recording_rules/*.yml"
-
-    # Scrape configurations
-    scrape_configs:
-      # Application metrics
-      - job_name: 'myapp'
-        static_configs:
-          - targets: ['localhost:3000']
-            labels:
-              environment: 'production'
-              service: 'api'
-
-      # Node exporter (system metrics)
-      - job_name: 'node'
-        static_configs:
-          - targets: ['localhost:9100']
-
-      # Kubernetes pods
-      - job_name: 'kubernetes-pods'
-        kubernetes_sd_configs:
-          - role: pod
-        relabel_configs:
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-            action: keep
-            regex: true
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-            action: replace
-            target_label: __metrics_path__
-            regex: (.+)
-          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-            action: replace
-            regex: ([^:]+)(?::\d+)?;(\d+)
-            replacement: $1:$2
-            target_label: __address__
+    Application Servers                   Monitoring Stack
+    ┌─────────────────┐
+    │ Service A        │──→ /metrics ──→ ┌──────────────┐
+    │ (instrumented)   │                  │  Prometheus   │──→ ┌──────────┐
+    └─────────────────┘                  │  (scrapes     │    │ Grafana  │
+    ┌─────────────────┐                  │   every 15s)  │    │ (dashboards)
+    │ Service B        │──→ /metrics ──→ │              │──→ └──────────┘
+    │ (instrumented)   │                  │              │
+    └─────────────────┘                  │              │──→ ┌──────────────┐
+    ┌─────────────────┐                  │              │    │ AlertManager │
+    │ Infrastructure   │──→ exporters ──→│              │    │ (notifications)
+    │ (node, db, etc.) │                  └──────────────┘    └──────────────┘
+    └─────────────────┘
     ```
 
-=== "Instrumentation"
-    ```javascript
-    // Node.js with prom-client
-    const express = require('express');
-    const client = require('prom-client');
+    **Prometheus** is the dominant open-source monitoring system. It uses a **pull model** — scraping metrics from endpoints every 15-30 seconds. Each service exposes a `/metrics` endpoint. Prometheus stores time-series data locally and supports a powerful query language (PromQL). Used by **SoundCloud** (who created it), **DigitalOcean**, **Shopify**, and thousands of others.
 
-    const app = express();
+    **Grafana** visualizes Prometheus data (and many other sources) in dashboards. It's the standard visualization layer for open-source monitoring stacks.
 
-    // Create a Registry
-    const register = new client.Registry();
+    **Cloud-native alternatives:** AWS CloudWatch, Google Cloud Monitoring, Azure Monitor. These integrate natively with their cloud platforms. **Datadog** and **New Relic** are popular SaaS platforms that combine metrics, logs, and traces in one place.
 
-    // Add default metrics
-    client.collectDefaultMetrics({ register });
+    ---
 
-    // Custom metrics
-    const httpRequestDuration = new client.Histogram({
-      name: 'http_request_duration_seconds',
-      help: 'Duration of HTTP requests in seconds',
-      labelNames: ['method', 'route', 'status_code'],
-      buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5, 10]
-    });
+    ## Essential Dashboards
 
-    const httpRequestTotal = new client.Counter({
-      name: 'http_requests_total',
-      help: 'Total number of HTTP requests',
-      labelNames: ['method', 'route', 'status_code']
-    });
+    Good dashboards answer specific questions. Don't create one massive dashboard — create focused views for different audiences and situations.
 
-    const activeConnections = new client.Gauge({
-      name: 'active_connections',
-      help: 'Number of active connections'
-    });
+    **Service Overview (for on-call engineers):**
+    - Request rate (QPS) — is traffic normal?
+    - Error rate (%) — are we failing?
+    - P50/P95/P99 latency — is performance acceptable?
+    - Active connections — are we approaching limits?
 
-    const jobDuration = new client.Summary({
-      name: 'job_duration_seconds',
-      help: 'Duration of background jobs',
-      labelNames: ['job_name'],
-      percentiles: [0.5, 0.9, 0.95, 0.99]
-    });
+    **Infrastructure (for capacity planning):**
+    - CPU usage per node
+    - Memory usage per node
+    - Disk I/O and space
+    - Network throughput
 
-    // Register metrics
-    register.registerMetric(httpRequestDuration);
-    register.registerMetric(httpRequestTotal);
-    register.registerMetric(activeConnections);
-    register.registerMetric(jobDuration);
+    **Database (for debugging slow queries):**
+    - Query rate and slow query count
+    - Connection pool utilization
+    - Replication lag
+    - Deadlock count
 
-    // Middleware to track metrics
-    app.use((req, res, next) => {
-      const start = Date.now();
+    **Business Metrics (for product teams):**
+    - Orders per minute, revenue per hour
+    - Active users, conversion rate
+    - Feature usage, cart abandonment
 
-      activeConnections.inc();
+    **Netflix** has thousands of dashboards across their microservices. **Uber** builds automated dashboards for every new service, populated from standardized metrics emitted by their service framework.
 
-      res.on('finish', () => {
-        const duration = (Date.now() - start) / 1000;
-        const route = req.route ? req.route.path : req.path;
+=== "SLIs, SLOs & Error Budgets"
 
-        httpRequestDuration
-          .labels(req.method, route, res.statusCode)
-          .observe(duration);
+    ## SLIs, SLOs, and Error Budgets
 
-        httpRequestTotal
-          .labels(req.method, route, res.statusCode)
-          .inc();
+    These three concepts connect monitoring to business impact:
 
-        activeConnections.dec();
-      });
-
-      next();
-    });
-
-    // Business metrics
-    const orderMetrics = {
-      created: new client.Counter({
-        name: 'orders_created_total',
-        help: 'Total orders created',
-        labelNames: ['payment_method']
-      }),
-      value: new client.Histogram({
-        name: 'order_value_dollars',
-        help: 'Order value in dollars',
-        buckets: [10, 50, 100, 500, 1000, 5000]
-      })
-    };
-
-    register.registerMetric(orderMetrics.created);
-    register.registerMetric(orderMetrics.value);
-
-    // Business logic with metrics
-    app.post('/orders', async (req, res) => {
-      const order = await createOrder(req.body);
-
-      orderMetrics.created
-        .labels(order.paymentMethod)
-        .inc();
-
-      orderMetrics.value.observe(order.totalAmount);
-
-      res.json(order);
-    });
-
-    // Expose metrics endpoint
-    app.get('/metrics', async (req, res) => {
-      res.set('Content-Type', register.contentType);
-      res.end(await register.metrics());
-    });
-
-    app.listen(3000);
-    ```
-
-=== "PromQL Queries"
-    ```promql
-    # Request rate (requests per second)
-    rate(http_requests_total[5m])
-
-    # Success rate
-    sum(rate(http_requests_total{status_code!~"5.."}[5m])) /
-    sum(rate(http_requests_total[5m]))
-
-    # Error rate
-    sum(rate(http_requests_total{status_code=~"5.."}[5m])) /
-    sum(rate(http_requests_total[5m]))
-
-    # Average latency
-    rate(http_request_duration_seconds_sum[5m]) /
-    rate(http_request_duration_seconds_count[5m])
-
-    # P95 latency
-    histogram_quantile(0.95,
-      rate(http_request_duration_seconds_bucket[5m])
-    )
-
-    # P99 latency
-    histogram_quantile(0.99,
-      rate(http_request_duration_seconds_bucket[5m])
-    )
-
-    # CPU usage
-    100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
-
-    # Memory usage percentage
-    (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) /
-    node_memory_MemTotal_bytes * 100
-
-    # Disk usage
-    100 - ((node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100)
-
-    # Top 5 slowest endpoints
-    topk(5,
-      histogram_quantile(0.99,
-        rate(http_request_duration_seconds_bucket[5m])
-      )
-    )
-
-    # Requests by status code
-    sum by (status_code) (rate(http_requests_total[5m]))
-
-    # Compare this week vs last week
-    rate(http_requests_total[5m]) /
-    rate(http_requests_total[5m] offset 1w)
-
-    # Predict disk full time (linear regression)
-    predict_linear(node_filesystem_free_bytes[1h], 4 * 3600) < 0
-    ```
-
----
-
-## Grafana Dashboards
-
-=== "Dashboard JSON"
-    ```json
-    {
-      "dashboard": {
-        "title": "Application Performance",
-        "panels": [
-          {
-            "id": 1,
-            "title": "Request Rate",
-            "type": "graph",
-            "targets": [
-              {
-                "expr": "sum(rate(http_requests_total[5m])) by (service)",
-                "legendFormat": "{{service}}"
-              }
-            ],
-            "yAxis": {
-              "label": "Requests/sec"
-            }
-          },
-          {
-            "id": 2,
-            "title": "Error Rate",
-            "type": "graph",
-            "targets": [
-              {
-                "expr": "sum(rate(http_requests_total{status_code=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m])) * 100"
-              }
-            ],
-            "alert": {
-              "conditions": [
-                {
-                  "evaluator": {
-                    "type": "gt",
-                    "params": [1]
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "id": 3,
-            "title": "P95 Latency",
-            "type": "graph",
-            "targets": [
-              {
-                "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))"
-              }
-            ]
-          },
-          {
-            "id": 4,
-            "title": "Active Connections",
-            "type": "stat",
-            "targets": [
-              {
-                "expr": "active_connections"
-              }
-            ]
-          }
-        ]
-      }
-    }
-    ```
-
-=== "Key Dashboards"
-    ```
-    Essential Dashboards:
-
-    1. Service Overview
-       - Request rate (QPS)
-       - Error rate (%)
-       - P50/P95/P99 latency
-       - Active connections
-
-    2. Infrastructure
-       - CPU usage per node
-       - Memory usage per node
-       - Disk I/O
-       - Network throughput
-
-    3. Database
-       - Query rate
-       - Slow queries
-       - Connection pool
-       - Replication lag
-
-    4. Business Metrics
-       - Orders per minute
-       - Revenue per hour
-       - Active users
-       - Conversion rate
-
-    5. Kubernetes
-       - Pod status
-       - Container restarts
-       - Resource requests vs usage
-       - HPA scaling events
-    ```
-
----
-
-## CloudWatch
-
-=== "Custom Metrics"
-    ```javascript
-    // AWS SDK for JavaScript
-    const AWS = require('aws-sdk');
-    const cloudwatch = new AWS.CloudWatch();
-
-    // Put metric data
-    async function publishMetric(metricName, value, unit = 'Count') {
-      const params = {
-        Namespace: 'MyApp',
-        MetricData: [
-          {
-            MetricName: metricName,
-            Value: value,
-            Unit: unit,
-            Timestamp: new Date(),
-            Dimensions: [
-              {
-                Name: 'Environment',
-                Value: 'production'
-              },
-              {
-                Name: 'Service',
-                Value: 'api'
-              }
-            ]
-          }
-        ]
-      };
-
-      await cloudwatch.putMetricData(params).promise();
-    }
-
-    // Batch metrics
-    async function publishBatchMetrics(metrics) {
-      const params = {
-        Namespace: 'MyApp',
-        MetricData: metrics.map(m => ({
-          MetricName: m.name,
-          Value: m.value,
-          Unit: m.unit || 'Count',
-          Timestamp: new Date(),
-          Dimensions: m.dimensions || []
-        }))
-      };
-
-      await cloudwatch.putMetricData(params).promise();
-    }
-
-    // Usage in application
-    app.post('/orders', async (req, res) => {
-      try {
-        const order = await createOrder(req.body);
-
-        await publishBatchMetrics([
-          { name: 'OrdersCreated', value: 1 },
-          { name: 'OrderValue', value: order.amount, unit: 'None' },
-          { name: 'OrderLatency', value: Date.now() - startTime, unit: 'Milliseconds' }
-        ]);
-
-        res.json(order);
-      } catch (error) {
-        await publishMetric('OrderErrors', 1);
-        throw error;
-      }
-    });
-    ```
-
-=== "CloudWatch Alarms"
-    ```javascript
-    // Create alarm
-    const alarmParams = {
-      AlarmName: 'HighErrorRate',
-      ComparisonOperator: 'GreaterThanThreshold',
-      EvaluationPeriods: 2,
-      MetricName: 'ErrorRate',
-      Namespace: 'MyApp',
-      Period: 300,
-      Statistic: 'Average',
-      Threshold: 5.0,
-      ActionsEnabled: true,
-      AlarmActions: [
-        'arn:aws:sns:us-east-1:123456789012:alerts'
-      ],
-      AlarmDescription: 'Alert when error rate exceeds 5%',
-      Dimensions: [
-        {
-          Name: 'Environment',
-          Value: 'production'
-        }
-      ]
-    };
-
-    await cloudwatch.putMetricAlarm(alarmParams).promise();
-    ```
-
----
-
-## DataDog
-
-=== "Setup"
-    ```javascript
-    const StatsD = require('node-dogstatsd').StatsD;
-
-    const dogstatsd = new StatsD('localhost', 8125);
-
-    // Counter
-    dogstatsd.increment('page.views', 1, ['page:home']);
-
-    // Gauge (current value)
-    dogstatsd.gauge('queue.size', queue.length);
-
-    // Histogram (statistical distribution)
-    dogstatsd.histogram('file.upload.size', fileSize, ['type:image']);
-
-    // Timing
-    const start = Date.now();
-    await processRequest();
-    dogstatsd.timing('request.duration', Date.now() - start);
-
-    // Set (count unique values)
-    dogstatsd.set('unique.users', userId);
-
-    // Service checks
-    dogstatsd.check('database.up', dogstatsd.OK);
-    dogstatsd.check('api.health', dogstatsd.CRITICAL, {
-      message: 'API is down'
-    });
-    ```
-
-=== "APM Integration"
-    ```javascript
-    // Automatic instrumentation
-    const tracer = require('dd-trace').init({
-      service: 'my-api',
-      env: 'production',
-      version: '1.2.3',
-      logInjection: true
-    });
-
-    const express = require('express');
-    const app = express();
-
-    // Automatic tracing of HTTP requests
-    app.get('/api/users/:id', async (req, res) => {
-      // Spans are created automatically
-      const user = await db.users.findById(req.params.id);
-      res.json(user);
-    });
-
-    // Custom spans
-    app.post('/api/orders', async (req, res) => {
-      const span = tracer.startSpan('create.order');
-
-      try {
-        span.setTag('order.amount', req.body.amount);
-        span.setTag('payment.method', req.body.paymentMethod);
-
-        const order = await createOrder(req.body);
-
-        span.setTag('order.id', order.id);
-        res.json(order);
-      } catch (error) {
-        span.setTag('error', true);
-        span.log({ event: 'error', message: error.message });
-        throw error;
-      } finally {
-        span.finish();
-      }
-    });
-    ```
-
----
-
-## Metric Types Comparison
-
-| Type | Description | Use Case | Example | Aggregation |
-|------|-------------|----------|---------|-------------|
-| **Counter** | Cumulative value that only increases | Count events | `requests_total`, `orders_created` | `rate()`, `increase()` |
-| **Gauge** | Value that can go up or down | Current state | `active_connections`, `queue_size` | `avg()`, `min()`, `max()` |
-| **Histogram** | Distribution of values in buckets | Latency, sizes | `request_duration_seconds` | `histogram_quantile()` |
-| **Summary** | Similar to histogram, calculates quantiles | Latency | `job_duration_seconds` | Pre-calculated percentiles |
-
----
-
-## Best Practices
-
-=== "What to Monitor"
-    ```
-    Application Metrics:
-    ✅ Request rate
-    ✅ Error rate
-    ✅ Latency (P50, P95, P99)
-    ✅ Throughput
-    ✅ Queue depth
-    ✅ Circuit breaker state
-
-    Infrastructure Metrics:
-    ✅ CPU usage
-    ✅ Memory usage
-    ✅ Disk I/O
-    ✅ Network I/O
-    ✅ File descriptors
-
-    Business Metrics:
-    ✅ Orders per minute
-    ✅ Revenue
-    ✅ Active users
-    ✅ Conversion rate
-    ✅ Cart abandonment
-
-    Database Metrics:
-    ✅ Connection pool usage
-    ✅ Query latency
-    ✅ Slow queries
-    ✅ Replication lag
-    ✅ Deadlocks
-    ```
-
-=== "Metric Naming"
-    ```
-    Good Naming Conventions:
-
-    Format: <namespace>_<name>_<unit>
-
-    ✅ http_requests_total
-    ✅ http_request_duration_seconds
-    ✅ database_connections_active
-    ✅ orders_created_total
-    ✅ payment_amount_dollars
-
-    ❌ httpRequests (inconsistent)
-    ❌ req_time (unclear unit)
-    ❌ errors (too vague)
-    ❌ db_conn (abbreviations)
-
-    Labels vs Metric Names:
-    ✅ http_requests_total{method="GET", status="200"}
-    ❌ http_get_200_requests_total
-    ```
-
-=== "Performance"
-    ```
-    Optimization:
-
-    1. Cardinality
-       ✅ Low cardinality labels: method, status, endpoint
-       ❌ High cardinality labels: user_id, request_id, timestamp
-
-       # Bad: creates millions of time series
-       requests_total{user_id="123456"}
-
-       # Good: bounded set of values
-       requests_total{method="GET", status="200"}
-
-    2. Sampling
-       # Sample expensive metrics
-       if (Math.random() < 0.01) {
-         recordDetailedMetrics();
-       }
-
-    3. Aggregation
-       # Pre-aggregate in application
-       const counters = new Map();
-       setInterval(() => {
-         for (const [key, value] of counters) {
-           publishMetric(key, value);
-         }
-         counters.clear();
-       }, 60000);
-    ```
-
----
-
-## SLIs and SLOs
-
-=== "Definition"
     ```
     SLI (Service Level Indicator):
-    - Quantitative measure of service level
-    - Examples: latency, error rate, availability
+      A measurement of service quality.
+      Example: "99.2% of requests complete in <200ms"
 
     SLO (Service Level Objective):
-    - Target value for an SLI
-    - Example: "99.9% of requests succeed"
+      A target for an SLI.
+      Example: "99.9% of requests should complete in <200ms"
 
     SLA (Service Level Agreement):
-    - Contract with consequences
-    - Example: "99.9% uptime or money back"
+      An SLO with business consequences.
+      Example: "99.9% uptime or customers get credits"
+
+    Error Budget:
+      The allowed amount of failure.
+      SLO = 99.9% → Error budget = 0.1%
+      In a 30-day month: 43.2 minutes of downtime allowed
+      If 1M requests/month: 1,000 failures allowed
     ```
 
-=== "Implementation"
-    ```yaml
-    # Recording rules for SLIs
-    groups:
-      - name: sli_rules
-        interval: 30s
-        rules:
-          # Request success rate
-          - record: sli:http_requests:success_rate
-            expr: |
-              sum(rate(http_requests_total{status!~"5.."}[5m])) /
-              sum(rate(http_requests_total[5m]))
+    **Error budgets** are a powerful concept from Google SRE. When the error budget is healthy, teams can ship features aggressively — even risky ones. When the error budget is nearly exhausted, teams freeze feature work and focus on reliability. This creates a natural, data-driven balance between velocity and stability.
 
-          # Fast requests (< 200ms)
-          - record: sli:http_requests:fast_rate
-            expr: |
-              sum(rate(http_request_duration_seconds_bucket{le="0.2"}[5m])) /
-              sum(rate(http_request_duration_seconds_count[5m]))
+    **Google** uses error budgets across all their services. **Spotify** adopted SLO-based monitoring to move from "is the system up?" to "is the system meeting user expectations?"
 
-          # Availability
-          - record: sli:service:availability
-            expr: up{job="myapp"}
+    ---
 
-      - name: slo_alerts
-        rules:
-          # Alert if burning through error budget too fast
-          - alert: HighErrorBudgetBurn
-            expr: |
-              (
-                sli:http_requests:success_rate < 0.999
-                and
-                sli:http_requests:success_rate < 0.995 offset 1h
-              )
-            labels:
-              severity: critical
-            annotations:
-              summary: "Burning through error budget rapidly"
+    ## What to Monitor
+
+    ```
+    Must Have:                          Nice to Have:
+    ─────────                          ────────────
+    Application:                       Business:
+      ✓ Request rate                     ✓ Orders per minute
+      ✓ Error rate                       ✓ Revenue per hour
+      ✓ Latency (P50/P95/P99)           ✓ Active users
+      ✓ Queue depth                      ✓ Conversion rate
+
+    Infrastructure:                    Predictive:
+      ✓ CPU usage                        ✓ Disk full prediction
+      ✓ Memory usage                     ✓ Certificate expiry
+      ✓ Disk I/O and space               ✓ Capacity forecasting
+      ✓ Network throughput               ✓ Cost projections
+
+    Database:
+      ✓ Connection pool usage
+      ✓ Query latency
+      ✓ Replication lag
+      ✓ Slow query count
     ```
 
-=== "Error Budget"
-    ```
-    Error Budget Calculation:
+    ### Metric Naming and Cardinality
 
-    SLO: 99.9% success rate
-    Error budget: 100% - 99.9% = 0.1%
+    **Naming:** Use a consistent convention like `namespace_name_unit` — e.g., `http_request_duration_seconds`, `orders_created_total`. Include the unit in the name. Use labels for dimensions: `http_requests_total{method="GET", status="200"}` rather than `http_get_200_requests_total`.
 
-    Monthly budget:
-    - 30 days = 2,592,000 seconds
-    - 0.1% = 2,592 seconds of downtime allowed
-    - = 43.2 minutes per month
-
-    If 1M requests per month:
-    - Can fail 1,000 requests
-    - After that, stop risky deploys
-
-    Usage:
-    if (errorBudgetRemaining < 0.1) {
-      // Freeze deployments
-      // Focus on reliability
-    } else {
-      // Deploy new features
-      // Take calculated risks
-    }
-    ```
+    **Cardinality matters.** Every unique combination of label values creates a separate time series. `requests{user_id="..."}` with a million users creates a million time series — this will overwhelm Prometheus. Keep labels to bounded sets: HTTP methods (7 values), status codes (5 categories), service names (tens), not user IDs or request IDs (millions).
 
 ---
 
-## Interview Talking Points
+## Key Takeaways
 
-**Q: How do you monitor microservices?**
+1. **Monitor the four golden signals.** Latency, traffic, errors, and saturation cover the essential health of any service. Start here before adding more metrics.
 
-✅ **Strong Answer:**
-> "I'd implement the four golden signals: latency, traffic, errors, and saturation. For metrics, I'd use Prometheus with service discovery for auto-detection of new instances. Each service exposes a `/metrics` endpoint with RED metrics: request rate, error rate, and duration. I'd create Grafana dashboards showing service health and use distributed tracing with Jaeger or DataDog to track requests across services. For alerting, I'd set up SLO-based alerts in AlertManager based on error budgets rather than arbitrary thresholds. I'd also implement health check endpoints that aggregate dependencies so orchestrators like Kubernetes can make intelligent routing decisions."
+2. **Track percentiles, not averages.** P95 and P99 latency reveal the experience of your worst-served users. An average of 50ms can hide a P99 of 5 seconds.
 
-**Q: What's the difference between metrics, logs, and traces?**
+3. **Use SLOs to connect monitoring to business impact.** "99.9% of requests under 200ms" is meaningful to everyone. "CPU at 73%" is meaningful only to infrastructure teams.
 
-✅ **Strong Answer:**
-> "They're complementary observability tools. Metrics are numerical measurements over time - like request rate or CPU usage - great for dashboards and alerting but lack context. Logs are discrete events with full context - like 'user 123 logged in' - useful for debugging specific issues but hard to aggregate. Traces show the path of a single request through distributed systems - revealing where time is spent across services. In practice, I'd use metrics for real-time monitoring and alerting, logs for root cause analysis, and traces to understand interactions between services. Modern tools like DataDog and New Relic unify all three for correlation."
+4. **Error budgets balance velocity and reliability.** When the budget is healthy, ship fast. When it's depleted, focus on reliability. This removes the subjective "is it reliable enough?" debate.
+
+5. **Watch cardinality.** High-cardinality labels (user IDs, request IDs) create millions of time series and can crash your monitoring system. Use bounded label values.
+
+6. **Monitoring without alerting is a hobby; alerting without monitoring is noise.** They work together — see [Alerting](alerting.md).
 
 ---
 
 ## Related Topics
 
-- [Alerting](alerting.md) - Set up intelligent alerts
-- [Logging](logging.md) - Structured logging practices
-- [Tracing](tracing.md) - Distributed tracing
-- [Deployment](../deployment/ci-cd.md) - Monitor deployments
-
----
-
-**Monitor everything, alert intelligently! 📊**
+- **[Alerting](alerting.md)** — acting on monitoring data when things go wrong
+- **[Logging](logging.md)** — discrete events that complement metric data
+- **[Tracing](tracing.md)** — following individual requests across services

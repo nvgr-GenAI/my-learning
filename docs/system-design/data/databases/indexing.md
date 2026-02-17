@@ -1,852 +1,596 @@
-# Database Indexing Algorithms 📊
+# Database Indexing
 
-Understanding database indexing algorithms is crucial for system design. This guide covers the fundamental data structures and algorithms that power database performance.
+Imagine you have a table with 10 million user records and you need to find the user with email `bob@example.com`. Without any special structure, the database has no choice — it reads row 1, checks, reads row 2, checks, and so on through all 10 million rows. This is called a **full table scan**, and it's exactly as slow as it sounds.
 
-## 🎯 Index Fundamentals
-
-### What is a Database Index?
-
-**Definition**: A data structure that improves the speed of data retrieval operations on a database table at the cost of additional writes and storage space.
-
-**Key Properties**:
-- **Ordered structure**: Maintains sorted order for efficient searching
-- **Pointer system**: Contains references to actual data rows
-- **Balanced structure**: Ensures consistent performance
-- **Selective access**: Allows direct access to specific rows
-
-> **Real-World Analogy**: Think of an index like a book's table of contents. Instead of reading every page to find a topic, you look it up in the index and jump directly to the relevant page.
-
-## 🌲 Tree-Based Indexing
-
-### 1. **B-Tree (Balanced Tree)**
-
-**Structure**: Self-balancing tree data structure that maintains sorted data and allows searches, insertions, and deletions in logarithmic time.
-
-**Properties**:
-- **Order (m)**: Maximum number of children per node
-- **Balanced**: All leaf nodes at same level
-- **Sorted**: Keys in non-decreasing order
-- **Branching factor**: High branching factor reduces tree height
-
-**Use Cases**:
-- **Database indexes**: Primary and secondary indexes
-- **File systems**: Directory structures
-- **Range queries**: Efficient range scans
-
-**Implementation**:
-```python
-class BTreeNode:
-    def __init__(self, is_leaf=False):
-        self.keys = []
-        self.children = []
-        self.is_leaf = is_leaf
-        self.parent = None
-    
-    def __repr__(self):
-        return f"BTreeNode(keys={self.keys}, is_leaf={self.is_leaf})"
-
-class BTree:
-    def __init__(self, min_degree=3):
-        self.root = BTreeNode(is_leaf=True)
-        self.min_degree = min_degree  # t in classic B-tree notation
-        self.max_keys = 2 * min_degree - 1
-        self.min_keys = min_degree - 1
-    
-    def search(self, key, node=None):
-        """Search for a key in the B-tree"""
-        if node is None:
-            node = self.root
-        
-        i = 0
-        while i < len(node.keys) and key > node.keys[i]:
-            i += 1
-        
-        if i < len(node.keys) and key == node.keys[i]:
-            return node, i  # Found the key
-        
-        if node.is_leaf:
-            return None  # Key not found
-        
-        return self.search(key, node.children[i])
-    
-    def insert(self, key):
-        """Insert a key into the B-tree"""
-        if len(self.root.keys) == self.max_keys:
-            # Root is full, need to split
-            old_root = self.root
-            self.root = BTreeNode()
-            self.root.children.append(old_root)
-            old_root.parent = self.root
-            self._split_child(self.root, 0)
-        
-        self._insert_non_full(self.root, key)
-    
-    def _insert_non_full(self, node, key):
-        """Insert key into a non-full node"""
-        i = len(node.keys) - 1
-        
-        if node.is_leaf:
-            # Insert into leaf node
-            node.keys.append(None)
-            while i >= 0 and key < node.keys[i]:
-                node.keys[i + 1] = node.keys[i]
-                i -= 1
-            node.keys[i + 1] = key
-        else:
-            # Find child to insert into
-            while i >= 0 and key < node.keys[i]:
-                i -= 1
-            i += 1
-            
-            if len(node.children[i].keys) == self.max_keys:
-                # Child is full, split it
-                self._split_child(node, i)
-                if key > node.keys[i]:
-                    i += 1
-            
-            self._insert_non_full(node.children[i], key)
-    
-    def _split_child(self, parent, index):
-        """Split a full child node"""
-        full_child = parent.children[index]
-        new_child = BTreeNode(is_leaf=full_child.is_leaf)
-        
-        # Split keys
-        mid_index = self.min_keys
-        new_child.keys = full_child.keys[mid_index + 1:]
-        full_child.keys = full_child.keys[:mid_index]
-        
-        # Split children if not leaf
-        if not full_child.is_leaf:
-            new_child.children = full_child.children[mid_index + 1:]
-            full_child.children = full_child.children[:mid_index + 1]
-            
-            # Update parent pointers
-            for child in new_child.children:
-                child.parent = new_child
-        
-        # Move median key up to parent
-        parent.keys.insert(index, full_child.keys[mid_index])
-        parent.children.insert(index + 1, new_child)
-        
-        # Update parent pointers
-        new_child.parent = parent
-    
-    def range_query(self, start_key, end_key):
-        """Perform range query on B-tree"""
-        results = []
-        
-        def traverse(node):
-            if node.is_leaf:
-                for key in node.keys:
-                    if start_key <= key <= end_key:
-                        results.append(key)
-            else:
-                for i, key in enumerate(node.keys):
-                    if start_key <= key:
-                        traverse(node.children[i])
-                    if start_key <= key <= end_key:
-                        results.append(key)
-                    if key < end_key:
-                        traverse(node.children[i + 1])
-        
-        traverse(self.root)
-        return sorted(results)
-
-# Usage example
-btree = BTree(min_degree=3)
-keys = [10, 20, 5, 6, 12, 30, 7, 17]
-
-for key in keys:
-    btree.insert(key)
-
-# Search for a key
-result = btree.search(12)
-print(f"Found key 12: {result is not None}")
-
-# Range query
-range_results = btree.range_query(5, 15)
-print(f"Keys in range [5, 15]: {range_results}")
-```
-
-**Time Complexity**:
-- Search: O(log n)
-- Insert: O(log n)
-- Delete: O(log n)
-- Range query: O(log n + k) where k is result size
-
-**Space Complexity**: O(n)
-
-### 2. **B+ Tree**
-
-**Structure**: Variation of B-tree where all data is stored in leaf nodes and internal nodes only store keys for navigation.
-
-**Key Differences from B-Tree**:
-- **Data in leaves**: All actual data stored in leaf nodes
-- **Linked leaves**: Leaf nodes linked for efficient range queries
-- **Higher fanout**: Internal nodes can store more keys
-- **Sequential access**: Optimal for range scans
-
-**Implementation**:
-```python
-class BPlusTreeNode:
-    def __init__(self, is_leaf=False):
-        self.keys = []
-        self.values = []  # Only used in leaf nodes
-        self.children = []  # Only used in internal nodes
-        self.is_leaf = is_leaf
-        self.next_leaf = None  # Pointer to next leaf (for range queries)
-        self.parent = None
-
-class BPlusTree:
-    def __init__(self, min_degree=3):
-        self.root = BPlusTreeNode(is_leaf=True)
-        self.min_degree = min_degree
-        self.max_keys = 2 * min_degree - 1
-        self.min_keys = min_degree - 1
-    
-    def search(self, key):
-        """Search for a key in B+ tree"""
-        node = self.root
-        
-        while not node.is_leaf:
-            i = 0
-            while i < len(node.keys) and key >= node.keys[i]:
-                i += 1
-            node = node.children[i]
-        
-        # Search in leaf node
-        try:
-            index = node.keys.index(key)
-            return node.values[index]
-        except ValueError:
-            return None
-    
-    def insert(self, key, value):
-        """Insert key-value pair into B+ tree"""
-        if len(self.root.keys) == self.max_keys:
-            # Root is full, create new root
-            old_root = self.root
-            self.root = BPlusTreeNode()
-            self.root.children.append(old_root)
-            old_root.parent = self.root
-            self._split_child(self.root, 0)
-        
-        self._insert_non_full(self.root, key, value)
-    
-    def _insert_non_full(self, node, key, value):
-        """Insert into non-full node"""
-        if node.is_leaf:
-            # Insert into leaf node
-            i = 0
-            while i < len(node.keys) and key > node.keys[i]:
-                i += 1
-            
-            node.keys.insert(i, key)
-            node.values.insert(i, value)
-        else:
-            # Find child to insert into
-            i = 0
-            while i < len(node.keys) and key >= node.keys[i]:
-                i += 1
-            
-            if len(node.children[i].keys) == self.max_keys:
-                self._split_child(node, i)
-                if key >= node.keys[i]:
-                    i += 1
-            
-            self._insert_non_full(node.children[i], key, value)
-    
-    def _split_child(self, parent, index):
-        """Split a full child node"""
-        full_child = parent.children[index]
-        new_child = BPlusTreeNode(is_leaf=full_child.is_leaf)
-        
-        mid_index = self.min_keys
-        
-        if full_child.is_leaf:
-            # Split leaf node
-            new_child.keys = full_child.keys[mid_index:]
-            new_child.values = full_child.values[mid_index:]
-            full_child.keys = full_child.keys[:mid_index]
-            full_child.values = full_child.values[:mid_index]
-            
-            # Update leaf pointers
-            new_child.next_leaf = full_child.next_leaf
-            full_child.next_leaf = new_child
-            
-            # Promote first key of new child
-            promote_key = new_child.keys[0]
-        else:
-            # Split internal node
-            new_child.keys = full_child.keys[mid_index + 1:]
-            new_child.children = full_child.children[mid_index + 1:]
-            
-            promote_key = full_child.keys[mid_index]
-            
-            full_child.keys = full_child.keys[:mid_index]
-            full_child.children = full_child.children[:mid_index + 1]
-            
-            # Update parent pointers
-            for child in new_child.children:
-                child.parent = new_child
-        
-        # Insert promoted key into parent
-        parent.keys.insert(index, promote_key)
-        parent.children.insert(index + 1, new_child)
-        new_child.parent = parent
-    
-    def range_query(self, start_key, end_key):
-        """Efficient range query using leaf pointers"""
-        results = []
-        
-        # Find starting leaf
-        node = self.root
-        while not node.is_leaf:
-            i = 0
-            while i < len(node.keys) and start_key >= node.keys[i]:
-                i += 1
-            node = node.children[i]
-        
-        # Traverse leaf nodes
-        while node:
-            for i, key in enumerate(node.keys):
-                if start_key <= key <= end_key:
-                    results.append((key, node.values[i]))
-                elif key > end_key:
-                    return results
-            node = node.next_leaf
-        
-        return results
-
-# Usage example
-bplus_tree = BPlusTree(min_degree=3)
-data = [(10, "value10"), (20, "value20"), (5, "value5"), (15, "value15")]
-
-for key, value in data:
-    bplus_tree.insert(key, value)
-
-# Range query
-range_results = bplus_tree.range_query(5, 15)
-print(f"Range query [5, 15]: {range_results}")
-```
-
-**Benefits over B-Tree**:
-- **Better range queries**: Linked leaves enable efficient scanning
-- **Higher fanout**: More keys per internal node
-- **Predictable performance**: All data access requires same depth
-- **Better caching**: Internal nodes cache better
-
-### 3. **Hash Indexes**
-
-**Structure**: Hash table-based indexing for exact match queries.
-
-**Use Cases**:
-- **Equality queries**: WHERE column = value
-- **Primary key lookups**: Fast row access
-- **Memory databases**: In-memory hash tables
-- **Unique constraints**: Duplicate detection
-
-**Implementation**:
-```python
-import hashlib
-
-class HashIndex:
-    def __init__(self, initial_size=16):
-        self.size = initial_size
-        self.buckets = [[] for _ in range(self.size)]
-        self.count = 0
-        self.load_factor_threshold = 0.75
-    
-    def _hash(self, key):
-        """Hash function for key"""
-        if isinstance(key, str):
-            return hash(key) % self.size
-        return key % self.size
-    
-    def _resize(self):
-        """Resize hash table when load factor exceeds threshold"""
-        old_buckets = self.buckets
-        self.size *= 2
-        self.buckets = [[] for _ in range(self.size)]
-        self.count = 0
-        
-        # Rehash all elements
-        for bucket in old_buckets:
-            for key, value in bucket:
-                self.insert(key, value)
-    
-    def insert(self, key, value):
-        """Insert key-value pair"""
-        # Check load factor
-        if self.count >= self.size * self.load_factor_threshold:
-            self._resize()
-        
-        hash_value = self._hash(key)
-        bucket = self.buckets[hash_value]
-        
-        # Update existing key
-        for i, (k, v) in enumerate(bucket):
-            if k == key:
-                bucket[i] = (key, value)
-                return
-        
-        # Insert new key
-        bucket.append((key, value))
-        self.count += 1
-    
-    def search(self, key):
-        """Search for key"""
-        hash_value = self._hash(key)
-        bucket = self.buckets[hash_value]
-        
-        for k, v in bucket:
-            if k == key:
-                return v
-        
-        return None
-    
-    def delete(self, key):
-        """Delete key"""
-        hash_value = self._hash(key)
-        bucket = self.buckets[hash_value]
-        
-        for i, (k, v) in enumerate(bucket):
-            if k == key:
-                del bucket[i]
-                self.count -= 1
-                return v
-        
-        return None
-    
-    def get_statistics(self):
-        """Get hash table statistics"""
-        used_buckets = sum(1 for bucket in self.buckets if bucket)
-        max_bucket_size = max(len(bucket) for bucket in self.buckets)
-        avg_bucket_size = self.count / used_buckets if used_buckets > 0 else 0
-        
-        return {
-            'size': self.size,
-            'count': self.count,
-            'load_factor': self.count / self.size,
-            'used_buckets': used_buckets,
-            'max_bucket_size': max_bucket_size,
-            'avg_bucket_size': avg_bucket_size
-        }
-
-# Usage example
-hash_index = HashIndex()
-data = [("user1", {"name": "Alice"}), ("user2", {"name": "Bob"}), ("user3", {"name": "Charlie"})]
-
-for key, value in data:
-    hash_index.insert(key, value)
-
-# Search
-result = hash_index.search("user2")
-print(f"Found user2: {result}")
-
-# Statistics
-stats = hash_index.get_statistics()
-print(f"Hash index statistics: {stats}")
-```
-
-**Time Complexity**:
-- Search: O(1) average, O(n) worst case
-- Insert: O(1) average, O(n) worst case
-- Delete: O(1) average, O(n) worst case
-
-**Limitations**:
-- **No range queries**: Only exact matches
-- **No ordering**: Cannot support ORDER BY
-- **Hash collisions**: Performance degrades with poor hash function
-
-## 🔍 Specialized Indexing
-
-### 1. **Bitmap Indexes**
-
-**Structure**: Uses bitmaps to represent the presence of values in columns with low cardinality.
-
-**Use Cases**:
-- **Data warehousing**: OLAP queries
-- **Low cardinality columns**: Gender, status, boolean flags
-- **Complex queries**: Multiple WHERE conditions
-- **Compression**: Efficient storage for sparse data
-
-**Implementation**:
-```python
-class BitmapIndex:
-    def __init__(self):
-        self.bitmaps = {}  # value -> bitmap
-        self.row_count = 0
-    
-    def insert(self, row_id, value):
-        """Insert value at row_id"""
-        # Ensure row_id doesn't exceed current row count
-        if row_id >= self.row_count:
-            self._extend_bitmaps(row_id + 1)
-        
-        # Set bit for this value
-        if value not in self.bitmaps:
-            self.bitmaps[value] = [0] * self.row_count
-        
-        self.bitmaps[value][row_id] = 1
-    
-    def _extend_bitmaps(self, new_size):
-        """Extend all bitmaps to new size"""
-        for value in self.bitmaps:
-            self.bitmaps[value].extend([0] * (new_size - len(self.bitmaps[value])))
-        self.row_count = new_size
-    
-    def search(self, value):
-        """Get bitmap for value"""
-        return self.bitmaps.get(value, [0] * self.row_count)
-    
-    def and_operation(self, value1, value2):
-        """Bitmap AND operation"""
-        bitmap1 = self.search(value1)
-        bitmap2 = self.search(value2)
-        return [a & b for a, b in zip(bitmap1, bitmap2)]
-    
-    def or_operation(self, value1, value2):
-        """Bitmap OR operation"""
-        bitmap1 = self.search(value1)
-        bitmap2 = self.search(value2)
-        return [a | b for a, b in zip(bitmap1, bitmap2)]
-    
-    def not_operation(self, value):
-        """Bitmap NOT operation"""
-        bitmap = self.search(value)
-        return [1 - b for b in bitmap]
-    
-    def count(self, value):
-        """Count rows with value"""
-        return sum(self.search(value))
-    
-    def get_row_ids(self, bitmap):
-        """Get row IDs from bitmap"""
-        return [i for i, bit in enumerate(bitmap) if bit]
-
-# Usage example
-bitmap_index = BitmapIndex()
-
-# Insert data: gender column
-gender_data = [(0, 'M'), (1, 'F'), (2, 'M'), (3, 'F'), (4, 'M')]
-for row_id, gender in gender_data:
-    bitmap_index.insert(row_id, gender)
-
-# Query: Find all males
-male_bitmap = bitmap_index.search('M')
-male_rows = bitmap_index.get_row_ids(male_bitmap)
-print(f"Male rows: {male_rows}")
-
-# Complex query: Find all non-females
-not_female_bitmap = bitmap_index.not_operation('F')
-not_female_rows = bitmap_index.get_row_ids(not_female_bitmap)
-print(f"Not female rows: {not_female_rows}")
-```
-
-### 2. **Spatial Indexes (R-Tree)**
-
-**Structure**: Tree data structure for indexing spatial data (rectangles, points, polygons).
-
-**Use Cases**:
-- **GIS applications**: Geographic information systems
-- **Location-based services**: Find nearby restaurants
-- **Gaming**: Collision detection
-- **CAD systems**: Spatial queries
-
-**Implementation**:
-```python
-class Rectangle:
-    def __init__(self, min_x, min_y, max_x, max_y):
-        self.min_x = min_x
-        self.min_y = min_y
-        self.max_x = max_x
-        self.max_y = max_y
-    
-    def intersects(self, other):
-        """Check if this rectangle intersects with another"""
-        return (self.min_x <= other.max_x and self.max_x >= other.min_x and
-                self.min_y <= other.max_y and self.max_y >= other.min_y)
-    
-    def contains(self, other):
-        """Check if this rectangle contains another"""
-        return (self.min_x <= other.min_x and self.max_x >= other.max_x and
-                self.min_y <= other.min_y and self.max_y >= other.max_y)
-    
-    def area(self):
-        """Calculate area of rectangle"""
-        return (self.max_x - self.min_x) * (self.max_y - self.min_y)
-    
-    def union(self, other):
-        """Create union rectangle"""
-        return Rectangle(
-            min(self.min_x, other.min_x),
-            min(self.min_y, other.min_y),
-            max(self.max_x, other.max_x),
-            max(self.max_y, other.max_y)
-        )
-
-class RTreeNode:
-    def __init__(self, is_leaf=True, max_entries=4):
-        self.entries = []  # List of (rectangle, data/child)
-        self.is_leaf = is_leaf
-        self.max_entries = max_entries
-    
-    def is_full(self):
-        return len(self.entries) >= self.max_entries
-
-class RTree:
-    def __init__(self, max_entries=4):
-        self.root = RTreeNode(is_leaf=True, max_entries=max_entries)
-        self.max_entries = max_entries
-    
-    def insert(self, rectangle, data):
-        """Insert rectangle with associated data"""
-        leaf = self._choose_leaf(rectangle)
-        leaf.entries.append((rectangle, data))
-        
-        if leaf.is_full():
-            self._split_node(leaf)
-    
-    def _choose_leaf(self, rectangle):
-        """Choose leaf node to insert rectangle"""
-        node = self.root
-        
-        while not node.is_leaf:
-            best_child = None
-            best_increase = float('inf')
-            
-            for rect, child in node.entries:
-                if rect.contains(rectangle):
-                    # If contained, choose this child
-                    best_child = child
-                    break
-                
-                # Calculate area increase
-                union_rect = rect.union(rectangle)
-                increase = union_rect.area() - rect.area()
-                
-                if increase < best_increase:
-                    best_increase = increase
-                    best_child = child
-            
-            node = best_child
-        
-        return node
-    
-    def _split_node(self, node):
-        """Split a full node"""
-        if node == self.root:
-            # Create new root
-            new_root = RTreeNode(is_leaf=False, max_entries=self.max_entries)
-            self.root = new_root
-            new_root.entries.append((self._calculate_mbr(node), node))
-        
-        # Simple split: divide entries roughly in half
-        mid = len(node.entries) // 2
-        new_node = RTreeNode(is_leaf=node.is_leaf, max_entries=self.max_entries)
-        
-        new_node.entries = node.entries[mid:]
-        node.entries = node.entries[:mid]
-        
-        # Update parent (simplified)
-        # In a full implementation, you'd need to handle parent updates properly
-    
-    def _calculate_mbr(self, node):
-        """Calculate minimum bounding rectangle for node"""
-        if not node.entries:
-            return Rectangle(0, 0, 0, 0)
-        
-        min_x = min(rect.min_x for rect, _ in node.entries)
-        min_y = min(rect.min_y for rect, _ in node.entries)
-        max_x = max(rect.max_x for rect, _ in node.entries)
-        max_y = max(rect.max_y for rect, _ in node.entries)
-        
-        return Rectangle(min_x, min_y, max_x, max_y)
-    
-    def search(self, query_rect):
-        """Search for rectangles that intersect with query"""
-        results = []
-        self._search_recursive(self.root, query_rect, results)
-        return results
-    
-    def _search_recursive(self, node, query_rect, results):
-        """Recursive search helper"""
-        for rect, data_or_child in node.entries:
-            if rect.intersects(query_rect):
-                if node.is_leaf:
-                    results.append((rect, data_or_child))
-                else:
-                    self._search_recursive(data_or_child, query_rect, results)
-
-# Usage example
-rtree = RTree(max_entries=4)
-
-# Insert some spatial data
-locations = [
-    (Rectangle(0, 0, 10, 10), "Restaurant A"),
-    (Rectangle(5, 5, 15, 15), "Restaurant B"),
-    (Rectangle(20, 20, 30, 30), "Restaurant C"),
-    (Rectangle(25, 25, 35, 35), "Restaurant D")
-]
-
-for rect, name in locations:
-    rtree.insert(rect, name)
-
-# Search for restaurants in area
-search_area = Rectangle(0, 0, 12, 12)
-results = rtree.search(search_area)
-print(f"Restaurants in search area: {[name for _, name in results]}")
-```
-
-## 🚀 Index Optimization Strategies
-
-### 1. **Covering Indexes**
-
-**Strategy**: Include all columns needed for a query in the index to avoid table lookups.
-
-```python
-class CoveringIndex:
-    def __init__(self):
-        self.index = {}  # key -> (indexed_columns, included_columns)
-    
-    def create_covering_index(self, key_columns, included_columns):
-        """Create covering index"""
-        index_key = tuple(key_columns)
-        self.index[index_key] = {
-            'key_columns': key_columns,
-            'included_columns': included_columns,
-            'data': {}
-        }
-    
-    def insert(self, key_columns, included_columns, row_data):
-        """Insert data into covering index"""
-        index_key = tuple(key_columns)
-        if index_key in self.index:
-            data_key = tuple(row_data[col] for col in self.index[index_key]['key_columns'])
-            self.index[index_key]['data'][data_key] = row_data
-    
-    def search(self, key_columns, search_values):
-        """Search using covering index"""
-        index_key = tuple(key_columns)
-        if index_key in self.index:
-            data_key = tuple(search_values)
-            return self.index[index_key]['data'].get(data_key)
-        return None
-
-# Usage example
-covering_index = CoveringIndex()
-covering_index.create_covering_index(['user_id'], ['name', 'email', 'status'])
-
-# Insert data
-row_data = {'user_id': 1, 'name': 'Alice', 'email': 'alice@example.com', 'status': 'active'}
-covering_index.insert(['user_id'], ['name', 'email', 'status'], row_data)
-
-# Search (no table lookup needed)
-result = covering_index.search(['user_id'], [1])
-print(f"Covering index result: {result}")
-```
-
-### 2. **Composite Indexes**
-
-**Strategy**: Multi-column indexes for queries with multiple WHERE conditions.
-
-```python
-class CompositeIndex:
-    def __init__(self):
-        self.indexes = {}  # (col1, col2, ...) -> nested dict structure
-    
-    def create_composite_index(self, columns):
-        """Create composite index on multiple columns"""
-        index_key = tuple(columns)
-        self.indexes[index_key] = {}
-    
-    def insert(self, columns, values, row_id):
-        """Insert into composite index"""
-        index_key = tuple(columns)
-        if index_key not in self.indexes:
-            return
-        
-        current_dict = self.indexes[index_key]
-        
-        # Navigate/create nested structure
-        for i, value in enumerate(values[:-1]):
-            if value not in current_dict:
-                current_dict[value] = {}
-            current_dict = current_dict[value]
-        
-        # Insert at final level
-        final_value = values[-1]
-        if final_value not in current_dict:
-            current_dict[final_value] = []
-        current_dict[final_value].append(row_id)
-    
-    def search(self, columns, values):
-        """Search using composite index"""
-        index_key = tuple(columns)
-        if index_key not in self.indexes:
-            return []
-        
-        current_dict = self.indexes[index_key]
-        
-        # Navigate nested structure
-        for value in values:
-            if value not in current_dict:
-                return []
-            current_dict = current_dict[value]
-        
-        return current_dict if isinstance(current_dict, list) else []
-
-# Usage example
-composite_index = CompositeIndex()
-composite_index.create_composite_index(['department', 'status', 'level'])
-
-# Insert data
-composite_index.insert(['department', 'status', 'level'], ['Engineering', 'Active', 'Senior'], 1)
-composite_index.insert(['department', 'status', 'level'], ['Engineering', 'Active', 'Junior'], 2)
-composite_index.insert(['department', 'status', 'level'], ['Sales', 'Active', 'Senior'], 3)
-
-# Search
-results = composite_index.search(['department', 'status', 'level'], ['Engineering', 'Active', 'Senior'])
-print(f"Composite index results: {results}")
-```
-
-## 🎯 Index Selection Guide
-
-| Query Pattern | Recommended Index | Reason |
-|---------------|-------------------|---------|
-| **Equality (=)** | Hash Index | O(1) lookup time |
-| **Range (>, <, BETWEEN)** | B+ Tree | Efficient range scans |
-| **Full-text search** | Inverted Index | Text search optimization |
-| **Spatial queries** | R-Tree | Multidimensional data |
-| **Low cardinality** | Bitmap Index | Efficient for few distinct values |
-| **Complex WHERE** | Composite Index | Multiple column optimization |
-| **SELECT * queries** | Covering Index | Avoid table lookups |
-
-## 💡 Best Practices
-
-### 1. **Index Design Principles**
-
-- **Selectivity**: Choose columns with high selectivity (many unique values)
-- **Query patterns**: Index based on actual query usage
-- **Maintenance overhead**: Balance query performance with write performance
-- **Storage cost**: Consider disk space and memory usage
-
-### 2. **Common Anti-Patterns**
-
-- **Over-indexing**: Too many indexes slow down writes
-- **Wrong column order**: Composite index column order matters
-- **Unused indexes**: Remove indexes that aren't used
-- **Duplicate indexes**: Avoid redundant index definitions
-
-### 3. **Monitoring and Optimization**
-
-- **Query analysis**: Use EXPLAIN plans to understand index usage
-- **Performance metrics**: Monitor query execution times
-- **Index statistics**: Track index hit ratios and efficiency
-- **Regular maintenance**: Update statistics and rebuild fragmented indexes
+This is the problem that indexing solves.
 
 ---
 
-**💡 Key Takeaway**: The right indexing strategy can transform a slow system into a high-performance one. Choose indexes based on query patterns, monitor their effectiveness, and maintain them properly for optimal performance.
+## The Problem: Finding a Needle in a Haystack
+
+When a database stores data, rows are written to disk in the order they arrive — much like tossing papers into a pile. There's no inherent organization. So when you ask "find Bob's record," the database must look at every single row to be sure it hasn't missed anything.
+
+```
+Full Table Scan: SELECT * FROM users WHERE email = 'bob@example.com'
+
+Row 1:  alice@example.com   — not a match
+Row 2:  charlie@example.com — not a match
+Row 3:  dave@example.com    — not a match
+...
+Row 7,234,891: bob@example.com — FOUND!
+...but must continue checking remaining 2,765,109 rows
+   (there might be another bob@example.com)
+
+Total: 10,000,000 rows examined · ~2 seconds
+```
+
+For a table with 1,000 rows, this is fine. For 10 million rows, it's painfully slow. For 1 billion rows, it's simply not feasible. We need a way to jump directly to the data we want.
+
+---
+
+## What is an Index?
+
+An index is a separate data structure that the database maintains alongside your table. Its job is simple: given a column value, tell the database exactly where to find the matching rows — without scanning the entire table.
+
+**Think of a textbook.** If you want to learn about "B-Trees," you don't read the book cover to cover. You flip to the index at the back, find "B-Trees: page 142," and go directly there. A database index works the same way.
+
+Every index stores two things:
+
+1. **The indexed value** — the column data being indexed (e.g., email addresses)
+2. **A pointer** — where to find the actual row on disk (page number + offset)
+
+```
+Index on users.email (sorted):
+┌──────────────────────┬───────────────┐
+│ Email (sorted)       │ Row Location  │
+├──────────────────────┼───────────────┤
+│ alice@example.com    │ Page 42, Row 3│
+│ bob@example.com      │ Page 17, Row 8│
+│ charlie@example.com  │ Page 91, Row 1│
+│ dave@example.com     │ Page 5, Row 12│
+│ ...                  │               │
+└──────────────────────┴───────────────┘
+
+Query: WHERE email = 'bob@example.com'
+  → Binary search the sorted index → Page 17, Row 8 → fetch the row
+```
+
+Because the index is sorted, the database can use binary search instead of scanning everything. For 10 million rows, binary search needs only about 23 comparisons instead of 10 million. That's the difference between 0.1 milliseconds and 2 seconds.
+
+---
+
+## The Fundamental Trade-off
+
+Before going further, you need to understand the one trade-off that governs all indexing decisions:
+
+**Indexes make reads faster and writes slower.**
+
+Every time you INSERT, UPDATE, or DELETE a row, the database must also update every index on that table. A table with 5 indexes means every single write does 6 operations (1 table write + 5 index updates). The more indexes you add, the slower writes become.
+
+|   | Without Index | With Index |
+|---|--------------|------------|
+| **Reading** | O(n) — scan every row | O(log n) — tree traversal |
+| **Writing** | Fast — just append the row | Slower — update table + every index |
+| **Storage** | Table data only | Table + index structure (10-30% extra) |
+
+This is why you don't just "index everything." Every index is a conscious trade-off between read speed and write overhead.
+
+---
+
+## How Databases Read Data: Pages and Buffer Pool
+
+Before diving into index types, there's one concept you need to understand — databases don't read individual rows from disk. They read **pages**, which are fixed-size blocks (typically 8 KB in PostgreSQL, 16 KB in MySQL).
+
+```
+Data on Disk (organized as pages):
+┌──────────┬──────────┬──────────┬──────────┐
+│ Page 1   │ Page 2   │ Page 3   │ Page 4   │
+│ Rows 1-50│ Rows51-99│Rows 100- │ Rows 151-│
+│          │          │   150    │   200    │
+└──────────┴──────────┴──────────┴──────────┘
+
+Reading 1 row = reading its entire page from disk.
+```
+
+Databases also keep a **buffer pool** — a cache of frequently-accessed pages in RAM. When you access a page, it stays in memory so the next access is nearly instant. This is why index root nodes (accessed on every lookup) are effectively free — they're always in the buffer pool.
+
+This page-based architecture is why some indexes perform dramatically better than others for certain access patterns. Range queries that read consecutive pages (sequential I/O) are 10-100x faster than queries that jump between random pages (random I/O).
+
+---
+
+## Clustered vs Non-Clustered: The Most Important Distinction
+
+Of all the ways to categorize indexes, this is the one that matters most. It determines how your data is **physically stored on disk**.
+
+### Clustered Index
+
+A clustered index doesn't just point to your data — it **is** your data. The table rows are physically sorted on disk by the clustered index key. Think of a dictionary: the words are arranged alphabetically, and the definitions are right there with them. There's no separate lookup step.
+
+```
+Clustered Index (data sorted by primary key):
+┌──────────────────────────────────────────────────┐
+│ B+ Tree leaf pages ARE the table data             │
+│                                                  │
+│ Page 1: [id=1, Alice] [id=2, Bob] [id=3, Carol] │
+│ Page 2: [id=4, Dave] [id=5, Eve] [id=6, Frank]  │
+│ Page 3: [id=7, Grace] [id=8, Helen] ...         │
+│                                                  │
+│ The data IS the index — no extra lookup needed   │
+└──────────────────────────────────────────────────┘
+```
+
+Because data can only be physically sorted one way, **you can only have one clustered index per table**. In MySQL InnoDB, this is always the primary key. In PostgreSQL, tables are stored as unsorted heaps by default (no clustered index).
+
+Range queries on the clustered key are extremely fast because matching rows sit on consecutive disk pages — the database reads them sequentially.
+
+### Non-Clustered (Secondary) Index
+
+A non-clustered index is a **separate structure** that points back to the table data. Think of the index at the back of a book — it tells you "B-Trees: page 142" but the actual content is elsewhere. You look up the term, then flip to the page.
+
+```
+Non-Clustered Index (separate structure):
+┌───────────────────────────┐      ┌──────────────────────┐
+│ Index: users.email        │      │ Table Data           │
+│                           │      │                      │
+│ alice@... → PK=1  ────────┼──→   │ [id=1, Alice, ...]   │
+│ bob@...   → PK=2  ────────┼──→   │ [id=2, Bob, ...]     │
+│ carol@... → PK=3  ────────┼──→   │ [id=3, Carol, ...]   │
+└───────────────────────────┘      └──────────────────────┘
+                                    ↑ Extra hop to fetch row data
+```
+
+You can have **many** non-clustered indexes on a table — one for email, one for created_at, one for status, etc. But each one requires that extra hop to fetch the actual row, which means random I/O.
+
+### How Different Databases Handle This
+
+- **MySQL InnoDB**: The primary key is always the clustered index. Secondary indexes store the primary key value as their pointer, which means a secondary index lookup requires a second traversal of the primary key index (a "double lookup").
+- **PostgreSQL**: No clustered index by default. All indexes are secondary, pointing to a heap table. You can run `CLUSTER` to sort once, but it's not maintained automatically.
+- **SQL Server**: You choose which index to cluster on (defaults to primary key). Non-clustered indexes store a "row locator."
+- **MongoDB**: The `_id` field acts as a clustered index in WiredTiger. Secondary indexes point to `_id`.
+
+---
+
+## Other Index Categories
+
+Beyond clustered vs non-clustered, there are two more useful distinctions:
+
+**Primary vs Secondary**: A primary index is automatically created on the primary key — it uniquely identifies each row. Secondary indexes are ones you create manually on other columns to speed up specific queries.
+
+**Dense vs Sparse**: A dense index has one entry per row. A sparse index has one entry per page (or block). Sparse indexes are much smaller but only work when data is sorted (clustered), because knowing "key 150 is on Page 2" only helps if you can scan Page 2 to find the exact row.
+
+```
+Dense:  [1→Row1] [2→Row2] [3→Row3] [4→Row4] [5→Row5] ...
+
+Sparse: [1→Page1] [100→Page2] [200→Page3] ...
+        Page 1 contains rows 1-99 — scan within to find exact row
+```
+
+---
+
+=== "Index Types"
+
+    Now let's look at the actual data structures databases use to build indexes. Each one is optimized for a different access pattern.
+
+    | Index Type | Lookup | Range Queries | Write Speed | Best For |
+    |---|---|---|---|---|
+    | B+ Tree | O(log n) | Excellent | Moderate | General purpose (default) |
+    | Hash | O(1) | Not supported | Moderate | Exact-match lookups only |
+    | LSM Tree | O(log n) | Good | Excellent | Write-heavy workloads |
+    | Bitmap | Fast (bitwise) | Via bitwise OR | Slow (update all bitmaps) | OLAP, low-cardinality columns |
+    | R-Tree / Spatial | O(log n) | Spatial regions | Moderate | Geographic / location data |
+    | Inverted | O(1) per term | N/A | Moderate | Full-text search |
+
+    ### B+ Tree -- The Workhorse
+
+    The B+ Tree is the **default index structure in virtually every relational database** -- MySQL, PostgreSQL, Oracle, SQL Server, SQLite. Understanding it is non-negotiable for anyone working with databases.
+
+    #### Why not just use a binary search tree?
+
+    A binary search tree with 1 million keys has a depth of about 20. Each level requires one disk read. That's 20 disk reads per lookup, which at ~5ms each means 100ms per query.
+
+    The insight behind B-Trees (and their refined cousin, the B+ Tree) is: **instead of 2 children per node, use hundreds or thousands.** Each node is sized to fit exactly one disk page (4-16 KB), so one disk read gives you hundreds of keys to compare against. A tree with branching factor 500 needs only 3 levels to hold 125 million keys -- that's 3 disk reads instead of 20.
+
+    #### How B+ Tree Works
+
+    The B+ Tree has two key design choices that make it superior for databases:
+
+    1. **All data lives in leaf nodes only** -- internal nodes are purely for navigation
+    2. **Leaf nodes are linked together** -- forming a chain for efficient range scans
+
+    ```
+    B+ Tree Structure:
+                          ┌─────────────┐
+                          │   30 | 60   │          ← Internal nodes: routing only
+                          └──┬─────┬────┘            (no row data here)
+                     ┌───────┘     └────────┐
+                ┌────┴────┐           ┌──────┴──────┐
+                │10|20|30 │←────────→│40|50|60|70  │  ← Leaf nodes: actual data
+                │ ↓  ↓  ↓ │          │ ↓  ↓  ↓  ↓  │    + linked list for scans
+                │Row Row Row│          │Row Row Row Row│
+                └─────────┘          └─────────────┘
+    ```
+
+    **Point lookup** -- say you're searching for key 50:
+
+    1. Read root node `[30 | 60]`: 50 > 30 and 50 < 60 → follow the middle pointer
+    2. Read leaf node `[40|50|60|70]`: found 50 → return the row
+
+    Two disk reads. The root is almost certainly cached in memory, so effectively one disk read.
+
+    **Range query** -- this is where B+ Tree truly shines. Say you want `WHERE id BETWEEN 25 AND 55`:
+
+    1. Traverse the tree to find the first leaf containing a key >= 25
+    2. Follow the linked list across leaf nodes, collecting matching keys: 30, 40, 50
+    3. Stop when you hit a key > 55
+
+    This is all sequential I/O -- reading consecutive pages. On an HDD, sequential reads are 100x faster than random reads. On an SSD, it's still 10x faster.
+
+    **How much data fits?** With MySQL InnoDB's 16 KB pages and 8-byte keys, each internal node holds about 1,170 entries. Three levels of the tree can index ~137 million rows. Four levels: ~160 billion rows. That's 3-4 disk reads to find any row in a table of virtually any size.
+
+    #### Why not plain B-Tree?
+
+    The original B-Tree stores data in both internal and leaf nodes. This means internal nodes are larger (they hold data alongside keys), which reduces the branching factor and makes the tree taller. It also makes range scans painful -- you have to zigzag up and down the tree to visit every key.
+
+    The B+ Tree fixes both problems. By keeping internal nodes small (keys only), the branching factor is higher and the tree is shallower. And the leaf linked list makes range scans trivial. This is why every modern RDBMS uses B+ Tree, not plain B-Tree.
+
+    B-Trees are still used in some file systems (NTFS, HFS+) and NoSQL stores where point queries dominate.
+
+    ### Hash Index -- O(1) But Limited
+
+    A hash index takes a fundamentally different approach: instead of maintaining a sorted tree, it runs each key through a **hash function** that maps directly to a storage location (bucket).
+
+    ```
+    Hash Index on users.email:
+
+    "alice@example.com"
+       ↓
+    hash("alice@...") = 0x7A3F → bucket 319
+       ↓
+    ┌─────────────────────────────────────────┐
+    │ Bucket 319:                             │
+    │   "alice@example.com" → (Page 42, Row 3)│
+    │   "xavier@corp.com"   → (Page 88, Row 12)│  ← collision
+    └─────────────────────────────────────────┘
+
+    Lookup: hash → bucket → scan 1-2 entries → done. O(1).
+    ```
+
+    The appeal is obvious: O(1) average lookup, compared to O(log n) for B+ Tree. For exact-match queries like `WHERE email = 'alice@example.com'`, hash is theoretically the fastest.
+
+    **So why isn't hash the default?** Because it can *only* do exact matches. It fundamentally cannot support:
+
+    - Range queries (`WHERE age > 25`) -- hash values have no ordering
+    - Sorting (`ORDER BY name`) -- no sorted structure
+    - Prefix matching (`WHERE name LIKE 'Al%'`) -- hash of "Alice" tells you nothing about "Al"
+    - MIN/MAX -- no concept of "smallest" or "largest"
+
+    Since most real-world workloads need at least some of these operations, B+ Tree wins as the default. Hash indexes are used in specific niches: Redis and Memcached (pure key-value lookups), MySQL's MEMORY engine, and PostgreSQL when you explicitly create one for equality-only queries on very long keys.
+
+    When two keys hash to the same bucket (a **collision**), the most common strategies are chaining (linked list per bucket) or open addressing (probe the next slot). Performance degrades as the table fills up -- when load factor exceeds ~0.7, the entire hash table needs to be resized and every key rehashed.
+
+    ### LSM Tree -- Built for Writes
+
+    Every index type we've seen so far optimizes for reads. The **Log-Structured Merge Tree** flips the equation: it's designed for workloads that are overwhelmingly write-heavy.
+
+    The core insight: disk **sequential** writes are 100-1000x faster than **random** writes. B+ Trees modify pages in place (random I/O). LSM Trees never modify anything in place -- all writes are sequential.
+
+    #### The Write Path
+
+    ```
+    1. Write arrives
+          ↓
+    2. Append to Write-Ahead Log (sequential write, for crash recovery)
+          ↓
+    3. Insert into MemTable (in-memory sorted structure, like a red-black tree)
+          ↓  (when MemTable fills up, ~64 MB)
+    4. Flush to disk as an SSTable (Sorted String Table) — one big sequential write
+          ↓  (background process)
+    5. Compaction: merge smaller SSTables into larger ones, removing duplicates
+    ```
+
+    Because every write goes to an in-memory buffer first and flushes as a single sequential write, LSM Trees can absorb writes at extraordinary throughput.
+
+    #### The Read Path (The Trade-off)
+
+    Reading is where LSM Trees pay the price. To find a key, you must check:
+
+    1. The current MemTable (in memory)
+    2. Recently flushed SSTables (Level 0)
+    3. Older, larger SSTables (Level 1, 2, 3...)
+
+    That's potentially many files to check. **Bloom filters** are critical here -- they're probabilistic structures that can tell you "this file definitely does NOT contain your key" (with ~1% false positive rate), letting you skip most SSTables without reading them.
+
+    #### When to Choose LSM over B+ Tree
+
+    LSM Trees power Cassandra, RocksDB, LevelDB, HBase, ScyllaDB, and the storage engines behind CockroachDB and TiDB. Use them when:
+
+    - Your workload is 90%+ writes (event logging, metrics, IoT sensors, time-series)
+    - You need append-mostly patterns (audit logs, activity feeds)
+    - You can tolerate slightly slower reads
+
+    Avoid them when reads must be consistently fast (LSM compaction can cause latency spikes) or when you're space-constrained (compaction temporarily needs extra disk space).
+
+    ### Bitmap Index -- For Analytics
+
+    Bitmap indexes take a completely different approach suited to **analytical queries on low-cardinality columns** (columns with few distinct values like status, department, or country).
+
+    For each distinct value, a bitmap index maintains a **bit array** where bit `i` is 1 if row `i` has that value.
+
+    ```
+    Table: employees (8 rows)
+    ┌────┬──────┬────────┐
+    │ ID │ Dept │ Status │
+    ├────┼──────┼────────┤
+    │ 0  │ Eng  │ Active │
+    │ 1  │ Sales│ Active │
+    │ 2  │ Eng  │ Left   │
+    │ 3  │ HR   │ Active │
+    │ 4  │ Eng  │ Active │
+    │ 5  │ Sales│ Left   │
+    │ 6  │ HR   │ Active │
+    │ 7  │ Eng  │ Active │
+    └────┴──────┴────────┘
+
+    Bitmap for Dept:              Bitmap for Status:
+      Eng:   [1,0,1,0,1,0,0,1]     Active: [1,1,0,1,1,0,1,1]
+      Sales: [0,1,0,0,0,1,0,0]     Left:   [0,0,1,0,0,1,0,0]
+      HR:    [0,0,0,1,0,0,1,0]
+    ```
+
+    The magic happens with **bitwise operations**. "Find active engineers" becomes:
+
+    ```
+      Eng    = [1,0,1,0,1,0,0,1]
+      Active = [1,1,0,1,1,0,1,1]
+      AND    = [1,0,0,0,1,0,0,1]  → Rows 0, 4, 7
+    ```
+
+    This is a single CPU instruction operating on the entire dataset. For complex multi-column filters in analytical queries, bitmaps are extraordinarily fast.
+
+    The catch: bitmap indexes are terrible for writes (every insert may require updating multiple bitmaps) and terrible for high-cardinality columns (one bitmap per distinct value becomes enormous). They shine in OLAP systems like Oracle's analytics engine, Apache Druid, and ClickHouse.
+
+    ### Spatial Index (R-Tree) -- For Geographic Data
+
+    B+ Trees work because you can sort data in one dimension. But how do you sort latitude/longitude pairs? You can't -- there's no single ordering that preserves proximity in 2D space.
+
+    **R-Trees** solve this by grouping nearby objects into nested **minimum bounding rectangles (MBRs)**.
+
+    ```
+    R-Tree for restaurant locations:
+
+    ┌──────────────────────────────────────────┐
+    │               City (Root MBR)            │
+    │   ┌────────────────┐                     │
+    │   │ MBR A (north)  │                     │
+    │   │  •R1   •R2     │                     │
+    │   │     •R3        │                     │
+    │   └────────────────┘                     │
+    │              ┌─────────────────┐         │
+    │              │ MBR B (south)   │         │
+    │              │   •R4      •R5  │         │
+    │              │        •R6      │         │
+    │              └─────────────────┘         │
+    └──────────────────────────────────────────┘
+
+    Query: "Restaurants within 2km of me"
+      Does search circle overlap MBR A? → Yes → check R1, R2, R3
+      Does search circle overlap MBR B? → No → skip entirely!
+      Only checked 3 restaurants instead of 6.
+    ```
+
+    Other spatial indexing approaches include **Geohash** (converts 2D coordinates into a 1D string), **Quad-Trees** (recursively divide space into four quadrants), and **H3** (Uber's hexagonal grid system for ride matching).
+
+    Real-world usage: PostGIS uses GiST (generalized R-Tree) for geographic queries, MongoDB has `2dsphere` indexes, Google Maps uses S2 cells, and Uber uses H3 hexagonal grids for surge pricing zones.
+
+    ### Inverted Index -- For Full-Text Search
+
+    Normal indexes map **row → data**. An inverted index flips this: it maps **word → list of rows containing that word**. This inversion makes full-text search possible.
+
+    ```
+    Documents:
+      Doc 1: "database indexing improves query performance"
+      Doc 2: "database sharding scales write throughput"
+      Doc 3: "indexing and sharding are core database concepts"
+
+    After tokenizing and stemming:
+    ┌──────────────┬──────────────────┐
+    │ Term         │ Posting List     │
+    ├──────────────┼──────────────────┤
+    │ database     │ [Doc1, Doc2, Doc3]│
+    │ index        │ [Doc1, Doc3]     │
+    │ shard        │ [Doc2, Doc3]     │
+    │ query        │ [Doc1]           │
+    │ throughput   │ [Doc2]           │
+    │ ...          │                  │
+    └──────────────┴──────────────────┘
+
+    Search: "database indexing"
+      "database" → [Doc1, Doc2, Doc3]
+      "index"    → [Doc1, Doc3]
+      Intersect  → [Doc1, Doc3]
+    ```
+
+    Real search engines enhance this with term frequency (for relevance scoring), positions (for phrase matching), and skip pointers (for faster intersection of long posting lists). The scoring algorithm **BM25** (used by Elasticsearch) ranks results by how rare and concentrated the search terms are in each document.
+
+    Elasticsearch and Apache Solr (both built on Lucene) are the dominant full-text search systems. PostgreSQL offers built-in full-text search through GIN indexes with `tsvector`/`tsquery`. MySQL has `FULLTEXT` indexes. MongoDB has text indexes and Atlas Search (powered by Lucene).
+
+=== "Advanced Indexing"
+
+    ### Composite and Covering Indexes
+
+    So far we've looked at indexes on a single column. In practice, many queries filter on multiple columns, and this is where **composite indexes** become essential.
+
+    #### Composite (Multi-Column) Indexes
+
+    A composite index is an index on multiple columns. The critical thing to understand is that **column order matters** -- the index sorts by the first column, then by the second within ties, then by the third. This gives rise to the **leftmost prefix rule**:
+
+    ```
+    Composite Index: (department, status, hire_date)
+
+    The index can help with:
+      WHERE department = 'Eng'
+      WHERE department = 'Eng' AND status = 'Active'
+      WHERE department = 'Eng' AND status = 'Active' AND hire_date > '2024-01-01'
+      WHERE department = 'Eng' ORDER BY status
+
+    The index CANNOT help with:
+      WHERE status = 'Active'              — first column skipped
+      WHERE hire_date > '2024-01-01'       — first two columns skipped
+      WHERE department = 'Eng' AND hire_date > ?  — middle column skipped
+    ```
+
+    Why? Think of a phone book sorted by (last name, first name). You can look up everyone named "Smith" or "Smith, Alice," but you can't efficiently look up everyone named "Alice" -- the Alices are scattered across different last names.
+
+    **Column ordering guidelines:**
+
+    - Put equality columns (`=`) before range columns (`>`, `<`, `BETWEEN`)
+    - Put high-selectivity columns (those that filter out more rows) first
+    - Match the order to your most common query patterns
+
+    #### Covering Indexes (Index-Only Scans)
+
+    A covering index contains **all the columns** a query needs, so the database never has to touch the actual table at all.
+
+    ```
+    Query: SELECT email, status FROM users WHERE department = 'Eng'
+
+    Without covering index:
+      1. Scan index on (department) → get row pointers
+      2. For EACH matching row, jump to the table to fetch email and status
+      → Lots of random I/O
+
+    With covering index on (department, email, status):
+      1. Scan index → email and status are already in the index leaf nodes
+      2. Return results directly
+      → Zero table access! "Index-Only Scan" in EXPLAIN output.
+    ```
+
+    PostgreSQL and SQL Server support `INCLUDE` columns: `CREATE INDEX idx ON users(department) INCLUDE (email, status)`. This keeps email and status in the leaf nodes for covering purposes without affecting the sort order. MySQL achieves the same by including all needed columns directly in the composite index.
+
+    ### Write Amplification: The Hidden Cost
+
+    When a table has 5 indexes, every INSERT does 6 operations: 1 table write + 5 index updates. This is **write amplification**, and it's the reason you can't just "add an index for everything."
+
+    ```
+    INSERT INTO users (...) VALUES (...);
+
+    What actually happens:
+      1. Write row to table                  ← 1 write
+      2. Update primary key index (B+ Tree)  ← 1 write
+      3. Update email index (B+ Tree)        ← 1 write
+      4. Update (dept, status) index         ← 1 write
+      5. Update created_at index             ← 1 write
+      6. Update full-text index              ← N writes (one per word)
+
+    Total: 6+ writes for 1 logical INSERT
+    ```
+
+    Over time, indexes also accumulate **bloat** -- when rows are deleted or updated, the old index entries aren't immediately reclaimed. They become dead space that wastes memory and slows scans. PostgreSQL offers `REINDEX CONCURRENTLY` to rebuild without locking; MySQL uses `ALTER TABLE ... ENGINE=InnoDB` for online rebuilds.
+
+=== "Database Specifics"
+
+    ### MySQL InnoDB
+
+    InnoDB's defining characteristic is that the **primary key is always the clustered index**. The table data is physically organized as a B+ Tree sorted by primary key. This makes primary key lookups extremely fast but has an important consequence: secondary indexes store the primary key value as their pointer, so a secondary index lookup requires two B+ Tree traversals (one through the secondary index, one through the primary key index to fetch the actual row).
+
+    InnoDB also has some clever optimizations: an **adaptive hash index** that automatically builds an in-memory hash for frequently accessed B+ Tree pages, and a **change buffer** that batches secondary index updates to reduce random I/O.
+
+    ### PostgreSQL
+
+    PostgreSQL takes a different approach -- tables are stored as **unordered heaps**, and all indexes (even on the primary key) are secondary. This means every index lookup requires a separate table access. PostgreSQL compensates with its rich set of index types:
+
+    - **B-Tree** (default) -- the standard sorted index for 90% of use cases
+    - **Hash** -- for equality-only queries on large keys
+    - **GIN** -- generalized inverted index for full-text search, JSONB, and arrays
+    - **GiST** -- generalized search tree for spatial data (PostGIS), range types
+    - **BRIN** -- block range index, PostgreSQL's secret weapon for huge, naturally-ordered tables
+
+    **BRIN deserves special mention.** For a billion-row events table where data is inserted roughly in time order, a B-Tree index on timestamp might be 20 GB. A BRIN index stores only the min/max timestamp per block range -- it might be 1 MB. The trade-off: BRIN only works when data is physically ordered (high correlation between row position and column value).
+
+    ```
+    BRIN on events.timestamp (1 billion rows):
+
+    Block Range 1-128:   min=2024-01-01, max=2024-01-15 → skip
+    Block Range 129-256: min=2024-01-15, max=2024-01-30 → skip
+    ...
+    Block Range N:       min=2024-06-01, max=2024-06-15 → scan this range
+
+    20,000x smaller than a B-Tree index.
+    ```
+
+    ### MongoDB
+
+    MongoDB's WiredTiger engine uses B-Trees for all indexes. The `_id` field acts as a clustered index. MongoDB supports specialized index types including geospatial (`2dsphere`), text indexes for full-text search, hashed indexes for even shard distribution, and wildcard indexes for dynamic schemas.
+
+    ### Choosing the Right Index
+
+    When faced with a new query to optimize, this decision flow will guide you:
+
+    ```
+    What's your query pattern?
+        │
+        ├─ Exact match only (WHERE col = value)
+        │   ├─ Ultra-high throughput, never needs range/sort? → Hash Index
+        │   └─ General use? → B+ Tree (handles everything)
+        │
+        ├─ Range queries (>, <, BETWEEN, ORDER BY)
+        │   └─ B+ Tree
+        │
+        ├─ Full-text search (keywords, relevance ranking)
+        │   └─ Inverted Index (GIN in PG, FULLTEXT in MySQL)
+        │
+        ├─ Geographic / spatial (nearby, within radius)
+        │   └─ R-Tree / GiST / Geohash
+        │
+        ├─ Low-cardinality + complex filters (OLAP/analytics)
+        │   └─ Bitmap Index
+        │
+        ├─ Write-heavy workload (90%+ writes)
+        │   └─ LSM Tree (Cassandra, RocksDB)
+        │
+        └─ Huge naturally-ordered table, rare updates
+            └─ BRIN (PostgreSQL)
+    ```
+
+    For composite indexes, remember: **equality columns first, range columns last**, and always check with `EXPLAIN ANALYZE` that the database is actually using your index.
+
+---
+
+## Common Mistakes
+
+**Over-indexing.** Adding 10+ indexes on an OLTP table grinds writes to a halt. Aim for 5-7 indexes maximum on write-heavy tables. Monitor unused indexes (check `pg_stat_user_indexes` in PostgreSQL where `idx_scan = 0`) and drop them — they're pure write overhead.
+
+**Wrong column order in composites.** An index on `(status, user_id)` doesn't help queries that filter by `user_id` first. Column order must match your query patterns, with high-selectivity and equality columns first.
+
+**Functions that break index usage.** `WHERE UPPER(email) = 'BOB@EXAMPLE.COM'` can't use an index on `email` because the database sees a function call, not a column reference. Fix: create an expression index on `UPPER(email)`.
+
+**Duplicate indexes.** Having both `(A)` and `(A, B)` is redundant — the composite `(A, B)` already handles queries on just `A`.
+
+**Never checking EXPLAIN.** Creating an index doesn't guarantee the query planner will use it. Always verify with `EXPLAIN` (or `EXPLAIN ANALYZE` for actual execution stats).
+
+**Indexing tiny tables.** For tables under ~1,000 rows, a full table scan is often faster than an index lookup because the entire table fits in a couple of pages. The database's query planner usually knows this and ignores the index anyway.
+
+---
+
+## Key Takeaways
+
+1. **B+ Tree is the default for a reason** — it handles equality, ranges, sorting, and prefix matching. Start here unless you have a specific reason not to.
+
+2. **Clustered index = physical order** — you get one per table. In MySQL it's always the primary key; choose it wisely.
+
+3. **Every index slows writes** — it's a conscious trade-off. Don't add indexes speculatively; add them when you see slow queries.
+
+4. **Column order in composites is crucial** — the leftmost prefix rule determines which queries can use the index.
+
+5. **Covering indexes avoid table lookups entirely** — include frequently selected columns to enable index-only scans.
+
+6. **LSM Trees trade read speed for write throughput** — use them (Cassandra, RocksDB) for write-heavy workloads.
+
+7. **Always verify with EXPLAIN** — creating an index is only half the job; confirming the planner uses it is the other half.
+
+---
+
+## Related Topics
+
+- **[Sharding](sharding.md)** — indexes work within each shard; shard key selection relates to indexing strategy
+- **[Database Types](database-types.md)** — index types and capabilities vary by database model

@@ -13,10 +13,6 @@ Performance is how fast your system responds. Master latency optimization, throu
 | Topic | Status | Description |
 |-------|--------|-------------|
 | [Performance Fundamentals](fundamentals.md) | ✅ Complete | Metrics, optimization techniques |
-| [Caching Strategies](caching-strategies.md) | 📝 Planned | 10x performance with caching |
-| [Database Optimization](database-optimization.md) | 📝 Planned | Query optimization, indexing |
-| [Profiling & Monitoring](profiling.md) | 📝 Planned | Find bottlenecks |
-| [Load Testing](load-testing.md) | 📝 Planned | Validate performance |
 
 ---
 

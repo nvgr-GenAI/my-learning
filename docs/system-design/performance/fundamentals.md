@@ -1,1028 +1,406 @@
 # Performance Fundamentals
 
-**Master system performance from response time to throughput** | ⚡ Metrics | 🎯 Optimization | 💼 Interview Ready
+Performance engineering is the discipline of understanding how systems behave under load and systematically improving their responsiveness. Unlike scalability, which asks "can we handle more?", performance asks "can we handle it faster?" The distinction matters because throwing hardware at a poorly written query will never make it fast -- but rewriting the query might make additional hardware unnecessary.
 
-## Quick Reference
-
-**Performance** - How well a system responds to workload demands:
-
-| Metric | Target | Critical | What It Measures | Example |
-|--------|--------|----------|-----------------|---------|
-| **Latency (P95)** | <200ms | >1000ms | Response time for 95% of requests | API call: 150ms |
-| **Throughput** | Per requirements | Declining | Requests processed per second | 10,000 RPS |
-| **CPU Usage** | 70-80% | >90% | Processor utilization | 75% average |
-| **Memory Usage** | 80-85% | >95% | RAM consumption | 82% with GC headroom |
-| **Error Rate** | <0.1% | >1% | Failed requests percentage | 0.05% errors |
-| **Cache Hit Rate** | >90% | <70% | Requests served from cache | 94% cache hits |
-
-**Key Insight:** **Measure first, optimize second.** Premature optimization wastes time. Profile to find bottlenecks, then fix the biggest impact items.
+This guide covers how to measure performance accurately, where to look for bottlenecks, and how to think about optimization in the right order.
 
 ---
 
-=== "🎯 Understanding Performance"
+=== "Measuring Performance"
 
-    ## What is Performance?
+    ## Why Measurement Comes First
 
-    **Performance** is how efficiently your system uses resources to deliver results to users.
+    The single most important principle in performance work is this: measure before you optimize. Engineers routinely spend days optimizing code paths that account for 2% of total latency while ignoring the database query responsible for 80% of it. Without measurement, you are guessing, and guesses in performance work are almost always wrong.
 
-    ### The Restaurant Analogy
+    ## Latency and Percentiles
+
+    Latency is the time elapsed between sending a request and receiving a response. It is the metric users feel most directly -- when someone says an application "feels slow," they are describing latency.
+
+    The critical mistake most teams make is tracking average latency. Averages are misleading because they hide the experience of your worst-served users. Consider an API serving 1,000 requests where 950 complete in 40ms and 50 take 2,000ms. The average is 138ms, which sounds acceptable, but 5% of your users are waiting two full seconds.
+
+    Percentile metrics solve this problem by describing the distribution of response times:
 
     ```
-    🍽️ Restaurant Performance Metrics:
-    ─────────────────────────────────────────────
+    Percentile Latency Distribution
+    ────────────────────────────────────────────────────
+    P50 (median)    What the typical user experiences
+    P95             The slowest 5% -- often your heaviest users
+    P99             The slowest 1% -- reveals systemic issues
+    P99.9           Extreme tail -- timeout and retry territory
 
-    Latency (Response Time):
-    - How long customers wait for food
-    - Average: 15 minutes (misleading!)
-    - P95: 20 minutes (95% served within this)
-    - P99: 30 minutes (slow 1% = angry customers)
-
-    Throughput (Capacity):
-    - How many customers served per hour
-    - Lunch rush: 50 customers/hour
-    - Dinner rush: 80 customers/hour
-    - Max capacity: 100 customers/hour
-
-    Resource Utilization:
-    - Kitchen: 70% busy (healthy)
-    - Staff: 80% busy (healthy)
-    - Oven: 90% busy (bottleneck!)
-
-    Key Insight: Optimize the oven (bottleneck), not the staff!
+    Example: E-commerce checkout API (10,000 requests)
+    ────────────────────────────────────────────────────
+    P50:    45ms    Most checkouts feel instant
+    P95:   210ms    Some users notice a brief pause
+    P99:   890ms    A few users see real delay
+    P99.9: 3200ms   Occasional timeouts trigger retries
     ```
 
-    ---
+    Amazon found that every 100ms of additional latency cost them approximately 1% in sales. Google observed that a 500ms increase in search latency reduced traffic by 20%. These are not hypothetical numbers -- they drove both companies to optimize aggressively for P99 latency, not averages.
 
-    ## Performance vs Scalability
+    The reason P95 and P99 matter disproportionately is that your heaviest users -- the ones with the most data, the most orders, the most complex queries -- are the ones most likely to hit tail latency. These are also your most valuable customers.
 
-    | Aspect | Performance | Scalability |
-    |--------|------------|-------------|
-    | **Definition** | Speed of operations | Growth capacity |
-    | **Focus** | Optimize existing system | Add resources |
-    | **Metric** | Latency (response time) | Throughput (requests/sec) |
-    | **Solution** | Algorithm optimization, caching | Add servers, sharding |
-    | **Example** | Query: 500ms → 50ms (10x faster) | 1 server → 10 servers (10x capacity) |
-    | **When to Use** | System is slow | System can't handle load |
+    ## Throughput
 
-    ---
+    Throughput measures how much work a system completes per unit of time. Depending on the system, this might be expressed as requests per second (RPS) for web servers, queries per second (QPS) for databases, or transactions per second (TPS) for payment systems.
 
-    ## The Performance Mindset
+    Latency and throughput have a well-known inverse relationship. At low load, latency stays flat because resources are plentiful. As throughput increases toward capacity, latency begins to climb as requests queue for resources. Past a saturation point, both metrics degrade -- throughput actually decreases as the system spends more time managing contention than doing useful work.
 
-    ```mermaid
-    graph TB
-        A[Measure<br/>Profile & monitor] --> B[Identify<br/>Find bottlenecks]
-        B --> C[Analyze<br/>Root cause]
-        C --> D[Optimize<br/>Fix bottleneck]
-        D --> E[Validate<br/>Measure again]
-        E --> A
+    ```
+    Throughput vs Latency Relationship
+    ────────────────────────────────────────────────────
 
-        style A fill:#51cf66
-        style D fill:#ff6b6b
+    Latency
+    (ms)
+     500 |                                        ****
+         |                                    ****
+     300 |                                 ***
+         |                              **
+     100 |          ********************
+         |  ********
+      20 |**
+         +──────────────────────────────────────────
+          0    2k    4k    6k    8k    10k   12k
+                    Throughput (RPS)
+                         ^              ^
+                     Sweet spot     Saturation
+                    (70-80% util)   (degrading)
     ```
 
-    **Golden Rule:** Don't guess, measure!
+    The sweet spot for most systems is 70-80% resource utilization. This leaves enough headroom to absorb traffic spikes, run garbage collection, and recover from individual server failures without cascading.
 
-=== "📊 Core Metrics"
+    ## Utilization and Saturation
 
-    ## The 6 Essential Metrics
+    Resource utilization measures what percentage of a resource's capacity is currently in use. The four resources to monitor are CPU, memory, disk I/O, and network bandwidth. When any one of these approaches saturation (roughly 90%+), queueing theory predicts that wait times will increase nonlinearly.
 
-    === "1. Latency"
+    At 70% utilization, a resource handles requests with minimal queueing delay. At 90%, queue times roughly double. At 95%, they quadruple. At 99%, the queue effectively explodes and the system becomes unresponsive. This is why Netflix targets 60-70% CPU utilization across their fleet -- it provides enough headroom to absorb a full availability zone failure without customer impact.
 
-        ### Response Time (User-Facing)
+    ## SLIs, SLOs, and How to Set Them
 
-        **What It Measures:**
-        ```
-        Latency = Time from request → response
-        ─────────────────────────────────────────────
+    A Service Level Indicator (SLI) is a quantitative measure of some aspect of service quality -- for example, "the proportion of requests completing in under 200ms." A Service Level Objective (SLO) sets a target for that indicator -- for example, "99.9% of requests will complete in under 200ms, measured over a rolling 30-day window."
 
-        User clicks button → [100ms] → Data appears
+    Google's SRE practice recommends choosing SLIs that reflect user experience directly. For a web application, the most meaningful SLIs are typically request latency at P95 and P99, error rate as a percentage of total requests, and availability measured as successful requests divided by total requests.
 
-        Components:
-        - Network time: 20ms
-        - Server processing: 50ms
-        - Database query: 25ms
-        - Rendering: 5ms
-        Total: 100ms
-        ```
+    SLOs should be ambitious but achievable. Setting an SLO of 99.99% availability (52 minutes of downtime per year) when your infrastructure realistically supports 99.9% (8.7 hours per year) creates an error budget of zero, which means every deploy is a crisis.
 
-        ---
+    ## Observability Tools
 
-        ### Why Percentiles Matter
+    Prometheus and Grafana form the most widely adopted open-source monitoring stack. Prometheus scrapes metrics from your services at regular intervals and stores them as time series. Grafana provides dashboards for visualization and alerting.
 
-        ```
-        Example API with 1000 requests:
-        ─────────────────────────────────────────────
-        Average latency: 100ms ← Misleading!
+    ```
+    Typical Monitoring Pipeline
+    ────────────────────────────────────────────────────
 
-        Reality:
-        - 900 requests: 50ms (fast)
-        - 90 requests: 200ms (slow)
-        - 9 requests: 1000ms (very slow)
-        - 1 request: 10000ms (timeout!)
+    [Service A] --metrics--> [Prometheus] --query--> [Grafana]
+    [Service B] --metrics-->   (scrape      (dashboards,
+    [Service C] --metrics-->    + store)      alerts)
+         |
+         v
+    [Distributed Tracing]     [Log Aggregation]
+     Jaeger / Zipkin           ELK / Loki
 
-        Average = 100ms (looks good!)
-        But 10% of users have bad experience!
+    What each layer answers:
+      Metrics:  "Is something wrong?"
+      Logs:     "What went wrong?"
+      Traces:   "Where in the call chain did it go wrong?"
+    ```
 
-        Better Metrics:
-        - P50 (median): 50ms ✓
-        - P95: 200ms (95% under this)
-        - P99: 1000ms (99% under this)
-        - P99.9: 10000ms (worst case)
-        ```
+    Stripe monitors over 1,000 SLIs across their payment infrastructure. Each API endpoint has latency percentiles (P50, P95, P99), error rates, and throughput tracked in real time. When any metric breaches its SLO, on-call engineers are paged with a Grafana dashboard link showing exactly which service and endpoint degraded.
 
-        ---
+=== "Optimization Hierarchy"
 
-        ### Industry Benchmarks
+    ## The Right Order to Optimize
 
-        | Operation | Target | Good | Bad |
-        |-----------|--------|------|-----|
-        | **Web Page Load** | <1s | <2s | >3s |
-        | **API Call** | <50ms | <100ms | >500ms |
-        | **Database Query** | <10ms | <50ms | >100ms |
-        | **Cache Hit** | <1ms | <5ms | >10ms |
-        | **Search Result** | <100ms | <500ms | >1s |
+    Not all optimizations are created equal. There is a natural hierarchy where improvements at higher levels yield dramatically larger gains than those at lower levels. Working in the wrong order is the most common performance engineering mistake.
 
-        ---
+    ```
+    Optimization Impact Hierarchy
+    ────────────────────────────────────────────────────
 
-        ### Real-World Impact
+    Level 1: Algorithm + Data Structure     [100-10000x]
+             Fix O(n^2) to O(n log n)
+                      |
+    Level 2: Architecture + Design           [10-100x]
+             Caching, async, read replicas
+                      |
+    Level 3: Implementation                   [2-10x]
+             Connection pooling, batching
+                      |
+    Level 4: Infrastructure                   [1.5-3x]
+             Faster hardware, more memory
+                      |
+    Level 5: Tuning                           [1.1-1.5x]
+             GC flags, kernel params
+    ```
 
-        ```
-        Google Study: Latency Impact
-        ─────────────────────────────────────────────
-        +100ms delay → 1% traffic loss
-        +500ms delay → 20% traffic loss
-        +1s delay → 50% traffic loss
+    Working from the bottom up is the classic premature optimization trap. Donald Knuth's famous quote -- "premature optimization is the root of all evil" -- is often misunderstood as "never optimize." The full quote is more nuanced: "We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%." The point is not to avoid optimization but to profile first so you know which 3% matters.
 
-        Amazon Study:
-        +100ms delay → $1.6B annual revenue loss
-        ```
+    ## Level 1: Algorithm and Data Structure
 
-    === "2. Throughput"
+    Choosing the right algorithm is the highest-leverage optimization available. No amount of caching or horizontal scaling will fix a fundamentally inefficient algorithm.
 
-        ### Requests Per Second (System Capacity)
+    When Slack rebuilt their channel membership system, they discovered that checking whether a user belonged to a channel was implemented as a linear scan through a list. For channels with 10,000 members, this single operation took hundreds of milliseconds. Replacing the list with a hash set reduced it to microseconds -- a 100,000x improvement that no infrastructure change could have achieved.
 
-        **What It Measures:**
-        ```
-        Throughput = Requests handled per time unit
-        ─────────────────────────────────────────────
-
-        Example:
-        - Peak traffic: 10,000 requests/second
-        - Current capacity: 5,000 requests/second
-        - Problem: Need 2x capacity!
-        ```
-
-        ---
-
-        ### Throughput vs Latency
-
-        ```
-        The Inverse Relationship:
-        ─────────────────────────────────────────────
-
-        Low Load:
-        - Latency: 50ms (fast!)
-        - Throughput: 100 RPS
-
-        Medium Load:
-        - Latency: 100ms (slower)
-        - Throughput: 500 RPS
-
-        High Load:
-        - Latency: 500ms (slow)
-        - Throughput: 1,000 RPS (max capacity)
-
-        Overload:
-        - Latency: 5,000ms (timeout!)
-        - Throughput: 800 RPS (declining!)
-        - System: Degrading ❌
-
-        Key: There's a sweet spot (70-80% utilization)
-        ```
-
-        ---
-
-        ### Measuring Throughput
-
-        | Metric | Description | Use Case |
-        |--------|-------------|----------|
-        | **RPS** | Requests Per Second | Web servers, APIs |
-        | **QPS** | Queries Per Second | Databases |
-        | **TPS** | Transactions Per Second | Payment systems |
-        | **MPS** | Messages Per Second | Message queues |
-
-    === "3. Resource Utilization"
-
-        ### CPU, Memory, Disk, Network
-
-        **Healthy Ranges:**
-
-        | Resource | Healthy | Warning | Critical | Impact |
-        |----------|---------|---------|----------|--------|
-        | **CPU** | 60-75% | 75-85% | >90% | Slow processing |
-        | **Memory** | 70-80% | 80-90% | >95% | Out of memory kills |
-        | **Disk I/O** | <70% | 70-85% | >90% | Database bottleneck |
-        | **Network** | <60% | 60-80% | >90% | Packet loss |
-
-        ---
-
-        ### Why Leave Headroom?
-
-        ```
-        Target: 70-80% Utilization
-        ─────────────────────────────────────────────
-
-        Reasons:
-        1. Traffic Spikes
-           - Normal: 1,000 RPS
-           - Spike: 2,000 RPS (2x)
-           - Headroom absorbs spike without overload
-
-        2. Garbage Collection
-           - Memory at 95% → Constant GC
-           - GC pauses = Latency spikes
-
-        3. Recovery Time
-           - Server crash? Other servers absorb load
-           - 80% utilization → Can handle 25% more
-
-        4. Monitoring/Debugging
-           - 100% CPU → Can't run profilers
-           - Need space for troubleshooting
-        ```
-
-        ---
-
-        ### The 90% Rule
-
-        ```
-        Why >90% is Dangerous:
-        ─────────────────────────────────────────────
-
-        Queueing Theory:
-        - At 90% utilization, queue time doubles
-        - At 95% utilization, queue time quadruples
-        - At 99% utilization, queues explode
-
-        Example:
-        Normal (70% CPU): 100ms latency
-        High (90% CPU): 300ms latency
-        Critical (95% CPU): 800ms latency
-        Danger (99% CPU): 5,000ms+ latency
-        ```
-
-    === "4. Error Rate"
-
-        ### Failed Requests Percentage
-
-        **What It Measures:**
-        ```
-        Error Rate = Failed Requests / Total Requests
-        ─────────────────────────────────────────────
-
-        Example:
-        - Total requests: 10,000
-        - Failed requests: 50
-        - Error rate: 0.5%
-
-        Types of Errors:
-        - 4xx: Client errors (bad requests)
-        - 5xx: Server errors (system failures)
-        - Timeouts: Request too slow
-        - Connection errors: Network issues
-        ```
-
-        ---
-
-        ### Error Rate Targets
-
-        | Service Level | Error Rate | 9's | Downtime/Year |
-        |--------------|-----------|-----|---------------|
-        | **Acceptable** | <0.1% | 99.9% | 8.7 hours |
-        | **Good** | <0.01% | 99.99% | 52 minutes |
-        | **Excellent** | <0.001% | 99.999% | 5.2 minutes |
-
-    === "5. Cache Hit Rate"
-
-        ### Cache Effectiveness
-
-        **What It Measures:**
-        ```
-        Hit Rate = Cache Hits / Total Requests
-        ─────────────────────────────────────────────
-
-        Example:
-        - 1,000 requests
-        - 950 served from cache
-        - 50 hit database
-        - Cache hit rate: 95% ✓
-
-        Performance Impact:
-        - Cache hit: 5ms
-        - Database query: 100ms
-        - 20x faster with cache!
-        ```
-
-        ---
-
-        ### The 80/20 Rule
-
-        ```
-        Pareto Principle:
-        ─────────────────────────────────────────────
-        20% of data = 80% of requests
-
-        Strategy:
-        1. Identify hot data (top 20%)
-        2. Cache only hot data
-        3. Achieve 80%+ hit rate
-
-        Example: E-commerce
-        - Total products: 100,000
-        - Popular products: 20,000 (20%)
-        - Cache: 20,000 products
-        - Hit rate: 85% ✓
-        - Memory saved: 80%
-        ```
-
-    === "6. Apdex Score"
-
-        ### Application Performance Index
-
-        **What It Measures:**
-        ```
-        User Satisfaction Metric
-        ─────────────────────────────────────────────
-
-        Apdex = (Satisfied + Tolerating/2) / Total
-
-        Classification:
-        - Satisfied: Response time ≤ T (e.g., ≤ 500ms)
-        - Tolerating: T < Response ≤ 4T (500ms - 2s)
-        - Frustrated: Response > 4T (> 2s)
-
-        Example (T = 500ms):
-        - 700 requests: ≤ 500ms (satisfied)
-        - 200 requests: 500-2000ms (tolerating)
-        - 100 requests: > 2000ms (frustrated)
-
-        Apdex = (700 + 200/2) / 1000 = 0.8
-
-        Score Interpretation:
-        - 1.0: Perfect
-        - 0.94-1.0: Excellent
-        - 0.85-0.93: Good
-        - 0.70-0.84: Fair
-        - 0.50-0.69: Poor
-        - <0.50: Unacceptable
-        ```
-
-=== "🏗️ Optimization Techniques"
-
-    ## The 5-Layer Optimization Strategy
-
-    === "1. Algorithm Optimization"
-
-        ### Choose the Right Algorithm
-
-        **Time Complexity Impact:**
-
-        | Complexity | 100 items | 10,000 items | 1,000,000 items |
-        |-----------|-----------|--------------|-----------------|
-        | **O(1)** | 1 operation | 1 operation | 1 operation |
-        | **O(log n)** | 7 operations | 13 operations | 20 operations |
-        | **O(n)** | 100 operations | 10,000 operations | 1,000,000 operations |
-        | **O(n log n)** | 700 operations | 130,000 operations | 20,000,000 operations |
-        | **O(n²)** | 10,000 operations | 100,000,000 operations | 1,000,000,000,000 operations |
-
-        ---
-
-        ### Real-World Example
-
-        ```
-        Problem: Find user by ID in list
-        ─────────────────────────────────────────────
-
-        Bad (Linear Search - O(n)):
+    ```python
+    # Linear scan: O(n) -- 500ms for 1M users
+    def find_user(users, target_id):
         for user in users:
             if user.id == target_id:
                 return user
-        Time: 500ms for 1M users
 
-        Good (Hash Map - O(1)):
-        users_map = {user.id: user for user in users}
-        return users_map[target_id]
-        Time: 0.001ms for 1M users
-
-        Result: 500,000x faster!
-        ```
-
-    === "2. Database Optimization"
-
-        ### The 3 Database Killers
-
-        **1. N+1 Query Problem:**
-        ```
-        Bad (N+1 queries):
-        ─────────────────────────────────────────────
-        users = db.query("SELECT * FROM users")      # 1 query
-        for user in users:
-            orders = db.query(f"SELECT * FROM orders
-                              WHERE user_id = {user.id}")  # N queries
-
-        Total: 1 + N queries (N = 1000 → 1001 queries!)
-        Time: 10 seconds
-
-        Good (JOIN):
-        ─────────────────────────────────────────────
-        results = db.query("""
-            SELECT users.*, orders.*
-            FROM users
-            LEFT JOIN orders ON users.id = orders.user_id
-        """)
-
-        Total: 1 query
-        Time: 100ms
-
-        Result: 100x faster!
-        ```
-
-        ---
-
-        **2. Missing Indexes:**
-        ```
-        Bad (Table Scan):
-        ─────────────────────────────────────────────
-        SELECT * FROM users WHERE email = 'john@example.com';
-
-        Without index:
-        - Scans all 10M rows
-        - Time: 5 seconds
-
-        Good (Index Lookup):
-        ─────────────────────────────────────────────
-        CREATE INDEX idx_email ON users(email);
-        SELECT * FROM users WHERE email = 'john@example.com';
-
-        With index:
-        - Direct lookup
-        - Time: 5ms
-
-        Result: 1,000x faster!
-        ```
-
-        ---
-
-        **3. SELECT * (Fetching Too Much):**
-        ```
-        Bad:
-        ─────────────────────────────────────────────
-        SELECT * FROM users;  # 50 columns, 10MB data
-
-        Good:
-        ─────────────────────────────────────────────
-        SELECT id, name, email FROM users;  # 3 columns, 1MB data
-
-        Result: 10x less data transfer
-        ```
-
-        ---
-
-        ### Connection Pooling
-
-        ```
-        Without Pooling:
-        ─────────────────────────────────────────────
-        For each request:
-        1. Open connection (50ms)
-        2. Execute query (10ms)
-        3. Close connection (20ms)
-        Total: 80ms per request
-
-        With Pooling:
-        ─────────────────────────────────────────────
-        Pre-create 10-20 connections
-        For each request:
-        1. Get connection from pool (0.1ms)
-        2. Execute query (10ms)
-        3. Return to pool (0.1ms)
-        Total: 10ms per request
-
-        Result: 8x faster!
-        ```
-
-    === "3. Caching"
-
-        ### Multi-Layer Caching Strategy
-
-        **The Caching Hierarchy:**
-        ```
-        Request Flow:
-        ─────────────────────────────────────────────
-
-        1. Browser Cache (0ms)
-           ↓ Miss
-        2. CDN Edge (50ms) ← 95% of requests stop here
-           ↓ Miss
-        3. Redis Cache (5ms)
-           ↓ Miss
-        4. Database (100ms)
-
-        Without cache: 100ms per request
-        With 95% hit rate: 0.95 × 5ms + 0.05 × 100ms = 9.75ms
-        Result: 10x faster!
-        ```
-
-        ---
-
-        ### Cache-Aside Pattern
-
-        ```
-        Read:
-        ─────────────────────────────────────────────
-        1. Check cache
-           └─ Hit? Return data (fast!)
-           └─ Miss? Go to step 2
-
-        2. Query database
-        3. Store in cache (TTL = 5 minutes)
-        4. Return data
-
-        Write:
-        ─────────────────────────────────────────────
-        1. Update database
-        2. Invalidate cache
-        3. Next read will fetch fresh data
-        ```
-
-        ---
-
-        ### Cache Eviction Policies
-
-        | Policy | When to Remove | Use Case |
-        |--------|---------------|----------|
-        | **LRU** | Least recently accessed | General purpose, temporal locality |
-        | **LFU** | Least frequently accessed | Popular content (videos, articles) |
-        | **TTL** | After expiration time | Time-sensitive data (prices, stocks) |
-        | **FIFO** | Oldest added first | Simple, predictable eviction |
-
-        ---
-
-        ### Cache Sizing
-
-        ```
-        80/20 Rule for Cache Sizing:
-        ─────────────────────────────────────────────
-
-        Total data: 100GB
-        Hot data (20%): 20GB
-        Cache size: 30GB (20GB × 1.5 buffer)
-
-        Expected results:
-        - Hit rate: 80-85%
-        - Memory: 30GB
-        - Cost-effective!
-        ```
-
-    === "4. Async Processing"
-
-        ### Offload Heavy Operations
-
-        **Synchronous (Blocking):**
-        ```
-        User uploads image → [5 seconds] → Response
-
-        Steps:
-        1. Upload image (1s)
-        2. Generate thumbnails (2s)
-        3. Apply watermark (1s)
-        4. Update database (1s)
-        Total: 5s (user waits!)
-        ```
-
-        **Asynchronous (Non-Blocking):**
-        ```
-        User uploads image → [100ms] → "Processing..." Response
-
-        Immediate:
-        1. Upload image (100ms)
-        2. Queue job
-        3. Return immediately
-
-        Background:
-        4. Worker generates thumbnails
-        5. Worker applies watermark
-        6. Worker updates database
-        7. Webhook notifies user
-
-        Result: 50x faster response!
-        ```
-
-        ---
-
-        ### When to Use Async
-
-        | Operation | Should Be Async? | Why |
-        |-----------|-----------------|-----|
-        | **Email sending** | ✓ Yes | User doesn't need to wait |
-        | **Report generation** | ✓ Yes | Takes minutes, can be queued |
-        | **Image processing** | ✓ Yes | CPU-intensive, slow |
-        | **Payment processing** | ✗ No | User needs immediate confirmation |
-        | **Login authentication** | ✗ No | Must be synchronous |
-
-    === "5. Network Optimization"
-
-        ### Reduce Data Transfer
-
-        **Compression:**
-        ```
-        Uncompressed Response:
-        ─────────────────────────────────────────────
-        JSON payload: 1MB
-        Transfer time: 1,000ms (1Mbps connection)
-
-        Gzip Compressed:
-        ─────────────────────────────────────────────
-        Compressed: 200KB (80% reduction)
-        Transfer time: 200ms
-
-        Result: 5x faster!
-
-        Compression Ratios:
-        - HTML/JSON: 70-90%
-        - Images (PNG): 10-30% (already compressed)
-        - Videos: 0-5% (don't compress)
-        ```
-
-        ---
-
-        ### CDN Benefits
-
-        ```
-        Without CDN:
-        ─────────────────────────────────────────────
-        Tokyo user → US server
-        - Distance: 10,000 km
-        - Latency: 200ms
-        - Bandwidth cost: High
-
-        With CDN:
-        ─────────────────────────────────────────────
-        Tokyo user → Tokyo edge server
-        - Distance: 50 km
-        - Latency: 10ms (20x faster!)
-        - Bandwidth: 95% served from edge (cheap)
-        - Origin server: Only 5% of traffic
-
-        Cost savings: ~$800/month for 1TB
-        ```
-
-        ---
-
-        ### HTTP/2 Multiplexing
-
-        ```
-        HTTP/1.1:
-        ─────────────────────────────────────────────
-        6 parallel connections
-        - Connection 1: HTML
-        - Connection 2: CSS
-        - Connection 3: JS
-        - Connection 4: Image 1
-        - Connection 5: Image 2
-        - Connection 6: Image 3
-
-        HTTP/2:
-        ─────────────────────────────────────────────
-        1 connection, multiplexed
-        - All resources over single connection
-        - No head-of-line blocking
-        - Header compression (HPACK)
-
-        Result: 30-50% faster page load
-        ```
-
-=== "💡 Interview Tips"
-
-    ## Common Interview Questions
-
-    **Q1: "Explain the difference between latency and throughput"**
-
-    **Good Answer:**
-    ```
-    Latency (Response Time):
-    ─────────────────────────────
-    - How long ONE request takes
-    - Measured in milliseconds
-    - User-facing metric (feels slow/fast)
-    - Example: API call takes 100ms
-
-    Throughput (Capacity):
-    ─────────────────────────────
-    - How MANY requests system handles per second
-    - Measured in requests/second
-    - System capacity metric
-    - Example: System handles 10,000 requests/second
-
-    Key Relationship:
-    ─────────────────────────────
-    - Low load: Low latency, variable throughput
-    - High load: High latency, max throughput
-    - Overload: Very high latency, declining throughput
-
-    Real-World Analogy:
-    ─────────────────────────────
-    Highway:
-    - Latency: Time to drive from A to B
-    - Throughput: Cars passing per hour
-
-    At rush hour:
-    - Latency increases (traffic jams)
-    - Throughput reaches maximum (all lanes full)
+    # Hash lookup: O(1) -- 0.001ms for 1M users
+    users_by_id = {u.id: u for u in users}
+    user = users_by_id[target_id]
     ```
 
-    ---
+    ## Level 2: Architecture and Design
 
-    **Q2: "Why use P95/P99 instead of average latency?"**
+    Once algorithms are correct, architectural decisions drive the next largest gains. This level includes adding caching layers, moving work to asynchronous processing, introducing read replicas, and restructuring service boundaries.
 
-    **Good Answer:**
+    Twitter's shift from a pull-based to a push-based timeline (fan-out on write) is a canonical example. Instead of assembling a user's timeline from scratch on every request by querying all followed accounts, Twitter pre-computes timelines when tweets are posted. This moved the expensive work from the read path (millions of reads per second) to the write path (thousands of writes per second), reducing timeline latency from seconds to milliseconds.
+
+    ## Level 3: Implementation
+
+    Implementation-level optimizations include connection pooling, batch processing, response compression, and efficient serialization. These typically yield 2-10x improvements for specific operations.
+
+    LinkedIn reduced their API latency by 60% by switching from JSON to Protocol Buffers for internal service communication. The serialization was faster, the payloads were smaller, and the schema enforcement caught bugs earlier. But this optimization only made sense after they had already fixed their algorithmic and architectural bottlenecks.
+
+    ## Level 4: Infrastructure
+
+    Faster CPUs, more memory, SSDs instead of spinning disks, and upgraded network links fall into this category. These are legitimate optimizations but offer diminishing returns -- you cannot buy your way out of an O(n^2) algorithm.
+
+    Shopify found that upgrading their database instances from general-purpose to memory-optimized nodes reduced P99 query latency by 40%. This was worthwhile, but only after they had already added appropriate indexes and eliminated N+1 queries. Without those prior fixes, the hardware upgrade would have been barely noticeable.
+
+    ## Profile Before You Optimize
+
+    Every optimization effort should start with profiling. The workflow is straightforward: instrument your system, generate a representative workload, identify the hottest code paths, and focus exclusively on those.
+
     ```
-    Average Hides Problems:
-    ─────────────────────────────────────────────
+    Profiling Workflow
+    ────────────────────────────────────────────────────
 
-    Example with 100 requests:
-    - 90 requests: 50ms (fast)
-    - 9 requests: 500ms (slow)
-    - 1 request: 5000ms (very slow)
-
-    Average: 95ms (looks good!)
-    Reality: 10% of users have bad experience
-
-    Percentiles Show Truth:
-    ─────────────────────────────────────────────
-    - P50 (median): 50ms (typical user)
-    - P95: 500ms (95% of users under this)
-    - P99: 5000ms (worst 1% - still important!)
-
-    Why P95/P99 Matter:
-    ─────────────────────────────────────────────
-    1. Heavy users hit slowness more
-    2. They're your most valuable customers
-    3. They might have more data (edge cases)
-    4. They influence churn decisions
-
-    Industry Standard: Optimize for P95
-    Google/Amazon: Optimize for P99
-    ```
-
-    ---
-
-    **Q3: "How would you optimize a slow database query?"**
-
-    **Good Answer:**
-    ```
-    Step-by-Step Approach:
-
-    1. Measure First:
-    ─────────────────────────────
-    - Run EXPLAIN on query
-    - Identify table scans
-    - Check execution time
-
-    2. Add Indexes:
-    ─────────────────────────────
-    Bad: SELECT * FROM users WHERE email = 'john@example.com'
-         (Table scan: 5 seconds)
-
-    Good: CREATE INDEX idx_email ON users(email);
-          (Index lookup: 5ms → 1000x faster!)
-
-    3. Fix N+1 Queries:
-    ─────────────────────────────
-    Bad: 1 query + 1000 queries in loop = 1001 queries
-    Good: Single JOIN query = 1 query
-
-    4. Select Only Needed Columns:
-    ─────────────────────────────
-    Bad: SELECT * FROM users (50 columns, 10MB)
-    Good: SELECT id, name, email (3 columns, 1MB)
-
-    5. Add Caching:
-    ─────────────────────────────
-    - Cache frequent queries (Redis)
-    - TTL: 5 minutes
-    - Hit rate: 90%+
-    - Reduces DB load by 90%
-
-    6. Read Replicas (if still slow):
-    ─────────────────────────────
-    - Separate read/write databases
-    - Distribute reads across 3 replicas
-    - 3x read capacity
-
-    Priority: Fix algorithm > Add index > Cache > Scale
+    1. INSTRUMENT
+       Add metrics to your services
+       (request duration, DB query time, cache hits)
+              |
+    2. REPRODUCE
+       Generate realistic load
+       (load testing with production-like data)
+              |
+    3. IDENTIFY
+       Find the bottleneck
+       "85% of request time is in DB query X"
+              |
+    4. FIX
+       Optimize the bottleneck only
+       (add index, fix query, add cache)
+              |
+    5. VALIDATE
+       Measure again to confirm improvement
+       "P95 dropped from 800ms to 120ms"
+              |
+       (repeat from step 3)
     ```
 
-    ---
+    Datadog's internal engineering team has a rule: no performance PR is merged without before-and-after profiling data. This prevents well-intentioned optimizations that either do not help or accidentally make things worse due to unexpected interactions.
 
-    **Q4: "What's the N+1 query problem?"**
+=== "Common Bottlenecks"
 
-    **Good Answer:**
-    ```
-    The Problem:
-    ─────────────────────────────────────────────
+    ## Database Bottlenecks
 
-    Fetch users:
-    SELECT * FROM users;  # 1 query, returns 1000 users
+    The database is the most common performance bottleneck in web applications. Three patterns account for the majority of database performance issues.
 
-    For each user, fetch their orders:
-    for user in users:
-        SELECT * FROM orders WHERE user_id = user.id;  # 1000 queries!
+    **N+1 Query Problem.** This occurs when code fetches a list of records, then issues a separate query for each record's related data. ORMs with lazy loading make this pattern deceptively easy to introduce. A page displaying 100 orders with their associated customers generates 101 queries -- one for the orders list and one per order for customer details. Replacing this with a single JOIN or eager-loaded query reduces it to one round trip.
 
-    Total: 1 + 1000 = 1001 queries
-    Time: 10 seconds (10ms per query)
+    Shopify identified N+1 queries as their single largest source of performance issues. They built automated detection into their CI pipeline: any test that generates more than a configurable number of queries for a single request triggers a warning.
 
-    The Solution:
-    ─────────────────────────────────────────────
+    **Missing Indexes.** Without an index, a database must scan every row in a table to find matches (a "full table scan"). On a users table with 10 million rows, looking up a user by email without an index takes seconds. Adding a B-tree index on the email column reduces it to milliseconds, because the database can navigate directly to the matching rows.
 
-    Single JOIN query:
-    SELECT users.*, orders.*
-    FROM users
-    LEFT JOIN orders ON users.id = orders.user_id;
+    ```sql
+    -- Without index: full table scan, ~5 seconds on 10M rows
+    SELECT * FROM users WHERE email = 'jane@example.com';
 
-    Total: 1 query
-    Time: 100ms
-
-    Result: 100x faster!
-
-    Real-World Impact:
-    ─────────────────────────────────────────────
-    - Common in ORMs (Lazy loading)
-    - Easy to miss in development (small datasets)
-    - Catastrophic in production (large datasets)
-    - Solution: Eager loading, batch queries
+    -- After adding index: B-tree lookup, ~5ms
+    CREATE INDEX idx_users_email ON users(email);
     ```
 
-    ---
+    Pinterest's database team found that 60% of their slow query alerts were caused by missing or incorrect indexes. They now require index analysis as part of every schema migration review.
 
-    **Q5: "How do you handle cache invalidation?"**
+    **Fetching Too Much Data.** Using SELECT * when you only need three columns transfers 10x more data than necessary across the network and through the application's memory. This is especially costly for tables with large TEXT or BLOB columns.
 
-    **Good Answer:**
+    ## Network Bottlenecks
+
+    **Chatty Services.** Microservices architectures can introduce excessive network round trips. If rendering a single page requires sequential calls to five different services, each adding 20ms of network latency, the minimum response time is 100ms before any actual processing. The fix is to batch calls, parallelize independent requests, or introduce an aggregation layer (the Backend-for-Frontend pattern).
+
+    Airbnb discovered that their search results page was making 15 sequential service calls. By parallelizing independent calls and batching related ones, they reduced the network overhead from 300ms to 60ms.
+
+    **No Connection Pooling.** Establishing a new TCP connection (and especially a TLS handshake) for every request adds 50-100ms of overhead. Connection pools maintain a set of pre-established connections that requests can borrow and return, amortizing the setup cost across thousands of requests.
+
+    ## Memory Bottlenecks
+
+    **Garbage Collection Pressure.** In languages with automatic memory management (Java, Go, C#), allocating and discarding objects rapidly forces the garbage collector to run more frequently. GC pauses manifest as latency spikes -- the application literally stops processing requests while it collects garbage. Discord moved their Read States service from Go to Rust partly because Go's garbage collector was causing latency spikes every two minutes as it scanned millions of objects in memory.
+
+    **Memory Leaks.** A slow memory leak may not crash the application for days, but as available memory shrinks, the OS begins swapping to disk, and performance degrades dramatically. Monitoring memory usage over time (not just instantaneously) catches leaks before they cause outages.
+
+    ## CPU Bottlenecks
+
+    **Inefficient Serialization.** JSON parsing and generation is surprisingly CPU-intensive at scale. Uber found that JSON serialization accounted for 30% of CPU usage in some of their highest-throughput services. Switching hot paths to Protocol Buffers or FlatBuffers reduced CPU consumption significantly.
+
+    **Unoptimized Regular Expressions.** A regex with catastrophic backtracking can pin a CPU core at 100% for a single request. Cloudflare experienced a global outage in 2019 caused by a single regular expression that consumed excessive CPU across their edge network.
+
+    ## Profiling Workflow for Bottleneck Identification
+
     ```
-    The Three Strategies:
+    Systematic Bottleneck Investigation
+    ────────────────────────────────────────────────────
 
-    1. TTL (Time To Live):
-    ─────────────────────────────────────────────
-    - Set expiration time (e.g., 5 minutes)
-    - Pros: Simple, automatic
-    - Cons: May serve stale data
-    - Use: Frequently changing data (prices, stocks)
-
-    2. Invalidate on Write:
-    ─────────────────────────────────────────────
-    - Delete cache entry when data updated
-    - Pros: Always fresh
-    - Cons: Cache miss on next read
-    - Use: User profiles, settings
-
-    3. Write-Through:
-    ─────────────────────────────────────────────
-    - Update both cache and database
-    - Pros: Cache always valid
-    - Cons: Write latency, sync complexity
-    - Use: Critical data (inventory, balances)
-
-    Real-World Pattern:
-    ─────────────────────────────────────────────
-    Combine strategies:
-    - TTL: 5 minutes (safety net)
-    - Invalidate on write (immediate freshness)
-    - Best of both worlds
-
-    The Hard Part:
-    ─────────────────────────────────────────────
-    "There are only two hard things in Computer Science:
-     cache invalidation and naming things."
-    - Phil Karlton
+    Start: "API response time is 2 seconds"
+        |
+        v
+    [Check metrics dashboard]
+        |
+        +-- CPU > 85%? -----> Profile CPU (flame graph)
+        |                      Look for hot functions,
+        |                      tight loops, serialization
+        |
+        +-- Memory > 90%? --> Check GC metrics, heap dumps
+        |                      Look for leaks, large objects
+        |
+        +-- DB query > 1s? -> Run EXPLAIN on slow queries
+        |                      Check for full table scans,
+        |                      missing indexes, N+1 patterns
+        |
+        +-- Network calls --> Trace request through services
+           taking > 100ms?    Check for sequential calls,
+                              missing connection pools,
+                              large payloads
+        |
+        v
+    Fix the single largest bottleneck first.
+    Measure again. Repeat.
     ```
 
-    ---
+    The key discipline is fixing one bottleneck at a time and re-measuring after each fix. Performance work is iterative because fixing one bottleneck often reveals the next one. What was previously 5% of request time might become 40% once the larger issue is resolved.
 
-    ## Interview Cheat Sheet
+=== "Scaling for Performance"
 
-    **Performance Targets:**
+    ## When Optimization Is Not Enough
 
-    | System | Latency | Throughput | Notes |
-    |--------|---------|-----------|-------|
-    | **Web Page** | <1s (P95) | 1,000+ RPS | First contentful paint |
-    | **API** | <100ms (P95) | 10,000+ RPS | RESTful endpoints |
-    | **Database** | <50ms (P95) | 10,000+ QPS | Simple queries |
-    | **Cache** | <1ms (P95) | 100,000+ RPS | Redis/Memcached |
-    | **CDN** | <50ms (P95) | 1M+ RPS | Edge locations |
+    There comes a point where a single optimized server cannot handle the required throughput. At that point, performance engineering intersects with scaling strategy. The goal shifts from "make each request faster" to "serve more requests concurrently without making any single request slower."
 
-    **Quick Wins (Biggest Impact):**
-    1. **Add caching** (10x improvement for read-heavy)
-    2. **Fix N+1 queries** (100x for ORM queries)
-    3. **Add database indexes** (1000x for searches)
-    4. **Use CDN** (20x for global users)
-    5. **Enable compression** (5x for text content)
+    ## Horizontal Scaling
 
-    **Resource Utilization Targets:**
-    - CPU: 70-80% (leave headroom for spikes)
-    - Memory: 80-85% (headroom for GC)
-    - Disk: <80% (performance degrades above)
-    - Network: <70% (packet loss above)
+    Adding more servers behind a load balancer is the most straightforward scaling approach. Each server handles a fraction of the total traffic, and total throughput scales roughly linearly with server count -- provided the application is stateless and there are no shared bottlenecks.
 
-=== "⚠️ Common Mistakes"
+    Netflix runs over 10,000 EC2 instances across multiple AWS regions. Their stateless microservices architecture means they can scale any service independently based on its specific traffic patterns. During peak evening hours in the US, they automatically scale up streaming services while keeping metadata services at baseline levels.
 
-    ## Performance Pitfalls
+    The prerequisite for effective horizontal scaling is statelessness. If a server stores session data locally, requests from the same user must always route to the same server (sticky sessions), which limits load distribution and complicates failure recovery. Moving session state to Redis or a similar external store eliminates this constraint.
 
-    | Mistake | Problem | Solution |
-    |---------|---------|----------|
-    | **Premature optimization** | Optimize before measuring | Profile first, optimize bottlenecks |
-    | **Ignoring P95/P99** | Focus only on average | Optimize tail latency (worst 5%) |
-    | **No caching** | Every request hits DB | Cache hot data (80/20 rule) |
-    | **SELECT *** | Fetch all columns | Select only needed columns |
-    | **N+1 queries** | Queries in loops | Use JOINs or batch queries |
-    | **Missing indexes** | Table scans | Index WHERE/ORDER BY columns |
-    | **Synchronous processing** | Block on slow operations | Queue heavy jobs (async) |
-    | **No monitoring** | Don't know what's slow | APM, metrics, distributed tracing |
+    ## Read Replicas
 
-    ---
+    Most web applications are read-heavy -- typically 90-95% reads versus 5-10% writes. Read replicas allow you to distribute read queries across multiple database copies while directing all writes to a single primary. This multiplies read throughput without the complexity of full sharding.
 
-    ## Design Pitfalls
+    GitHub uses MySQL read replicas extensively. Their primary database handles writes, while reads are distributed across multiple replicas. During high-traffic events like Hacktoberfest, they scale up read replicas to handle the surge in repository browsing without affecting write performance.
 
-    | Pitfall | Impact | Prevention |
-    |---------|--------|-----------|
-    | **Single database** | Bottleneck at 10K QPS | Read replicas + caching |
-    | **No connection pooling** | 50ms overhead per request | Pool with 10-20 connections |
-    | **Large payloads** | Slow transfer, high bandwidth | Paginate, compress, CDN |
-    | **Chatty APIs** | Multiple round trips | Batch requests, GraphQL |
-    | **Hot partitions** | Uneven load distribution | Better shard key selection |
-    | **Blocking I/O** | Thread starvation | Async I/O, event-driven |
+    The trade-off is replication lag. A write to the primary may take 10-100ms to propagate to replicas, meaning a user who updates their profile might see stale data if their next read hits a replica. The standard mitigation is "read your own writes" -- routing a user's reads to the primary for a short window after they perform a write.
 
-    ---
+    ## Caching Layers
 
-    ## Interview Red Flags
+    Caching is the single most effective technique for improving read performance. A well-designed caching layer can reduce database load by 90% or more, because the same data is requested far more often than it changes.
 
-    **Avoid Saying:**
-    - ❌ "Just add more servers" (ignores algorithm issues)
-    - ❌ "Caching solves everything" (cache invalidation is hard)
-    - ❌ "Average latency is 100ms so we're good" (ignores tail latency)
-    - ❌ "We'll optimize later" (performance is foundational)
-    - ❌ "NoSQL is always faster" (depends on use case)
+    ```
+    Multi-Layer Cache Architecture
+    ────────────────────────────────────────────────────
 
-    **Say Instead:**
-    - ✅ "Profile first to find bottlenecks, then optimize"
-    - ✅ "Monitor P95/P99 latency, not just average"
-    - ✅ "Cache read-heavy data with 80/20 rule"
-    - ✅ "Fix algorithm issues before scaling infrastructure"
-    - ✅ "Choose database based on access patterns"
+    [Client]
+       |
+    [Browser Cache]         0ms    (static assets, TTL-based)
+       |  miss
+    [CDN Edge Cache]       10ms    (HTML, images, API responses)
+       |  miss
+    [Application Cache]     2ms    (Redis/Memcached, hot data)
+       |  miss
+    [Database]            50ms     (source of truth)
+
+    With 95% cache hit rate at the Redis layer:
+      Effective latency = 0.95 * 2ms + 0.05 * 50ms = 4.4ms
+      vs 50ms without cache = 11x improvement
+    ```
+
+    Facebook (Meta) operates the largest Memcached deployment in the world, caching trillions of items across thousands of servers. Their cache hit rate exceeds 99% for many workloads, which means their database fleet handles only 1% of total read traffic. Without caching, they would need roughly 100x more database capacity.
+
+    The 80/20 rule (Pareto principle) governs cache sizing: 20% of your data typically accounts for 80% of requests. Caching just the hot 20% is usually sufficient to achieve hit rates above 85%, keeping memory costs manageable.
+
+    ## Asynchronous Processing
+
+    Moving non-urgent work off the request path is one of the most effective ways to reduce user-facing latency. When a user uploads an image, they do not need to wait for thumbnail generation, virus scanning, and CDN propagation before seeing a confirmation.
+
+    ```python
+    # Synchronous: user waits for everything (5 seconds)
+    def upload_image(image):
+        save_to_storage(image)       # 500ms
+        generate_thumbnails(image)   # 2000ms
+        scan_for_viruses(image)      # 1500ms
+        update_database(image)       # 1000ms
+        return "Done"                # total: 5000ms
+
+    # Async: user waits only for the save (500ms)
+    def upload_image(image):
+        save_to_storage(image)       # 500ms
+        queue.enqueue(process_image, image)
+        return "Processing..."       # total: 500ms
+    ```
+
+    Instagram processes over 100 million photo uploads daily. The upload endpoint returns a success response within milliseconds after saving the raw image to storage. Everything else -- filter application, multiple resolution generation, story creation, notification delivery -- happens asynchronously through a task queue. This keeps the upload experience feeling instant even as the backend processing grows more complex.
+
+    Message queues like Kafka, RabbitMQ, and SQS decouple producers from consumers, allowing each to scale independently. If the image processing pipeline falls behind, images simply queue up rather than making the upload endpoint slow down.
+
+    ## CDN for Static Content
+
+    A Content Delivery Network places copies of your static content (images, CSS, JavaScript, videos) on servers distributed around the world. When a user in Tokyo requests an image, it is served from a nearby edge server rather than traveling across the Pacific to your origin server in Virginia.
+
+    ```
+    Without CDN                    With CDN
+    ──────────────────            ──────────────────
+    Tokyo --> Virginia            Tokyo --> Tokyo Edge
+    10,000 km                     50 km
+    200ms round trip              10ms round trip
+    Origin serves all traffic     Edge serves 95% of traffic
+    ```
+
+    Netflix serves over 100 petabytes of video content daily through their Open Connect CDN. By placing custom cache appliances directly inside ISP networks, they deliver video with minimal latency and virtually no impact on internet backbone traffic. For their scale, this architecture reduced their bandwidth costs by orders of magnitude compared to serving everything from centralized data centers.
+
+    ## Instagram's Performance Journey
+
+    Instagram's evolution illustrates how these techniques compose. At launch in 2010, Instagram ran on a single Django server with a PostgreSQL database. As they grew to millions of users, they systematically applied each scaling technique.
+
+    First, they added Redis caching for the feed, reducing database reads by 90%. Next, they introduced PostgreSQL read replicas to distribute the remaining read load. They moved photo processing to asynchronous Celery workers so uploads stayed fast. They adopted a CDN (initially Amazon CloudFront) for serving photos globally. Finally, they horizontally scaled their application servers behind a load balancer.
+
+    By the time Facebook acquired Instagram in 2012, these optimizations allowed a team of 13 engineers to serve 30 million users. The performance principles were sound -- each optimization addressed the actual bottleneck at that stage of growth rather than prematurely scaling everything at once.
 
 ---
 
-## 🎯 Key Takeaways
+## Key Takeaways
 
-**The 10 Rules of Performance:**
+**Measure, then optimize.** Profiling reveals where time is actually spent. Without data, you are guessing, and performance guesses are almost always wrong.
 
-1. **Measure first** - Can't optimize what you don't measure. Profile before optimizing.
+**Optimize in the right order.** Algorithm improvements (100-10,000x) dwarf infrastructure upgrades (1.5-3x). Fix the query before you upgrade the server.
 
-2. **Optimize for P95/P99** - Average hides problems. 5% of users matter too.
+**Track percentiles, not averages.** P95 and P99 latency reveal what your worst-served users experience. Your most valuable customers are often in that tail.
 
-3. **Fix algorithms first** - O(n²) → O(n log n) beats any hardware upgrade.
+**Target 70-80% utilization.** Operating at 90%+ leaves no headroom for traffic spikes, garbage collection, or failure recovery, and queueing theory guarantees latency will spike.
 
-4. **Cache aggressively** - 80/20 rule: Cache 20% of data, serve 80% of requests.
+**Cache the hot 20%.** The Pareto principle means caching a small fraction of your data serves the vast majority of requests. A 95% cache hit rate can reduce effective latency by 10x or more.
 
-5. **Indexes are critical** - Missing index = 1000x slower queries.
-
-6. **Avoid N+1 queries** - Use JOINs, not queries in loops.
-
-7. **Async for heavy work** - Don't make users wait for emails/reports/processing.
-
-8. **Leave headroom** - Target 70-80% utilization, not 100%.
-
-9. **CDN for global users** - 10ms edge latency vs 200ms cross-continent.
-
-10. **Monitor continuously** - Performance degrades over time. Watch trends.
+**Move heavy work off the request path.** Users should not wait for thumbnail generation, email delivery, or analytics processing. Queue it and return immediately.
 
 ---
 
-## 📚 Further Reading
+## Related Topics
 
-**Master these related concepts:**
-
-| Topic | Why Important | Read Next |
-|-------|--------------|-----------|
-| **Caching Strategies** | 10x performance boost | [Caching Patterns →](../performance/caching.md) |
-| **Database Optimization** | Fix biggest bottleneck | [Database Performance →](../databases/performance.md) |
-| **Load Testing** | Validate performance | [Testing Guide →](../testing/performance-testing.md) |
-| **Monitoring** | Detect issues early | [Observability →](../monitoring/apm.md) |
-
-**Practice with real systems:**
-- [Design Twitter](../problems/twitter.md) - Cache optimization, read-heavy
-- [Design Netflix](../problems/netflix.md) - CDN, video streaming
-- [Design Amazon](../problems/amazon.md) - Database optimization, caching
-
----
-
-**Master performance fundamentals and build blazingly fast systems! ⚡**
+| Topic | Connection |
+| ----- | ---------- |
+| [Caching Strategies](../data/caching/strategies.md) | Deep dive into cache patterns, eviction, and invalidation |
+| [Database Indexing](../data/databases/indexing.md) | How B-tree and hash indexes accelerate queries |
+| [Load Balancing](../networking/load-balancers.md) | Distributing traffic across horizontally scaled servers |
+| [Messaging Patterns](../communication/messaging/patterns.md) | Async processing infrastructure for decoupling services |

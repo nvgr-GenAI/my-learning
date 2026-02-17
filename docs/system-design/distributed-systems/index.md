@@ -15,8 +15,7 @@ Distributed systems introduce complexity: network failures, clock skew, partial 
 | [Consensus Algorithms](consensus.md) | 📝 Planned | Hard | Raft, Paxos - how nodes agree |
 | [Consistent Hashing](consistent-hashing.md) | 📝 Planned | Medium | Distribute data evenly |
 | [Distributed Locks](distributed-locks.md) | 📝 Planned | Medium | Coordination across nodes |
-| [Clock Synchronization](clock-sync.md) | 📝 Planned | Hard | Vector clocks, NTP |
-| [Data Partitioning](partitioning.md) | 📝 Planned | Medium | Split data across nodes |
+| [Distributed Transactions](distributed-transactions.md) | 📝 Planned | Hard | 2PC, Saga pattern |
 
 ---
 
