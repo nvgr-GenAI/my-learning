@@ -562,8 +562,8 @@ Where:
 - [RNN](rnn.md) - Original seq2seq models
 - [LSTM & GRU](lstm-gru.md) - Often combined with attention
 - [Neural Networks Basics](neural-networks-basics.md) - Foundation
-- [BERT](advanced/bert.md) - Self-attention for language understanding
-- [GPT](advanced/gpt.md) - Masked self-attention for generation
+- BERT - Self-attention for language understanding
+- GPT - Masked self-attention for generation
 
 ---
 

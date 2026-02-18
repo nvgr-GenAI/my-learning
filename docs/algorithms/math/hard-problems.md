@@ -676,9 +676,9 @@ You've mastered the most challenging mathematical algorithms! These advanced tec
 
 ### 📚 What's Next
 
-- **[Advanced Number Theory](../advanced/number-theory.md)** - Deeper mathematical concepts
-- **[Computational Geometry](../advanced/geometry.md)** - Advanced geometric algorithms
-- **[Cryptography](../advanced/cryptography.md)** - Applied mathematical cryptography
-- **[Optimization](../advanced/optimization.md)** - Mathematical optimization techniques
+- **Advanced Number Theory** - Deeper mathematical concepts
+- **Computational Geometry** - Advanced geometric algorithms
+- **Cryptography** - Applied mathematical cryptography
+- **Optimization** - Mathematical optimization techniques
 
 *You now possess the mathematical foundation for the most challenging algorithmic problems!*

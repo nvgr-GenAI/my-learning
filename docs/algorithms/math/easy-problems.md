@@ -593,7 +593,7 @@ You've mastered fundamental mathematical algorithms! These skills are essential 
 
 - **[Medium Problems](medium-problems.md)** - Advanced mathematical algorithms
 - **[Hard Problems](hard-problems.md)** - Complex number theory and optimization
-- **[Number Theory](../advanced/number-theory.md)** - Deep mathematical concepts
-- **[Competitive Programming](../advanced/competitive-programming.md)** - Contest-level problems
+- **Number Theory** - Deep mathematical concepts
+- **Competitive Programming** - Contest-level problems
 
 *Continue building your mathematical foundation for advanced algorithmic problem-solving!*

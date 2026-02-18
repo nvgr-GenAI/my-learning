@@ -945,9 +945,9 @@ print(f"Optimal alpha: {ridge.alpha_:.4f}")
 
 - [Linear Regression](linear-regression.md) - Foundation without regularization
 - [Lasso Regression](lasso-regression.md) - L1 regularization for feature selection
-- [Elastic Net](elastic-net.md) - Combination of Ridge and Lasso
+- Elastic Net - Combination of Ridge and Lasso
 - [Polynomial Regression](polynomial-regression.md) - Use Ridge with polynomial features
-- [Feature Scaling](../../preprocessing/scaling.md) - Critical preprocessing step
+- Feature Scaling - Critical preprocessing step
 
 ---
 
@@ -963,7 +963,7 @@ print(f"Optimal alpha: {ridge.alpha_:.4f}")
 
 **Next Steps:**
 - Learn [Lasso Regression](lasso-regression.md) for feature selection
-- Combine both in [Elastic Net](elastic-net.md)
+- Combine both in Elastic Net
 - Apply to [Polynomial Features](polynomial-regression.md)
 - Explore [Cross-Validation Techniques](../../evaluation/cross-validation.md)
 

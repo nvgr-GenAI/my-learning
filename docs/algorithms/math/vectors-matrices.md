@@ -429,4 +429,4 @@ Where n is the dimension of vectors or the size of square matrices, and m×n and
 - [Convex Hull](convex-hull.md)
 - [Line Intersection](line-intersection.md)
 - [Polygon Area](polygon-area.md)
-- [Numerical Methods](../numerical-methods/index.md)
+- Numerical Methods

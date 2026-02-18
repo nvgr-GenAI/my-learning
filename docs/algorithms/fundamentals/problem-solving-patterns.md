@@ -9933,6 +9933,6 @@ Master the essential patterns that solve 95% of coding interview problems. Each 
 ---
 
 **Related Pages:**
-- [Time & Space Complexity](time-complexity.md)
+- Time & Space Complexity
 - [Learning Paths](learning-paths.md)
-- [Interview Strategy](interview-strategy.md)
+- Interview Strategy

@@ -161,4 +161,4 @@ These methods approximate the Jacobian or Hessian matrix to reduce computational
 - [Binary Exponentiation](binary-exponentiation.md)
 - [Fast Fourier Transform](fft.md)
 - [Linear Algebra Basics](linear-algebra.md)
-- [Numerical Methods](../numerical-methods.md)
+- Numerical Methods

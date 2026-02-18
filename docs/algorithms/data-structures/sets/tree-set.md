@@ -517,7 +517,7 @@ After mastering tree sets, explore:
 
 - **[Hash Set](hash-set.md)**: Unordered set for better average performance
 - **[Bit Set](bit-set.md)**: Memory-efficient integer sets
-- **[Advanced Trees](../trees/index.md)**: Other tree data structures
+- **[Advanced Trees](../../trees/index.md)**: Other tree data structures
 
 ---
 

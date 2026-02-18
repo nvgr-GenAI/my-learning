@@ -92,7 +92,7 @@ const substring = s.substring(0, 5);  // "Hello"
 ## Further Reading
 
 - [Knuth-Morris-Pratt Algorithm](kmp.md)
-- [Boyer-Moore Algorithm](boyer-moore.md)
+- Boyer-Moore Algorithm
 - [Rabin-Karp Algorithm](rabin-karp.md)
 - [Tries Data Structure](tries.md)
 - [Suffix Arrays and Trees](suffix-arrays.md)

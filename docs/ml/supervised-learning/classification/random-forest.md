@@ -769,9 +769,9 @@ param_grid_3 = {
 
 - [Decision Trees](decision-trees.md) - Building block of Random Forest
 - [Gradient Boosting](gradient-boosting.md) - Alternative ensemble method
-- [Feature Selection](../../preprocessing/feature-selection.md) - Use RF importance
+- Feature Selection - Use RF importance
 - [Ensemble Methods](../ensemble-methods/index.md) - General ensemble theory
-- [Model Interpretation](../../explainability/model-interpretation.md) - SHAP, LIME
+- Model Interpretation - SHAP, LIME
 
 ---
 
@@ -788,6 +788,6 @@ param_grid_3 = {
 **Next Steps:**
 - Try [Kaggle Titanic](https://www.kaggle.com/c/titanic) with Random Forest
 - Learn [Gradient Boosting](gradient-boosting.md) for even better performance
-- Explore [Model Interpretation](../../explainability/model-interpretation.md) with SHAP
+- Explore Model Interpretation with SHAP
 
 **Master ensemble learning with Random Forest!** 🌲

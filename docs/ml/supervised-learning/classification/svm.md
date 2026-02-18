@@ -775,10 +775,10 @@ plt.show()
 ## Related Topics
 
 - [Logistic Regression](logistic-regression.md) - Linear classifier alternative
-- [Kernel Methods](../../math/kernel-methods.md) - Mathematical foundation
-- [Optimization](../../optimization/convex-optimization.md) - SVM optimization
-- [Feature Scaling](../../preprocessing/feature-scaling.md) - Required preprocessing
-- [Text Classification](../../nlp/text-classification.md) - SVM for NLP
+- Kernel Methods - Mathematical foundation
+- Optimization - SVM optimization
+- Feature Scaling - Required preprocessing
+- Text Classification - SVM for NLP
 
 ---
 
@@ -795,6 +795,6 @@ plt.show()
 **Next Steps:**
 - Try [Kaggle Digit Recognizer](https://www.kaggle.com/c/digit-recognizer)
 - Learn [Random Forest](random-forest.md) for faster training
-- Explore [Kernel Methods](../../math/kernel-methods.md) deeply
+- Explore Kernel Methods deeply
 
 **Master maximum margin classification with SVM!** 🎯

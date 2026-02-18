@@ -1850,7 +1850,7 @@ def backtrack(state, path, choices):
 ## 🎯 Next Steps
 
 - **[Medium Backtracking Problems](medium-problems.md)** - More complex constraint satisfaction
-- **[Advanced Techniques](../advanced/index.md)** - Constraint propagation, branch and bound
+- **Advanced Techniques** - Constraint propagation, branch and bound
 - **[Dynamic Programming](../dp/index.md)** - When backtracking meets memoization
 
 Master these easy problems before moving to medium difficulty. The patterns you learn here form the foundation for all advanced backtracking algorithms!

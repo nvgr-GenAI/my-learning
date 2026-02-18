@@ -2,7 +2,7 @@
 
 **Group similar data points together without labels.** Master partition-based, hierarchical, density-based, and probabilistic clustering algorithms.
 
-**Difficulty:** 🟡 Intermediate | **Time:** 2-3 weeks | **Prerequisites:** [ML Fundamentals](../../fundamentals/index.md), [Distance Metrics](../../fundamentals/mathematics.md)
+**Difficulty:** 🟡 Intermediate | **Time:** 2-3 weeks | **Prerequisites:** [ML Fundamentals](../../fundamentals/index.md), Distance Metrics
 
 ---
 
@@ -156,7 +156,7 @@ graph LR
 - Sensitive to outliers
 - Requires feature scaling
 
-**[→ Learn K-Means](kmeans.md)**
+→ Learn K-Means (coming soon)
 
 **Time:** 3-4 hours | **Difficulty:** 🟡 | **Interview:** ⭐⭐⭐⭐
 
@@ -208,7 +208,7 @@ graph TB
 - Cannot undo merges/splits
 - Sensitive to noise and outliers
 
-**[→ Learn Hierarchical Clustering](hierarchical.md)**
+→ Learn Hierarchical Clustering (coming soon)
 
 **Time:** 3-4 hours | **Difficulty:** 🟡 | **Interview:** ⭐⭐⭐
 
@@ -263,7 +263,7 @@ graph LR
 - High dimensional data (curse of dimensionality)
 - Not fully deterministic with border points
 
-**[→ Learn DBSCAN](dbscan.md)**
+→ Learn DBSCAN (coming soon)
 
 **Time:** 3-4 hours | **Difficulty:** 🟡 | **Interview:** ⭐⭐⭐
 
@@ -319,7 +319,7 @@ M-Step:
 - Can converge to local optima
 - More complex than K-Means
 
-**[→ Learn Gaussian Mixture Models](gaussian-mixture.md)**
+→ Learn Gaussian Mixture Models (coming soon)
 
 **Time:** 4-5 hours | **Difficulty:** 🔴 | **Interview:** ⭐⭐⭐
 
@@ -637,10 +637,10 @@ plt.show()
 
 **After mastering clustering:**
 
-1. **Dimensionality Reduction:** [PCA](../dimensionality-reduction/pca.md), [t-SNE](../dimensionality-reduction/tsne.md)
-2. **Anomaly Detection:** [Isolation Forest](../anomaly-detection/isolation-forest.md)
+1. **Dimensionality Reduction:** PCA, t-SNE
+2. **Anomaly Detection:** Isolation Forest
 3. **Advanced:** Semi-supervised learning, deep clustering
 
 ---
 
-**Ready to discover hidden groups in your data?** Start with [K-Means](kmeans.md)! 🎯
+**Ready to discover hidden groups in your data?** Start with K-Means! 🎯

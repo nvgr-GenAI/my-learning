@@ -146,24 +146,24 @@ graph TB
     #### 📊 Clustering
     Group similar data points together
 
-    - [K-Means](unsupervised-learning/clustering/kmeans.md) 🟡
-    - [Hierarchical Clustering](unsupervised-learning/clustering/hierarchical.md) 🟡
-    - [DBSCAN](unsupervised-learning/clustering/dbscan.md) 🟡
-    - [Gaussian Mixture Models](unsupervised-learning/clustering/gaussian-mixture.md) 🔴
+    - K-Means 🟡
+    - Hierarchical Clustering 🟡
+    - DBSCAN 🟡
+    - Gaussian Mixture Models 🔴
 
     #### 📉 Dimensionality Reduction
     Reduce features while preserving information
 
-    - [PCA](unsupervised-learning/dimensionality-reduction/pca.md) 🟡
-    - [t-SNE](unsupervised-learning/dimensionality-reduction/tsne.md) 🟡
-    - [UMAP](unsupervised-learning/dimensionality-reduction/umap.md) 🔴
-    - [Autoencoders](unsupervised-learning/dimensionality-reduction/autoencoders.md) 🔴
+    - PCA 🟡
+    - t-SNE 🟡
+    - UMAP 🔴
+    - Autoencoders 🔴
 
     #### ⚠️ Anomaly Detection
     Identify unusual patterns or outliers
 
-    - [Isolation Forest](unsupervised-learning/anomaly-detection/isolation-forest.md) 🟡
-    - [One-Class SVM](unsupervised-learning/anomaly-detection/one-class-svm.md) 🟡
+    - Isolation Forest 🟡
+    - One-Class SVM 🟡
 
     [→ Explore Unsupervised Learning](unsupervised-learning/index.md){ .md-button }
 

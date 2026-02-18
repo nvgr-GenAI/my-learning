@@ -431,8 +431,8 @@ class OptimizedHashFunction:
 After mastering hash functions, explore:
 
 - **[Collision Resolution](chaining.md)**: Handle hash collisions effectively
-- **[Performance Tuning](../fundamentals.md#performance)**: Optimize hash table performance
-- **[Cryptographic Hashing](cryptographic-hashing.md)**: Secure hash functions
+- **[Performance Tuning](fundamentals.md)**: Optimize hash table performance
+- **Cryptographic Hashing**: Secure hash functions
 
 ---
 

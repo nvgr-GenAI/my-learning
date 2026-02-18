@@ -977,7 +977,7 @@ Where: $M$ = n_estimators, $T$ = tree depth, $n$ = samples, $m$ = features
 ---
 
 **Next Steps:**
-- Master [XGBoost](xgboost.md) - Industry standard boosting
+- Master XGBoost - Industry standard boosting
 - Learn [Stacking](stacking.md) - Combine boosting with other models
 - Explore [Feature Engineering](../../feature-engineering/index.md) - Boost your boosting!
 

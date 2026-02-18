@@ -8,7 +8,7 @@
 
     AWS, Azure, GCP AI services and infrastructure
 
-    [:octicons-arrow-right-24: Cloud Services](cloud/index.md)
+    :octicons-arrow-right-24: Cloud Services
 
 -   :material-api:{ .lg .middle } **API Integration**
 
@@ -16,7 +16,7 @@
 
     OpenAI, Anthropic, Cohere, and other AI APIs
 
-    [:octicons-arrow-right-24: API Guide](apis/index.md)
+    :octicons-arrow-right-24: API Guide
 
 -   :material-server:{ .lg .middle } **Self-Hosted**
 
@@ -24,7 +24,7 @@
 
     Open-source models and deployment strategies
 
-    [:octicons-arrow-right-24: Self-Hosting](self-hosted/index.md)
+    :octicons-arrow-right-24: Self-Hosting
 
 -   :material-scale-balance:{ .lg .middle } **Cost Optimization**
 
@@ -32,7 +32,7 @@
 
     Pricing strategies and resource management
 
-    [:octicons-arrow-right-24: Cost Management](cost-optimization.md)
+    :octicons-arrow-right-24: Cost Management
 
 </div>
 

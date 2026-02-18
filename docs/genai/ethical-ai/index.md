@@ -23,31 +23,31 @@ After completing this module, you will be able to:
 - Fairness metrics and trade-offs
 - Mitigation strategies
 
-### [Privacy and Data Protection](privacy-data-protection.md)
+### Privacy and Data Protection
 - Privacy by design principles
 - Data minimization and purpose limitation
 - Consent and data rights
 - Privacy-preserving technologies
 
-### [Transparency and Explainability](transparency-explainability.md)
+### Transparency and Explainability
 - Explainable AI (XAI) techniques
 - Model interpretability methods
 - Transparency requirements
 - Communication strategies
 
-### [AI Governance](ai-governance.md)
+### AI Governance
 - Regulatory frameworks
 - Industry standards
 - Risk assessment frameworks
 - Compliance strategies
 
-### [Environmental Impact](environmental-impact.md)
+### Environmental Impact
 - Carbon footprint of AI systems
 - Sustainable AI practices
 - Energy-efficient architectures
 - Green computing principles
 
-### [Societal Impact](societal-impact.md)
+### Societal Impact
 - Job displacement and automation
 - Digital divide considerations
 - AI in sensitive domains

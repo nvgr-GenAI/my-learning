@@ -45,8 +45,8 @@ Dynamic Programming (DP) is a powerful algorithmic technique for solving optimiz
 
 - **[2D Dynamic Programming](2d-dp.md)** - Grid problems, path counting
 - **[Interval DP](interval-dp.md)** - Matrix chain multiplication, palindrome partitioning
-- **[State Machine DP](state-machine.md)** - Buy/sell stock, game theory
-- **[Probability DP](probability-dp.md)** - Expected value problems
+- **State Machine DP** - Buy/sell stock, game theory
+- **Probability DP** - Expected value problems
 
 ## 🧠 Key Concepts
 

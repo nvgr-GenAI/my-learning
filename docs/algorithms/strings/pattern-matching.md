@@ -100,7 +100,7 @@ Often the most efficient string-searching algorithm in practice, Boyer-Moore use
 2. Align the pattern with the text and compare characters from right to left
 3. Use the heuristics to skip comparisons when mismatches occur
 
-[Learn more about Boyer-Moore Algorithm](boyer-moore.md)
+Learn more about Boyer-Moore Algorithm
 
 #### Time Complexity
 
@@ -124,7 +124,7 @@ The Z algorithm finds all occurrences of a pattern in a text in linear time by c
 2. Compute the Z array (where Z[i] is the length of the longest substring starting from i that is also a prefix)
 3. Positions where Z[i] equals pattern length are matches
 
-[Learn more about Z Algorithm](z-algorithm.md)
+Learn more about Z Algorithm
 
 #### Time Complexity
 
@@ -144,7 +144,7 @@ This algorithm efficiently searches for multiple patterns simultaneously.
 1. Build a finite automaton from the set of patterns
 2. Process the text using this automaton to find all occurrences of all patterns
 
-[Learn more about Aho-Corasick Algorithm](aho-corasick.md)
+Learn more about Aho-Corasick Algorithm
 
 #### Time Complexity
 

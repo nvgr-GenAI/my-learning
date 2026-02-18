@@ -368,5 +368,5 @@ Where n is the number of points and h is the number of hull vertices.
 - [Line Intersection](line-intersection.md)
 - [Polygon Area](polygon-area.md)
 - [Closest Pair of Points](closest-pair.md)
-- [Triangulation](triangulation.md)
-- [Voronoi Diagrams](voronoi.md)
+- Triangulation
+- Voronoi Diagrams

@@ -239,5 +239,7 @@ A monolith is not a compromise -- it is the optimal architecture for most teams 
 
 - [Microservices Architecture](microservices.md) -- when and why to decompose
 - [Event-Driven Architecture](event-driven.md) -- decouple components within a monolith
+- [Domain-Driven Design](domain-driven-design.md) -- finding the right module/service boundaries
 - [Database Sharding](../data/databases/sharding.md) -- scaling the database layer
 - [Caching Strategies](../data/caching/strategies.md) -- reducing database load
+- [Architecture Interview Questions](interview-questions.md) -- practice for interviews

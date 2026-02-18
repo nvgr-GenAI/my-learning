@@ -1767,7 +1767,7 @@ def search_answer(left, right, check_function):
 ## 🎯 Next Steps
 
 - **[Medium Divide and Conquer Problems](medium-problems.md)** - More complex recursive algorithms
-- **[Advanced Algorithms](../advanced/index.md)** - Master theorem, complex recurrences
+- **Advanced Algorithms** - Master theorem, complex recurrences
 - **[Dynamic Programming](../dp/index.md)** - When divide and conquer meets memoization
 
 These fundamental patterns form the backbone of many advanced algorithms. Master them well!

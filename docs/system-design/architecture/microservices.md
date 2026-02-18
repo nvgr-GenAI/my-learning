@@ -375,5 +375,8 @@ Microservices decompose an application along business capability boundaries, giv
 
 - [Monolithic Architecture](monolithic.md) -- when and why to avoid microservices
 - [Event-Driven Architecture](event-driven.md) -- asynchronous communication patterns in depth
+- [Domain-Driven Design](domain-driven-design.md) -- bounded contexts for service boundaries
+- [Service Mesh](service-mesh.md) -- infrastructure layer for service-to-service communication
 - [API Design](../communication/api-design/index.md) -- designing service interfaces
 - [Distributed Systems](../distributed-systems/index.md) -- consistency, failure, and coordination challenges
+- [Architecture Interview Questions](interview-questions.md) -- practice for interviews

@@ -964,7 +964,7 @@ Where:
 - [Bagging](bagging.md) - Parallel ensemble for variance reduction
 - [Boosting](boosting.md) - Sequential ensemble for bias reduction
 - [Random Forest](../classification/random-forest.md) - Popular bagging method
-- [XGBoost](xgboost.md) - State-of-the-art boosting
+- XGBoost - State-of-the-art boosting
 - [Cross-Validation](../../evaluation/cross-validation.md) - Proper validation technique
 - [Ensemble Methods Overview](index.md) - All ensemble approaches
 
@@ -993,6 +993,6 @@ Where:
 **Next Steps:**
 - Practice on [Kaggle competitions](https://www.kaggle.com/competitions)
 - Build portfolio project with stacking
-- Explore [AutoML](../../automl/index.md) - Automated stacking
+- Explore AutoML - Automated stacking
 
 **Ready to build competition-winning ensembles?** Start with Problem 1 and work your way up! 🏆

@@ -16,7 +16,7 @@ Graph algorithms are essential for solving problems involving relationships, net
 ### 🎯 Fundamentals
 
 - **[Graph Fundamentals](fundamentals.md)** - Representations, terminology, basic operations
-- **[Graph Traversal Patterns](patterns.md)** - Common traversal techniques and when to use them
+- **Graph Traversal Patterns** - Common traversal techniques and when to use them
 
 ### 🌊 Traversal Algorithms
 
@@ -56,7 +56,7 @@ Graph algorithms are essential for solving problems involving relationships, net
 
 - **[Strongly Connected Components](scc.md)** - Tarjan's and Kosaraju's algorithms
 - **[Network Flow](network-flow.md)** - Max flow, min cut problems
-- **[Graph Matching](matching.md)** - Bipartite matching, maximum matching
+- **Graph Matching** - Bipartite matching, maximum matching
 
 ## 🧠 Core Concepts
 

@@ -247,7 +247,7 @@ Every concept is explained through relatable analogies and real-world scenarios:
 ### ⚡ 5-Minute Quick Start
 
 1. **[Read the Introduction](introduction.md)** - Get the big picture (5 min)
-2. **[Try the Basic Example](implementation.md#basic-rag-implementation)** - See it in action (10 min)
+2. **[Try the Basic Example](implementation.md#pattern-1-basic-rag-implementation)** - See it in action (10 min)
 3. **[Experiment with Patterns](patterns.md)** - Explore different approaches (15 min)
 
 ### 🎯 30-Minute Deep Dive

@@ -356,4 +356,4 @@ Where n is the number of lines/segments and k is the number of intersections.
 - [Polygon Area](polygon-area.md)
 - [Vectors and Matrices](vectors-matrices.md)
 - [Closest Pair of Points](closest-pair.md)
-- [Geometric Primitives](geometric-primitives.md)
+- Geometric Primitives

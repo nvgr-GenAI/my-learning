@@ -734,9 +734,9 @@ plt.show()
 
 - [Random Forest](random-forest.md) - Ensemble of decision trees
 - [Gradient Boosting](gradient-boosting.md) - Sequential tree ensemble
-- [Feature Selection](../../preprocessing/feature-selection.md) - Use tree-based importance
-- [Interpretability](../../explainability/model-interpretation.md) - Explain predictions
-- [CART Algorithm](../../algorithms/cart.md) - Algorithm details
+- Feature Selection - Use tree-based importance
+- Interpretability - Explain predictions
+- CART Algorithm - Algorithm details
 
 ---
 
@@ -753,6 +753,6 @@ plt.show()
 **Next Steps:**
 - Learn [Random Forest](random-forest.md) to reduce overfitting
 - Try [Gradient Boosting](gradient-boosting.md) for higher accuracy
-- Explore [Feature Engineering](../../preprocessing/feature-engineering.md)
+- Explore Feature Engineering
 
 **Master interpretable classification with Decision Trees!** 🌳

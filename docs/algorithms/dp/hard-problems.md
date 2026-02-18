@@ -798,8 +798,8 @@ You've mastered the most challenging DP problems! These techniques appear in:
 
 ### 📚 What's Next
 
-- **[Advanced Algorithms](../advanced/index.md)** - Network flows, advanced graph algorithms
-- **[System Design](../../../system-design/index.md)** - Apply DP at scale
+- **Advanced Algorithms** - Network flows, advanced graph algorithms
+- **[System Design](../../system-design/index.md)** - Apply DP at scale
 - **Competitive Programming** - Practice more complex variations
 - **Research Papers** - Explore cutting-edge DP applications
 

@@ -54,8 +54,8 @@ graph TB
 - [ ] [Random Forest](supervised-learning/classification/random-forest.md)
 - [ ] [Gradient Boosting](supervised-learning/classification/gradient-boosting.md)
 - [ ] [SVM](supervised-learning/classification/svm.md)
-- [ ] [K-Means](unsupervised-learning/clustering/kmeans.md)
-- [ ] [PCA](unsupervised-learning/dimensionality-reduction/pca.md)
+- [ ] K-Means
+- [ ] PCA
 
 ### Week 3: Deep Learning & Neural Networks 🔴
 **Focus:** Neural networks and modern architectures
@@ -792,12 +792,12 @@ User Request → Candidate Generation (millions → thousands)
 **Based on your interview timeline:**
 
 ### 1 Week Out
-- Focus on [ML Theory Interview](#-ml-theory-interview)
+- Focus on [ML Theory Interview](#ml-theory-interview)
 - Do 2-3 mock interviews
 - Review your past projects
 
 ### 2-4 Weeks Out
-- Follow [4-week study plan](#-study-plan-4-6-weeks)
+- Follow [4-week study plan](#study-plan-4-6-weeks)
 - Practice coding daily
 - Review system design patterns
 
@@ -808,6 +808,6 @@ User Request → Candidate Generation (millions → thousands)
 
 ---
 
-**Ready to ace your ML interview?** Start with the [4-week study plan](#-study-plan-4-6-weeks) and practice consistently! 🎯
+**Ready to ace your ML interview?** Start with the [4-week study plan](#study-plan-4-6-weeks) and practice consistently! 🎯
 
 **Remember:** Interviews are a skill - the more you practice, the better you get! Good luck! 🍀

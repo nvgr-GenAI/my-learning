@@ -8,7 +8,7 @@
 
     From full fine-tuning to efficient parameter updates
 
-    [:octicons-arrow-right-24: Training Approaches](training-methods.md)
+    :octicons-arrow-right-24: Training Approaches
 
 -   :material-database:{ .lg .middle } **Data Preparation**
 
@@ -16,7 +16,7 @@
 
     Dataset curation, preprocessing, and quality assurance
 
-    [:octicons-arrow-right-24: Data Engineering](data-preparation.md)
+    :octicons-arrow-right-24: Data Engineering
 
 -   :material-tune:{ .lg .middle } **Parameter Efficiency**
 
@@ -24,7 +24,7 @@
 
     LoRA, QLoRA, AdaLoRA, and other PEFT techniques
 
-    [:octicons-arrow-right-24: PEFT Methods](peft.md)
+    :octicons-arrow-right-24: PEFT Methods
 
 -   :material-shield-check:{ .lg .middle } **Safety & Alignment**
 
@@ -32,7 +32,7 @@
 
     RLHF, Constitutional AI, and safety fine-tuning
 
-    [:octicons-arrow-right-24: Alignment](alignment.md)
+    :octicons-arrow-right-24: Alignment
 
 </div>
 

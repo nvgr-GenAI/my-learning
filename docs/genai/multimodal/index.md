@@ -8,7 +8,7 @@
 
     CNNs, Vision Transformers, and computer vision
 
-    [:octicons-arrow-right-24: Vision AI](vision/index.md)
+    :octicons-arrow-right-24: Vision AI
 
 -   :material-waveform:{ .lg .middle } **Audio Processing**
 
@@ -16,7 +16,7 @@
 
     Speech recognition, synthesis, and audio generation
 
-    [:octicons-arrow-right-24: Audio AI](audio/index.md)
+    :octicons-arrow-right-24: Audio AI
 
 -   :material-video:{ .lg .middle } **Video Understanding**
 
@@ -24,7 +24,7 @@
 
     Video analysis, generation, and temporal modeling
 
-    [:octicons-arrow-right-24: Video AI](video/index.md)
+    :octicons-arrow-right-24: Video AI
 
 -   :material-connection:{ .lg .middle } **Cross-Modal**
 
@@ -32,7 +32,7 @@
 
     Vision-language models, CLIP, and multimodal fusion
 
-    [:octicons-arrow-right-24: Fusion Methods](fusion/index.md)
+    :octicons-arrow-right-24: Fusion Methods
 
 </div>
 

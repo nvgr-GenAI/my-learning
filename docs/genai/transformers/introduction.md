@@ -24,7 +24,7 @@ Imagine you're reading a mystery novel. A good detective doesn't just read word 
 **The magic ingredient:** **Attention** - the ability to focus on relevant information
 
 <figure markdown>
-  ![Transformer Overview](../../assets/images/genai/transformer-overview.png){ width="700" height="400" }
+  *Transformer Architecture Diagram*
   <figcaption>Transformers can see and connect all parts of the input simultaneously</figcaption>
 </figure>
 

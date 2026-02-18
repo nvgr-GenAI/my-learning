@@ -575,7 +575,7 @@ Compute the normalized Laplacian $\mathcal{L}$, find its eigenvalues, and determ
 - [Eigenvalues](../linear-algebra/eigenvalues.md) — spectral theory underlying the graph Laplacian
 - [Matrix Decompositions](../linear-algebra/matrix-decompositions.md) — SVD for low-rank graph approximations
 - [Matrices](../linear-algebra/matrices.md) — adjacency and Laplacian matrices
-- [Abstract Algebra](abstract-algebra.md) — graph automorphisms, symmetry, equivariant networks
-- [Topology](topology.md) — simplicial complexes generalize graphs to higher dimensions
+- Abstract Algebra — graph automorphisms, symmetry, equivariant networks
+- Topology — simplicial complexes generalize graphs to higher dimensions
 - [Optimization](../optimization/index.md) — graph-based optimization, network flows
 - [Probability Foundations](../probability/probability-foundations.md) — random graphs, probabilistic graph models

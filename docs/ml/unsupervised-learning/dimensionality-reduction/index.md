@@ -24,7 +24,7 @@
 ### 1. PCA (Principal Component Analysis) 🟡
 **Linear dimensionality reduction - find principal directions**
 
-**[→ Learn PCA](pca.md)**
+→ Learn PCA (coming soon)
 
 **Time:** 4-5 hours | **Interview:** ⭐⭐⭐⭐
 
@@ -33,7 +33,7 @@
 ### 2. t-SNE 🟡
 **Non-linear visualization - preserve local structure**
 
-**[→ Learn t-SNE](tsne.md)**
+→ Learn t-SNE (coming soon)
 
 **Time:** 3-4 hours | **Interview:** ⭐⭐⭐
 
@@ -42,7 +42,7 @@
 ### 3. UMAP 🔴
 **Uniform Manifold Approximation - preserve global structure**
 
-**[→ Learn UMAP](umap.md)**
+→ Learn UMAP (coming soon)
 
 **Time:** 3-4 hours | **Interview:** ⭐⭐
 
@@ -51,7 +51,7 @@
 ### 4. Autoencoders 🔴
 **Neural network-based dimensionality reduction**
 
-**[→ Learn Autoencoders](autoencoders.md)**
+→ Learn Autoencoders (coming soon)
 
 **Time:** 5-6 hours | **Interview:** ⭐⭐⭐
 
@@ -59,4 +59,4 @@
 
 ## 🚀 Next Steps
 
-Ready to compress your data? Start with **[PCA](pca.md)** for fundamental understanding!
+Ready to compress your data? Start with **PCA** for fundamental understanding!

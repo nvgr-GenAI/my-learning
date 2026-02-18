@@ -1124,8 +1124,8 @@ print(f"  Recall:    {true_positives/n_cancer_genes:.2%}")
 
 - [Linear Regression](linear-regression.md) - Foundation without regularization
 - [Ridge Regression](ridge-regression.md) - L2 regularization (comparison)
-- [Elastic Net](elastic-net.md) - Combines L1 + L2
-- [Feature Selection Methods](../../preprocessing/feature-selection.md) - Other approaches
+- Elastic Net - Combines L1 + L2
+- Feature Selection Methods - Other approaches
 - [Polynomial Regression](polynomial-regression.md) - Use Lasso to select polynomial terms
 
 ---
@@ -1143,8 +1143,8 @@ print(f"  Recall:    {true_positives/n_cancer_genes:.2%}")
 
 **Next Steps:**
 - Compare with [Ridge Regression](ridge-regression.md)
-- Learn [Elastic Net](elastic-net.md) for handling correlated features
+- Learn Elastic Net for handling correlated features
 - Apply to [Polynomial Features](polynomial-regression.md) for automatic term selection
-- Explore [Advanced Feature Selection](../../preprocessing/feature-selection.md)
+- Explore Advanced Feature Selection
 
 **Ready to select features like a pro?** Start with the beginner problems above!

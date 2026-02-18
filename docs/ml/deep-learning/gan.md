@@ -320,8 +320,8 @@ Paired image-to-image translation (sketch → photo).
 
 - [CNN](cnn.md) - Used in DCGAN
 - [Neural Networks Basics](neural-networks-basics.md) - Foundation
-- [Autoencoders](../unsupervised-learning/autoencoders.md) - Alternative generative model
-- [VAE](advanced/vae.md) - Variational autoencoders
+- Autoencoders - Alternative generative model
+- VAE - Variational autoencoders
 
 ---
 

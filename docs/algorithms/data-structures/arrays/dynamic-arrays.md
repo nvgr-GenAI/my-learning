@@ -680,7 +680,7 @@ def memory_optimization():
 - **[Static Arrays](static-arrays.md)**: For fixed-size, high-performance arrays
 - **[Multidimensional Arrays](multidimensional-arrays.md)**: For matrices and tensors
 - **[Easy Problems](easy-problems.md)**: Practice with dynamic array problems
-- **[Algorithm Patterns](../../patterns/index.md)**: Common algorithmic patterns
+- **Algorithm Patterns**: Common algorithmic patterns
 
 ---
 

@@ -412,4 +412,4 @@ boolean ends = "hello world".endsWith("world");  // True
 - [Edit Distance](edit-distance.md)
 - [String Pattern Matching](pattern-matching.md)
 - [String Searching Algorithms](../searching/index.md)
-- [Regular Expressions](../advanced/regex.md)
+- Regular Expressions

@@ -571,8 +571,8 @@ def performance_benchmark():
 
 - **[Linked List Stack](linked-list-stack.md)**: Alternative implementation using nodes
 - **[Easy Problems](easy-problems.md)**: Practice with stack problems
-- **[Applications](../fundamentals.md#applications)**: Real-world stack usage
-- **[Dynamic Arrays](../../arrays/dynamic-arrays.md)**: Understanding the underlying structure
+- **[Applications](fundamentals.md)**: Real-world stack usage
+- **[Dynamic Arrays](../arrays/dynamic-arrays.md)**: Understanding the underlying structure
 
 ---
 

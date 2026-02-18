@@ -566,7 +566,7 @@ Understanding these core concepts helps you:
 !!! note "🚀 Ready for More?"
     - **Next**: [Neural Networks](neural-networks.md) - Deep dive into the underlying architecture
     - **Advanced**: [Transformers](../transformers/index.md) - Modern architecture powering most GenAI
-    - **Practical**: [Building Your First Model](../practical/first-model.md) - Hands-on implementation
+    - **Practical**: Building Your First Model - Hands-on implementation
 
 ---
 

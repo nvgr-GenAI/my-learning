@@ -10,8 +10,8 @@
 
 **Essential Reading**:
 - [GenAI Overview](index.md#what-is-generative-ai) - What is GenAI?
-- [Transformer Revolution](transformers/index.md#transformer-revolution) - Why transformers matter
-- [LLM Basics](llms/index.md#what-youll-learn) - Language model fundamentals
+- [Transformer Revolution](transformers/index.md) - Why transformers matter
+- [LLM Basics](llms/index.md#learning-outcomes) - Language model fundamentals
 
 **Key Takeaway**: GenAI creates new content using transformer-based models trained on large datasets.
 

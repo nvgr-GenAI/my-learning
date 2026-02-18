@@ -53,7 +53,7 @@ Structured programs to take you from beginner to expert. Choose the path that fi
 - Data modeling fundamentals
 
 **Study:**
-- Read: [Databases](databases/index.md)
+- Read: [Databases](data/databases/index.md)
 - Learn: Entity-relationship diagrams
 - Compare: PostgreSQL, MongoDB, Redis
 
@@ -75,8 +75,8 @@ Structured programs to take you from beginner to expert. Choose the path that fi
 - Load balancing algorithms
 
 **Study:**
-- Read: [Caching](caching/index.md)
-- Read: [Load Balancing](load-balancing/index.md)
+- Read: [Caching](data/caching/index.md)
+- Read: [Load Balancing](networking/load-balancers.md)
 - Learn: LRU cache, write-through vs write-back
 
 **Practice:**
@@ -147,7 +147,7 @@ Structured programs to take you from beginner to expert. Choose the path that fi
 
 **Study:**
 - Read: [Distributed Systems](distributed-systems/index.md)
-- Read: [Consistent Hashing](consistent-hashing/index.md)
+- Read: [Consistent Hashing](distributed-systems/consistent-hashing.md)
 - Learn: Cassandra, DynamoDB architecture
 
 **Practice:**
@@ -169,7 +169,7 @@ Structured programs to take you from beginner to expert. Choose the path that fi
 - Async processing patterns
 
 **Study:**
-- Read: [Messaging Systems](messaging/index.md)
+- Read: [Messaging Systems](communication/messaging/index.md)
 - Learn: At-least-once vs exactly-once delivery
 - Learn: Dead letter queues
 
@@ -192,7 +192,7 @@ Structured programs to take you from beginner to expert. Choose the path that fi
 - Rate limiting strategies
 
 **Study:**
-- Read: [Reliability & Security](reliability-security/index.md)
+- Read: [Reliability](reliability/index.md) and [Security](security/index.md)
 - Learn: How distributed locks work
 - Learn: Timeouts and backoff strategies
 
@@ -346,7 +346,7 @@ Answer these to find your level:
 4. **Study Real Systems**
    - Read engineering blogs (Netflix, Uber, Twitter)
    - Understand why they made specific choices
-   - See: [Case Studies](case-studies/index.md)
+   - See: Real-world system architectures from engineering blogs
 
 5. **Practice Out Loud**
    - Explain your designs to friends
@@ -433,7 +433,7 @@ Answer these to find your level:
 
 - 📚 Study [fundamentals](fundamentals/index.md) if concepts are unclear
 - 💼 Jump to [interview prep](interviews/index.md) if that's your goal
-- 🏗️ Check [case studies](case-studies/index.md) to see real-world designs
+- 🏗️ Check real-world system architectures from engineering blogs
 
 ---
 

@@ -16,6 +16,7 @@ Distributed systems introduce complexity: network failures, clock skew, partial 
 | [Consistent Hashing](consistent-hashing.md) | 📝 Planned | Medium | Distribute data evenly |
 | [Distributed Locks](distributed-locks.md) | 📝 Planned | Medium | Coordination across nodes |
 | [Distributed Transactions](distributed-transactions.md) | 📝 Planned | Hard | 2PC, Saga pattern |
+| [Unique ID Generation](unique-id-generation.md) | ✅ Complete | Medium | Snowflake, UUID, ULID strategies |
 
 ---
 

@@ -216,9 +216,9 @@ public class KMP {
 ## Related Algorithms
 
 - [Rabin-Karp Algorithm](rabin-karp.md)
-- [Boyer-Moore Algorithm](boyer-moore.md)
-- [Z Algorithm](z-algorithm.md)
-- [Aho-Corasick Algorithm](aho-corasick.md)
+- Boyer-Moore Algorithm
+- Z Algorithm
+- Aho-Corasick Algorithm
 
 ## References
 

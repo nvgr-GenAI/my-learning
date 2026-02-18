@@ -31,13 +31,13 @@ Master algorithms and data structures from fundamentals to advanced concepts - y
     **Backtracking:** [Patterns](backtracking/index.md) • [Problems](backtracking/easy-problems.md)
 
 === "Problem Patterns"
-    **Two Pointers:** [Guide](fundamentals/problem-solving-patterns.md#two-pointers-technique) • Use for: Array problems, palindromes, sum problems
+    **Two Pointers:** [Guide](fundamentals/problem-solving-patterns.md#two-pointers) • Use for: Array problems, palindromes, sum problems
 
-    **Sliding Window:** [Guide](fundamentals/problem-solving-patterns.md#sliding-window-technique) • Use for: Subarray/substring with constraints
+    **Sliding Window:** [Guide](fundamentals/problem-solving-patterns.md#sliding-window) • Use for: Subarray/substring with constraints
 
-    **Fast & Slow Pointers:** [Guide](fundamentals/problem-solving-patterns.md#fast-slow-pointers-technique) • Use for: Cycle detection, middle elements
+    **Fast & Slow Pointers:** [Guide](fundamentals/problem-solving-patterns.md#fast-slow-pointers) • Use for: Cycle detection, middle elements
 
-    **Merge Intervals:** [Guide](fundamentals/problem-solving-patterns.md#merge-intervals-technique) • Use for: Overlapping intervals, scheduling
+    **Merge Intervals:** [Guide](fundamentals/problem-solving-patterns.md#merge-intervals) • Use for: Overlapping intervals, scheduling
 
 === "Time Complexity"
     | Complexity | Name | Example | When to Use |
@@ -63,16 +63,16 @@ Master algorithms and data structures from fundamentals to advanced concepts - y
     **Advanced (2-3 months):** [Advanced Trees](trees/index.md) → [Graph Algorithms](graphs/index.md) → [Advanced DP](dp/patterns.md) → [String Algorithms](strings/index.md) → [Backtracking](backtracking/index.md) → [Divide & Conquer](divide-conquer/index.md)
 
 === "Interview Prep"
-    **Problem-Solving Framework:** [Complete Guide](fundamentals/interview-preparation.md) • [Approach Strategies](fundamentals/problem-solving-patterns.md) • [Pattern Recognition](fundamentals/problem-solving-patterns.md#common-patterns)
+    **Problem-Solving Framework:** [Complete Guide](fundamentals/interview-preparation.md) • [Approach Strategies](fundamentals/problem-solving-patterns.md) • [Pattern Recognition](fundamentals/problem-solving-patterns.md#pattern-selection-guide)
 
-    **Strategy & Planning:** [Interview Approach](fundamentals/interview-preparation.md) • [Common Problems](fundamentals/interview-preparation.md#common-problems) • [Mock Interviews](fundamentals/interview-preparation.md#practice-techniques)
+    **Strategy & Planning:** [Interview Approach](fundamentals/interview-preparation.md) • [Common Problems](fundamentals/interview-preparation.md#problem-distribution) • [Mock Interviews](fundamentals/interview-preparation.md#types-of-practice)
 
     **Practice Platforms:** [LeetCode](https://leetcode.com/) • [HackerRank](https://www.hackerrank.com/) • [CodeForces](https://codeforces.com/)
 
     **💡 Interview Tip:** Always discuss your approach BEFORE coding. Clarify requirements, explain your strategy, and get confirmation before implementation.
 
 === "Preparation Planning"
-    **Study Plans:** [Structured Learning Paths](fundamentals/learning-paths.md) • [Timeline-based Plans](fundamentals/learning-paths.md#study-timelines) • [Topic Sequencing](fundamentals/learning-paths.md#recommended-order)
+    **Study Plans:** [Structured Learning Paths](fundamentals/learning-paths.md) • [Timeline-based Plans](fundamentals/learning-paths.md) • [Topic Sequencing](fundamentals/learning-paths.md)
 
     **Daily Practice (1-2 hours):** Solve 1-2 new problems (40-60 min) • Review 2-3 previous problems (20-30 min) • Study 1 new concept (20-30 min)
 

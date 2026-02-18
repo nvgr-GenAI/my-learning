@@ -214,7 +214,7 @@ def iterative_fft(x):
 
 ## Related Topics
 
-- [Number Theoretic Transform (NTT)](number-theoretic-transform.md)
-- [Convolution](convolution.md)
+- Number Theoretic Transform (NTT)
+- Convolution
 - [Binary Exponentiation](binary-exponentiation.md)
-- [Signal Processing Fundamentals](signal-processing.md)
+- Signal Processing Fundamentals

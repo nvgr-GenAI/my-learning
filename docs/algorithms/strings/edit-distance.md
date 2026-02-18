@@ -328,7 +328,7 @@ def edit_distance_with_operations(str1, str2):
 
 ## Related Algorithms
 
-- [Longest Common Subsequence](lcs.md)
+- Longest Common Subsequence
 - [String Comparison Methods](comparison.md)
 - [Pattern Matching](pattern-matching.md)
 - [Dynamic Programming](../dp/fundamentals.md)

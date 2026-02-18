@@ -637,8 +637,8 @@ You've mastered intermediate mathematical algorithms! These skills are essential
 ### 📚 What's Next
 
 - **[Hard Problems](hard-problems.md)** - Advanced mathematical challenges
-- **[Number Theory](../advanced/number-theory.md)** - Deep mathematical concepts
-- **[Optimization](../advanced/optimization.md)** - Mathematical optimization
-- **[Cryptography](../advanced/cryptography.md)** - Applied mathematics
+- **Number Theory** - Deep mathematical concepts
+- **Optimization** - Mathematical optimization
+- **Cryptography** - Applied mathematics
 
 *Continue building your mathematical foundation for advanced problem-solving!*

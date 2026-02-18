@@ -272,7 +272,7 @@ Small datasets overfit easily - use regularization!
 - [CNN](cnn.md) - Image models for transfer
 - [Transformers](transformers.md) - Language models for transfer
 - [Neural Networks Basics](neural-networks-basics.md) - Foundation
-- [Data Augmentation](../fundamentals/data-augmentation.md) - Essential for small data
+- Data Augmentation - Essential for small data
 
 ---
 

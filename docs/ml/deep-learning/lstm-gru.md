@@ -675,8 +675,8 @@ GRU is about **25% faster** than LSTM!
 - [Transformers](transformers.md) - Modern alternative
 - [Attention Mechanisms](attention-mechanisms.md) - Enhance LSTMs
 - [Backpropagation](backpropagation.md) - Training algorithm
-- [Sequence-to-Sequence](advanced/seq2seq.md) - Encoder-decoder models
-- [Word Embeddings](../nlp/word-embeddings.md) - Text representation
+- Sequence-to-Sequence - Encoder-decoder models
+- Word Embeddings - Text representation
 
 ---
 

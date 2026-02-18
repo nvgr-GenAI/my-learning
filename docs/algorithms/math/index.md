@@ -16,19 +16,19 @@ Mathematical algorithms form the foundation of many computational problems. Thes
 ### 🔢 Number Theory
 
 - **[Number Theory Fundamentals](number-theory.md)** - Primes, divisibility, modular arithmetic
-- **[Prime Algorithms](primes.md)** - Sieve of Eratosthenes, primality testing
+- **Prime Algorithms** - Sieve of Eratosthenes, primality testing
 - **[GCD and LCM](gcd-lcm.md)** - Euclidean algorithm and applications
-- **[Modular Arithmetic](modular.md)** - Fast exponentiation, inverse operations
+- **Modular Arithmetic** - Fast exponentiation, inverse operations
 
 ### 🎲 Combinatorics
 
 - **[Combinatorics Basics](combinatorics.md)** - Permutations, combinations, counting
-- **[Probability](probability.md)** - Basic probability and expected value calculations
+- **Probability** - Basic probability and expected value calculations
 
 ### 📐 Computational Geometry
 
 - **[Geometry Fundamentals](geometry.md)** - Points, lines, distances, areas
-- **[Advanced Geometry](advanced-geometry.md)** - Convex hull, line intersections
+- **Advanced Geometry** - Convex hull, line intersections
 
 ### 💪 Practice Problems
 

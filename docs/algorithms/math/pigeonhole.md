@@ -208,7 +208,7 @@ def contains_duplicate(arr):
 ## 🔗 Related Concepts
 
 - [Combinatorics](combinatorics.md)
-- [Ramsey Theory](ramsey-theory.md)
-- [Counting Principles](counting-principles.md)
-- [Birthday Paradox](birthday-paradox.md)
-- [Discrete Mathematics](discrete-mathematics.md)
+- Ramsey Theory
+- Counting Principles
+- Birthday Paradox
+- Discrete Mathematics

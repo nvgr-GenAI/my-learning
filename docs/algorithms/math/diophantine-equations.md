@@ -179,4 +179,4 @@ Let's solve the equation 3x + 6y = 12:
 - [Extended Euclidean Algorithm](extended-euclidean.md)
 - [Modular Arithmetic](modular-arithmetic.md)
 - [Chinese Remainder Theorem](chinese-remainder.md)
-- [Continued Fractions](continued-fractions.md)
+- Continued Fractions

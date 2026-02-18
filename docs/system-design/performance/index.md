@@ -10,9 +10,10 @@ Performance is how fast your system responds. Master latency optimization, throu
 
 ## Topics
 
-| Topic | Status | Description |
-|-------|--------|-------------|
-| [Performance Fundamentals](fundamentals.md) | ✅ Complete | Metrics, optimization techniques |
+| Topic                                            | Status      | Description                                              |
+|--------------------------------------------------|-------------|----------------------------------------------------------|
+| [Performance Fundamentals](fundamentals.md)      | ✅ Complete | Metrics, optimization techniques                         |
+| [Latency Optimization](latency-optimization.md)  | ✅ Complete | Network, database, application, and caching techniques   |
 
 ---
 
@@ -27,8 +28,10 @@ Performance is how fast your system responds. Master latency optimization, throu
 ---
 
 **Further Reading:**
-- [Performance Fundamentals](fundamentals.md) - Already complete!
-- [Caching](../data/caching/index.md)
+
+- [Performance Fundamentals](fundamentals.md) - Metrics, SLIs/SLOs, optimization hierarchy
+- [Latency Optimization](latency-optimization.md) - Network, DB, app, and caching techniques
+- [Caching Strategies](../data/caching/strategies.md) - Read/write strategies, eviction policies
 
 ---
 

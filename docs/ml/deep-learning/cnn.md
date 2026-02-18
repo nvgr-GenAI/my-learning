@@ -922,9 +922,9 @@ $$\mathbf{y} = F(\mathbf{x}) + \mathbf{x}$$
 - [Neural Networks Basics](neural-networks-basics.md) - Foundation
 - [Backpropagation](backpropagation.md) - Training CNNs
 - [Transfer Learning](transfer-learning.md) - Use pretrained CNNs
-- [Data Augmentation](../fundamentals/data-augmentation.md) - Increase dataset size
-- [Object Detection](advanced/object-detection.md) - Detect and locate objects
-- [Image Segmentation](advanced/image-segmentation.md) - Pixel-level classification
+- Data Augmentation - Increase dataset size
+- Object Detection - Detect and locate objects
+- Image Segmentation - Pixel-level classification
 
 ---
 
@@ -942,7 +942,7 @@ $$\mathbf{y} = F(\mathbf{x}) + \mathbf{x}$$
 
 **Next Steps:**
 - Master [Transfer Learning](transfer-learning.md) to use pretrained models
-- Explore [Data Augmentation](../fundamentals/data-augmentation.md) techniques
+- Explore Data Augmentation techniques
 - Build projects with real-world image datasets
 - Learn advanced architectures (Inception, EfficientNet)
 

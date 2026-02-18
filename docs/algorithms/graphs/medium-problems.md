@@ -1687,5 +1687,5 @@ Ready for the ultimate challenge? Move on to **[Hard Graph Problems](hard-proble
 ### 📚 What's Next
 
 - **[Hard Problems](hard-problems.md)** - Master advanced graph algorithms
-- **[Graph Theory Fundamentals](../fundamentals/graph-theory.md)** - Deep theoretical understanding
-- **[Advanced Algorithms](../advanced/network-flow.md)** - Specialized graph algorithms
+- **Graph Theory Fundamentals** - Deep theoretical understanding
+- **Advanced Algorithms** - Specialized graph algorithms

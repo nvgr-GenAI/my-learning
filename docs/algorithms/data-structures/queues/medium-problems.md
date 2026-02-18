@@ -14,21 +14,21 @@ Master intermediate queue techniques and applications:
 
     | # | Problem | Difficulty | Topics | Solution |
     |---|---------|------------|--------|----------|
-    | 1 | Sliding Window Maximum | Medium | Monotonic Queue, Array | [Solution](#problem-1) |
-    | 2 | Perfect Squares | Medium | BFS, DP | [Solution](#problem-2) |
-    | 3 | Design Circular Queue | Medium | Implementation | [Solution](#problem-3) |
-    | 4 | Number of Recent Calls | Medium | Queue Design | [Solution](#problem-4) |
-    | 5 | Design Hit Counter | Medium | Design | [Solution](#problem-5) |
-    | 6 | Task Scheduler | Medium | Greedy, Priority Queue | [Solution](#problem-6) |
-    | 7 | Implement Stack using Queues | Medium | Implementation | [Solution](#problem-7) |
-    | 8 | Moving Average from Data Stream | Medium | Sliding Window | [Solution](#problem-8) |
-    | 9 | Find the Winner of the Circular Game | Medium | Simulation | [Solution](#problem-9) |
-    | 10 | Design Snake Game | Medium | Design, Queue | [Solution](#problem-10) |
-    | 11 | Product of the Last K Numbers | Medium | Design | [Solution](#problem-11) |
-    | 12 | Reveal Cards In Increasing Order | Medium | Queue, Simulation | [Solution](#problem-12) |
-    | 13 | Queue Reconstruction by Height | Medium | Greedy | [Solution](#problem-13) |
-    | 14 | Walls and Gates | Medium | BFS | [Solution](#problem-14) |
-    | 15 | Rotting Oranges | Medium | BFS | [Solution](#problem-15) |
+    | 1 | Sliding Window Maximum | Medium | Monotonic Queue, Array | Solution |
+    | 2 | Perfect Squares | Medium | BFS, DP | Solution |
+    | 3 | Design Circular Queue | Medium | Implementation | Solution |
+    | 4 | Number of Recent Calls | Medium | Queue Design | Solution |
+    | 5 | Design Hit Counter | Medium | Design | Solution |
+    | 6 | Task Scheduler | Medium | Greedy, Priority Queue | Solution |
+    | 7 | Implement Stack using Queues | Medium | Implementation | Solution |
+    | 8 | Moving Average from Data Stream | Medium | Sliding Window | Solution |
+    | 9 | Find the Winner of the Circular Game | Medium | Simulation | Solution |
+    | 10 | Design Snake Game | Medium | Design, Queue | Solution |
+    | 11 | Product of the Last K Numbers | Medium | Design | Solution |
+    | 12 | Reveal Cards In Increasing Order | Medium | Queue, Simulation | Solution |
+    | 13 | Queue Reconstruction by Height | Medium | Greedy | Solution |
+    | 14 | Walls and Gates | Medium | BFS | Solution |
+    | 15 | Rotting Oranges | Medium | BFS | Solution |
 
 === "📚 Interview Tips"
 

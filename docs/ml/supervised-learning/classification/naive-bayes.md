@@ -812,9 +812,9 @@ sentiment_analysis_example()
 
 - [Logistic Regression](logistic-regression.md) - Alternative probabilistic classifier
 - [Decision Trees](decision-trees.md) - Non-linear classifier
-- [Text Classification](../../nlp/text-classification.md) - NLP applications
-- [Feature Engineering](../../preprocessing/feature-engineering.md) - Improve features
-- [Probability Theory](../../math/probability.md) - Mathematical foundation
+- Text Classification - NLP applications
+- Feature Engineering - Improve features
+- Probability Theory - Mathematical foundation
 
 ---
 

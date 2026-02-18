@@ -29,7 +29,7 @@
 ### 1. Isolation Forest 🟡
 **Isolate anomalies using random trees**
 
-**[→ Learn Isolation Forest](isolation-forest.md)**
+→ Learn Isolation Forest (coming soon)
 
 **Time:** 3-4 hours | **Interview:** ⭐⭐⭐
 
@@ -38,7 +38,7 @@
 ### 2. One-Class SVM 🟡
 **Learn boundary around normal data**
 
-**[→ Learn One-Class SVM](one-class-svm.md)**
+→ Learn One-Class SVM (coming soon)
 
 **Time:** 3-4 hours | **Interview:** ⭐⭐
 
@@ -46,4 +46,4 @@
 
 ## 🚀 Next Steps
 
-Ready to detect anomalies? Start with **[Isolation Forest](isolation-forest.md)** for robust detection!
+Ready to detect anomalies? Start with **Isolation Forest** for robust detection!

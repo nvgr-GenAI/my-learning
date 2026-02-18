@@ -2,7 +2,7 @@
 
 **Discover hidden patterns in unlabeled data.** Master clustering, dimensionality reduction, and anomaly detection without predefined labels.
 
-**Difficulty:** 🟡 Intermediate | **Time:** 3-4 weeks | **Prerequisites:** [ML Fundamentals](../fundamentals/index.md), [Linear Algebra](../fundamentals/mathematics.md)
+**Difficulty:** 🟡 Intermediate | **Time:** 3-4 weeks | **Prerequisites:** [ML Fundamentals](../fundamentals/index.md), Linear Algebra
 
 ---
 
@@ -102,7 +102,7 @@ Clustering partitions data into groups (clusters) where points within a cluster 
 - Similar cluster sizes
 - Large datasets (efficient)
 
-**[→ Learn K-Means](clustering/kmeans.md)**
+→ Learn K-Means (coming soon)
 
 **Difficulty:** 🟡 | **Time:** 3-4 hours | **Interview:** ⭐⭐⭐⭐
 
@@ -127,7 +127,7 @@ Clustering partitions data into groups (clusters) where points within a cluster 
 - Small to medium datasets
 - Hierarchical structure important
 
-**[→ Learn Hierarchical Clustering](clustering/hierarchical.md)**
+→ Learn Hierarchical Clustering (coming soon)
 
 **Difficulty:** 🟡 | **Time:** 3-4 hours | **Interview:** ⭐⭐⭐
 
@@ -158,7 +158,7 @@ Clustering partitions data into groups (clusters) where points within a cluster 
 - Data has noise/outliers
 - Varying cluster densities
 
-**[→ Learn DBSCAN](clustering/dbscan.md)**
+→ Learn DBSCAN (coming soon)
 
 **Difficulty:** 🟡 | **Time:** 3-4 hours | **Interview:** ⭐⭐⭐
 
@@ -180,7 +180,7 @@ Clustering partitions data into groups (clusters) where points within a cluster 
 - Want statistical model
 - Uncertainty quantification
 
-**[→ Learn Gaussian Mixture Models](clustering/gaussian-mixture.md)**
+→ Learn Gaussian Mixture Models (coming soon)
 
 **Difficulty:** 🔴 | **Time:** 4-5 hours | **Interview:** ⭐⭐⭐
 
@@ -247,7 +247,7 @@ Transform high-dimensional data to lower dimensions while retaining important in
 - Data visualization
 - Image compression
 
-**[→ Learn PCA](dimensionality-reduction/pca.md)**
+→ Learn PCA (coming soon)
 
 **Difficulty:** 🟡 | **Time:** 4-5 hours | **Interview:** ⭐⭐⭐⭐
 
@@ -270,7 +270,7 @@ Transform high-dimensional data to lower dimensions while retaining important in
 - Want to see clusters
 - Don't need inverse transform
 
-**[→ Learn t-SNE](dimensionality-reduction/tsne.md)**
+→ Learn t-SNE (coming soon)
 
 **Difficulty:** 🟡 | **Time:** 3-4 hours | **Interview:** ⭐⭐⭐
 
@@ -292,7 +292,7 @@ Transform high-dimensional data to lower dimensions while retaining important in
 - Want global structure preserved
 - Need reproducibility
 
-**[→ Learn UMAP](dimensionality-reduction/umap.md)**
+→ Learn UMAP (coming soon)
 
 **Difficulty:** 🔴 | **Time:** 3-4 hours | **Interview:** ⭐⭐
 
@@ -315,7 +315,7 @@ Transform high-dimensional data to lower dimensions while retaining important in
 - Large datasets
 - Feature learning
 
-**[→ Learn Autoencoders](dimensionality-reduction/autoencoders.md)**
+→ Learn Autoencoders (coming soon)
 
 **Difficulty:** 🔴 | **Time:** 5-6 hours | **Interview:** ⭐⭐⭐
 
@@ -366,7 +366,7 @@ Find data points that significantly deviate from the normal pattern.
 - Unknown anomaly patterns
 - Large datasets
 
-**[→ Learn Isolation Forest](anomaly-detection/isolation-forest.md)**
+→ Learn Isolation Forest (coming soon)
 
 **Difficulty:** 🟡 | **Time:** 3-4 hours | **Interview:** ⭐⭐⭐
 
@@ -387,7 +387,7 @@ Find data points that significantly deviate from the normal pattern.
 - Normal data available
 - Few features
 
-**[→ Learn One-Class SVM](anomaly-detection/one-class-svm.md)**
+→ Learn One-Class SVM (coming soon)
 
 **Difficulty:** 🟡 | **Time:** 3-4 hours | **Interview:** ⭐⭐
 
@@ -655,6 +655,6 @@ plt.show()
 
 ---
 
-**Ready to discover hidden patterns?** Start with [K-Means Clustering](clustering/kmeans.md) or [PCA](dimensionality-reduction/pca.md)! 🚀
+**Ready to discover hidden patterns?** Start with K-Means Clustering or PCA! 🚀
 
 **Remember:** Unsupervised learning is exploratory - iterate and validate your findings!

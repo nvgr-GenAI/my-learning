@@ -300,7 +300,7 @@ After mastering separate chaining, explore:
 
 - **[Open Addressing](open-addressing.md)**: Alternative collision resolution
 - **[Hash Functions](hash-functions.md)**: Learn about different hash algorithms
-- **[Performance Optimization](../fundamentals.md#optimization)**: Advanced optimization techniques
+- **[Performance Optimization](fundamentals.md)**: Advanced optimization techniques
 
 ---
 

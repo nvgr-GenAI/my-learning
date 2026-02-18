@@ -14,6 +14,7 @@ This section covers the core theory. For specific implementations, see the dedic
 | **[CAP Theorem](cap-theorem.md)** | Consistency vs availability trade-offs during network partitions | Choosing between CP and AP databases, designing distributed data stores |
 | **[Data Consistency](data-consistency.md)** | Strong, eventual, and causal consistency models | Deciding how strictly your reads must reflect recent writes |
 | **[Networking Fundamentals](networking-fundamentals.md)** | Latency numbers, connection management, network failures | Understanding why distributed calls are slow and how to handle failures |
+| **[Back-of-Envelope Estimation](estimation.md)** | Latency numbers, powers of 2, QPS/storage/bandwidth calculations | Sizing infrastructure, validating designs, interview estimation questions |
 
 ---
 
@@ -24,6 +25,8 @@ This section covers the core theory. For specific implementations, see the dedic
 **Confused about consistency trade-offs?** Read [CAP Theorem](cap-theorem.md) first, then [Data Consistency](data-consistency.md) for the full spectrum of consistency models.
 
 **Want to understand network behavior?** Read [Networking Fundamentals](networking-fundamentals.md) for latency numbers and failure modes that affect every distributed system.
+
+**Need to size a system?** Read [Back-of-Envelope Estimation](estimation.md) for the numbers, methodology, and worked examples that help you calculate QPS, storage, and bandwidth.
 
 ---
 

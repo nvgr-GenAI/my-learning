@@ -327,6 +327,6 @@ Where n is the number of vertices, h is the number of holes, and s is the number
 
 - [Convex Hull](convex-hull.md)
 - [Line Intersection](line-intersection.md)
-- [Triangulation Algorithms](triangulation.md)
-- [Point-in-Polygon Testing](point-in-polygon.md)
+- Triangulation Algorithms
+- Point-in-Polygon Testing
 - [Vectors and Matrices](vectors-matrices.md)

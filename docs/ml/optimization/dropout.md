@@ -449,7 +449,7 @@ model = keras.Sequential([
 - [Batch Normalization](batch-normalization.md) - Complementary technique
 - [Regularization](regularization.md) - L1/L2 regularization
 - [Neural Networks Basics](../deep-learning/neural-networks-basics.md) - Foundation
-- [Overfitting](../concepts/overfitting-underfitting.md) - Problem dropout solves
+- Overfitting - Problem dropout solves
 
 ---
 

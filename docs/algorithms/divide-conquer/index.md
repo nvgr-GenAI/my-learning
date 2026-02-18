@@ -8,7 +8,7 @@ Divide and Conquer is a fundamental algorithmic paradigm that solves problems by
 
 ### 🎯 **Core Concepts**
 - [Fundamentals](fundamentals.md) - Master/recurrence relations, analysis techniques
-- [Common Patterns](patterns.md) - Recognition and application strategies
+- Common Patterns - Recognition and application strategies
 
 ### 📚 **Problem Categories**
 
@@ -18,11 +18,11 @@ Divide and Conquer is a fundamental algorithmic paradigm that solves problems by
 - [Hard Problems](hard-problems.md) - Advanced optimization and analysis
 
 #### **By Algorithm Type**
-- [Sorting Algorithms](sorting.md) - Merge Sort, Quick Sort variations
-- [Search Algorithms](search.md) - Binary Search extensions
-- [Array Problems](array-problems.md) - Maximum subarray, inversions
-- [Tree Problems](tree-problems.md) - Tree construction and traversal
-- [Mathematical Problems](math-problems.md) - Fast exponentiation, matrix multiplication
+- Sorting Algorithms - Merge Sort, Quick Sort variations
+- Search Algorithms - Binary Search extensions
+- Array Problems - Maximum subarray, inversions
+- Tree Problems - Tree construction and traversal
+- Mathematical Problems - Fast exponentiation, matrix multiplication
 
 ## 🔥 Why Divide and Conquer Matters
 

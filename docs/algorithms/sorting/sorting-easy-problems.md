@@ -8,19 +8,19 @@ A collection of easy sorting problems to build your algorithmic problem-solving 
     |---|---------|---------|------------|------|-------|
     | 1 | [Sort Array by Parity](#sort-array-by-parity) | Two Pointers | Easy | O(n) | O(1) |
     | 2 | [Sort Colors](#sort-colors) | Counting Sort | Easy | O(n) | O(1) |
-    | 3 | [Merge Sorted Array](#merge-sorted-array) | Two Pointers | Easy | O(m+n) | O(1) |
-    | 4 | [Contains Duplicate](#contains-duplicate) | Sorting | Easy | O(n log n) | O(1) |
-    | 5 | [Valid Anagram](#valid-anagram) | Sorting/Counting | Easy | O(n log n) | O(1) |
-    | 6 | [Relative Sort Array](#relative-sort-array) | Counting Sort | Easy | O(n+m) | O(k) |
-    | 7 | [Height Checker](#height-checker) | Counting Sort | Easy | O(n) | O(1) |
-    | 8 | [Maximum Product of Three Numbers](#maximum-product-of-three-numbers) | Sorting | Easy | O(n log n) | O(1) |
-    | 9 | [Rank Transform of an Array](#rank-transform-of-an-array) | Sorting + Mapping | Easy | O(n log n) | O(n) |
-    | 10 | [Minimum Absolute Difference](#minimum-absolute-difference) | Sorting | Easy | O(n log n) | O(1) |
-    | 11 | [Intersection of Two Arrays](#intersection-of-two-arrays) | Sorting/Set | Easy | O(n log n) | O(n) |
-    | 12 | [Majority Element](#majority-element) | Sorting/Counting | Easy | O(n log n) | O(1) |
-    | 13 | [Find All Numbers Disappeared in an Array](#find-all-numbers-disappeared-in-an-array) | Cyclic Sort | Easy | O(n) | O(1) |
-    | 14 | [Assign Cookies](#assign-cookies) | Greedy + Sorting | Easy | O(n log n) | O(1) |
-    | 15 | [Squares of a Sorted Array](#squares-of-a-sorted-array) | Two Pointers | Easy | O(n) | O(n) |
+    | 3 | Merge Sorted Array | Two Pointers | Easy | O(m+n) | O(1) |
+    | 4 | Contains Duplicate | Sorting | Easy | O(n log n) | O(1) |
+    | 5 | Valid Anagram | Sorting/Counting | Easy | O(n log n) | O(1) |
+    | 6 | Relative Sort Array | Counting Sort | Easy | O(n+m) | O(k) |
+    | 7 | Height Checker | Counting Sort | Easy | O(n) | O(1) |
+    | 8 | Maximum Product of Three Numbers | Sorting | Easy | O(n log n) | O(1) |
+    | 9 | Rank Transform of an Array | Sorting + Mapping | Easy | O(n log n) | O(n) |
+    | 10 | Minimum Absolute Difference | Sorting | Easy | O(n log n) | O(1) |
+    | 11 | Intersection of Two Arrays | Sorting/Set | Easy | O(n log n) | O(n) |
+    | 12 | Majority Element | Sorting/Counting | Easy | O(n log n) | O(1) |
+    | 13 | Find All Numbers Disappeared in an Array | Cyclic Sort | Easy | O(n) | O(1) |
+    | 14 | Assign Cookies | Greedy + Sorting | Easy | O(n log n) | O(1) |
+    | 15 | Squares of a Sorted Array | Two Pointers | Easy | O(n) | O(n) |
 
 ## Sort Array by Parity
 

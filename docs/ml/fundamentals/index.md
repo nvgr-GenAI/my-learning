@@ -143,7 +143,7 @@ Build the mathematical intuition needed for advanced machine learning.
 
 ## Quick Reference
 
-Once you've completed the chapters, refer to the [ML Cheat Sheet](cheat-sheet.md) for quick lookups of key terms and concepts.
+Once you've completed the chapters, refer to the ML Cheat Sheet for quick lookups of key terms and concepts.
 
 ---
 

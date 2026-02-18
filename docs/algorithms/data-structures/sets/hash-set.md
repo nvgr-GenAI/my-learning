@@ -401,7 +401,7 @@ After mastering hash sets, explore:
 
 - **[Tree Set](tree-set.md)**: Ordered set implementation
 - **[Bit Set](bit-set.md)**: Memory-efficient integer sets
-- **[Set Applications](../fundamentals.md#applications)**: Real-world use cases
+- **[Set Applications](fundamentals.md)**: Real-world use cases
 
 ---
 

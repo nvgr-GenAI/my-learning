@@ -251,7 +251,7 @@ LCP Interval Trees provide efficient solutions for problems involving common sub
 
 ## Related Topics
 
-- [Suffix Trees](suffix-trees.md)
+- Suffix Trees
 - [String Pattern Matching](pattern-matching.md)
 - [String Searching Algorithms](../searching/index.md)
 - [Tries](tries.md)

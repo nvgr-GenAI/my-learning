@@ -277,6 +277,8 @@ nav:
       - Best Practices: ml/mlops/best-practices.md
   - GenAI:
     - genai/index.md
+    - Quick Start: genai/quick-start.md
+    - Tools & Technologies: genai/tools-technologies.md
     - Fundamentals:
       - genai/fundamentals/index.md
       - Mathematics: genai/fundamentals/mathematics.md
@@ -292,9 +294,11 @@ nav:
     - Transformers:
       - Learning Journey: genai/transformers/index.md
       - Introduction: genai/transformers/introduction.md
+      - Overview: genai/transformers/overview.md
       - Core Concepts: genai/transformers/core-concepts.md
       - Architecture: genai/transformers/architecture.md
       - Attention Mechanisms: genai/transformers/attention-concepts.md
+      - Attention: genai/transformers/attention.md
       - Tokenization: genai/transformers/tokenization.md
       - Implementation Guide: genai/transformers/implementation-guide.md
       - Training Objectives: genai/transformers/training-objectives.md
@@ -315,6 +319,7 @@ nav:
       - Implementation: genai/rag/implementation.md
       - Evaluation: genai/rag/evaluation.md
       - Advanced Techniques: genai/rag/advanced.md
+      - My Notes: genai/rag/mynotes.md
     - AI Agents:
       - genai/agents/index.md
       - Fundamentals: genai/agents/fundamentals.md
@@ -380,12 +385,19 @@ nav:
       - CAP Theorem: system-design/fundamentals/cap-theorem.md
       - Data Consistency: system-design/fundamentals/data-consistency.md
       - Networking Fundamentals: system-design/fundamentals/networking-fundamentals.md
+      - Back-of-Envelope Estimation: system-design/fundamentals/estimation.md
+      - System Design Trade-offs: system-design/fundamentals/system-design-tradeoffs.md
+      - Probabilistic Data Structures: system-design/fundamentals/probabilistic-data-structures.md
     - Architecture:
       - system-design/architecture/index.md
       - Monolithic: system-design/architecture/monolithic.md
       - Microservices: system-design/architecture/microservices.md
       - Event-Driven: system-design/architecture/event-driven.md
       - Serverless: system-design/architecture/serverless.md
+      - Service Mesh: system-design/architecture/service-mesh.md
+      - Domain-Driven Design: system-design/architecture/domain-driven-design.md
+      - CQRS & Event Sourcing: system-design/architecture/cqrs-event-sourcing.md
+      - Interview Questions: system-design/architecture/interview-questions.md
     - Networking:
       - system-design/networking/index.md
       - DNS: system-design/networking/dns.md
@@ -393,6 +405,7 @@ nav:
       - Load Balancers: system-design/networking/load-balancers.md
       - Proxies: system-design/networking/proxies.md
       - CDN: system-design/networking/cdn.md
+      - Service Discovery: system-design/networking/service-discovery.md
     - Data:
       - Databases:
         - system-design/data/databases/index.md
@@ -400,19 +413,29 @@ nav:
         - Indexing: system-design/data/databases/indexing.md
         - Replication: system-design/data/databases/replication.md
         - Sharding: system-design/data/databases/sharding.md
+        - Data Modeling: system-design/data/databases/data-modeling.md
         - Scaling Patterns: system-design/data/databases/scaling-patterns.md
       - Caching:
         - system-design/data/caching/index.md
         - Strategies: system-design/data/caching/strategies.md
       - Storage:
         - system-design/data/storage/index.md
+      - Search:
+        - system-design/data/search/index.md
+      - Geospatial Indexing: system-design/data/geospatial-indexing.md
+      - Data Pipelines: system-design/data/data-pipelines.md
     - Distributed Systems:
       - system-design/distributed-systems/index.md
       - Consistent Hashing: system-design/distributed-systems/consistent-hashing.md
       - Consensus Algorithms: system-design/distributed-systems/consensus.md
       - Distributed Transactions: system-design/distributed-systems/distributed-transactions.md
       - Distributed Locks: system-design/distributed-systems/distributed-locks.md
+      - Unique ID Generation: system-design/distributed-systems/unique-id-generation.md
+      - Clocks & Ordering: system-design/distributed-systems/clocks-and-ordering.md
+      - Leader Election: system-design/distributed-systems/leader-election.md
+      - Gossip Protocol: system-design/distributed-systems/gossip-protocol.md
     - Communication:
+      - Real-time Communication: system-design/communication/real-time-communication.md
       - API Gateway: system-design/communication/api-gateway.md
       - API Design:
         - system-design/communication/api-design/index.md
@@ -427,14 +450,19 @@ nav:
       - Patterns: system-design/scalability/patterns.md
       - Horizontal Scaling: system-design/scalability/horizontal-scaling.md
       - Load Balancing: system-design/scalability/load-balancing.md
+      - Rate Limiting: system-design/scalability/rate-limiting.md
+      - Task Queues & Async Processing: system-design/scalability/task-queues.md
     - Performance:
       - system-design/performance/index.md
       - Fundamentals: system-design/performance/fundamentals.md
+      - Latency Optimization: system-design/performance/latency-optimization.md
+      - Connection Pooling: system-design/performance/connection-pooling.md
     - Reliability:
       - system-design/reliability/index.md
       - Fault Tolerance: system-design/reliability/fault-tolerance.md
       - Chaos Engineering: system-design/reliability/chaos-engineering.md
       - Disaster Recovery: system-design/reliability/disaster-recovery.md
+      - Resilience Patterns: system-design/reliability/resilience-patterns.md
     - Security:
       - system-design/security/index.md
       - Authentication: system-design/security/authentication.md
@@ -567,6 +595,10 @@ nav:
         - AI Content Moderation: system-design/problems/ai-content-moderation.md
         - LLM Fine-tuning Platform: system-design/problems/llm-finetuning.md
         - Multi-modal AI System: system-design/problems/multimodal-ai.md
+        - AI Agent Platform: system-design/problems/ai-agent-platform.md
+  - Copilot:
+    - copilot/index.md
+    - Feature Development Pattern: copilot/copilot-feature-pattern.md
   - Algorithms:
     - algorithms/index.md
     - Fundamentals:
@@ -576,6 +608,14 @@ nav:
       - Learning Paths: algorithms/fundamentals/learning-paths.md
     - Data Structures:
       - algorithms/data-structures/index.md
+      - Overview: algorithms/data-structures/data-structures.md
+      - Arrays Overview: algorithms/data-structures/arrays.md
+      - Hash Tables Overview: algorithms/data-structures/hash-tables.md
+      - Heaps Overview: algorithms/data-structures/heaps.md
+      - Linked Lists Overview: algorithms/data-structures/linked-lists.md
+      - Sets Overview: algorithms/data-structures/sets.md
+      - Stacks & Queues Overview: algorithms/data-structures/stacks-queues.md
+      - Trees Overview: algorithms/data-structures/trees.md
       - Arrays:
         - algorithms/data-structures/arrays/index.md
         - algorithms/data-structures/arrays/fundamentals.md
@@ -606,6 +646,7 @@ nav:
           - Easy Problems: algorithms/data-structures/linked-lists/easy-problems.md
           - Medium Problems: algorithms/data-structures/linked-lists/medium-problems.md
           - Hard Problems: algorithms/data-structures/linked-lists/hard-problems.md
+      - Stacks & Queues Reference: algorithms/data-structures/stacks-queues/index.md
       - Stacks:
         - algorithms/data-structures/stacks/index.md
         - algorithms/data-structures/stacks/fundamentals.md
@@ -673,6 +714,7 @@ nav:
     - Trees:
       - algorithms/trees/index.md
       - algorithms/trees/fundamentals.md
+      - Trees Overview: algorithms/trees/trees.md
       - Tree Types:
         - Basic Trees:
           - Binary Trees: algorithms/trees/binary-trees.md
@@ -703,6 +745,7 @@ nav:
     - Sorting:
       - algorithms/sorting/index.md
       - algorithms/sorting/fundamentals.md
+      - Sorting Overview: algorithms/sorting/sorting.md
       - Basic Sorting Algorithms:
         - algorithms/sorting/bubble-sort.md
         - algorithms/sorting/selection-sort.md
@@ -720,11 +763,13 @@ nav:
         - algorithms/sorting/introsort.md
       - Practice Problems:
         - algorithms/sorting/sorting-easy-problems.md
+        - Easy Problems: algorithms/sorting/easy-problems.md
         - algorithms/sorting/medium-problems.md
         - algorithms/sorting/hard-problems.md
     - Graphs:
       - algorithms/graphs/index.md
       - algorithms/graphs/fundamentals.md
+      - Graphs Overview: algorithms/graphs/graphs.md
       - Graph Representations:
         - Adjacency Matrix: algorithms/graphs/adjacency-matrix.md
         - Adjacency List: algorithms/graphs/adjacency-list.md
@@ -758,6 +803,7 @@ nav:
     - Dynamic Programming:
       - algorithms/dp/index.md
       - algorithms/dp/fundamentals.md
+      - DP Overview: algorithms/dp/dp.md
       - DP Patterns:
         - Overview: algorithms/dp/patterns.md
         - Linear Sequence:
@@ -790,6 +836,7 @@ nav:
     - Math:
       - algorithms/math/index.md
       - algorithms/math/fundamentals.md
+      - Math Overview: algorithms/math/math.md
       - Number Theory:
         - Basics: algorithms/math/number-theory.md
         - Prime Numbers: algorithms/math/prime-numbers.md
@@ -975,7 +1022,7 @@ plugins:
   - search:
       separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - minify:
-      minify_html: true
+      minify_html: !ENV [CI, false]
   # Temporarily disable git plugins to improve build performance and reduce stdio warnings
   # - git-revision-date-localized:
   #     enable_creation_date: true
@@ -1022,9 +1069,9 @@ extra:
   # announcement:
   #   text: "🎉 Welcome to my learning documentation! This site is constantly updated with new content."
   
-  # Version selector
-  version:
-    provider: mike
+  # Version selector (disabled - not using mike for multi-version docs)
+  # version:
+  #   provider: mike
 
 # Copyright
 copyright: |

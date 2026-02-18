@@ -53,9 +53,9 @@ gantt
 
 ### Week 2: Mathematics for ML
 **Topics:**
-- [ ] [Linear Algebra](fundamentals/08-mathematics.md#linear-algebra) (Vectors, Matrices)
-- [ ] [Calculus](fundamentals/08-mathematics.md#calculus) (Derivatives, Gradients)
-- [ ] [Probability & Statistics](fundamentals/08-mathematics.md#probability) (Distributions, Bayes)
+- [ ] [Linear Algebra](fundamentals/08-mathematics.md#81-linear-algebra-essentials) (Vectors, Matrices)
+- [ ] [Calculus](fundamentals/08-mathematics.md#82-calculus-for-optimization) (Derivatives, Gradients)
+- [ ] [Probability & Statistics](fundamentals/08-mathematics.md#83-probability-and-statistics) (Distributions, Bayes)
 - [ ] Cost functions and optimization basics
 
 **Hands-on:**
@@ -129,10 +129,10 @@ gantt
 
 ### Week 6: Clustering
 **Topics:**
-- [ ] [K-Means](unsupervised-learning/clustering/kmeans.md)
-- [ ] [Hierarchical Clustering](unsupervised-learning/clustering/hierarchical.md)
-- [ ] [DBSCAN](unsupervised-learning/clustering/dbscan.md)
-- [ ] [Gaussian Mixture Models](unsupervised-learning/clustering/gaussian-mixture.md)
+- [ ] K-Means
+- [ ] Hierarchical Clustering
+- [ ] DBSCAN
+- [ ] Gaussian Mixture Models
 - [ ] Clustering evaluation metrics
 
 **Hands-on:**
@@ -145,11 +145,11 @@ gantt
 
 ### Week 7: Dimensionality Reduction
 **Topics:**
-- [ ] [PCA](unsupervised-learning/dimensionality-reduction/pca.md)
-- [ ] [t-SNE](unsupervised-learning/dimensionality-reduction/tsne.md)
-- [ ] [UMAP](unsupervised-learning/dimensionality-reduction/umap.md)
-- [ ] [Isolation Forest](unsupervised-learning/anomaly-detection/isolation-forest.md)
-- [ ] [One-Class SVM](unsupervised-learning/anomaly-detection/one-class-svm.md)
+- [ ] PCA
+- [ ] t-SNE
+- [ ] UMAP
+- [ ] Isolation Forest
+- [ ] One-Class SVM
 
 **Hands-on:**
 - Reduce high-dimensional data with PCA
@@ -230,7 +230,7 @@ gantt
 - [ ] [Cross-Validation](evaluation/cross-validation.md)
 - [ ] [Model Selection](evaluation/model-selection.md)
 - [ ] [Hyperparameter Tuning](optimization/hyperparameter-tuning.md)
-- [ ] [Learning Curves](evaluation/learning-curves.md)
+- [ ] Learning Curves
 - [ ] Statistical significance testing
 - [ ] A/B testing for ML models
 

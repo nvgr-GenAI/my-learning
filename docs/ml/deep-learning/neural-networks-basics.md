@@ -856,7 +856,7 @@ Where $n_i$ is the number of neurons in layer $i$.
 - [Convolutional Neural Networks](cnn.md) - For images
 - [Recurrent Neural Networks](rnn.md) - For sequences
 - [Optimization](../optimization/index.md) - Training techniques
-- [Regularization](../fundamentals/regularization.md) - Prevent overfitting
+- Regularization - Prevent overfitting
 
 ---
 

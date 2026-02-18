@@ -1363,6 +1363,6 @@ for i in range(1, m + 1):
 
 - **[Hard DP Problems](hard-problems.md)** - Advanced patterns and optimizations
 - **[2D DP Deep Dive](2d-dp.md)** - Matrix and grid problems
-- **[String DP Algorithms](string-dp.md)** - Advanced string manipulation
+- **String DP Algorithms** - Advanced string manipulation
 
 These medium problems bridge the gap between basic DP concepts and complex optimization challenges. Master these patterns to tackle any DP problem with confidence!

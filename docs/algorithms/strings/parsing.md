@@ -308,7 +308,7 @@ def parse_file_with_encoding(file_path, encoding='utf-8'):
 
 ## Related Topics
 
-- [Regular Expressions](../advanced/regex.md)
-- [Lexical Analysis and Parsing](../advanced/lexical-analysis.md)
+- Regular Expressions
+- Lexical Analysis and Parsing
 - [String Pattern Matching](pattern-matching.md)
 - [String Comparison](comparison.md)

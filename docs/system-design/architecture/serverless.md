@@ -244,3 +244,4 @@ The serverless model encompasses two complementary ideas. Functions as a Service
 - [Event-Driven Architecture](event-driven.md) -- Natural complement to serverless patterns
 - [API Design](../communication/api-design/index.md) -- Designing APIs for serverless backends
 - [Cloud Deployment](../deployment/index.md) -- Deployment strategies across providers
+- [Architecture Interview Questions](interview-questions.md) -- Practice for interviews

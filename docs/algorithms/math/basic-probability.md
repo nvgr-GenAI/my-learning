@@ -314,5 +314,5 @@ def reservoir_sample(stream, k):
 
 - [Expectation and Variance](expectation-variance.md)
 - [Random Sampling](random-sampling.md)
-- [Randomized Algorithms](../randomized-algorithms.md)
-- [Monte Carlo Methods](monte-carlo-methods.md)
+- Randomized Algorithms
+- Monte Carlo Methods

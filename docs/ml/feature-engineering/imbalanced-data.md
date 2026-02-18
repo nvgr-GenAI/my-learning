@@ -715,7 +715,7 @@ def recommend_imbalance_handling(imbalance_ratio, dataset_size, computational_bu
 
 - [Feature Selection](./feature-selection.md) - Select features for imbalanced data
 - [Model Evaluation](../evaluation/index.md) - Proper evaluation metrics
-- [Classification](../supervised-learning/classification.md) - Classification algorithms
+- Classification - Classification algorithms
 
 ## Summary
 

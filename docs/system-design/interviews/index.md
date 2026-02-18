@@ -56,19 +56,19 @@ Complete guide to acing system design interviews at top tech companies.
 
     **Week 1: Core Concepts + Framework**
     - Study: [The 4-Step Framework](framework.md)
-    - Study: [Fundamentals](../fundamentals/index.md), [Databases](../databases/index.md), [Caching](../caching/index.md)
+    - Study: [Fundamentals](../fundamentals/index.md), [Databases](../data/databases/index.md), [Caching](../data/caching/index.md)
     - Practice: 3-4 easy problems
     - Focus: [Communication](communication.md) basics
     - Time: 10-12 hours
 
     **Week 2: Scaling + Practice**
-    - Study: [Scalability](../scalability/index.md), [Load Balancing](../load-balancing/index.md), [Messaging](../messaging/index.md)
+    - Study: [Scalability](../scalability/index.md), [Load Balancing](../networking/load-balancers.md), [Messaging](../communication/messaging/index.md)
     - Practice: 4-5 medium problems (Twitter, WhatsApp, Uber)
     - Master: [Calculations](calculations.md)
     - Time: 12-15 hours
 
     **Week 3: Advanced Concepts**
-    - Study: [Distributed Systems](../distributed-systems/index.md), [Consistent Hashing](../consistent-hashing/index.md)
+    - Study: [Distributed Systems](../distributed-systems/index.md), [Consistent Hashing](../distributed-systems/consistent-hashing.md)
     - Practice: 3-4 medium problems
     - Review: [Common Mistakes](common-mistakes.md)
     - Time: 12-15 hours
@@ -86,7 +86,7 @@ Complete guide to acing system design interviews at top tech companies.
     Follow 4-week plan but:
     - Spend 2 weeks on each phase
     - Add 3-4 more practice problems per week
-    - Study [case studies](../case-studies/index.md) deeply
+    - Study real-world system architectures deeply
     - Read company engineering blogs
     - Do weekly mock interviews starting week 3
 
@@ -112,13 +112,13 @@ Priority topics to study before your interview:
 
 | Priority | Topic | Why Critical | Time |
 |----------|-------|--------------|------|
-| 🔴 Critical | [Databases](../databases/index.md) | 80% of designs need storage | 1 week |
-| 🔴 Critical | [Caching](../caching/index.md) | First optimization technique | 3 days |
+| 🔴 Critical | [Databases](../data/databases/index.md) | 80% of designs need storage | 1 week |
+| 🔴 Critical | [Caching](../data/caching/index.md) | First optimization technique | 3 days |
 | 🔴 Critical | [Scalability](../scalability/index.md) | Core interview concept | 1 week |
-| 🟡 Important | [Load Balancing](../load-balancing/index.md) | Common in all systems | 2 days |
+| 🟡 Important | [Load Balancing](../networking/load-balancers.md) | Common in all systems | 2 days |
 | 🟡 Important | [Distributed Systems](../distributed-systems/index.md) | Medium/hard problems | 1 week |
-| 🟢 Useful | [Messaging](../messaging/index.md) | Async architectures | 3 days |
-| 🟢 Useful | [Consistent Hashing](../consistent-hashing/index.md) | Advanced scaling | 2 days |
+| 🟢 Useful | [Messaging](../communication/messaging/index.md) | Async architectures | 3 days |
+| 🟢 Useful | [Consistent Hashing](../distributed-systems/consistent-hashing.md) | Advanced scaling | 2 days |
 
 ---
 
@@ -150,12 +150,12 @@ Priority topics to study before your interview:
 - Practice 2 mock interviews
 
 ### Good Preparation (4 weeks)
-- Follow the [4-week plan](#4-week-intensive) above
+- Follow the [4-week plan](#preparation-roadmap) above
 - Do 12-15 problems across all difficulty levels
 - Practice 4-5 mock interviews
 
 ### Excellent Preparation (8 weeks)
-- Follow the [8-week plan](#8-week-comprehensive) above
+- Follow the [8-week plan](#preparation-roadmap) above
 - Do 20-25 problems
 - Weekly mock interviews
 - Study real system architectures
@@ -196,4 +196,4 @@ Learn from real systems:
 
 ---
 
-[← Back to System Design](../index.md) | [Learning Path](../learning-path.md) | [Case Studies](../case-studies/index.md)
+[← Back to System Design](../index.md) | [Learning Path](../learning-path.md)

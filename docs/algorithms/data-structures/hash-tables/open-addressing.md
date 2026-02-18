@@ -390,8 +390,8 @@ class RobinHoodHashTable:
 After mastering open addressing, explore:
 
 - **[Separate Chaining](chaining.md)**: Alternative collision resolution
-- **[Cuckoo Hashing](cuckoo-hashing.md)**: Guaranteed O(1) worst-case lookup
-- **[Consistent Hashing](consistent-hashing.md)**: For distributed systems
+- **Cuckoo Hashing**: Guaranteed O(1) worst-case lookup
+- **Consistent Hashing**: For distributed systems
 
 ---
 

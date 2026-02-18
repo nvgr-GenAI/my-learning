@@ -14,21 +14,21 @@ Master sophisticated queue techniques for complex scenarios:
 
     | # | Problem | Difficulty | Topics | Solution |
     |---|---------|------------|--------|----------|
-    | 1 | Shortest Path in Binary Matrix | Hard | BFS, Matrix Traversal | [Solution](#problem-1) |
-    | 2 | Sliding Window Median | Hard | Two Heaps, Sliding Window | [Solution](#problem-2) |
-    | 3 | Serialize and Deserialize Binary Tree | Hard | BFS/DFS with Queue | [Solution](#problem-3) |
-    | 4 | Word Ladder II | Hard | BFS, Backtracking | [Solution](#problem-4) |
-    | 5 | Shortest Bridge | Hard | BFS/DFS Hybrid | [Solution](#problem-5) |
-    | 6 | Cut Off Trees for Golf Event | Hard | Multiple BFS, A* | [Solution](#problem-6) |
-    | 7 | Bus Routes | Hard | BFS, Graph | [Solution](#problem-7) |
-    | 8 | Alien Dictionary | Hard | Topological Sort | [Solution](#problem-8) |
-    | 9 | Minimum Spanning Tree | Hard | Prim's Algorithm | [Solution](#problem-9) |
-    | 10 | Sliding Puzzle | Hard | A* Search | [Solution](#problem-10) |
-    | 11 | Network Delay Time | Hard | Dijkstra's Algorithm | [Solution](#problem-11) |
-    | 12 | Cheapest Flights Within K Stops | Hard | Bellman-Ford | [Solution](#problem-12) |
-    | 13 | Trapping Rain Water II | Hard | Priority Queue | [Solution](#problem-13) |
-    | 14 | Rearrange String k Distance Apart | Hard | Greedy, Priority Queue | [Solution](#problem-14) |
-    | 15 | Minimum Cost to Hire K Workers | Hard | Priority Queue | [Solution](#problem-15) |
+    | 1 | Shortest Path in Binary Matrix | Hard | BFS, Matrix Traversal | Solution |
+    | 2 | Sliding Window Median | Hard | Two Heaps, Sliding Window | Solution |
+    | 3 | Serialize and Deserialize Binary Tree | Hard | BFS/DFS with Queue | Solution |
+    | 4 | Word Ladder II | Hard | BFS, Backtracking | Solution |
+    | 5 | Shortest Bridge | Hard | BFS/DFS Hybrid | Solution |
+    | 6 | Cut Off Trees for Golf Event | Hard | Multiple BFS, A* | Solution |
+    | 7 | Bus Routes | Hard | BFS, Graph | Solution |
+    | 8 | Alien Dictionary | Hard | Topological Sort | Solution |
+    | 9 | Minimum Spanning Tree | Hard | Prim's Algorithm | Solution |
+    | 10 | Sliding Puzzle | Hard | A* Search | Solution |
+    | 11 | Network Delay Time | Hard | Dijkstra's Algorithm | Solution |
+    | 12 | Cheapest Flights Within K Stops | Hard | Bellman-Ford | Solution |
+    | 13 | Trapping Rain Water II | Hard | Priority Queue | Solution |
+    | 14 | Rearrange String k Distance Apart | Hard | Greedy, Priority Queue | Solution |
+    | 15 | Minimum Cost to Hire K Workers | Hard | Priority Queue | Solution |
 
 === "🎯 Interview Tips"
 

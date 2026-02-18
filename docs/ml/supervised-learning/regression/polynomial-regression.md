@@ -973,8 +973,8 @@ plt.show()
 - [Linear Regression](linear-regression.md) - The foundation
 - [Ridge Regression](ridge-regression.md) - L2 regularization for polynomial features
 - [Lasso Regression](lasso-regression.md) - Feature selection among polynomial terms
-- [Splines & GAMs](../../advanced/splines.md) - Better alternative for complex curves
-- [Feature Engineering](../../preprocessing/feature-engineering.md) - Creating informative features
+- Splines & GAMs - Better alternative for complex curves
+- Feature Engineering - Creating informative features
 
 ---
 
@@ -991,7 +991,7 @@ plt.show()
 **Next Steps:**
 - Master [Ridge Regression](ridge-regression.md) to handle overfitting
 - Learn [Lasso Regression](lasso-regression.md) for feature selection
-- Explore [Splines](../../advanced/splines.md) for more flexible curves
+- Explore Splines for more flexible curves
 - Practice with [Kaggle Datasets](https://www.kaggle.com/datasets) showing non-linear patterns
 
 **Ready to curve-fit like a pro?** Start with the beginner problems above!

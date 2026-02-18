@@ -641,8 +641,8 @@ def performance_comparison():
 
 - **[Array Stack](array-stack.md)**: Alternative implementation using arrays
 - **[Easy Problems](easy-problems.md)**: Practice with stack problems
-- **[Linked Lists](../../linked-lists/index.md)**: Understanding the underlying structure
-- **[Memory Management](../../../systems/memory-management.md)**: Node allocation strategies
+- **[Linked Lists](../linked-lists/index.md)**: Understanding the underlying structure
+- **Memory Management**: Node allocation strategies
 
 ---
 

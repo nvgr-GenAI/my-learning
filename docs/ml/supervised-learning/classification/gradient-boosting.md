@@ -874,7 +874,7 @@ xgb_params = {
 - [Random Forest](random-forest.md) - Alternative ensemble method
 - [Ensemble Methods](../ensemble-methods/index.md) - General theory
 - [Hyperparameter Tuning](../../optimization/hyperparameter-tuning.md) - Optimization strategies
-- [Feature Engineering](../../preprocessing/feature-engineering.md) - Improve inputs
+- Feature Engineering - Improve inputs
 
 ---
 

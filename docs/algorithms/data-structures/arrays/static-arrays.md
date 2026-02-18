@@ -443,7 +443,7 @@ def prefetching_example():
 - **[Dynamic Arrays](dynamic-arrays.md)**: For variable-size collections
 - **[Multidimensional Arrays](multidimensional-arrays.md)**: For matrices and tensors
 - **[Easy Problems](easy-problems.md)**: Practice with static array problems
-- **[Memory Management](../../../systems/memory-management.md)**: Understanding memory layout
+- **Memory Management**: Understanding memory layout
 
 ---
 

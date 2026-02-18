@@ -308,8 +308,8 @@ Sophisticated structures for specific use cases and advanced algorithms.
 | **[Hash Tables](hash-tables/index.md)** | Chaining, Open Addressing | Two Sum pattern, Frequency counting, Caching, Grouping |
 | **[Sets](sets/index.md)** | Hash Set, Tree Set, Bit Set | Deduplication, Set operations (union, intersection), Membership testing |
 | **[Heaps](../trees/heaps.md)** | Min Heap, Max Heap | Top K elements, Merge K sorted lists, Priority queue, Running median |
-| **[Trie](../trees/trie.md)** | Prefix Tree, Suffix Trie | Autocomplete, Dictionary, Prefix search, Spell checker, Word Search II |
-| **[Graphs](../trees/graphs.md)** | Directed, Undirected, Weighted | Shortest path, Network flow, Social networks, Topological sort, MST |
+| **Trie** | Prefix Tree, Suffix Trie | Autocomplete, Dictionary, Prefix search, Spell checker, Word Search II |
+| **Graphs** | Directed, Undirected, Weighted | Shortest path, Network flow, Social networks, Topological sort, MST |
 | **Disjoint Set** | Union-Find, Path Compression | Connected components, Kruskal's MST, Cycle detection, Network connectivity |
 | **Segment Tree** | Range queries, Lazy propagation | Range sum/min/max with updates, Interval queries, Competitive programming |
 | **Fenwick Tree** | Binary Indexed Tree | Prefix sums, Range updates, Inversion count, Cumulative frequency |

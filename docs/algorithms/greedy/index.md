@@ -8,7 +8,7 @@ Greedy algorithms make locally optimal choices at each step, hoping to find a gl
 
 ### 🎯 **Core Concepts**
 - [Fundamentals](fundamentals.md) - Greedy choice property, optimal substructure
-- [Analysis Techniques](analysis.md) - Proving correctness and optimality
+- Analysis Techniques - Proving correctness and optimality
 
 ### 📚 **Problem Categories**
 
@@ -18,10 +18,10 @@ Greedy algorithms make locally optimal choices at each step, hoping to find a gl
 - [Hard Problems](hard-problems.md) - Advanced greedy techniques
 
 #### **By Problem Type**
-- [Scheduling Problems](scheduling.md) - Activity selection, job scheduling
-- [Graph Problems](graph-problems.md) - Minimum spanning tree, shortest paths
-- [Array Problems](array-problems.md) - Jump games, candy distribution
-- [String Problems](string-problems.md) - Pattern matching, compression
+- Scheduling Problems - Activity selection, job scheduling
+- Graph Problems - Minimum spanning tree, shortest paths
+- Array Problems - Jump games, candy distribution
+- String Problems - Pattern matching, compression
 
 ## 🔥 Why Greedy Algorithms Matter
 

@@ -36,7 +36,7 @@ Choose what best describes your goal:
 
     1. Start: [Interview Preparation Guide](interviews/index.md)
     2. Study: [Core Topics](#essential-interview-topics) below
-    3. Practice: Work through [Interview Problems](interviews/index.md#practice-problems)
+    3. Practice: Work through [Interview Problems](interviews/practice-problems.md)
     4. Timeline: 4-8 weeks intensive
 
 === "🏗️ Design a Specific System"

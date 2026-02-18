@@ -329,9 +329,9 @@ class Trie {
 
 ## Related Data Structures
 
-- [Suffix Trees](suffix-trees.md)
+- Suffix Trees
 - [Suffix Arrays](suffix-arrays.md)
-- [Aho-Corasick Automaton](aho-corasick.md)
+- Aho-Corasick Automaton
 - [Directed Acyclic Word Graph (DAWG)](../graphs/dags.md)
 
 ## References

@@ -38,7 +38,7 @@ The main subdirectories and key files are:
 
 Below is a visual representation of this structure:
 
-![Feature Development Pattern Folder Structure](/img/feature-development-pattern.png)
+<!-- TODO: Add image - feature-development-pattern.png -->
 
 This structured approach ensures that all relevant information for a feature is centralized and follows a predictable pattern, making it easier for team members (and Copilot) to navigate and understand the development lifecycle of each feature.
 

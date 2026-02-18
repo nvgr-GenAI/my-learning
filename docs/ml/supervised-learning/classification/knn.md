@@ -753,11 +753,11 @@ for algo in algorithms:
 
 ## Related Topics
 
-- [Distance Metrics](../../math/distance-metrics.md) - Mathematical foundation
-- [Dimensionality Reduction](../../preprocessing/dimensionality-reduction.md) - PCA, t-SNE
-- [Feature Scaling](../../preprocessing/feature-scaling.md) - Normalization, standardization
-- [Recommendation Systems](../../applications/recommender-systems.md) - Collaborative filtering
-- [Anomaly Detection](../../unsupervised-learning/anomaly-detection.md) - KNN for outliers
+- Distance Metrics - Mathematical foundation
+- Dimensionality Reduction - PCA, t-SNE
+- Feature Scaling - Normalization, standardization
+- Recommendation Systems - Collaborative filtering
+- Anomaly Detection - KNN for outliers
 
 ---
 
@@ -774,6 +774,6 @@ for algo in algorithms:
 **Next Steps:**
 - Try [Kaggle Fashion-MNIST](https://www.kaggle.com/zalando-research/fashionmnist)
 - Learn [Random Forest](random-forest.md) for faster predictions
-- Explore [Dimensionality Reduction](../../preprocessing/dimensionality-reduction.md)
+- Explore Dimensionality Reduction
 
 **Master instance-based learning with K-Nearest Neighbors!** 🎯

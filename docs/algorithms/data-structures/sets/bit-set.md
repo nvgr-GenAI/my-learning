@@ -492,7 +492,7 @@ After mastering bit sets, explore:
 
 - **[Hash Set](hash-set.md)**: General-purpose unordered sets
 - **[Tree Set](tree-set.md)**: Ordered sets with range queries
-- **[Bloom Filters](../advanced/bloom-filters.md)**: Probabilistic set membership
+- **Bloom Filters**: Probabilistic set membership
 
 ---
 

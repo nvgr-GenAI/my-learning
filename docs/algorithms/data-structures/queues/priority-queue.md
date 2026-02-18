@@ -660,7 +660,7 @@ class AIDecisionEngine:
 - **[Array Queue](array-queue.md)**: Compare with simple FIFO queues
 - **[Medium Problems](medium-problems.md)**: Practice with priority queue problems
 - **[Hard Problems](hard-problems.md)**: Master advanced priority queue algorithms
-- **[Heaps](../../heaps/index.md)**: Deep dive into heap data structures
+- **[Heaps](../../trees/heaps.md)**: Deep dive into heap data structures
 
 ---
 

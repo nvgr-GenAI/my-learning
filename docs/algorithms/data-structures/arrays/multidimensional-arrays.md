@@ -950,8 +950,8 @@ def memory_layout_optimization():
 
 - **[Static Arrays](static-arrays.md)**: Foundation for multidimensional arrays
 - **[Dynamic Arrays](dynamic-arrays.md)**: For resizable collections
-- **[Matrix Algorithms](../../algorithms/matrix/index.md)**: Advanced matrix operations
-- **[Image Processing](../../../computer-vision/image-processing.md)**: Real-world applications
+- **Matrix Algorithms**: Advanced matrix operations
+- **Image Processing**: Real-world applications
 - **[Linear Algebra](../../math/linear-algebra.md)**: Mathematical foundations
 
 ---

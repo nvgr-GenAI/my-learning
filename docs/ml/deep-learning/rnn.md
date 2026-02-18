@@ -820,7 +820,7 @@ Where:
 - [Attention Mechanisms](attention-mechanisms.md) - Focus on relevant parts
 - [Neural Networks Basics](neural-networks-basics.md) - Foundation
 - [Backpropagation](backpropagation.md) - BPTT algorithm
-- [Word Embeddings](../nlp/word-embeddings.md) - Representing text for RNNs
+- Word Embeddings - Representing text for RNNs
 
 ---
 

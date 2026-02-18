@@ -277,4 +277,4 @@ def power_method(A, iterations=100, epsilon=1e-10):
 - [Vectors and Matrices](vectors-matrices.md)
 - [Binary Exponentiation](binary-exponentiation.md)
 - [Fast Fourier Transform](fft.md)
-- [Systems of Linear Equations](systems-of-equations.md)
+- Systems of Linear Equations

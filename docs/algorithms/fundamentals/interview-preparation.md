@@ -6,14 +6,14 @@
 
 | Section | What You'll Learn | Time to Read |
 |---------|------------------|--------------|
-| [Interview Landscape](#interview-landscape) | Problem frequencies, formats, company types | 5 min |
-| [Assess & Plan](#creating-your-plan) | Self-assessment, timeline selection | 10 min |
-| [Study Strategies](#learning-strategies) | Breadth vs depth, spaced repetition, problem selection | 15 min |
-| [Daily Practice](#daily-practice-routines) | Structured schedules for different time commitments | 5 min |
-| [During Interview](#problem-solving-framework) | Step-by-step approach, communication techniques | 10 min |
-| [Mock Interviews](#mock-interviews) | Practice techniques, platforms, improvement loop | 10 min |
-| [Mental Preparation](#mental-preparation) | Anxiety management, motivation, burnout prevention | 10 min |
-| [Resources](#resources) | Platforms, books, tools, communities | 5 min |
+| Interview Landscape | Problem frequencies, formats, company types | 5 min |
+| Assess & Plan | Self-assessment, timeline selection | 10 min |
+| Study Strategies | Breadth vs depth, spaced repetition, problem selection | 15 min |
+| Daily Practice | Structured schedules for different time commitments | 5 min |
+| During Interview | Step-by-step approach, communication techniques | 10 min |
+| Mock Interviews | Practice techniques, platforms, improvement loop | 10 min |
+| Mental Preparation | Anxiety management, motivation, burnout prevention | 10 min |
+| Resources | Platforms, books, tools, communities | 5 min |
 
 ---
 
